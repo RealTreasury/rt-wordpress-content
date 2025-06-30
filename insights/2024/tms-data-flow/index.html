@@ -1,1 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete guide to Treasury Management System (TMS) data flows. Understand data inflows, outflows, integration strategies, and best practices for optimizing treasury operations through intelligent data management.">
+    <meta name="keywords" content="treasury management system, TMS data flows, treasury automation, bank connectivity, ERP integration, cash management system, treasury technology, financial data integration">
+    <meta name="author" content="Real Treasury">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.realtreasury.com/data-flows-of-a-tms">
+    <meta property="og:title" content="Data Flows of a Treasury Management System: Complete Technical Guide">
+    <meta property="og:description" content="Master TMS data flows with our comprehensive guide covering inflows, outflows, integration strategies, and optimization techniques for treasury professionals.">
+    <meta property="og:image" content="https://www.realtreasury.com/images/tms-data-flows-og.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.realtreasury.com/data-flows-of-a-tms">
+    <meta property="twitter:title" content="Data Flows of a Treasury Management System: Complete Technical Guide">
+    <meta property="twitter:description" content="Master TMS data flows with our comprehensive guide covering inflows, outflows, integration strategies, and optimization techniques.">
+    <meta property="twitter:image" content="https://www.realtreasury.com/images/tms-data-flows-twitter.jpg">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Data Flows of a Treasury Management System: Complete Technical Guide",
+        "description": "Comprehensive technical guide to Treasury Management System data flows, integration patterns, and optimization strategies",
+        "url": "https://www.realtreasury.com/data-flows-of-a-tms",
+        "datePublished": "2025-01-15",
+        "dateModified": "2025-01-15",
+        "author": {
+            "@type": "Organization",
+            "name": "Real Treasury"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Real Treasury",
+            "url": "https://www.realtreasury.com"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://www.realtreasury.com/data-flows-of-a-tms"
+        },
+        "about": [
+            {
+                "@type": "Thing",
+                "name": "Treasury Management System"
+            },
+            {
+                "@type": "Thing", 
+                "name": "Financial Data Integration"
+            },
+            {
+                "@type": "Thing",
+                "name": "Treasury Automation"
+            }
+        ],
+        "teaches": [
+            "TMS data flow architecture",
+            "Integration strategies",
+            "Data optimization techniques",
+            "Treasury automation best practices"
+        ]
+    }
+    </script>
+    
+    <title>Data Flows of a Treasury Management System: Complete Technical Guide | Real Treasury</title>
+    
+    <style>
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+            --light-gray: #f8f8f8;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --info-blue: #3b82f6;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: 400;
+            color: var(--dark-text);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.7;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem;
+        }
+
+        /* Reading Progress Bar */
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-radius: 24px;
+            box-shadow: 
+                0 15px 50px rgba(114, 22, 244, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .hero-meta {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-weight: 500;
+        }
+
+        .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(199, 125, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--dark-text);
+            background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--gray-text);
+            line-height: 1.6;
+            max-width: 850px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-heading {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 1.8rem;
+            line-height: 1.2;
+            position: relative;
+        }
+
+        .section-heading::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 2px;
+        }
+
+        .section-subheading {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin: 3rem 0 1.5rem 0;
+            line-height: 1.3;
+        }
+
+        .content-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--gray-text);
+            margin-bottom: 1.8rem;
+        }
+
+        .content-text strong {
+            color: var(--dark-text);
+            font-weight: 600;
+        }
+
+        .content-text em {
+            color: var(--primary-purple);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* TMS Definition Box */
+        .tms-definition {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 50%,
+                rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            box-shadow: 
+                0 12px 40px rgba(59, 130, 246, 0.15),
+                0 0 0 1px rgba(59, 130, 246, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            padding: 2.5rem;
+            margin: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tms-definition::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--info-blue) 0%, #60a5fa 50%, #93c5fd 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .definition-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--info-blue);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .definition-content {
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        /* Data Flow Diagram */
+        .data-flow-diagram {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 
+                0 12px 40px rgba(114, 22, 244, 0.15),
+                0 0 0 1px rgba(199, 125, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            padding: 3rem;
+            margin: 3rem 0;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .data-flow-diagram::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .diagram-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 2rem;
+        }
+
+        .flow-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .flow-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .flow-item {
+            background: rgba(199, 125, 255, 0.1);
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--dark-text);
+            transition: all 0.3s ease;
+        }
+
+        .flow-item:hover {
+            background: rgba(199, 125, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .tms-center {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.3);
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--primary-purple);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Data Categories */
+        .data-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 50%,
+                rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 
+                0 12px 40px rgba(114, 22, 244, 0.15),
+                0 0 0 1px rgba(199, 125, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(114, 22, 244, 0.2),
+                0 0 0 1px rgba(199, 125, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .category-card.inflow::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--success-green) 0%, #34d399 50%, #6ee7b7 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .category-card.outflow::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--warning-orange) 0%, #fbbf24 50%, #fcd34d 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .category-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-card.inflow .category-icon {
+            background: linear-gradient(135deg, var(--success-green), #34d399);
+        }
+
+        .category-card.outflow .category-icon {
+            background: linear-gradient(135deg, var(--warning-orange), #fbbf24);
+        }
+
+        .category-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .category-description {
+            color: var(--gray-text);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-items {
+            list-style: none;
+        }
+
+        .category-items li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+            color: var(--gray-text);
+            padding: 0.5rem;
+            background: rgba(199, 125, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .category-items li:hover {
+            background: rgba(199, 125, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .category-items li::before {
+            content: "▸";
+            color: var(--primary-purple);
+            font-weight: 600;
+            margin-right: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        /* Best Practices Section */
+        .best-practices {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 50%,
+                rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 
+                0 12px 40px rgba(114, 22, 244, 0.15),
+                0 0 0 1px rgba(199, 125, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            padding: 2.5rem;
+            margin: 3rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .best-practices::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .practices-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .practices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .practice-item {
+            background: rgba(199, 125, 255, 0.05);
+            border: 1px solid rgba(199, 125, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .practice-item:hover {
+            background: rgba(199, 125, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .practice-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .practice-description {
+            color: var(--gray-text);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.9) 0%, 
+                rgba(248, 248, 248, 0.95) 100%);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(114, 22, 244, 0.2);
+            border-color: rgba(199, 125, 255, 0.4);
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--primary-purple);
+            display: block;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray-text);
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+
+        /* Lead Capture */
+        .lead-capture {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 50%,
+                rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 
+                0 15px 50px rgba(114, 22, 244, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            padding: 3rem;
+            margin: 5rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lead-capture::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .lead-capture h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 1.2rem;
+        }
+
+        .lead-capture p {
+            color: var(--gray-text);
+            margin-bottom: 2.5rem;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .cta-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 550px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .email-input {
+            flex: 1;
+            min-width: 280px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.9) 0%, 
+                rgba(248, 248, 248, 0.95) 100%);
+            border: 1px solid rgba(199, 125, 255, 0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .email-input:focus {
+            border-color: var(--secondary-purple);
+            outline: none;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 
+                0 0 0 3px rgba(139, 92, 246, 0.1),
+                0 4px 12px rgba(139, 92, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            padding: 16px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(114, 22, 244, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.4);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 2rem 1rem;
+            }
+
+            .hero-title {
+                font-size: 2.4rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .section-heading {
+                font-size: 1.8rem;
+            }
+
+            .content-text {
+                font-size: 1.05rem;
+            }
+
+            .flow-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .tms-center {
+                order: 2;
+                padding: 1.5rem;
+                font-size: 1.2rem;
+            }
+
+            .flow-column:first-child {
+                order: 1;
+            }
+
+            .flow-column:last-child {
+                order: 3;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+                margin: 1rem 0;
+            }
+
+            .data-categories {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .practices-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-form {
+                flex-direction: column;
+            }
+
+            .email-input {
+                min-width: 100%;
+            }
+
+            .hero-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .tms-definition,
+            .best-practices,
+            .lead-capture {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .content-section:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        .content-section:nth-child(even) {
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="reading-progress"></div>
+    
+    <div class="page-container">
+        <!-- Hero Section -->
+        <header class="hero-section">
+            <div class="hero-meta">
+                <span>💾 TMS Technology</span>
+                <span>⏱️ 12 min read</span>
+                <span>🔄 Data Integration</span>
+                <span>📊 Technical Guide</span>
+            </div>
+            <h1 class="hero-title">Data Flows of a Treasury Management System</h1>
+            <p class="hero-subtitle">
+                Master the complexities of <em>TMS data architecture</em> with our comprehensive guide to data flows, 
+                integration patterns, and optimization strategies. Understand how intelligent data management 
+                transforms treasury operations from reactive to predictive, enabling strategic decision-making 
+                and operational excellence.
+            </p>
+        </header>
+
+        <!-- TMS Definition -->
+        <section class="content-section">
+            <div class="tms-definition">
+                <div class="definition-title">
+                    🏦 What is a Treasury Management System (TMS)?
+                </div>
+                <div class="definition-content">
+                    A <strong>Treasury Management System (TMS)</strong> is a centralized platform that automates 
+                    and orchestrates treasury processes through intelligent data integration. It serves as the 
+                    <em>nerve center</em> of financial operations, connecting bank data, ERP systems, and market 
+                    information to create a unified ecosystem for cash management, risk control, and strategic 
+                    decision support. By aggregating and analyzing treasury data, a TMS transforms raw financial 
+                    information into actionable insights and automated workflows.
+                </div>
+            </div>
+
+            <p class="content-text">
+                The power of a modern TMS lies not just in its individual capabilities, but in its ability to 
+                <strong>orchestrate data flows</strong> across multiple systems and stakeholders. This creates 
+                a <em>network effect</em> where the value increases exponentially as more data sources and 
+                processes become integrated.
+            </p>
+
+            <div class="stats-section">
+                <div class="stat-card">
+                    <span class="stat-number">85%</span>
+                    <span class="stat-label">Reduction in Manual Processes</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Integrated Data Sources</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-label">Data Accuracy Improvement</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">60%</span>
+                    <span class="stat-label">Faster Decision Making</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Flow Diagram -->
+        <section class="content-section">
+            <div class="data-flow-diagram">
+                <h3 class="diagram-title">TMS Data Flow Architecture</h3>
+                <div class="flow-container">
+                    <div class="flow-column">
+                        <h4 style="color: var(--success-green); font-weight: 700; margin-bottom: 1rem;">Data Inflows</h4>
+                        <div class="flow-item">🏦 Bank Transactions</div>
+                        <div class="flow-item">💳 Payment Instructions</div>
+                        <div class="flow-item">📈 Market Data</div>
+                        <div class="flow-item">📊 ERP Integration</div>
+                        <div class="flow-item">🔮 Forecast Data</div>
+                        <div class="flow-item">📋 Manual Inputs</div>
+                    </div>
+                    
+                    <div class="tms-center">
+                        <div style="margin-bottom: 0.5rem;">🎯</div>
+                        Treasury<br>Management<br>System
+                    </div>
+                    
+                    <div class="flow-column">
+                        <h4 style="color: var(--warning-orange); font-weight: 700; margin-bottom: 1rem;">Data Outflows</h4>
+                        <div class="flow-item">📊 Analytics & Reports</div>
+                        <div class="flow-item">💸 Payment Processing</div>
+                        <div class="flow-item">📈 Trading Execution</div>
+                        <div class="flow-item">🧾 Accounting Entries</div>
+                        <div class="flow-item">⚠️ Risk Alerts</div>
+                        <div class="flow-item">📋 Regulatory Reports</div>
+                    </div>
+                </div>
+                <div class="flow-arrow" style="margin-top: 2rem;">⬇️</div>
+                <p style="color: var(--gray-text); margin-top: 1rem; font-style: italic;">
+                    Continuous data processing creates real-time insights and automated workflows
+                </p>
+            </div>
+        </section>
+
+        <!-- Data Inflows -->
+        <section class="content-section">
+            <h2 class="section-heading">TMS Data Inflows: Building the Foundation</h2>
+            
+            <p class="content-text">
+                <strong>Data inflows</strong> represent the lifeblood of treasury management systems. The quality, 
+                timeliness, and comprehensiveness of input data directly determine the effectiveness of all 
+                downstream processes. Modern TMS platforms excel at consuming data from diverse sources and 
+                transforming it into unified, actionable information.
+            </p>
+
+            <div class="data-categories">
+                <div class="category-card inflow">
+                    <div class="category-icon">🏦</div>
+                    <h3 class="category-title">Bank Transaction Data</h3>
+                    <p class="category-description">
+                        Real-time and historical bank data forms the core foundation of treasury operations, 
+                        providing accurate cash position visibility and transaction history.
+                    </p>
+                    <ul class="category-items">
+                        <li>Account balances and positions across all banking relationships</li>
+                        <li>Transaction details with complete metadata and enrichment</li>
+                        <li>Bank fees and service charges with automated categorization</li>
+                        <li>Available and collected balance information for liquidity planning</li>
+                        <li>Multi-currency account data with real-time conversion rates</li>
+                        <li>Bank statement reconciliation data and exception handling</li>
+                    </ul>
+                </div>
+
+                <div class="category-card inflow">
+                    <div class="category-icon">💳</div>
+                    <h3 class="category-title">Payment Transaction Flows</h3>
+                    <p class="category-description">
+                        Payment instructions from multiple sources enable centralized processing, 
+                        approval workflows, and comprehensive audit trails.
+                    </p>
+                    <ul class="category-items">
+                        <li>ERP-generated payment requests with vendor and invoice data</li>
+                        <li>Excel-based payment files with automated validation</li>
+                        <li>Recurring payment schedules and standing instructions</li>
+                        <li>Emergency payment requests with expedited approval workflows</li>
+                        <li>International wire transfers with compliance screening</li>
+                        <li>ACH batches with return processing and exception management</li>
+                    </ul>
+                </div>
+
+                <div class="category-card inflow">
+                    <div class="category-icon">🔮</div>
+                    <h3 class="category-title">Forecast & Planning Data</h3>
+                    <p class="category-description">
+                        Predictive data inputs enable proactive cash management and strategic 
+                        planning capabilities that transform treasury from reactive to strategic.
+                    </p>
+                    <ul class="category-items">
+                        <li>Cash flow forecasts from business units and subsidiaries</li>
+                        <li>Budget and variance data for predictive analytics</li>
+                        <li>Seasonal pattern analysis and historical trend data</li>
+                        <li>Capital expenditure plans and investment schedules</li>
+                        <li>Debt service schedules and refinancing requirements</li>
+                        <li>FX exposure forecasts and hedging requirement calculations</li>
+                    </ul>
+                </div>
+
+                <div class="category-card inflow">
+                    <div class="category-icon">📈</div>
+                    <h3 class="category-title">Market Data Integration</h3>
+                    <p class="category-description">
+                        Real-time market information enables intelligent decision-making for 
+                        investments, hedging, and risk management activities.
+                    </p>
+                    <ul class="category-items">
+                        <li>Interest rate curves and yield data for investment decisions</li>
+                        <li>Foreign exchange rates with historical volatility analysis</li>
+                        <li>Credit ratings and counterparty risk assessments</li>
+                        <li>Commodity prices for hedging and exposure management</li>
+                        <li>Money market rates for short-term investment optimization</li>
+                        <li>Economic indicators and central bank policy updates</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Outflows -->
+        <section class="content-section">
+            <h2 class="section-heading">TMS Data Outflows: Creating Value Through Intelligence</h2>
+            
+            <p class="content-text">
+                <strong>Data outflows</strong> represent the value creation engine of treasury management systems. 
+                By processing, analyzing, and transforming input data, a TMS generates actionable insights, 
+                automated processes, and strategic intelligence that drives organizational performance.
+            </p>
+
+            <div class="data-categories">
+                <div class="category-card outflow">
+                    <div class="category-icon">📊</div>
+                    <h3 class="category-title">Analytics & Reporting</h3>
+                    <p class="category-description">
+                        Intelligent reporting transforms raw data into strategic insights, enabling 
+                        data-driven decision making and performance optimization.
+                    </p>
+                    <ul class="category-items">
+                        <li>Real-time cash position dashboards with drill-down capabilities</li>
+                        <li>Cash flow variance analysis and forecast accuracy metrics</li>
+                        <li>Liquidity risk reports with stress testing scenarios</li>
+                        <li>Bank fee analysis and relationship profitability assessment</li>
+                        <li>Currency exposure reports with hedging effectiveness analysis</li>
+                        <li>Regulatory compliance reporting with automated submission</li>
+                    </ul>
+                </div>
+
+                <div class="category-card outflow">
+                    <div class="category-icon">💸</div>
+                    <h3 class="category-title">Payment Processing</h3>
+                    <p class="category-description">
+                        Streamlined payment execution with intelligent routing, formatting, 
+                        and delivery across multiple banking relationships and payment networks.
+                    </p>
+                    <ul class="category-items">
+                        <li>Multi-format payment file generation (SWIFT, ACH, local formats)</li>
+                        <li>Intelligent payment routing based on cost and timing optimization</li>
+                        <li>Real-time payment status tracking and exception management</li>
+                        <li>Automated payment confirmations and acknowledgments</li>
+                        <li>Foreign exchange execution with best execution protocols</li>
+                        <li>Payment fraud detection and prevention mechanisms</li>
+                    </ul>
+                </div>
+
+                <div class="category-card outflow">
+                    <div class="category-icon">🧾</div>
+                    <h3 class="category-title">Accounting Integration</h3>
+                    <p class="category-description">
+                        Seamless integration with accounting systems through automated journal 
+                        entry creation and reconciliation processes.
+                    </p>
+                    <ul class="category-items">
+                        <li>Automated journal entry posting with proper accounting codes</li>
+                        <li>Bank reconciliation automation with exception handling</li>
+                        <li>Inter-company transaction processing and netting</li>
+                        <li>Month-end closing acceleration through automated workflows</li>
+                        <li>Audit trail maintenance with comprehensive documentation</li>
+                        <li>Financial statement preparation support and analysis</li>
+                    </ul>
+                </div>
+
+                <div class="category-card outflow">
+                    <div class="category-icon">📈</div>
+                    <h3 class="category-title">Trading & Investment</h3>
+                    <p class="category-description">
+                        Advanced trading capabilities with market connectivity, execution 
+                        management, and portfolio optimization features.
+                    </p>
+                    <ul class="category-items">
+                        <li>Money market investment automation with yield optimization</li>
+                        <li>FX hedging execution with portfolio rebalancing</li>
+                        <li>Trading platform connectivity and straight-through processing</li>
+                        <li>Investment policy compliance monitoring and enforcement</li>
+                        <li>Mark-to-market valuation and P&L calculation</li>
+                        <li>Counterparty risk management and exposure monitoring</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Collection Strategies -->
+        <section class="content-section">
+            <h2 class="section-heading">Strategic Data Collection & Optimization</h2>
+            
+            <p class="content-text">
+                Successful TMS implementation requires <em>strategic thinking</em> about data collection and integration. 
+                The goal is not to collect all available data, but to identify and prioritize data sources that 
+                provide <strong>maximum value</strong> for treasury operations and strategic decision-making.
+            </p>
+
+            <div class="best-practices">
+                <div class="practices-title">
+                    🎯 Data Strategy Best Practices
+                </div>
+                <div class="practices-grid">
+                    <div class="practice-item">
+                        <div class="practice-title">
+                            📋 Value-Based Prioritization
+                        </div>
+                        <div class="practice-description">
+                            Focus on data sources that directly impact treasury KPIs: cash visibility, 
+                            forecast accuracy, payment efficiency, and risk management. Avoid "nice-to-have" 
+                            data that doesn't drive actionable insights.
+                        </div>
+                    </div>
+                    
+                    <div class="practice-item">
+                        <div class="practice-title">
+                            ⚡ Real-Time vs. Batch Processing
+                        </div>
+                        <div class="practice-description">
+                            Distinguish between data requiring real-time processing (cash positions, 
+                            payment status) and information suitable for batch processing (historical 
+                            analysis, compliance reporting).
+                        </div>
+                    </div>
+                    
+                    <div class="practice-item">
+                        <div class="practice-title">
+                            🔗 API-First Integration
+                        </div>
+                        <div class="practice-description">
+                            Prioritize API-based connections over file-based integrations for better 
+                            reliability, security, and real-time data access. Maintain file-based 
+                            backups for critical processes.
+                        </div>
+                    </div>
+                    
+                    <div class="practice-item">
+                        <div class="practice-title">
+                            🛡️ Data Quality Controls
+                        </div>
+                        <div class="practice-description">
+                            Implement automated data validation, cleansing, and enrichment processes. 
+                            Poor data quality undermines all downstream analytics and decision-making 
+                            capabilities.
+                        </div>
+                    </div>
+                    
+                    <div class="practice-item">
+                        <div class="practice-title">
+                            📊 Incremental Enhancement
+                        </div>
+                        <div class="practice-description">
+                            Start with core data flows (bank connectivity, basic reporting) and 
+                            progressively add advanced integrations (market data, predictive analytics) 
+                            as operational maturity increases.
+                        </div>
+                    </div>
+                    
+                    <div class="practice-item">
+                        <div class="practice-title">
+                            🔒 Security & Compliance
+                        </div>
+                        <div class="practice-description">
+                            Ensure all data flows comply with regulatory requirements and security 
+                            standards. Implement encryption, access controls, and audit logging 
+                            for sensitive financial data.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="content-text">
+                The most successful TMS implementations follow a <strong>"crawl, walk, run" approach</strong> 
+                to data integration. This methodology ensures stable foundational data flows before 
+                adding complexity, resulting in higher adoption rates and faster time-to-value.
+            </p>
+        </section>
+
+        <!-- Implementation Insights -->
+        <section class="content-section">
+            <h2 class="section-heading">Implementation Success Factors</h2>
+            
+            <p class="content-text">
+                Effective TMS data flow implementation requires careful orchestration of technology, 
+                processes, and organizational change management. Organizations that approach data 
+                integration strategically achieve <strong>significantly better outcomes</strong> in 
+                terms of adoption, ROI, and operational efficiency.
+            </p>
+
+            <div class="stats-section">
+                <div class="stat-card">
+                    <span class="stat-number">12-18</span>
+                    <span class="stat-label">Months to Full Value Realization</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">40%</span>
+                    <span class="stat-label">Reduction in Data Processing Time</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">99.5%</span>
+                    <span class="stat-label">Data Accuracy Achievement</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">25%</span>
+                    <span class="stat-label">Increase in Treasury Productivity</span>
+                </div>
+            </div>
+
+            <p class="content-text">
+                The key to successful TMS data flow implementation lies in <em>understanding the interconnected 
+                nature</em> of treasury processes. Data flows are not isolated technical connections, but rather 
+                the foundation for transforming treasury from a transactional function to a strategic 
+                value creator within the organization.
+            </p>
+        </section>
+
+        <!-- Lead Capture -->
+        <section class="lead-capture">
+            <h3>Optimize Your TMS Data Strategy</h3>
+            <p>
+                Get our exclusive <strong>TMS Data Flow Assessment Framework</strong> plus expert consultation 
+                to design the optimal data integration strategy for your treasury operations.
+            </p>
+            <form class="cta-form" id="tmsDataForm">
+                <input 
+                    type="email" 
+                    class="email-input" 
+                    placeholder="Enter your business email address"
+                    required
+                    id="emailInput"
+                >
+                <button type="submit" class="cta-button">Get Assessment Framework + Consultation</button>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        // Reading progress bar
+        function updateReadingProgress() {
+            const container = document.querySelector('.page-container');
+            const progressBar = document.querySelector('.reading-progress');
+            
+            const containerTop = container.offsetTop;
+            const containerHeight = container.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrollTop = window.scrollY;
+            
+            const progress = Math.min(
+                Math.max((scrollTop - containerTop + windowHeight) / containerHeight, 0),
+                1
+            );
+            
+            progressBar.style.width = (progress * 100) + '%';
+        }
+
+        window.addEventListener('scroll', updateReadingProgress);
+
+        // Form submission
+        document.getElementById('tmsDataForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('emailInput').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid business email address.');
+                return;
+            }
+            
+            const button = this.querySelector('.cta-button');
+            const originalText = button.textContent;
+            button.textContent = 'Processing...';
+            button.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(() => {
+                alert('Success! Check your email for the TMS Data Flow Assessment Framework and consultation scheduling link.');
+                this.reset();
+                button.textContent = originalText;
+                button.disabled = false;
+                
+                // Analytics tracking for TMS data flow leads
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'conversion', {
+                        'send_to': 'AW-CONVERSION_ID/TMS_DATA_FLOWS',
+                        'value': 1.0,
+                        'currency': 'USD'
+                    });
+                }
+                
+                console.log('TMS Data Flow Lead:', { 
+                    email, 
+                    source: 'data-flows-of-a-tms',
+                    timestamp: new Date().toISOString() 
+                });
+            }, 2000);
+        });
+
+        // Enhanced scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Apply animations to key elements
+        document.querySelectorAll('.category-card, .stat-card, .tms-definition, .best-practices, .practice-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(40px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(el);
+        });
+
+        // Staggered animation for category cards
+        document.querySelectorAll('.category-card').forEach((card, index) => {
+            card.style.transitionDelay = `${index * 0.1}s`;
+        });
+
+        // Staggered animation for stat cards
+        document.querySelectorAll('.stat-card').forEach((card, index) => {
+            card.style.transitionDelay = `${index * 0.1}s`;
+        });
+
+        // Staggered animation for practice items
+        document.querySelectorAll('.practice-item').forEach((item, index) => {
+            item.style.transitionDelay = `${index * 0.1}s`;
+        });
+
+        // Flow item animations
+        document.querySelectorAll('.flow-item').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+            observer.observe(item);
+        });
+
+        // Category items animation
+        document.querySelectorAll('.category-items li').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-15px)';
+            item.style.transition = `opacity 0.5s ease ${index * 0.05}s, transform 0.5s ease ${index * 0.05}s`;
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Treasury – Independent Treasury Technology Consulting | Select Smarter</title>
+    <meta name="description" content="Independent treasury technology consulting. Access 50+ vendor demos, live workshops, and expert guidance. Helping finance teams select the right treasury tech faster with unbiased recommendations.">
+    <meta name="keywords" content="treasury technology, treasury management system, TMS selection, treasury consulting, cash management, vendor selection, treasury tools">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Real Treasury – Independent Treasury Technology Consulting">
+    <meta property="og:description" content="Independent treasury technology consulting. Access 50+ vendor demos and expert guidance to select the right treasury tech faster.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://realtreasury.com">
+    <link rel="canonical" href="https://realtreasury.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+            --white: #ffffff;
+            --light-bg: #f8f8f8;
+            --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            --gradient-light: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body {
+            font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: var(--dark-text);
+            line-height: 1.6;
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 24px; 
+        }
+
+        .section { 
+            padding: 80px 0; 
+        }
+
+        .section-lg { 
+            padding: 80px 0; 
+        }
+
+        /* Enhanced Frosted Glass Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 18px 36px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none !important;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            text-decoration: none !important;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            pointer-events: none;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%);
+            color: var(--white);
+            border: 1px solid rgba(199,125,255,0.4);
+            box-shadow: 
+                0 8px 32px rgba(114,22,244,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, rgba(143,71,246,0.95) 0%, rgba(157,78,221,0.95) 100%);
+            box-shadow: 
+                0 12px 40px rgba(114,22,244,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+
+        .btn-outline {
+            background: rgba(255,255,255,0.1);
+            color: var(--primary-purple);
+            border: 2px solid rgba(114,22,244,0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(114,22,244,0.15);
+            color: var(--primary-purple);
+            transform: translateY(-3px) scale(1.02);
+            border-color: rgba(114,22,244,0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+
+
+        /* Typography */
+        h1, h2, h3 { 
+            font-weight: 800; 
+            line-height: 1.2; 
+            color: var(--dark-text);
+        }
+
+        h1 { 
+            font-size: 4rem; 
+            margin-bottom: 24px;
+        }
+
+        h2 { 
+            font-size: 2.8rem; 
+            margin-bottom: 24px;
+        }
+
+        h3 { 
+            font-size: 1.6rem; 
+            margin-bottom: 16px;
+        }
+
+        p { 
+            font-size: 1.2rem; 
+            color: var(--gray-text); 
+            line-height: 1.7; 
+            margin-bottom: 16px;
+        }
+
+        .lead { 
+            font-size: 1.4rem; 
+            font-weight: 500;
+        }
+
+        /* Full Width Backgrounds */
+        .full-bg-section {
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            width: 100vw;
+        }
+
+        /* Hero Section - Reduced Padding */
+        .hero {
+            background: var(--gradient-light);
+            padding: 40px 0 60px;
+            position: relative;
+            overflow: visible; /* Changed to visible for floating effect */
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(114, 22, 244, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 80px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 32px;
+            line-height: 1.1;
+        }
+
+        .hero-text .lead { 
+            margin-bottom: 40px; 
+            max-width: 520px;
+            color: var(--gray-text);
+        }
+
+        .hero-buttons { 
+            display: flex; 
+            gap: 20px; 
+            flex-wrap: wrap;
+        }
+
+        .hero-image { 
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 
+                0 24px 48px rgba(114, 22, 244, 0.15),
+                0 0 0 1px rgba(199, 125, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .hero-image img:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 32px 64px rgba(114, 22, 244, 0.2),
+                0 0 0 1px rgba(199, 125, 255, 0.3);
+        }
+
+        /* Chart Title Overlay - Two-Line Glassmorphism Style */
+        .chart-title-overlay {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: 16px;
+            z-index: 3;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            width: auto;
+            min-width: 320px;
+            max-width: 90%;
+            text-align: center; /* Center the stacked text */
+            line-height: 1.3; /* Slightly increased line spacing */
+            transition: all 0.3s ease;
+        }
+
+        .chart-title-overlay h3 {
+            color: var(--white);
+            font-size: 1.5rem;
+            margin: 0 0 4px 0; /* Reduced spacing */
+            font-weight: 700;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            white-space: nowrap; /* Keep title on a single line */
+        }
+
+        .chart-title-overlay p {
+            color: var(--light-purple);
+            font-size: 1.1rem;
+            margin: 0;
+            opacity: 0.95;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        }
+
+
+        /* Stats Section - Enhanced */
+        .stats {
+            background: var(--white);
+            padding: 80px 0;
+            border-top: 1px solid rgba(199, 125, 255, 0.15);
+            border-bottom: 1px solid rgba(199, 125, 255, 0.15);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 60px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-4px);
+            background: rgba(114, 22, 244, 0.02);
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            white-space: normal;
+            font-weight: 800;
+            color: var(--primary-purple);
+            margin-bottom: 12px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+            display: block;
+        }
+
+        .stat-item p { 
+            color: var(--gray-text); 
+            font-weight: 600; 
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Features Section - Redesigned */
+        .features {
+            background: var(--light-bg);
+            padding: 80px 0;
+        }
+
+        .features-header { 
+            text-align: center; 
+            margin-bottom: 60px;
+        }
+
+        .features-header h2 { 
+            color: var(--dark-text); 
+            margin-bottom: 20px;
+        }
+
+        .features-header .lead { 
+            max-width: 650px; 
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.95) 0%, 
+                rgba(248,248,248,0.98) 50%, 
+                rgba(255,255,255,0.95) 100%);
+            backdrop-filter: blur(25px) saturate(130%);
+            -webkit-backdrop-filter: blur(25px) saturate(130%);
+            padding: 48px 40px;
+            border-radius: 24px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            box-shadow: 
+                0 12px 40px rgba(114,22,244,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .feature-card:hover, .feature-card:focus {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(114, 22, 244, 0.25),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+            border-color: rgba(199,125,255,0.4);
+            text-decoration: none;
+            backdrop-filter: blur(30px) saturate(140%);
+            -webkit-backdrop-filter: blur(30px) saturate(140%);
+        }
+
+        /* Modern Feature Icons */
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+        }
+
+        /* Custom SVG Icons */
+        .icon-search, .icon-workshop, .icon-phone {
+            width: 36px;
+            height: 36px;
+            fill: white;
+        }
+        
+        .feature-card h3 { 
+            color: var(--dark-text); 
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p { 
+            margin: 0; 
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .feature-subtitle {
+            font-size: 0.9rem;
+            color: var(--primary-purple);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        /* Team Section Styles (from team page) */
+        .team {
+            background: var(--white);
+            padding: 80px 0;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 60px;
+            margin-top: 60px; /* Add space from header */
+        }
+
+        .team-card {
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.95) 0%, 
+                rgba(248,248,248,0.98) 50%, 
+                rgba(255,255,255,0.95) 100%);
+            backdrop-filter: blur(25px) saturate(130%);
+            -webkit-backdrop-filter: blur(25px) saturate(130%);
+            padding: 48px 40px;
+            border-radius: 24px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            box-shadow: 
+                0 12px 40px rgba(114,22,244,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .team-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .team-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(114, 22, 244, 0.25),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+            border-color: rgba(199,125,255,0.4);
+            backdrop-filter: blur(30px) saturate(140%);
+            -webkit-backdrop-filter: blur(30px) saturate(140%);
+        }
+
+        .team-image {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid rgba(199, 125, 255, 0.2);
+            box-shadow: 0 8px 24px rgba(114, 22, 244, 0.15);
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-image:hover {
+            border-color: rgba(199, 125, 255, 0.4);
+            box-shadow: 0 12px 32px rgba(114, 22, 244, 0.25);
+            transform: scale(1.05);
+        }
+
+        .team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            border-radius: 50%;
+            background-color: #f8f8f8;
+        }
+        
+        /* Specific fix for Tracey's PNG image */
+        .team-image img[src*="Tracey-Headshot-Website.png"] {
+            object-fit: cover;
+            object-position: center 20%;
+            transform: scale(1.2);
+            filter: contrast(1.05);
+        }
+
+        .team-role {
+            font-size: 1rem;
+            color: var(--primary-purple);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .team-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 24px;
+        }
+
+        .team-bio {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--gray-text);
+            margin-bottom: 32px;
+        }
+
+        .team-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            margin-top: 24px;
+        }
+
+        .contact-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray-text);
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(114, 22, 244, 0.05);
+            border: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .contact-item:hover {
+            color: var(--primary-purple);
+            background: rgba(114, 22, 244, 0.1);
+            border-color: rgba(199, 125, 255, 0.4);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .contact-item svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .linkedin-btn {
+            background: #0077b5 !important;
+            color: white !important;
+            border-color: #0077b5 !important;
+        }
+
+        .linkedin-btn:hover {
+            background: #005885 !important;
+            color: white !important;
+            border-color: #005885 !important;
+        }
+
+
+        /* Testimonials - Frosted Glass Effect */
+        .testimonials {
+            background: linear-gradient(135deg, 
+                rgba(114, 22, 244, 0.15) 0%, 
+                rgba(143, 71, 246, 0.12) 50%,
+                rgba(199, 125, 255, 0.1) 100%);
+            backdrop-filter: blur(25px) saturate(120%);
+            -webkit-backdrop-filter: blur(25px) saturate(120%);
+            padding: 80px 0;
+            color: var(--dark-text);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid rgba(199, 125, 255, 0.2);
+            border-bottom: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .testimonials::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .testimonial-card { 
+            max-width: 900px; 
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.8) 0%, 
+                rgba(248, 248, 248, 0.9) 50%,
+                rgba(255, 255, 255, 0.8) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            padding: 48px 40px;
+            border-radius: 24px;
+            border: 2px solid rgba(199, 125, 255, 0.25);
+            box-shadow: 
+                0 12px 40px rgba(114, 22, 244, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .testimonial-quote {
+            font-size: 1.8rem;
+            font-style: italic;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+
+        .testimonial-author { 
+            font-weight: 700; 
+            font-size: 1.2rem;
+            color: var(--primary-purple);
+        }
+
+        .testimonial-role { 
+            opacity: 0.8; 
+            margin-top: 8px;
+            font-size: 1rem;
+            color: var(--gray-text);
+        }
+
+        /* CTA Section - Enhanced */
+        .cta { 
+            background: var(--light-bg); 
+            padding: 120px 0; 
+            text-align: center;
+        }
+
+        .cta-content { 
+            max-width: 700px; 
+            margin: 0 auto;
+        }
+
+        .cta h2 { 
+            margin-bottom: 24px;
+        }
+
+        .cta .lead { 
+            margin-bottom: 48px;
+        }
+
+            background: rgba(114, 22, 244, 0.06);
+            outline: 2px dashed rgba(114, 22, 244, 0.3);
+        }
+
+            background: rgba(114, 22, 244, 0.1);
+            outline: 2px solid rgba(114, 22, 244, 0.6);
+            box-shadow: 0 0 0 4px rgba(114, 22, 244, 0.1);
+        }
+
+
+        /* Enhanced Creative Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes iconSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Hero Section */
+        .hero-image {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 
+                0 24px 48px rgba(114, 22, 244, 0.15),
+                0 0 0 1px rgba(199, 125, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .hero-image img:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 40px 80px rgba(114, 22, 244, 0.25),
+                0 0 0 1px rgba(199, 125, 255, 0.4);
+        }
+
+        /* Enhanced Feature Icons with Hover Animation */
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .feature-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.4);
+        }
+
+        .feature-card:hover .feature-icon svg {
+            animation: iconSpin 0.6s ease-in-out;
+        }
+
+        /* Enhanced Stats with Stagger Animation */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 60px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-item:hover {
+            transform: translateY(-8px) scale(1.05);
+            background: linear-gradient(135deg, 
+                rgba(114, 22, 244, 0.05) 0%, 
+                rgba(143, 71, 246, 0.08) 100%);
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(114, 22, 244, 0.15);
+        }
+
+        /* Enhanced CTA Section */
+        .cta {
+            background: var(--light-bg);
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(114, 22, 244, 0.03) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Enhanced Button Interactions */
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Testimonial Enhanced Effects */
+        .testimonial-card {
+            transition: all 0.4s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 20px 50px rgba(114, 22, 244, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 1024px) {
+            .container { 
+                max-width: 95vw; 
+                padding: 0 20px;
+            }
+            
+            .hero-content, .about-content {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container { 
+                padding: 0 16px; 
+            }
+            
+            h1 { 
+                font-size: 2.8rem; 
+            }
+            
+            h2 { 
+                font-size: 2.2rem; 
+            }
+            
+            .lead {
+                font-size: 1.2rem;
+            }
+            
+            p {
+                font-size: 1.1rem;
+            }
+            
+            .hero { 
+                padding: 30px 0 40px; 
+            }
+            
+            .hero-content { 
+                text-align: center; 
+                gap: 50px;
+            }
+            
+            .hero-buttons { 
+                justify-content: center; 
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features-grid { 
+                grid-template-columns: 1fr; 
+                gap: 30px;
+            }
+            
+            .stats-grid { 
+                grid-template-columns: repeat(2, 1fr); 
+                gap: 40px; 
+            }
+            
+            .btn { 
+                padding: 16px 28px; 
+                font-size: 0.95rem;
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .testimonial-quote { 
+                font-size: 1.4rem; 
+            }
+            
+                bottom: 20px; 
+                right: 20px; 
+                padding: 14px 18px; 
+                font-size: 0.8rem; 
+            }
+            
+                bottom: 85px; 
+                left: 20px; 
+                padding: 8px 14px; 
+                font-size: 0.75rem; 
+            }
+            
+            .feature-card {
+                padding: 36px 28px;
+            }
+
+            .team-card {
+                padding: 36px 28px;
+            }
+
+            .team-image {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+            
+            .section-lg {
+                padding: 60px 0;
+            }
+            
+             .chart-title-overlay {
+                padding: 8px 14px;
+                top: -10px;
+                line-height: 1.3;
+            }
+
+            .chart-title-overlay h3 {
+                font-size: 1.1rem;
+                white-space: nowrap;
+            }
+
+            .chart-title-overlay p {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { 
+                font-size: 2.2rem; 
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .feature-card, .team-card { 
+                padding: 32px 24px; 
+            }
+
+            .team-image {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .hero-buttons { 
+                width: 100%;
+            }
+            
+            .btn { 
+                width: 100%;
+                max-width: none;
+            }
+            
+                bottom: 15px; 
+                right: 15px; 
+                padding: 12px 16px; 
+                font-size: 0.75rem; 
+                border-radius: 40px; 
+            }
+            
+                display: none; 
+            }
+            
+                font-size: 0.7rem; 
+                padding: 6px 10px;
+                bottom: 80px;
+                left: 15px;
+            }
+            
+                min-height: 44px; 
+                display: flex; 
+                align-items: center; 
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero full-bg-section section-lg">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Real Treasury,<br>Real Results</h1>
+                    <p class="lead">Helping companies select and connect to the right treasury technology – fast, unbiased, and vendor-smart.</p>
+                    <div class="hero-buttons">
+                        <a href="#openVideoModal" class="btn btn-primary">Explore Vendor Demos</a>
+                        <a href="#meet-the-team" class="btn btn-outline">Meet Our Team</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="chart-title-overlay">
+                        <h3>The Treasury Tech Marketplace</h3>
+                        <p>North American Vendors</p>
+                    </div>
+                    <div class="image-editor">
+                        <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/TMS-Marketplace-US-03-2025-no-logo-no-title.png" alt="Treasury Technology Dashboard">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats full-bg-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>4-6 Weeks</h3>
+                    <p>Average Selection Time</p>
+                </div>
+                <div class="stat-item">
+                    <h3>10x</h3>
+                    <p>Faster RFP Process</p>
+                </div>
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>Independent & Unbiased</p>
+                </div>
+                <div class="stat-item">
+                    <h3>50+</h3>
+                    <p>Enterprise Clients</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features full-bg-section">
+        <div class="container">
+            <div class="features-header">
+                <h2>What Makes Real Treasury Different?</h2>
+                <p class="lead">We're treasury professionals who built the tools we wished existed for selection. No vendor bias, just better decisions.</p>
+            </div>
+            <div class="features-grid">
+                <!-- Treasury Tech Stack / Demo Library -->
+                <a href="#openVideoModal" class="feature-card" tabindex="0">
+                    <div class="feature-icon">
+                        <svg class="icon-search" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </div>
+                    <div class="feature-subtitle">Demo Library</div>
+                    <h3>Treasury Tech Stack</h3>
+                    <p>Browse our interactive vendor demo library with powerful filters and 5-minute demo videos. Find your best-fit treasury tech, instantly.</p>
+                </a>
+
+                <!-- Live Selection Workshop -->
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg class="icon-workshop" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                        </svg>
+                    </div>
+                    <div class="feature-subtitle">Group Sessions</div>
+                    <h3>Live Selection Workshops</h3>
+                    <p>Join a live, expert-led group workshop to align your team, cut through the vendor noise, and shortlist solutions—fast.</p>
+                </div>
+
+                <!-- 15-Minute Strategy Call -->
+                <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="feature-card" tabindex="0">
+                    <div class="feature-icon">
+                        <svg class="icon-phone" viewBox="0 0 24 24">
+                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                        </svg>
+                    </div>
+                    <div class="feature-subtitle">Free Consultation</div>
+                    <h3>15-Min Treasury Strategy Call</h3>
+                    <p>Schedule a free call with our experts. Learn the ERR NOT method—used by top treasury teams to make confident, unbiased tech decisions—and get actionable advice for your project.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team full-bg-section" id="meet-the-team">
+        <div class="container">
+             <div class="features-header">
+                <h2>Meet the Founders</h2>
+                <p class="lead">We're on your side of the table. Founded by treasury professionals, Real Treasury is built to support internal finance teams with selecting the best tools for your company with confidence.</p>
+            </div>
+            <div class="team-grid">
+                <!-- Tim's Bio -->
+                <div class="team-card">
+                    <div class="team-image">
+                        <div class="image-editor">
+                            <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tim-Schultz-website-headshot_046.jpg" alt="Tim - Co-Founder">
+                        </div>
+                    </div>
+                    <div class="team-role">Co-Founder & PRINCIPAL Consultant</div>
+                    <h3 class="team-name">Tim</h3>
+                    <p class="team-bio">Former treasury lead with 15+ years optimizing cash management and risk operations. Tim founded Real Treasury to democratize access to treasury technology insights and help teams make confident, informed decisions without vendor bias.</p>
+                    
+                    <div class="team-contact">
+                        <div class="contact-row">
+                            <a href="https://www.linkedin.com/in/schultzctp/" target="_blank" class="contact-item linkedin-btn">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                </svg>
+                                LinkedIn
+                            </a>
+                            <a href="mailto:tschultz@realtreasury.com" class="contact-item">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                </svg>
+                                tschultz@realtreasury.com
+                            </a>
+                        </div>
+                        <div class="contact-row">
+                            <div class="contact-item">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                                Tampa, FL
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tracey's Bio -->
+                <div class="team-card">
+                    <div class="team-image">
+                        <div class="image-editor">
+                            <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tracey-Headshot-Website.png" alt="Tracey - Co-Founder">
+                        </div>
+                    </div>
+                    <div class="team-role">Co-Founder & PRINCIPAL CONSULTANT</div>
+                    <h3 class="team-name">Tracey</h3>
+                    <p class="team-bio">Treasury operations expert specializing in system implementations and process optimization. Tracey leads client engagements and workshop facilitation, ensuring every treasury team gets the strategic support they need during technology transitions.</p>
+                    
+                    <div class="team-contact">
+                        <div class="contact-row">
+                            <a href="https://www.linkedin.com/in/traceyfergusonknight/" target="_blank" class="contact-item linkedin-btn">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                </svg>
+                                LinkedIn
+                            </a>
+                            <a href="mailto:tknight@realtreasury.com" class="contact-item">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                </svg>
+                                tknight@realtreasury.com
+                            </a>
+                        </div>
+                        <div class="contact-row">
+                            <div class="contact-item">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                                Dallas, TX
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="testimonials full-bg-section">
+        <div class="container">
+            <div class="testimonial-card">
+                <div class="testimonial-quote">
+                    "𝘈 𝘵𝘩𝘰𝘶𝘨𝘩𝘵𝘧𝘶𝘭, 𝘴𝘵𝘳𝘶𝘤𝘵𝘶𝘳𝘦𝘥 𝘱𝘳𝘰𝘤𝘦𝘴𝘴 𝘧𝘰𝘳 𝘴𝘦𝘭𝘦𝘤𝘵𝘪𝘯𝘨 𝘵𝘦𝘤𝘩𝘯𝘰𝘭𝘰𝘨𝘺..."
+                </div>
+                <div class="testimonial-author">Tony Vu</div>
+                <div class="testimonial-role">Treasurer, Broward Health</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta full-bg-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Treasury Tech Search?</h2>
+                <p class="lead">Access our FREE vendor demo library and start narrowing your shortlist in minutes, not months.</p>
+                <a href="#openVideoModal" class="btn btn-primary">Get Instant Access</a>
+            </div>
+        </div>
+    </section>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const modalButtons = document.querySelectorAll("a[href="#openVideoModal"]");
+    modalButtons.forEach(button => {
+        button.addEventListener("click", function(e) {
+            if (window !== window.parent) {
+                try {
+                    window.parent.postMessage({
+                        action: "openVideoModal",
+                        source: "treasury-homepage"
+                    }, "*");
+                    e.preventDefault();
+                } catch (err) {
+                    console.log("Could not post message to parent:", err);
+                }
+            }
+        });
+    });
+});
+</script>
+    <script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    if (window !== window.parent) {
+      window.parent.postMessage({ type: "setHeight", height }, "*");
+    }
+  }
+
+  window.addEventListener("DOMContentLoaded", sendHeight);
+  window.addEventListener("resize", sendHeight);
+  window.addEventListener("orientationchange", sendHeight);
+</script>
+
+</body>
+</html>

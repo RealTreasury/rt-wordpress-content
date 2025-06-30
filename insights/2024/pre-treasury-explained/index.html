@@ -1,1 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Navigate The Pre-Treasury Stage | Expert Treasury Services | Real Treasury</title>
+    <meta name="description" content="In the 'Pre-Treasury' stage? Real Treasury provides the expert services, strategy, and technology to guide your company from financial complexity to strategic control.">
+    <meta name="keywords" content="pre-treasury, fractional treasury, outsourced treasury, cash management, treasury consulting, startup finance, scale-up finance, TMS implementation">
+    <meta name="author" content="Real Treasury">
+    <link rel="canonical" href="https://www.realtreasury.com/pre-treasury-explained">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* ===============================================================
+         * Root Variables & Base Styles
+         * =============================================================== */
+        :root {
+            --primary-purple: #7216f4;
+            --dark-purple: #281345;
+            --light-gray: #f4f6fa;
+            --text-dark: #1a202c;
+            --text-light: #5a6474;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--white);
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 100px 0;
+        }
+
+        h1, h2, h3 {
+            font-weight: 800;
+            color: var(--dark-purple);
+            line-height: 1.2;
+            margin-top: 0;
+        }
+
+        h1 { font-size: 4rem; }
+        h2 { font-size: 3rem; text-align: center; }
+        h3 { font-size: 1.75rem; }
+
+        p {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--text-light);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            max-width: 700px;
+            margin: 1rem auto 4rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--primary-purple);
+            color: var(--white);
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(114, 22, 244, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 25px rgba(114, 22, 244, 0.3);
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===============================================================
+         * Hero Section
+         * =============================================================== */
+        .hero-section {
+            background-color: var(--light-gray);
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 150%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=3600');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.05;
+            transform: translateX(-50%) rotate(-4deg);
+        }
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+            position: relative;
+        }
+        .hero-text .subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+        }
+        .hero-image {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .hero-image img {
+            width: 100%;
+            display: block;
+        }
+
+        /* ===============================================================
+         * Problem Section
+         * =============================================================== */
+        .problem-section {
+            background: var(--white);
+        }
+        .problem-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 4rem;
+        }
+        .problem-card {
+            background: var(--light-gray);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .problem-card i {
+            font-size: 2.5rem;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+        .problem-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .problem-card p {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        /* ===============================================================
+         * Solution / How We Help Section
+         * =============================================================== */
+        .solution-section {
+            background: var(--light-gray);
+        }
+        .solution-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 50px;
+            align-items: flex-start;
+        }
+        .solution-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .tab-button {
+            padding: 20px;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            color: var(--text-dark);
+        }
+        .tab-button:hover, .tab-button.active {
+            background: var(--primary-purple);
+            color: var(--white);
+            border-color: var(--primary-purple);
+            transform: translateX(5px);
+        }
+        .tab-content-wrapper {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+        .tab-content {
+            display: none;
+            padding: 40px;
+            animation: fadeInContent 0.5s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-content ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 1.5rem;
+        }
+        .tab-content li {
+            padding-left: 30px;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .tab-content li::before {
+            content: '\f14a'; /* Phosphor check circle */
+            font-family: 'Phosphor Icons';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            color: var(--primary-purple);
+            font-weight: bold;
+        }
+        @keyframes fadeInContent {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===============================================================
+         * Lead Magnet / Playbook Section
+         * =============================================================== */
+        .playbook-section {
+            background: var(--dark-purple);
+            color: var(--white);
+        }
+        .playbook-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+        }
+        .playbook-section h2, .playbook-section h3, .playbook-section p {
+            color: var(--white);
+            text-align: left;
+        }
+        .playbook-section .cta-button {
+            background: var(--white);
+            color: var(--primary-purple);
+        }
+        .playbook-image img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+        }
+
+        /* ===============================================================
+         * Final CTA / Contact Form
+         * =============================================================== */
+        .contact-form-container {
+            background: var(--white);
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            max-width: 750px;
+            margin: 4rem auto 0;
+            border: 1px solid var(--border-color);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-row {
+            margin-bottom: 20px;
+        }
+        .form-row.full-width {
+            grid-column: 1 / -1;
+        }
+        .form-row label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--light-gray);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            border-color: var(--primary-purple);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(114, 22, 244, 0.1);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+        }
+
+        /* ===============================================================
+         * Responsive Design
+         * =============================================================== */
+        @media (max-width: 992px) {
+            h1 { font-size: 3rem; }
+            h2 { font-size: 2.5rem; }
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-text { order: 2; }
+            .hero-image { order: 1; margin-bottom: 40px; }
+            .hero-text .subtitle { margin: 1rem auto 2rem; }
+            .problem-cards { grid-template-columns: 1fr; }
+            .solution-wrapper { grid-template-columns: 1fr; }
+            .solution-tabs { flex-direction: row; overflow-x: auto; padding-bottom: 15px; }
+            .tab-button { flex-shrink: 0; }
+            .playbook-wrapper { grid-template-columns: 1fr; text-align: center; }
+            .playbook-image { order: 1; margin-bottom: 40px; }
+            .playbook-text { order: 2; }
+            .playbook-section h2, .playbook-section h3, .playbook-section p { text-align: center; }
+        }
+        @media (max-width: 768px) {
+            section { padding: 80px 0; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text fade-in">
+                        <h1>Navigate the 'Pre-Treasury' Stage with Confidence.</h1>
+                        <p class="subtitle">Your finance team is building the future, not fighting fires. Real Treasury delivers the expert strategy to guide you through the Pre-Treasury phase and build a strategic growth engine.</p>
+                        <a href="#contact" class="cta-button">Request a Free Assessment</a>
+                    </div>
+                    <div class="hero-image fade-in">
+                        <img src="https://images.unsplash.com/photo-1634952504883-53a6b482a7a4?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200" alt="Modern financial dashboard analytics">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem Section -->
+        <section class="problem-section">
+            <div class="container">
+                <h2 class="fade-in">The Challenges of the Pre-Treasury Stage</h2>
+                <p class="section-subtitle fade-in">As companies scale, they enter the "Pre-Treasury" phase—a critical stage where financial complexity outpaces internal expertise, leading to inefficiency and risk.</p>
+                <div class="problem-cards">
+                    <div class="problem-card fade-in" style="transition-delay: 0.1s;">
+                        <i class="ph-light ph-timer"></i>
+                        <h3>Manual Processes</h3>
+                        <p>Your team spends more time on manual reconciliations and payments than on strategic analysis.</p>
+                    </div>
+                    <div class="problem-card fade-in" style="transition-delay: 0.2s;">
+                        <i class="ph-light ph-graph-disconnect"></i>
+                        <h3>Disconnected Systems</h3>
+                        <p>A patchwork of bank portals and spreadsheets creates data silos and prevents a clear view of your cash position.</p>
+                    </div>
+                    <div class="problem-card fade-in" style="transition-delay: 0.3s;">
+                        <i class="ph-light ph-scales"></i>
+                        <h3>Undefined Strategy</h3>
+                        <p>Your cash is sitting idle or exposed to unnecessary risk due to a lack of a formal investment and hedging policy.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Section -->
+        <section id="solutions" class="solution-section">
+            <div class="container">
+                <h2 class="fade-in">Your Roadmap Out of Pre-Treasury</h2>
+                <p class="section-subtitle fade-in">We provide tailored treasury solutions that evolve with your business, from foundational setup to enterprise-level optimization.</p>
+                <div class="solution-wrapper fade-in">
+                    <div class="solution-tabs">
+                        <button class="tab-button active" data-tab="startup">For Startups</button>
+                        <button class="tab-button" data-tab="scaleup">For Scale-Ups</button>
+                        <button class="tab-button" data-tab="enterprise">For Enterprises</button>
+                    </div>
+                    <div class="tab-content-wrapper">
+                        <div id="startup" class="tab-content active">
+                            <h3>Building a Strong Foundation</h3>
+                            <p>Get the core treasury functions right from day one to ensure security and scalability.</p>
+                            <ul>
+                                <li>Bank account architecture & management</li>
+                                <li>Payment process implementation & controls</li>
+                                <li>Cash flow forecasting models</li>
+                                <li>Basic investment policy creation</li>
+                            </ul>
+                        </div>
+                        <div id="scaleup" class="tab-content">
+                            <h3>Engineering for Growth</h3>
+                            <p>Implement the systems and strategies needed to manage increasing complexity and volume.</p>
+                            <ul>
+                                <li>Treasury Management System (TMS) selection & implementation</li>
+                                <li>FX & interest rate risk management</li>
+                                <li>Debt & covenant compliance reporting</li>
+                                <li>Automated cash management & reporting</li>
+                            </ul>
+                        </div>
+                        <div id="enterprise" class="tab-content">
+                            <h3>Optimizing for Efficiency</h3>
+                            <p>Refine existing processes and leverage technology to unlock new levels of performance.</p>
+                            <ul>
+                                <li>TMS optimization & workflow automation</li>
+                                <li>Advanced financial risk modeling</li>
+                                <li>In-house banking & cash pooling structures</li>
+                                <li>Interim staffing & specialized project support</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Lead Magnet Section -->
+        <section class="playbook-section">
+            <div class="container">
+                <div class="playbook-wrapper">
+                    <div class="playbook-image fade-in">
+                        <img src="https://images.unsplash.com/photo-1542744095-291d1f67b221?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200" alt="Team collaborating around a table with documents">
+                    </div>
+                    <div class="playbook-text fade-in">
+                        <h2>Download The Pre-Treasury Playbook</h2>
+                        <p>Our comprehensive guide to navigating financial growth. Learn the key milestones, technology decisions, and strategic steps to build a world-class treasury function. A must-read for any scaling company.</p>
+                        <a href="#contact" class="cta-button">Get The Playbook</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Form Section -->
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <h2 class="fade-in">Evolve Your Treasury Function</h2>
+                <p class="section-subtitle fade-in">Take the first step out of the Pre-Treasury stage. Schedule a complimentary assessment with our specialists to map out your path to a world-class treasury function.</p>
+                <div class="contact-form-container fade-in">
+                    <form action="#" method="POST">
+                        <div class="form-grid">
+                            <div class="form-row">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" name="name" class="form-control" required>
+                            </div>
+                            <div class="form-row">
+                                <label for="company">Company Name</label>
+                                <input type="text" id="company" name="company" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-row full-width">
+                            <label for="email">Work Email</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="form-row full-width">
+                            <label for="help">How can we help?</label>
+                            <textarea id="help" name="help" class="form-control" rows="4"></textarea>
+                        </div>
+                        <div class="form-row full-width">
+                            <button type="submit" class="cta-button submit-btn">Schedule My Assessment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Tab Functionality ---
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                        } else {
+                            content.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // --- Fade-in on Scroll Animation ---
+            const faders = document.querySelectorAll('.fade-in');
+            const appearOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, appearOptions);
+
+            faders.forEach(fader => {
+                appearOnScroll.observe(fader);
+            });
+        });
+    </script>
+</body>
+</html>
 

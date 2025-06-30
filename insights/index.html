@@ -194,6 +194,7 @@
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 0.5s ease forwards;
@@ -512,9 +513,7 @@
                     card.className = 'insight-card';
                     card.style.animationDelay = `${index * 100}ms`;
                     card.innerHTML = `
-                        <a href="${post.link}" target="_blank" class="block">
-                            <img src="${imageUrl}" alt="${post.title.rendered}" class="card-image">
-                        </a>
+                        <img src="${imageUrl}" alt="${post.title.rendered}" class="card-image">
                         <div class="card-content">
                             <span class="card-category">${category}</span>
                             <h2 class="card-title">${post.title.rendered}</h2>
@@ -522,6 +521,11 @@
                             <a href="${post.link}" target="_blank" class="card-read-more">Read More &rarr;</a>
                         </div>
                     `;
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('a')) {
+                            window.open(post.link, '_blank');
+                        }
+                    });
                     insightsGrid.appendChild(card);
 
                     // DYNAMICALLY ADD SCHEMA FOR EACH ARTICLE

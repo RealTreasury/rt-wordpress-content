@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet Our Team - Real Treasury</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+            --white: #ffffff;
+            --light-bg: #f8f8f8;
+            --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            --gradient-light: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body {
+            font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: var(--dark-text);
+            line-height: 1.6;
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 24px; 
+        }
+
+        .section { 
+            padding: 80px 0; 
+        }
+
+        /* Enhanced Frosted Glass Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 18px 36px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none !important;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            pointer-events: none;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%);
+            color: var(--white);
+            border: 1px solid rgba(199,125,255,0.4);
+            box-shadow: 
+                0 8px 32px rgba(114,22,244,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, rgba(143,71,246,0.95) 0%, rgba(157,78,221,0.95) 100%);
+            box-shadow: 
+                0 12px 40px rgba(114,22,244,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            color: var(--white);
+        }
+
+        .btn-outline {
+            background: rgba(255,255,255,0.9);
+            color: var(--primary-purple);
+            border: 2px solid rgba(114,22,244,0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            text-transform: none;
+            letter-spacing: normal;
+            padding: 18px 36px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255,255,255,1);
+            color: var(--primary-purple);
+            transform: translateY(-3px) scale(1.02);
+            border-color: rgba(114,22,244,0.6);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 
+                0 12px 40px rgba(114,22,244,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        /* Contact/Chat CTA Button */
+        .btn-contact {
+            background: linear-gradient(135deg, rgba(76,175,80,0.9) 0%, rgba(67,160,71,0.9) 100%);
+            color: var(--white);
+            border: 1px solid rgba(76,175,80,0.4);
+            box-shadow: 
+                0 8px 32px rgba(76,175,80,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+
+        .btn-contact:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, rgba(67,160,71,0.95) 0%, rgba(56,142,60,0.95) 100%);
+            box-shadow: 
+                0 12px 40px rgba(76,175,80,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            color: var(--white);
+        }
+
+        /* Chat Button Specific Styling - Glassmorphism with Brand Colors */
+        .btn-chat {
+            background: linear-gradient(135deg, 
+                rgba(114, 22, 244, 0.15) 0%, 
+                rgba(143, 71, 246, 0.2) 100%);
+            color: var(--primary-purple);
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            box-shadow: 
+                0 8px 32px rgba(114, 22, 244, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -1px 0 rgba(114, 22, 244, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-chat:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, 
+                rgba(114, 22, 244, 0.25) 0%, 
+                rgba(143, 71, 246, 0.3) 100%);
+            border-color: rgba(199, 125, 255, 0.5);
+            backdrop-filter: blur(25px) saturate(140%);
+            -webkit-backdrop-filter: blur(25px) saturate(140%);
+            box-shadow: 
+                0 12px 40px rgba(114, 22, 244, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5),
+                inset 0 -1px 0 rgba(114, 22, 244, 0.15);
+            color: var(--primary-purple);
+        }
+
+        /* Modal Button from Homepage */
+        .open-video-modal {
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%) !important;
+            color: white !important;
+            padding: 15px 30px !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 12px rgba(114, 22, 244, 0.3) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            text-decoration: none !important;
+            display: inline-block !important;
+        }
+
+        .open-video-modal:hover {
+            background: linear-gradient(135deg, #8f47f6 0%, #9d4edd 100%) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 16px rgba(114, 22, 244, 0.4) !important;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        /* Typography */
+        h1, h2, h3 { 
+            font-weight: 800; 
+            line-height: 1.2; 
+            color: var(--dark-text);
+        }
+
+        h1 { 
+            font-size: 3.5rem; 
+            margin-bottom: 24px;
+        }
+
+        h2 { 
+            font-size: 2.8rem; 
+            margin-bottom: 24px;
+        }
+
+        h3 { 
+            font-size: 1.6rem; 
+            margin-bottom: 16px;
+        }
+
+        p { 
+            font-size: 1.2rem; 
+            color: var(--gray-text); 
+            line-height: 1.7; 
+            margin-bottom: 16px;
+        }
+
+        .lead { 
+            font-size: 1.4rem; 
+            font-weight: 500;
+        }
+
+        /* Hero Section - Enhanced */
+        .hero {
+            background: var(--gradient-light);
+            padding: 60px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(114, 22, 244, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 32px;
+            line-height: 1.1;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        /* Team Section */
+        .team {
+            background: var(--white);
+            padding: 80px 0;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 60px;
+            margin-bottom: 80px;
+        }
+
+        .team-card {
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.95) 0%, 
+                rgba(248,248,248,0.98) 50%, 
+                rgba(255,255,255,0.95) 100%);
+            backdrop-filter: blur(25px) saturate(130%);
+            -webkit-backdrop-filter: blur(25px) saturate(130%);
+            padding: 48px 40px;
+            border-radius: 24px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            box-shadow: 
+                0 12px 40px rgba(114,22,244,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .team-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .team-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 20px 60px rgba(114, 22, 244, 0.25),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+            border-color: rgba(199,125,255,0.4);
+            backdrop-filter: blur(30px) saturate(140%);
+            -webkit-backdrop-filter: blur(30px) saturate(140%);
+        }
+
+        .team-image {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid rgba(199, 125, 255, 0.2);
+            box-shadow: 0 8px 24px rgba(114, 22, 244, 0.15);
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-image:hover {
+            border-color: rgba(199, 125, 255, 0.4);
+            box-shadow: 0 12px 32px rgba(114, 22, 244, 0.25);
+            transform: scale(1.05);
+        }
+
+        .team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            border-radius: 50%;
+            background-color: #f8f8f8;
+        }
+
+        /* Specific fix for Tracey's PNG image */
+        .team-image img[src*="Tracey-Headshot-Website.png"] {
+            object-fit: cover;
+            object-position: center 20%;
+            transform: scale(1.2);
+            filter: contrast(1.05);
+        }
+
+        .team-role {
+            font-size: 1rem;
+            color: var(--primary-purple);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .team-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 24px;
+        }
+
+        .team-bio {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--gray-text);
+            margin-bottom: 32px;
+        }
+
+        /* Contact Information Styles */
+        .team-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            margin-top: 24px;
+        }
+
+        .contact-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray-text);
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(114, 22, 244, 0.05);
+            border: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .contact-item:hover {
+            color: var(--primary-purple);
+            background: rgba(114, 22, 244, 0.1);
+            border-color: rgba(199, 125, 255, 0.4);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .contact-item svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .linkedin-btn {
+            background: #0077b5 !important;
+            color: white !important;
+            border-color: #0077b5 !important;
+        }
+
+        .linkedin-btn:hover {
+            background: #005885 !important;
+            color: white !important;
+            border-color: #005885 !important;
+        }
+
+        /* Testimonial Section */
+        .testimonials {
+            background: linear-gradient(135deg, 
+                rgba(114, 22, 244, 0.08) 0%, 
+                rgba(143, 71, 246, 0.06) 50%,
+                rgba(199, 125, 255, 0.05) 100%);
+            backdrop-filter: blur(25px) saturate(120%);
+            -webkit-backdrop-filter: blur(25px) saturate(120%);
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-card { 
+            max-width: 900px; 
+            margin: 0 auto;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.9) 0%, 
+                rgba(248, 248, 248, 0.95) 50%,
+                rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            padding: 48px 40px;
+            border-radius: 24px;
+            border: 2px solid rgba(199, 125, 255, 0.25);
+            box-shadow: 
+                0 12px 40px rgba(114, 22, 244, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple) 0%, var(--secondary-purple) 50%, var(--light-purple) 100%);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 20px 50px rgba(114, 22, 244, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .testimonial-quote {
+            font-size: 1.6rem;
+            font-style: italic;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+
+        .testimonial-author { 
+            font-weight: 700; 
+            font-size: 1.2rem;
+            color: var(--primary-purple);
+        }
+
+        .testimonial-role { 
+            opacity: 0.8; 
+            margin-top: 8px;
+            font-size: 1rem;
+            color: var(--gray-text);
+        }
+
+        /* CTA Section */
+        .cta { 
+            background: var(--light-bg); 
+            padding: 80px 0; 
+            text-align: center;
+        }
+
+        .cta-content { 
+            max-width: 700px; 
+            margin: 0 auto;
+        }
+
+        .cta h2 { 
+            margin-bottom: 24px;
+        }
+
+        .cta .lead { 
+            margin-bottom: 40px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 1024px) {
+            .container { 
+                max-width: 95vw; 
+                padding: 0 20px;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .contact-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container { 
+                padding: 0 16px; 
+            }
+            
+            h1 { 
+                font-size: 2.8rem; 
+            }
+            
+            h2 { 
+                font-size: 2.2rem; 
+            }
+            
+            .lead {
+                font-size: 1.2rem;
+            }
+            
+            p {
+                font-size: 1.1rem;
+            }
+            
+            .hero { 
+                padding: 40px 0 60px; 
+            }
+            
+            .team-card {
+                padding: 36px 28px;
+            }
+            
+            .team-image {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .team-name {
+                font-size: 1.6rem;
+            }
+            
+            .testimonial-quote { 
+                font-size: 1.3rem; 
+            }
+            
+                bottom: 20px; 
+                right: 20px; 
+                padding: 14px 18px; 
+                font-size: 0.8rem; 
+            }
+            
+                bottom: 85px; 
+                left: 20px; 
+                padding: 8px 14px; 
+                font-size: 0.75rem; 
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .hero-buttons {
+                width: 100%;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { 
+                font-size: 2.2rem; 
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .team-card { 
+                padding: 32px 24px; 
+            }
+            
+            .team-image {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .btn { 
+                width: 100%;
+                max-width: none;
+                margin-bottom: 8px;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: none;
+            }
+            
+                bottom: 15px; 
+                right: 15px; 
+                padding: 12px 16px; 
+                font-size: 0.75rem; 
+                border-radius: 40px; 
+            }
+            
+                display: none; 
+            }
+            
+                font-size: 0.7rem; 
+                padding: 6px 10px;
+                bottom: 80px;
+                left: 15px;
+            }
+
+            .contact-item {
+                font-size: 0.85rem;
+                padding: 6px 10px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section - Enhanced with CTA -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Meet the Founders</h1>
+                <p class="lead">Treasury professionals who understand your challenges because we've been in your shoes.</p>
+                <div class="hero-buttons">
+                    <a href="#openVideoModal" class="btn btn-primary">Explore Treasury Tech Demos</a>
+                    <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="btn btn-outline">Schedule Strategy Call</a>
+                    <button onclick="openTawkChat()" class="btn btn-chat">Chat With Us Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team">
+        <div class="container">
+            <div class="team-grid">
+                <!-- Tim's Bio -->
+                <div class="team-card">
+                    <div class="team-image">
+                            <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tim-Schultz-website-headshot_046.jpg" alt="Tim - Co-Founder">
+                    </div>
+                    <div class="team-role">Co-Founder & PRINCIPAL Consultant</div>
+                    <h3 class="team-name">Tim</h3>
+                    <p class="team-bio">Former treasury lead with 15+ years optimizing cash management and risk operations. Tim founded Real Treasury to democratize access to treasury technology insights and help teams make confident, informed decisions without vendor bias.</p>
+                    
+                    <div class="team-contact">
+                        <div class="contact-row">
+                            <a href="https://www.linkedin.com/in/schultzctp/" target="_blank" class="contact-item linkedin-btn">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                </svg>
+                                LinkedIn
+                            </a>
+                            <a href="mailto:tschultz@realtreasury.com" class="contact-item">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                </svg>
+                                tschultz@realtreasury.com
+                            </a>
+                        </div>
+                        <div class="contact-row">
+                            <div class="contact-item">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                                Tampa, FL
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tracey's Bio -->
+                <div class="team-card">
+                    <div class="team-image">
+                            <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tracey-Headshot-Website.png" alt="Tracey - Co-Founder">
+                    </div>
+                    <div class="team-role">Co-Founder & PRINCIPAL CONSULTANT</div>
+                    <h3 class="team-name">Tracey</h3>
+                    <p class="team-bio">Treasury operations expert specializing in system implementations and process optimization. Tracey leads client engagements and workshop facilitation, ensuring every treasury team gets the strategic support they need during technology transitions.</p>
+                    
+                    <div class="team-contact">
+                        <div class="contact-row">
+                            <a href="https://www.linkedin.com/in/traceyfergusonknight/" target="_blank" class="contact-item linkedin-btn">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                </svg>
+                                LinkedIn
+                            </a>
+                            <a href="mailto:tknight@realtreasury.com" class="contact-item">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                </svg>
+                                tknight@realtreasury.com
+                            </a>
+                        </div>
+                        <div class="contact-row">
+                            <div class="contact-item">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                                Dallas, TX
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="testimonial-card">
+                <div class="testimonial-quote">"𝘈 𝘵𝘩𝘰𝘶𝘨𝘩𝘵𝘧𝘶𝘭, 𝘴𝘵𝘳𝘶𝘤𝘵𝘶𝘳𝘦𝘥 𝘱𝘳𝘰𝘤𝘦𝘴𝘴 𝘧𝘰𝘳 𝘴𝘦𝘭𝘦𝘤𝘵𝘪𝘯𝘨 𝘵𝘦𝘤𝘩𝘯𝘰𝘭𝘰𝘨𝘺…"</div>
+                <div class="testimonial-author">Tony Vu</div>
+                <div class="testimonial-role">Treasurer, Broward Health</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Work Together?</h2>
+                <p class="lead">Schedule a free 15-minute strategy call to discuss your treasury technology needs, or start a quick chat to get your questions answered.</p>
+                <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 32px;">
+                    <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="btn btn-primary">Schedule a Strategy Call</a>
+                    <button onclick="openTawkChat()" class="btn btn-chat">Quick Chat</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        window.openTawkChat = function() {
+            if (typeof Tawk_API !== "undefined" && Tawk_API.maximize) {
+                Tawk_API.maximize();
+            } else {
+                window.location.href = "mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry";
+            }
+        };
+    </script>
+
+<script>
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    const id = window.frameElement?.id || 'iframe-default';
+    window.parent.postMessage({ type: "setHeight", height: height, id: id }, "*");
+  }
+
+  window.addEventListener("load", sendHeight);
+  window.addEventListener("resize", sendHeight);
+</script>
+
+
+</body>
+</html>

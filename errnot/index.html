@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The ERR NOT™ Method - Real Treasury</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Brand Variables from WordPress CSS */
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: var(--dark-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Enhanced Frosted Glass Cards (from WordPress CSS) */
+        .glass-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 50%,
+                rgba(255, 255, 255, 0.95) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(114, 22, 244, 0.12),
+                0 0 0 1px rgba(199, 125, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 
+                0 16px 48px rgba(114, 22, 244, 0.2),
+                0 0 0 1px rgba(199, 125, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+            border-color: rgba(199, 125, 255, 0.4);
+            backdrop-filter: blur(25px) saturate(140%);
+            -webkit-backdrop-filter: blur(25px) saturate(140%);
+        }
+
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple) 0%, var(--secondary-purple) 50%, #9d4edd 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        /* Primary CTA Button - Video Modal (from WordPress CSS) */
+        .open-video-modal {
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%) !important;
+            color: white !important;
+            padding: 15px 30px !important;
+            border: none !important;
+            border-radius: 8px !important;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 12px rgba(114, 22, 244, 0.3) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            text-decoration: none !important;
+            display: inline-block !important;
+        }
+
+        .open-video-modal:hover {
+            background: linear-gradient(135deg, #8f47f6 0%, #9d4edd 100%) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 16px rgba(114, 22, 244, 0.4) !important;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        /* Secondary CTA Button */
+        .cta-secondary {
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: var(--primary-purple) !important;
+            border: 2px solid var(--primary-purple) !important;
+            padding: 15px 30px !important;
+            border-radius: 8px !important;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            text-decoration: none !important;
+            display: inline-block !important;
+        }
+
+        .cta-secondary:hover {
+            background: var(--primary-purple) !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 16px rgba(114, 22, 244, 0.3) !important;
+            text-decoration: none !important;
+        }
+
+        /* Hero Background */
+        .hero-bg {
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(114, 22, 244, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(199, 125, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(114, 22, 244, 0.08);
+            height: 100%;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--light-purple);
+            font-family: serif;
+        }
+
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 60px 0;
+            }
+            
+            .open-video-modal,
+            .cta-secondary {
+                padding: 14px 24px !important;
+                font-size: 0.9rem !important;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hero Section -->
+    <section class="hero-bg section-padding">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                The <span class="gradient-text">ERR NOT™</span> Method
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto">
+                Treasury's smarter, faster way to select technology—independent and repeatable.
+            </p>
+            
+            <!-- Simplified Hero CTAs - Just 2 clear options -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <button class="open-video-modal">
+                    🎥 Watch Vendor Demos
+                </button>
+                <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2" 
+                   target="_blank" 
+                   class="cta-secondary">
+                    📅 Book 15-Min Call
+                </a>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                     alt="ERR NOT Method Framework" 
+                     class="w-full rounded-2xl shadow-2xl border-4 border-white">
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Statement -->
+    <section class="bg-white section-padding">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="glass-card rounded-2xl p-8 md:p-12 relative">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-center">
+                    Why a Proven Selection Method <span class="gradient-text">Matters</span>
+                </h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    Outdated selection methods can lead to disjointed, lengthy processes, misaligned values with vendors, and unmet expectations. This often results in locked-in subscriptions that provide little to no value.
+                </p>
+                <p class="text-lg text-gray-600 mb-8">
+                    At Real Treasury, we've seen how the right technology can positively impact scalability, growth, and profitability. That's why we developed the <strong>ERR NOT™</strong> method—a proven selection process to help you select the ideal tools for your unique business needs and avoid costly mistakes.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Method Steps -->
+    <section class="bg-gray-50 section-padding">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-4">
+                The <span class="gradient-text">ERR NOT™</span> Method
+            </h2>
+            <p class="text-xl text-gray-600 text-center mb-16 max-w-3xl mx-auto">
+                Six proven steps to transform your technology selection process
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                <!-- Step 1: Education -->
+                <div class="glass-card rounded-2xl p-8 text-center relative">
+                    <div class="step-number">E</div>
+                    <h3 class="text-2xl font-bold mb-4">Education & Early Planning</h3>
+                    <ul class="text-left space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Build the business case and obtain buy-in from management
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Gain understanding of the marketplace and plan key process steps
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Account for all licensing, implementation, and ongoing costs
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step 2: Requirements -->
+                <div class="glass-card rounded-2xl p-8 text-center relative">
+                    <div class="step-number">R</div>
+                    <h3 class="text-2xl font-bold mb-4">Requirements Gathering</h3>
+                    <ul class="text-left space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Review and document your current state operations
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Determine and document all "must-have" requirements
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Rank and prioritize your top requirements to guide selection
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step 3: RFI/RFP -->
+                <div class="glass-card rounded-2xl p-8 text-center relative">
+                    <div class="step-number">R</div>
+                    <h3 class="text-2xl font-bold mb-4">RFI/RFP</h3>
+                    <ul class="text-left space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Develop a brief RFI focused on non-functional items
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Include vendor stability, market presence, and support
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Build a vendor shortlist based on pricing and initial demos
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step 4: Unique Demo -->
+                <div class="glass-card rounded-2xl p-8 text-center relative">
+                    <div class="step-number">N</div>
+                    <h3 class="text-2xl font-bold mb-4">uNique Demo Approach</h3>
+                    <ul class="text-left space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Create a custom demo script to deliver to all vendors
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Keep your unique requirements front and center
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Use the script to highlight product strengths and weaknesses
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step 5: Obvious Winner -->
+                <div class="glass-card rounded-2xl p-8 text-center relative">
+                    <div class="step-number">O</div>
+                    <h3 class="text-2xl font-bold mb-4">Obvious Winner</h3>
+                    <ul class="text-left space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Remain unbiased and don't get distracted by flashy software
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Use a scoring process to eliminate confusion after demos
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Allow the data to highlight the obvious winning solution
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step 6: Transformation -->
+                <div class="glass-card rounded-2xl p-8 text-center relative">
+                    <div class="step-number">T</div>
+                    <h3 class="text-2xl font-bold mb-4">Transformation</h3>
+                    <ul class="text-left space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Move to best practices to fully capitalize on new processes
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Manage project risks like data migration and change management
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 mr-2">•</span>
+                            Report on success metrics like ROI, time saved, and adoption
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof / Results -->
+    <section class="bg-white section-padding">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
+                Real <span class="gradient-text">Results</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+                <div class="testimonial-card">
+                    <p class="text-lg mb-6 italic">
+                        "The ERR NOT™ Method cut our selection process time by 40% and gave us complete confidence in our decision. We avoided a costly mistake and found a TMS that was a perfect fit. Real Treasury's independence was key."
+                    </p>
+                    <div class="font-bold text-purple-700">CFO, Global Manufacturing Firm</div>
+                    <div class="text-gray-600">$2.5B Revenue</div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="text-lg mb-6 italic">
+                        "Before this, our tech selection was a mess of conflicting opinions and vendor hype. ERR NOT™ gave us a clear, repeatable framework that got everyone aligned. It's now our standard for all future tech investments."
+                    </p>
+                    <div class="font-bold text-purple-700">Corporate Treasurer, Fortune 500 Retailer</div>
+                    <div class="text-gray-600">$15B+ Revenue</div>
+                </div>
+            </div>
+
+            <!-- Results Stats -->
+            <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl p-8 md:p-12 text-white text-center">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <div class="text-4xl font-bold mb-2">40%</div>
+                        <div class="text-purple-200">Faster Selection Process</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold mb-2">95%</div>
+                        <div class="text-purple-200">Client Satisfaction Rate</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold mb-2">$2.3M</div>
+                        <div class="text-purple-200">Average Implementation Savings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet the Experts -->
+    <section class="bg-gray-50 section-padding">
+        <div class="container mx-auto px-6 max-w-5xl">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
+                Meet Your <span class="gradient-text">Experts</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="text-center">
+                    <div class="w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden border-4 border-purple-600">
+                        <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tim-Schultz-website-headshot_046.jpg"
+                             alt="Tim - Co-Founder"
+                             class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Tim</h3>
+                    <p class="text-purple-600 font-semibold mb-4">Co-Founder & Principal Consultant</p>
+                    <p class="text-gray-600">
+                        Former treasury lead with 15+ years optimizing cash management and risk operations. Tim founded Real Treasury to democratize access to treasury technology insights and help teams make confident, informed decisions without vendor bias.
+                    </p>
+                    <div class="flex justify-center space-x-4 mt-4">
+                        <a href="https://www.linkedin.com/in/schultzctp/" target="_blank" class="text-purple-600 hover:text-purple-800">LinkedIn</a>
+                        <a href="mailto:tschultz@realtreasury.com" class="text-purple-600 hover:text-purple-800">Email</a>
+                        <span class="text-gray-500">Tampa, FL</span>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-40 h-40 mx-auto mb-6 rounded-full overflow-hidden border-4 border-purple-600">
+                        <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tracey-Headshot-Website.png"
+                             alt="Tracey - Co-Founder"
+                             class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Tracey</h3>
+                    <p class="text-purple-600 font-semibold mb-4">Co-Founder & Principal Consultant</p>
+                    <p class="text-gray-600">
+                        Treasury operations expert specializing in system implementations and process optimization. Tracey leads client engagements and workshop facilitation, ensuring every treasury team gets the strategic support they need during technology transitions.
+                    </p>
+                    <div class="flex justify-center space-x-4 mt-4">
+                        <a href="https://www.linkedin.com/in/traceyfergusonknight/" target="_blank" class="text-purple-600 hover:text-purple-800">LinkedIn</a>
+                        <a href="mailto:tknight@realtreasury.com" class="text-purple-600 hover:text-purple-800">Email</a>
+                        <span class="text-gray-500">Dallas, TX</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section - Three Clear Options -->
+    <section class="bg-gradient-to-r from-purple-50 to-purple-200 section-padding">
+        <div class="container mx-auto px-6 text-center text-gray-900">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                Ready to Apply the <span class="text-purple-700">ERR NOT™</span> Method?
+            </h2>
+            <p class="text-xl md:text-2xl mb-12 max-w-3xl mx-auto opacity-90">
+                Choose your next step to start making smarter treasury technology decisions
+            </p>
+            
+            <!-- Three Clear CTAs -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <!-- Option 1: Demo Access -->
+                <div class="bg-white rounded-2xl p-8 border border-purple-200 shadow-md">
+                    <div class="text-4xl mb-4">🎥</div>
+                    <h3 class="text-xl font-bold mb-4">Watch Vendor Demos</h3>
+                    <p class="text-purple-200 mb-6 text-sm">Access our library of 50+ treasury tech demos with filters and comparisons</p>
+                    <button class="open-video-modal w-full">
+                        Access Demo Library
+                    </button>
+                </div>
+
+                <!-- Option 2: Workshop -->
+                <div class="bg-white rounded-2xl p-8 border border-purple-200 shadow-md">
+                    <div class="text-4xl mb-4">👥</div>
+                    <h3 class="text-xl font-bold mb-4">Join Live Workshop</h3>
+                    <p class="text-purple-200 mb-6 text-sm">Group session to align your team and apply ERR NOT™ to your project</p>
+                    <a href="mailto:workshop@realtreasury.com?subject=Workshop Registration Interest" 
+                       class="open-video-modal w-full text-center block">
+                        Register for Workshop
+                    </a>
+                </div>
+
+                <!-- Option 3: 15-Min Call -->
+                <div class="bg-white rounded-2xl p-8 border border-purple-200 shadow-md">
+                    <div class="text-4xl mb-4">📞</div>
+                    <h3 class="text-xl font-bold mb-4">15-Minute Strategy Call</h3>
+                    <p class="text-purple-200 mb-6 text-sm">Free consultation to discuss your specific treasury tech selection needs</p>
+                    <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2" 
+                       target="_blank"
+                       class="open-video-modal w-full text-center block">
+                        Book Free Call
+                    </a>
+                </div>
+            </div>
+
+            <p class="text-purple-700 mt-8 text-sm">
+                🕒 All options are free • 📞 No sales pressure • 🎯 Immediate actionable insights
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Video Modal Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('ERR NOT page loaded - Setting up modal triggers');
+            
+            // Handle video modal button clicks
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('open-video-modal') || 
+                    e.target.closest('.open-video-modal')) {
+                    e.preventDefault();
+                    console.log('Video modal triggered');
+                    
+                    // Try to trigger the WordPress modal system
+                    if (window.parent && window.parent !== window) {
+                        // We're in an iframe, send message to parent
+                        window.parent.postMessage({ 
+                            action: 'openVideoModal',
+                            source: 'err-not-page'
+                        }, '*');
+                    } else {
+                        // We're in main window, look for modal
+                        const modalTrigger = document.querySelector('a[href="#openVideoModal"]');
+                        if (modalTrigger) {
+                            modalTrigger.click();
+                        } else {
+                            console.log('No modal system found');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Analytics tracking for CTAs
+        document.querySelectorAll('.open-video-modal, a[href*="book"], a[href*="mailto"]').forEach(button => {
+            button.addEventListener('click', function() {
+                console.log('CTA clicked:', this.textContent.trim());
+                // Add your analytics tracking code here
+            });
+        });
+    </script>
+<script>
+function sendHeight() {
+  const height = document.documentElement.scrollHeight;
+  const id = window.frameElement?.id || 'iframe-default';
+  window.parent.postMessage({ type: "setHeight", height, id }, "*");
+}
+window.addEventListener("load", sendHeight);
+window.addEventListener("resize", sendHeight);
+</script>
+
+
+</body>
+</html>

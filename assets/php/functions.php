@@ -1400,18 +1400,19 @@ function display_related_posts() {
 
         while ( $related->have_posts() ) {
             $related->the_post();
-
+            
             echo '<article class="related-post-item">';
             echo '<h3 class="related-post-title">';
             echo '<a href="' . esc_url( get_permalink() ) . '">' . get_the_title() . '</a>';
             echo '</h3>';
-
+            
+            // Get excerpt or generate one
             $excerpt = get_the_excerpt();
-            if ( empty( $excerpt ) ) {
-                $excerpt = wp_trim_words( get_the_content(), 20, '...' );
+            if (empty($excerpt)) {
+                $excerpt = wp_trim_words(get_the_content(), 20, '...');
             }
-
-            echo '<p class="related-post-excerpt">' . esc_html( $excerpt ) . '</p>';
+            
+            echo '<p class="related-post-excerpt">' . esc_html($excerpt) . '</p>';
             echo '<a href="' . esc_url( get_permalink() ) . '" class="related-post-link">Read More →</a>';
             echo '</article>';
         }
@@ -1426,4 +1427,16 @@ function display_related_posts() {
 // Hook it to display after post content
 add_action( 'astra_entry_after', 'display_related_posts', 25 );
 
+/**
+ * Enqueue shared stylesheet used by insight pages and related posts markup.
+ */
+function rt_enqueue_shared_styles() {
+    wp_enqueue_style(
+        'rt-shared-styles',
+        get_template_directory_uri() . '/assets/css/shared.css',
+        array(),
+        '1.0'
+    );
+}
+add_action( 'wp_enqueue_scripts', 'rt_enqueue_shared_styles' );
 ?>

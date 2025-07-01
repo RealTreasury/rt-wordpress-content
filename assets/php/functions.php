@@ -1401,13 +1401,6 @@ function custom_related_posts() {
     wp_reset_postdata();
 }
 
-// Hook the custom related posts to Astra
-function add_custom_related_posts() {
-    if (is_single()) {
-        add_action('astra_entry_after', 'custom_related_posts');
-    }
-}
-add_action('wp', 'add_custom_related_posts');
 // Remove default Astra post footer elements
 function remove_astra_post_footer_elements() {
     if (is_single()) {

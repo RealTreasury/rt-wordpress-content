@@ -19,6 +19,7 @@
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
+    <link rel="stylesheet" href="/assets/css/shared.css">
     <style>
         /* ===============================================================
          * Root Variables & Base Styles
@@ -79,23 +80,6 @@
             margin: 1rem auto 4rem;
         }
 
-        .cta-button {
-            display: inline-block;
-            background: var(--primary-purple);
-            color: var(--white);
-            padding: 16px 32px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 15px rgba(114, 22, 244, 0.2);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 25px rgba(114, 22, 244, 0.3);
-        }
 
         .fade-in {
             opacity: 0;
@@ -107,49 +91,6 @@
             transform: translateY(0);
         }
 
-        /* ===============================================================
-         * Hero Section
-         * =============================================================== */
-        .hero-section {
-            background-color: var(--light-gray);
-            padding: 120px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            width: 150%;
-            height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=3600');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.05;
-            transform: translateX(-50%) rotate(-4deg);
-        }
-        .hero-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-            gap: 60px;
-            position: relative;
-        }
-        .hero-text .subtitle {
-            font-size: 1.25rem;
-            margin-bottom: 2rem;
-        }
-        .hero-image {
-            background: var(--white);
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
-            overflow: hidden;
-        }
-        .hero-image img {
-            width: 100%;
-            display: block;
-        }
 
         /* ===============================================================
          * Problem Section
@@ -361,7 +302,7 @@
 <body>
     <main>
         <!-- Hero Section -->
-        <section class="hero-section">
+        <section class="insight-hero">
             <div class="container">
                 <div class="hero-content">
                     <div class="hero-text fade-in">

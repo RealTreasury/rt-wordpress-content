@@ -1416,5 +1416,5 @@ function display_related_posts() {
     wp_reset_postdata();
 }
 
-add_action( 'astra_entry_after', 'display_related_posts', 25 );
+// add_action( 'astra_entry_after', 'display_related_posts', 25 );
 ?>

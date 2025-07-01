@@ -1408,8 +1408,6 @@ function add_custom_related_posts() {
     }
 }
 add_action('wp', 'add_custom_related_posts');
-
-<?php
 // Remove default Astra post footer elements
 function remove_astra_post_footer_elements() {
     if (is_single()) {

@@ -1,1 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Tools Explained: Complete Guide to Treasury Management | RealTreasury</title>
+    <meta name="description" content="Master cash management with our comprehensive guide to treasury tools. Learn about cash flow optimization, liquidity management, and advanced treasury solutions that drive business growth.">
+    <meta name="keywords" content="cash tools, treasury management, cash flow, liquidity management, working capital, financial tools, treasury solutions">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Cash Tools Explained: Complete Treasury Management Guide">
+    <meta property="og:description" content="Discover powerful cash management tools that optimize liquidity, improve cash flow, and drive financial performance for modern businesses.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.realtreasury.com/cash-tools-explained">
+    <meta property="og:image" content="https://www.realtreasury.com/images/cash-tools-hero.jpg">
+    
+    <link rel="canonical" href="https://www.realtreasury.com/cash-tools-explained">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Import the existing glassmorphism styles */
+        :root {
+            --ast-global-color-2: #333333;
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 248, 0.98) 50%, rgba(255, 255, 255, 0.95) 100%);
+            --glass-border: rgba(199, 125, 255, 0.3);
+            --glass-shadow: 0 8px 32px rgba(114, 22, 244, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: 400;
+            color: var(--dark-text);
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 50%, #f0f0f0 100%);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            padding: 60px 0;
+        }
+
+        /* Glassmorphism Card Component */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--glass-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple) 0%, var(--secondary-purple) 50%, #9d4edd 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 0;
+            right: 0;
+            height: 30%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+            pointer-events: none;
+            border-radius: 0 0 50% 50%;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 16px 48px rgba(114, 22, 244, 0.2), 0 0 0 1px rgba(199, 125, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border-color: rgba(199, 125, 255, 0.4);
+            backdrop-filter: blur(25px) saturate(140%);
+            -webkit-backdrop-filter: blur(25px) saturate(140%);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.05"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.03"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            font-weight: 400;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 12px;
+            padding: 16px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cta-button:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Grid Layouts */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        /* Tool Card Styling */
+        .tool-card {
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-card h3 {
+            color: var(--primary-purple);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .tool-card p {
+            color: var(--gray-text);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .tool-features {
+            list-style: none;
+            position: relative;
+            z-index: 3;
+        }
+
+        .tool-features li {
+            padding: 0.5rem 0;
+            color: var(--dark-text);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .tool-features li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary-purple);
+            font-weight: bold;
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.25rem;
+            color: var(--gray-text);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: var(--primary-purple);
+            color: white;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Lead Generation Form */
+        .lead-form {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--glass-shadow);
+            padding: 3rem;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lead-form::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple) 0%, var(--secondary-purple) 50%, #9d4edd 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 248, 248, 0.95) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--secondary-purple);
+            outline: none;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 0 0 3px rgba(139, 92, 246, 0.1), 0 4px 12px rgba(139, 92, 246, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--secondary-purple), var(--primary-purple));
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            /* Tablet: Slightly larger cards for better readability */
+            .tools-grid[style*="grid-template-columns: 1fr 1fr"] {
+                max-width: 1000px !important;
+                gap: 1.5rem !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .section {
+                padding: 40px 0;
+            }
+
+            /* Mobile: Stack the 4 core functions vertically */
+            .tools-grid[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+                grid-template-rows: auto !important;
+                gap: 1.5rem !important;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .glass-card {
+                padding: 1.5rem;
+            }
+
+            .lead-form {
+                padding: 2rem;
+            }
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* FAQ Accordion */
+        .faq-item {
+            margin-bottom: 1rem;
+        }
+
+        .faq-question {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--dark-text);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .faq-question:hover {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: var(--secondary-purple);
+        }
+
+        .faq-question::after {
+            content: "+";
+            position: absolute;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-purple);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+            border-left: 1px solid var(--glass-border);
+            border-right: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .faq-answer.active {
+            max-height: 200px;
+            padding: 1.5rem;
+        }
+
+        /* Schema.org structured data for SEO */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Schema.org structured data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Cash Tools Explained: Complete Guide to Treasury Management",
+        "description": "Comprehensive guide to cash management tools, treasury solutions, and liquidity optimization for modern businesses.",
+        "author": {
+            "@type": "Organization",
+            "name": "RealTreasury"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "RealTreasury",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.realtreasury.com/logo.png"
+            }
+        },
+        "datePublished": "2025-01-01",
+        "dateModified": "2025-01-01",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://www.realtreasury.com/cash-tools-explained"
+        }
+    }
+    </script>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Cash Tools Explained</h1>
+            <p class="subtitle">Master the four essential functions every cash management system needs: Bank Connectivity, Basic Forecasting, Cash Visibility, and Transaction Management</p>
+            <a href="#get-started" class="cta-button">Get Your Free Treasury Analysis</a>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Are Cash Tools?</h2>
+                <p>The foundational category of treasury management systems designed for companies with simple cash structures and straightforward needs</p>
+            </div>
+            <div class="glass-card">
+                <h3>Essential Cash Management Foundation</h3>
+                <p>Cash Tools provide a single portal to view your bank account balances and transactions while creating basic forecasts. These solutions serve as the entry point into automated treasury management, offering the four core functions every business needs to gain control over their cash operations.</p>
+                <p>Perfect for organizations that need to move beyond spreadsheets and manual processes, Cash Tools deliver bank connectivity, forecasting capabilities, global cash visibility, and transaction management in one integrated platform. Companies requiring more advanced functionality like treasury payments, market data feeds, or derivatives management typically graduate to TMS-LITE or full Treasury & Risk Management Systems.</p>
+                <div style="background: rgba(114, 22, 244, 0.1); padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem; border-left: 4px solid var(--primary-purple);">
+                    <p style="margin: 0; font-weight: 500; color: var(--dark-text);"><strong>Key Insight:</strong> A product must have ALL four required functions to qualify as a complete Cash Tool. Missing any core function means it's either incomplete or belongs in a different category.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Cash Tools Requirements -->
+    <section class="section" style="background: #f8f8f8;">
+        <div class="container">
+            <div class="section-header">
+                <h2>The 4 Core Cash Tool Functions</h2>
+                <p>Every cash management system must include these essential capabilities to qualify as a complete Cash Tool solution</p>
+            </div>
+            <div class="tools-grid" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2rem; max-width: 900px; margin: 0 auto;">
+                <div class="glass-card tool-card floating">
+                    <h3>🔗 Bank Connectivity</h3>
+                    <p><strong>Required Function:</strong> Secure API and SFTP connections to your financial institutions for automated balance and transaction reporting from the previous day.</p>
+                    <ul class="tool-features">
+                        <li>Real-time API connections</li>
+                        <li>Secure SFTP file transfers</li>
+                        <li>Previous day transaction data</li>
+                        <li>Multi-bank account aggregation</li>
+                        <li>Automated data synchronization</li>
+                    </ul>
+                </div>
+                
+                <div class="glass-card tool-card floating" style="animation-delay: 0.5s;">
+                    <h3>📊 Basic Forecasting Tools</h3>
+                    <p><strong>Required Function:</strong> Manual forecast modeling capabilities with comprehensive variance analysis reporting to predict and track cash flow patterns.</p>
+                    <ul class="tool-features">
+                        <li>Manual forecast creation</li>
+                        <li>Variance analysis reporting</li>
+                        <li>Historical trend analysis</li>
+                        <li>Scenario planning tools</li>
+                        <li>Forecast accuracy tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="glass-card tool-card floating" style="animation-delay: 1s;">
+                    <h3>👁️ Cash Visibility</h3>
+                    <p><strong>Required Function:</strong> Complete global view of all cash balances across accounts, including investment positions for comprehensive liquidity oversight.</p>
+                    <ul class="tool-features">
+                        <li>Global cash position dashboard</li>
+                        <li>Investment portfolio visibility</li>
+                        <li>Multi-currency balance views</li>
+                        <li>Real-time position updates</li>
+                        <li>Consolidated reporting</li>
+                    </ul>
+                </div>
+                
+                <div class="glass-card tool-card floating" style="animation-delay: 1.5s;">
+                    <h3>🔍 Transaction Management</h3>
+                    <p><strong>Required Function:</strong> Comprehensive tools to search, sort, tag, and group bank transactions for enhanced tracking, organization, and reporting capabilities.</p>
+                    <ul class="tool-features">
+                        <li>Advanced search functionality</li>
+                        <li>Custom sorting options</li>
+                        <li>Transaction tagging system</li>
+                        <li>Category grouping tools</li>
+                        <li>Detailed reporting capabilities</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="glass-card" style="margin-top: 3rem; text-align: center;">
+                <h3 style="color: var(--primary-purple); margin-bottom: 1rem;">Cash Tools vs. Advanced Systems</h3>
+                <p style="font-size: 1.1rem; line-height: 1.7;">Cash Tools provide the foundation for treasury management with these four core functions. Companies requiring more advanced capabilities like treasury payments, market data feeds, or derivatives management would benefit from <strong>TMS-LITE</strong> or <strong>Treasury & Risk Management Systems (TRMS)</strong> solutions.</p>
+                <p style="margin-top: 1rem; font-style: italic; color: var(--gray-text);">Perfect for companies with simple cash structures and straightforward treasury needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Cash Tools Matter</h2>
+                <p>Transform your treasury function from cost center to profit driver with measurable business impact</p>
+            </div>
+            <div class="features-grid">
+                <div class="glass-card">
+                    <h3>💰 Improved Cash Flow</h3>
+                    <p>Optimize working capital cycles, accelerate collections, and strategically time payments to maintain healthy cash flow and reduce financing costs.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>📊 Enhanced Visibility</h3>
+                    <p>Gain real-time insights into cash positions, forecast accuracy, and treasury performance through comprehensive dashboards and analytics.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>🛡️ Risk Mitigation</h3>
+                    <p>Proactively identify and manage financial risks including currency exposure, interest rate fluctuations, and liquidity constraints.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>⚡ Operational Efficiency</h3>
+                    <p>Automate routine treasury tasks, reduce manual errors, and free up strategic resources for value-added activities and decision-making.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>🎯 Strategic Advantage</h3>
+                    <p>Transform treasury from a back-office function into a strategic business partner that drives growth and competitive advantage.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>📈 Better Returns</h3>
+                    <p>Maximize returns on idle cash through intelligent investment strategies while maintaining required liquidity buffers for operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section section">
+        <div class="container">
+            <div class="section-header">
+                <h2 style="color: white;">Proven Results</h2>
+                <p style="color: rgba(255,255,255,0.9);">See how businesses leverage cash tools to achieve measurable financial improvements</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>25%</h3>
+                    <p>Average improvement in cash conversion cycle</p>
+                </div>
+                <div class="stat-item">
+                    <h3>40%</h3>
+                    <p>Reduction in manual treasury processes</p>
+                </div>
+                <div class="stat-item">
+                    <h3>15%</h3>
+                    <p>Increase in investment returns on excess cash</p>
+                </div>
+                <div class="stat-item">
+                    <h3>99.8%</h3>
+                    <p>Forecast accuracy with advanced tools</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section" style="background: #f8f8f8;">
+        <div class="container">
+            <div class="section-header">
+                <h2>Frequently Asked Questions</h2>
+                <p>Get answers to common questions about implementing cash management tools</p>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    What's the difference between Cash Tools and TMS-LITE systems?
+                </div>
+                <div class="faq-answer">
+                    <p>Cash Tools include the four core functions: bank connectivity, basic forecasting, cash visibility, and transaction management. TMS-LITE systems include all Cash Tools functions plus cash positioning, market data feeds, and treasury payment capabilities.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Do I need all four functions to have a complete Cash Tool?
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, a product must have ALL four required functions to qualify as a complete Cash Tool: bank connectivity (API/SFTP), basic forecasting tools, cash visibility, and transaction search/sort/tag/group capabilities.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    How accurate are basic forecasting tools in Cash Tools?
+                </div>
+                <div class="faq-answer">
+                    <p>Basic forecasting tools in Cash Tools rely on manual modeling with variance analysis. While accuracy depends on user input quality, these tools typically achieve 80-90% accuracy for short-term forecasts when properly maintained.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFAQ(this)">
+                    Are Cash Tools suitable for companies with simple cash structures?
+                </div>
+                <div class="faq-answer">
+                    <p>Absolutely! Cash Tools are specifically designed for companies with simple cash structures and straightforward treasury needs. They provide essential functionality without the complexity of advanced treasury systems.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lead Generation Section -->
+    <section class="section" id="get-started">
+        <div class="container">
+            <div class="section-header">
+                <h2>Ready to Optimize Your Cash Management?</h2>
+                <p>Get a free treasury analysis and discover how cash tools can transform your financial operations</p>
+            </div>
+            
+            <form class="lead-form" id="treasuryForm">
+                <h3 style="text-align: center; margin-bottom: 2rem; color: var(--primary-purple);">Get Your Free Treasury Analysis</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name *</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name *</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Business Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="company">Company Name *</label>
+                        <input type="text" id="company" name="company" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="title">Job Title</label>
+                        <input type="text" id="title" name="title">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="companySize">Company Size</label>
+                    <select id="companySize" name="companySize">
+                        <option value="">Select company size</option>
+                        <option value="startup">Startup (1-10 employees)</option>
+                        <option value="small">Small Business (11-50 employees)</option>
+                        <option value="medium">Medium Business (51-200 employees)</option>
+                        <option value="large">Large Business (201-1000 employees)</option>
+                        <option value="enterprise">Enterprise (1000+ employees)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cashVolume">Monthly Cash Flow Volume</label>
+                    <select id="cashVolume" name="cashVolume">
+                        <option value="">Select monthly volume</option>
+                        <option value="under1m">Under $1M</option>
+                        <option value="1m-5m">$1M - $5M</option>
+                        <option value="5m-25m">$5M - $25M</option>
+                        <option value="25m-100m">$25M - $100M</option>
+                        <option value="over100m">Over $100M</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="challenges">Primary Treasury Challenges (Select all that apply)</label>
+                    <div style="margin-top: 0.5rem;">
+                        <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" name="challenges" value="forecasting" style="margin-right: 0.5rem; width: auto;">
+                            Cash flow forecasting accuracy
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" name="challenges" value="liquidity" style="margin-right: 0.5rem; width: auto;">
+                            Liquidity management across accounts
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" name="challenges" value="efficiency" style="margin-right: 0.5rem; width: auto;">
+                            Manual processes and efficiency
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" name="challenges" value="visibility" style="margin-right: 0.5rem; width: auto;">
+                            Real-time cash visibility
+                        </label>
+                        <label style="display: flex; align-items: center; margin-bottom: 0.5rem; font-weight: normal;">
+                            <input type="checkbox" name="challenges" value="returns" style="margin-right: 0.5rem; width: auto;">
+                            Maximizing returns on excess cash
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="timeline">Implementation Timeline</label>
+                    <select id="timeline" name="timeline">
+                        <option value="">Select timeline</option>
+                        <option value="immediate">Immediate (0-30 days)</option>
+                        <option value="short">Short-term (1-3 months)</option>
+                        <option value="medium">Medium-term (3-6 months)</option>
+                        <option value="long">Long-term (6+ months)</option>
+                        <option value="research">Research phase</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="submit-btn">Get My Free Treasury Analysis</button>
+                
+                <p style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: var(--gray-text);">
+                    By submitting this form, you agree to receive communications from RealTreasury about treasury solutions and best practices. We respect your privacy and will never share your information.
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        // FAQ Toggle Functionality
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const isActive = element.classList.contains('active');
+            
+            // Close all FAQs
+            document.querySelectorAll('.faq-question').forEach(q => {
+                q.classList.remove('active');
+                q.nextElementSibling.classList.remove('active');
+            });
+            
+            // Open clicked FAQ if it wasn't active
+            if (!isActive) {
+                element.classList.add('active');
+                answer.classList.add('active');
+            }
+        }
+
+        // Form Submission
+        document.getElementById('treasuryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {};
+            
+            // Handle regular form fields
+            for (let [key, value] of formData.entries()) {
+                if (key === 'challenges') {
+                    if (!data[key]) data[key] = [];
+                    data[key].push(value);
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Here you would typically send the data to your backend
+            console.log('Form submission data:', data);
+            
+            // Show success message
+            alert('Thank you! Your treasury analysis request has been submitted. Our team will contact you within 24 hours to schedule your free consultation.');
+            
+            // Reset form
+            this.reset();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading animation on form submit
+        document.getElementById('treasuryForm').addEventListener('submit', function() {
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+            
+            // Re-enable button after 3 seconds (simulate processing)
+            setTimeout(() => {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

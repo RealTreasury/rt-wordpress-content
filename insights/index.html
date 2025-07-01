@@ -505,7 +505,12 @@
                 };
 
                 posts.forEach((post, index) => {
-                    const imageUrl = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || `https://placehold.co/600x400/7216f4/FFFFFF?text=${post.title.rendered.split(' ')[0]}`;
+                    const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
+                    const imageUrl = featuredMedia?.source_url || `https://placehold.co/600x400/7216f4/FFFFFF?text=${post.title.rendered.split(' ')[0]}`;
+                    const sizes = featuredMedia?.media_details?.sizes;
+                    const srcset = sizes ? Object.values(sizes).map(size => `${size.source_url} ${size.width}w`).join(', ') : '';
+                    const width = featuredMedia?.media_details?.width || 600;
+                    const height = featuredMedia?.media_details?.height || 400;
                     const category = post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Uncategorized';
                     const excerpt = post.excerpt.rendered.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
 
@@ -513,7 +518,7 @@
                     card.className = 'insight-card';
                     card.style.animationDelay = `${index * 100}ms`;
                     card.innerHTML = `
-                        <img src="${imageUrl}" alt="${post.title.rendered}" class="card-image">
+                        <img src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" loading="lazy" alt="${post.title.rendered}" class="card-image">
                         <div class="card-content">
                             <span class="card-category">${category}</span>
                             <h2 class="card-title">${post.title.rendered}</h2>

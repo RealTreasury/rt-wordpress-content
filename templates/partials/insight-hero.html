@@ -1,0 +1,22 @@
+<% var cls = typeof containerClass === 'undefined' ? 'container' : containerClass; %>
+<% var heroContent = typeof heroContent === 'undefined' ? '' : heroContent; %>
+<% var cta = typeof cta === 'undefined' ? null : cta; %>
+<% var title = typeof title === 'undefined' ? '' : title; %>
+<% var subtitle = typeof subtitle === 'undefined' ? '' : subtitle; %>
+<section class="insight-hero">
+  <% if (cls === false) { %>
+    <% if (heroContent) { %>
+      <%- heroContent %>
+    <% } %>
+  <% } else { %>
+    <div class="<%= cls %>">
+      <% if (heroContent) { %>
+        <%- heroContent %>
+      <% } else { %>
+        <h1><%= title %></h1>
+        <% if (subtitle) { %><p class="subtitle"><%= subtitle %></p><% } %>
+        <% if (cta) { %><a href="<%= cta.href %>" class="cta-button"><%= cta.text %></a><% } %>
+      <% } %>
+    </div>
+  <% } %>
+</section>

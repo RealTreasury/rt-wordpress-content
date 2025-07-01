@@ -1972,3 +1972,20 @@ p {
 .related-post-link:hover {
     text-decoration: underline;
 }
+
+.related-posts-title {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.related-post-title {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+.related-post-excerpt {
+    color: var(--gray-text);
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+}

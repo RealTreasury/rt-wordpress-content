@@ -1360,10 +1360,10 @@ function remove_astra_post_footer_elements() {
 add_action('wp', 'remove_astra_post_footer_elements');
 
 /**
- * Display related posts with glassmorphism styling after single post content.
- * Updated version with modern glassmorphism design
+ * Display related posts with glassmorphism styling above the footer.
+ * Updated version with modern glassmorphism design positioned above footer
  */
-function display_related_posts() {
+function display_related_posts_above_footer() {
     if ( ! is_single() ) {
         return;
     }
@@ -1380,7 +1380,7 @@ function display_related_posts() {
     $related = new WP_Query(
         array(
             'post_type'      => 'post',
-            'posts_per_page' => 3, // Changed from 6 to 3 for better layout
+            'posts_per_page' => 3,
             'post__not_in'   => array( $post->ID ),
             'category__in'   => $category_ids,
             'orderby'        => 'rand',
@@ -1394,6 +1394,8 @@ function display_related_posts() {
     );
 
     if ( $related->have_posts() ) {
+        echo '<div class="related-posts-wrapper" style="background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 50%, #f0f0f0 100%); padding: 4rem 0; margin-top: 4rem;">';
+        echo '<div class="ast-container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">';
         echo '<section class="custom-related-posts">';
         echo '<h2 class="related-posts-title">Related Posts</h2>';
         echo '<div class="related-posts-grid">';
@@ -1419,13 +1421,15 @@ function display_related_posts() {
 
         echo '</div>';
         echo '</section>';
+        echo '</div>';
+        echo '</div>';
     }
 
     wp_reset_postdata();
 }
 
-// Hook it to display after post content
-add_action( 'astra_entry_after', 'display_related_posts', 25 );
+// Hook it to display above the footer
+add_action( 'get_footer', 'display_related_posts_above_footer', 5 );
 
 /**
  * Enqueue shared stylesheet used by insight pages and related posts markup.

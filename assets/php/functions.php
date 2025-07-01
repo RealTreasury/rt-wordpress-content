@@ -1327,3 +1327,17 @@ function add_bank_report_javascript() {
     </script>
     <?php
 }
+// Remove default Astra post footer elements
+function remove_astra_default_footer() {
+    if (is_single()) {
+        // Remove post meta
+        remove_action('astra_entry_after', 'astra_single_post_navigation_markup');
+        
+        // Remove author box if enabled
+        remove_action('astra_entry_after', 'astra_author_box_markup');
+        
+        // Remove related posts if Pro version
+        remove_action('astra_entry_after', 'astra_single_post_related_posts_markup');
+    }
+}
+add_action('wp', 'remove_astra_default_footer');

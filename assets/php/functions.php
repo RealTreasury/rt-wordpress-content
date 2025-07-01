@@ -1327,17 +1327,3 @@ function add_bank_report_javascript() {
     </script>
     <?php
 }
-
-/**
- * Enqueue shared stylesheet used by insight pages.
- */
-function rt_enqueue_shared_styles() {
-    wp_enqueue_style(
-        'rt-shared-styles',
-        get_template_directory_uri() . '/assets/css/shared.css',
-        array(),
-        '1.0'
-    );
-}
-add_action( 'wp_enqueue_scripts', 'rt_enqueue_shared_styles' );
-?>

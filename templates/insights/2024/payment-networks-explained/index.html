@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Networks Infrastructure Explained: Rails, Gateways & Access | RealTreasury</title>
+    <meta name="description" content="Deep dive into payment network infrastructure. Understand how payment rails work, gateway access, network requirements, and the technical architecture powering modern payments.">
+    <meta name="keywords" content="payment rails, payment network infrastructure, payment gateways, FedNow, Fedwire, ACH, SWIFT, Ethereum, payment architecture">
+    <meta name="author" content="RealTreasury">
+    <meta property="og:title" content="Payment Networks Infrastructure: How Payment Rails Really Work">
+    <meta property="og:description" content="Master the technical infrastructure of payment networks. Learn about rails, gateways, access requirements, and network architecture.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.realtreasury.com/payment-networks-explained">
+    <link rel="canonical" href="https://www.realtreasury.com/payment-networks-explained">
+    
+    <link rel="stylesheet" href="/assets/css/shared.css">
+    <style>
+        /* Include the glassmorphism CSS styles */
+        :root {
+            --ast-global-color-2: #333333;
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: 400;
+            color: #281345;
+            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+
+        /* Glass Card Styling */
+        .glass-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 50%,
+                rgba(255, 255, 255, 0.95) 100%);
+            
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-radius: 16px;
+            box-shadow: 
+                0 8px 32px rgba(114, 22, 244, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            
+            padding: 2.5rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 16px 48px rgba(114, 22, 244, 0.2),
+                0 0 0 1px rgba(199, 125, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #281345;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4, #8f47f6);
+            border-radius: 2px;
+        }
+
+        /* Infrastructure Diagram */
+        .infrastructure-diagram {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 3rem 0;
+            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.15);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .infrastructure-diagram::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
+        }
+
+        /* Network Categories Grid */
+        .network-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7216f4, #8f47f6);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(199, 125, 255, 0.4);
+            box-shadow: 0 12px 32px rgba(114, 22, 244, 0.2);
+        }
+
+        .category-card h3 {
+            color: #281345;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .network-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .network-badge {
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.1), rgba(143, 71, 246, 0.1));
+            color: #7216f4;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+        }
+
+
+
+        /* Access Requirements */
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .requirement-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .requirement-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #7216f4, #8f47f6);
+        }
+
+        .requirement-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Technical Specs Table */
+        .specs-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.15);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            margin: 3rem 0;
+        }
+
+        .specs-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .specs-table th {
+            background: linear-gradient(135deg, #7216f4, #8f47f6);
+            color: white;
+            padding: 1.5rem 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .specs-table td {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid rgba(199, 125, 255, 0.1);
+            text-align: center;
+        }
+
+        .specs-table tr:nth-child(even) {
+            background: rgba(199, 125, 255, 0.05);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            color: #ffffff;
+            text-align: center;
+        }
+
+
+        /* Lead Generation Form */
+        .lead-form {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(248, 248, 248, 0.98) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 3rem auto;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lead-form::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #281345;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8f47f6;
+            box-shadow: 0 0 0 3px rgba(143, 71, 246, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .network-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .glass-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <%- include('/partials/insight-hero.html', {
+        title: 'Payment Network Infrastructure',
+        subtitle: 'Understand the technical architecture, access requirements, and infrastructure that powers modern payment rails. From gateways to network protocols.'
+    }) %>
+
+    <!-- Payment Definition -->
+    <section class="content-section">
+        <div class="container">
+            <div class="glass-card fade-in-up">
+                <h2>What is a Payment Network?</h2>
+                <p>A <strong>payment</strong> represents a transfer of value from one party to another in exchange for goods, services, or to fulfill financial obligations. <strong>Payment networks</strong> are the infrastructure that enables these two parties to communicate and transfer value securely.</p>
+                
+                <p style="margin-top: 1.5rem;">Consider your phone plan with your carrier. Phone companies build cell towers and maintain an infrastructure of interconnected transmitters and receivers that allow us to make a phone call to another person. Just as there are many different phone carriers, there are numerous different payment networks.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Infrastructure Diagram -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">Payment Network Architecture</h2>
+            <div class="infrastructure-diagram">
+                <div style="text-align: center;">
+                    <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/07/Payment-Network-GIF.gif"
+                         srcset="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/07/Payment-Network-GIF.gif 600w, https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/07/Payment-Network-GIF.gif 1200w"
+                         width="1200" height="675" loading="lazy"
+                         alt="Payment Network Architecture Flow"
+                         style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 8px 24px rgba(114, 22, 244, 0.15);">
+                </div>
+                <p style="text-align: center; margin-top: 2rem; color: #7e7e7e; font-style: italic;">Direct access to payment networks can be costly. Financial service providers (Gateways) facilitate access by allowing businesses to connect through their infrastructure.</p>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Network Categories -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">Three Categories of Payment Networks</h2>
+            
+            <!-- Network Categories Visual -->
+            <div style="text-align: center; margin: 3rem 0;">
+                <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/07/Payment-Networks.png"
+                     srcset="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/07/Payment-Networks.png 600w, https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/07/Payment-Networks.png 1200w"
+                     width="1200" height="675" loading="lazy"
+                     alt="Payment Network Categories - Digital, Peer-to-Peer, and Card Networks"
+                     style="max-width: 100%; height: auto; border-radius: 16px; box-shadow: 0 8px 24px rgba(114, 22, 244, 0.15); border: 2px solid rgba(199, 125, 255, 0.2);">
+            </div>
+            
+            <div class="network-categories">
+                <div class="category-card">
+                    <h3>🏢 Digital Payment Networks</h3>
+                    <p>Used when commercial businesses participate in payments. While consumers can access these networks, they're optimized for business transactions.</p>
+                    <div class="network-list">
+                        <span class="network-badge">FedNow</span>
+                        <span class="network-badge">Fedwire</span>
+                        <span class="network-badge">FedACH</span>
+                        <span class="network-badge">Ethereum</span>
+                        <span class="network-badge">Nacha</span>
+                        <span class="network-badge">SEPA</span>
+                        <span class="network-badge">SWIFT</span>
+                    </div>
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(114, 22, 244, 0.1); border-radius: 8px; border-left: 4px solid #7216f4;">
+                        <strong>Ethereum:</strong> A versatile network offering high potential for commercial use with programmable money capabilities.
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <h3>💳 Card Payment Networks</h3>
+                    <p>Proprietary systems controlled by network providers. Merchants must register with network providers to receive payments. Often require gateway access.</p>
+                    <div class="network-list">
+                        <span class="network-badge">Visa</span>
+                        <span class="network-badge">Mastercard</span>
+                        <span class="network-badge">Discover</span>
+                        <span class="network-badge">American Express</span>
+                    </div>
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(114, 22, 244, 0.1); border-radius: 8px; border-left: 4px solid #7216f4;">
+                        <strong>Note:</strong> Whether credit or debit, the underlying network technology works the same way.
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <h3>👥 Peer-to-Peer Networks</h3>
+                    <p>Emerging networks that eliminate middlemen by requiring both parties to be on the same network. Typically require accounts with the network provider.</p>
+                    <div class="network-list">
+                        <span class="network-badge">Venmo</span>
+                        <span class="network-badge">PayPal</span>
+                        <span class="network-badge">Zelle</span>
+                        <span class="network-badge">Digital Wallets</span>
+                    </div>
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(114, 22, 244, 0.1); border-radius: 8px; border-left: 4px solid #7216f4;">
+                        <strong>Digital Wallets:</strong> Unique in that they can access multiple payment networks and store various payment methods.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Network Access Requirements -->
+    <section class="content-section" style="background: #f8f8f8;">
+        <div class="container">
+            <h2 class="section-title">Network Access Requirements</h2>
+            <div class="requirements-grid">
+                <div class="requirement-card">
+                    <span class="requirement-icon">🔐</span>
+                    <h4>Authentication</h4>
+                    <p>Network-issued unique identifiers, account numbers, and access credentials</p>
+                </div>
+
+                <div class="requirement-card">
+                    <span class="requirement-icon">💰</span>
+                    <h4>Assets</h4>
+                    <p>Funds held at approved financial institutions or digital assets in compatible wallets</p>
+                </div>
+
+                <div class="requirement-card">
+                    <span class="requirement-icon">📋</span>
+                    <h4>Compliance</h4>
+                    <p>Adherence to network rules, regulations, and technical specifications</p>
+                </div>
+
+                <div class="requirement-card">
+                    <span class="requirement-icon">🌐</span>
+                    <h4>Gateway Access</h4>
+                    <p>Direct network access or connection through approved financial service providers</p>
+                </div>
+
+                <div class="requirement-card">
+                    <span class="requirement-icon">⚡</span>
+                    <h4>Technical Integration</h4>
+                    <p>API connections, message formats, and protocol implementations</p>
+                </div>
+
+                <div class="requirement-card">
+                    <span class="requirement-icon">💸</span>
+                    <h4>Fee Structure</h4>
+                    <p>Transaction fees, network access costs, and gateway provider charges</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Specifications -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">Network Infrastructure Specifications</h2>
+            <div class="specs-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Network Type</th>
+                            <th>Settlement Speed</th>
+                            <th>Operating Hours</th>
+                            <th>Access Method</th>
+                            <th>Technical Protocol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>FedNow</strong></td>
+                            <td>Real-time</td>
+                            <td>24/7/365</td>
+                            <td>Bank Gateway</td>
+                            <td>ISO 20022</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fedwire</strong></td>
+                            <td>Real-time</td>
+                            <td>Business Hours</td>
+                            <td>Fed Account Required</td>
+                            <td>Fedwire Format</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ACH</strong></td>
+                            <td>1-3 Business Days</td>
+                            <td>Batch Processing</td>
+                            <td>Bank/Gateway</td>
+                            <td>NACHA Format</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SWIFT</strong></td>
+                            <td>1-5 Business Days</td>
+                            <td>Business Hours</td>
+                            <td>SWIFT BIC Required</td>
+                            <td>MT/MX Messages</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Visa/Mastercard</strong></td>
+                            <td>2-3 Business Days</td>
+                            <td>24/7</td>
+                            <td>Acquirer Gateway</td>
+                            <td>ISO 8583</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ethereum</strong></td>
+                            <td>~15 seconds</td>
+                            <td>24/7/365</td>
+                            <td>Direct/Wallet</td>
+                            <td>EVM Smart Contracts</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Infrastructure Benefits -->
+    <section class="content-section" style="background: linear-gradient(135deg, rgba(114, 22, 244, 0.05), rgba(143, 71, 246, 0.05));">
+        <div class="container">
+            <h2 class="section-title">Why Understanding Network Infrastructure Matters</h2>
+            <div class="network-categories">
+                <div class="glass-card">
+                    <h3>🏗️ Architecture Planning</h3>
+                    <p>Design payment systems that leverage the right network infrastructure for your technical requirements and business model.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>⚙️ Integration Strategy</h3>
+                    <p>Choose between direct network access or gateway providers based on volume, technical capabilities, and cost considerations.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>🔧 Technical Implementation</h3>
+                    <p>Understand message formats, protocols, and technical specifications required for each network type.</p>
+                </div>
+                <div class="glass-card">
+                    <h3>📊 Performance Optimization</h3>
+                    <p>Match network capabilities with transaction requirements for optimal speed, cost, and reliability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lead Generation CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Optimize Your Payment Infrastructure</h2>
+            <p style="font-size: 1.25rem; max-width: 800px; margin: 0 auto 2rem; opacity: 0.9;">Ready to architect a payment system that leverages the right network infrastructure? Our technical experts can analyze your requirements and design an optimal network strategy.</p>
+            
+            <div class="lead-form">
+                <h3 style="text-align: center; margin-bottom: 2rem; color: #281345;">Get Your Infrastructure Assessment</h3>
+                <form id="leadForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company Name *</label>
+                        <input type="text" id="company" name="company" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="useCase">Primary Use Case</label>
+                        <input type="text" id="useCase" name="useCase" placeholder="e.g., B2B payments, consumer transfers, international">
+                    </div>
+                    <button type="submit" class="cta-button" style="width: 100%; margin-top: 1rem; background: linear-gradient(135deg, #7216f4, #8f47f6); border: none;">
+                        Get Infrastructure Assessment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Resources -->
+    <section class="content-section">
+        <div class="container">
+            <h2 class="section-title">Technical Resources</h2>
+            <div class="network-categories">
+                <div class="glass-card">
+                    <h3>🔧 API Documentation</h3>
+                    <p>Access comprehensive API documentation and technical specifications for major payment networks and integration patterns.</p>
+                    <a href="#" class="cta-button" style="font-size: 1rem; padding: 12px 24px; background: linear-gradient(135deg, #7216f4, #8f47f6); border: none;">View Docs</a>
+                </div>
+                <div class="glass-card">
+                    <h3>🏗️ Architecture Blueprints</h3>
+                    <p>Download reference architectures and network topology diagrams for different payment system designs.</p>
+                    <a href="#" class="cta-button" style="font-size: 1rem; padding: 12px 24px; background: linear-gradient(135deg, #7216f4, #8f47f6); border: none;">Download Blueprints</a>
+                </div>
+                <div class="glass-card">
+                    <h3>👨‍💻 Technical Consultation</h3>
+                    <p>Schedule a deep-dive technical session with our payment infrastructure architects and network specialists.</p>
+                    <a href="#" class="cta-button" style="font-size: 1rem; padding: 12px 24px; background: linear-gradient(135deg, #7216f4, #8f47f6); border: none;">Book Session</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and sections
+        document.querySelectorAll('.glass-card, .category-card, .requirement-card, .analogy-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Form submission handler
+        document.getElementById('leadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Show success message
+            alert('Thank you! Our technical team will contact you within 24 hours with your infrastructure assessment.');
+            
+            // Reset form
+            this.reset();
+            
+            // In a real implementation, you would send this data to your backend
+            console.log('Lead data:', data);
+        });
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

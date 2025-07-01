@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & AI Optimized Meta Tags -->
+    <title>Expert Insights on AI, Tech & Business Strategy | Your Company Name</title>
+    <meta name="description" content="Explore cutting-edge articles and analysis from [Your Company Name]'s experts. Drive your business forward with insights on AI, technology, and market strategy.">
+    <link rel="canonical" href="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url">
+    <meta property="og:title" content="Expert Insights on AI, Tech & Business Strategy | Your Company Name">
+    <meta property="og:description" content="Explore cutting-edge articles on AI, technology, and market strategy to drive your business forward.">
+    <meta property="og:image" content="https://placehold.co/1200x630/7216f4/FFFFFF?text=Expert+Insights">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url">
+    <meta property="twitter:title" content="Expert Insights on AI, Tech & Business Strategy | Your Company Name">
+    <meta property="twitter:description" content="Explore cutting-edge articles on AI, technology, and market strategy to drive your business forward.">
+    <meta property="twitter:image" content="https://placehold.co/1200x630/7216f4/FFFFFF?text=Expert+Insights">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/shared.css">
+    <style>
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+        }
+
+        body {
+            font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: var(--dark-text);
+            background-color: #f8f9fa;
+        }
+        
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .hero-section {
+            padding: 8rem 1.5rem 8rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--dark-text);
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            color: var(--gray-text);
+            max-width: 650px;
+            margin: 1.5rem auto 0;
+        }
+
+        .insights-container {
+            max-width: 1200px;
+            margin: -4rem auto 0;
+            padding: 0 1.5rem 4rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .cta-banner {
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.6);
+            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(114, 22, 244, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .cta-banner h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            line-height: 1.3;
+        }
+        
+        .cta-banner p {
+            color: var(--gray-text);
+            max-width: 500px;
+        }
+
+        .cta-banner .cta-button {
+            background: var(--primary-purple);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .cta-banner .cta-button:hover {
+            background: var(--secondary-purple);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.3);
+        }
+
+        .filters-and-search {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .filter-buttons button {
+            background: transparent;
+            border: 1px solid rgba(114, 22, 244, 0.3);
+            color: var(--dark-text);
+            padding: 0.6rem 1.1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-buttons button:hover, .filter-buttons button.active {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .search-bar {
+            position: relative;
+            min-width: 280px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1.25rem;
+            padding-right: 3rem;
+            border-radius: 10px;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            background: white;
+            font-size: 1rem;
+        }
+
+        .search-bar svg {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-text);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            min-height: 300px;
+        }
+        
+        .loader {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.2rem;
+            color: var(--dark-text);
+            grid-column: 1 / -1;
+        }
+
+        .insight-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .insight-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(114, 22, 244, 0.2);
+        }
+
+        .insight-card .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #e0e0e0;
+        }
+
+        .insight-card .card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .insight-card .card-category {
+            color: var(--primary-purple);
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-card .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+        }
+        
+        .insight-card .card-excerpt {
+            color: var(--gray-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+        
+        .insight-card .card-read-more {
+            color: var(--secondary-purple);
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 5, 20, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 248, 248, 0.98));
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 520px;
+            width: calc(100% - 40px);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transform: scale(0.95);
+            transition: all 0.4s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 16px; right: 16px;
+            width: 32px; height: 32px;
+            background: rgba(0,0,0,0.05);
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            line-height: 32px;
+            text-align: center;
+            cursor: pointer;
+            color: var(--gray-text);
+        }
+        
+        .modal-content h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-content p {
+            text-align: center;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+        
+        .form-row { margin-bottom: 1rem; }
+        .form-row label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: var(--primary-purple);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+             background: var(--secondary-purple);
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 { font-size: 2.5rem; }
+            .cta-banner { flex-direction: column; text-align: center; }
+            .filters-and-search { flex-direction: column; align-items: stretch; }
+            .insights-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    
+    <!-- Static Schema for the Page and Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "Your Company Name",
+          "url": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com",
+          "logo": "https://placehold.co/200x60/281345/FFFFFF?text=Your+Logo",
+          "sameAs": [
+            "https://twitter.com/yourprofile",
+            "https://www.linkedin.com/company/yourprofile"
+          ]
+        },
+        {
+          "@type": "WebPage",
+          "url": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url",
+          "name": "Expert Insights on AI, Tech & Business Strategy",
+          "description": "Explore cutting-edge articles and analysis from [Your Company Name]'s experts. Drive your business forward with insights on AI, technology, and market strategy.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Your Company Name"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Insights",
+            "item": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url"
+          }]
+        }
+      ]
+    }
+    </script>
+
+</head>
+<body>
+
+    <header class="hero-section">
+        <div class="container mx-auto">
+            <h1>Insights & Perspectives</h1>
+            <p>Explore our latest articles, research, and expert analysis on the trends shaping the future of technology, business, and innovation.</p>
+        </div>
+    </header>
+
+    <main class="insights-container">
+        
+        <section class="cta-banner">
+            <div>
+                <h2>Unlock Exclusive Content</h2>
+                <p>Join our newsletter for in-depth analysis, whitepapers, and direct access to our expert insights.</p>
+            </div>
+            <a href="#" id="openModalBtn" class="cta-button">Get Access Now</a>
+        </section>
+
+        <nav class="filters-and-search" aria-label="Insights Filters and Search">
+            <div id="filterButtons" class="filter-buttons">
+                <button class="active" data-category="all">All</button>
+            </div>
+            <div class="search-bar" role="search">
+                <input type="search" id="searchInput" class="search-input" placeholder="Search insights...">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+        </nav>
+
+        <section id="insightsGrid" class="insights-grid">
+            <div class="loader">Loading latest insights...</div>
+        </section>
+    </main>
+
+    <!-- Modal for Lead Capture -->
+    <div id="leadModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <button id="closeModalBtn" class="close-btn" aria-label="Close modal">&times;</button>
+            <h3 id="modalTitle">Access Exclusive Insights</h3>
+            <p>Enter your details below to receive our premium content and newsletter.</p>
+            <form id="leadForm">
+                <div class="form-row">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <button type="submit" class="submit-btn">Unlock Now</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const insightsGrid = document.getElementById('insightsGrid');
+            const searchInput = document.getElementById('searchInput');
+            const filterButtonsContainer = document.getElementById('filterButtons');
+            const modal = document.getElementById('leadModal');
+            const openModalBtn = document.getElementById('openModalBtn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const leadForm = document.getElementById('leadForm');
+
+            const siteUrl = 'https://aisbee08e5bdvaliantmaker.wpcomstaging.com';
+            const apiUrl = `${siteUrl}/wp-json/wp/v2/posts?_embed&per_page=12`;
+
+            let allPosts = [];
+
+            // Function to create and append schema
+            function appendSchema(schema) {
+                const script = document.createElement('script');
+                script.type = 'application/ld+json';
+                script.text = JSON.stringify(schema);
+                document.head.appendChild(script);
+            }
+
+            async function fetchPosts() {
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const posts = await response.json();
+                    allPosts = posts;
+                    displayPosts(posts);
+                    populateFilters(posts);
+                } catch (error) {
+                    insightsGrid.innerHTML = `<p class="text-center text-red-500 col-span-full">Could not load insights. Please try again later.</p>`;
+                    console.error('Error fetching posts:', error);
+                }
+            }
+
+            function displayPosts(posts) {
+                insightsGrid.innerHTML = '';
+                if (posts.length === 0) {
+                    insightsGrid.innerHTML = `<p class="text-center col-span-full">No insights found.</p>`;
+                    return;
+                }
+                
+                const articleListSchema = {
+                    "@context": "https://schema.org",
+                    "@type": "ItemList",
+                    "itemListElement": []
+                };
+
+                posts.forEach((post, index) => {
+                    const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
+                    const imageUrl = featuredMedia?.source_url || `https://placehold.co/600x400/7216f4/FFFFFF?text=${post.title.rendered.split(' ')[0]}`;
+                    const sizes = featuredMedia?.media_details?.sizes;
+                    const srcset = sizes ? Object.values(sizes).map(size => `${size.source_url} ${size.width}w`).join(', ') : '';
+                    const width = featuredMedia?.media_details?.width || 600;
+                    const height = featuredMedia?.media_details?.height || 400;
+                    const category = post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Uncategorized';
+                    const excerpt = post.excerpt.rendered.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
+
+                    const card = document.createElement('article');
+                    card.className = 'insight-card';
+                    card.style.animationDelay = `${index * 100}ms`;
+                    card.innerHTML = `
+                        <img src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" loading="lazy" alt="${post.title.rendered}" class="card-image">
+                        <div class="card-content">
+                            <span class="card-category">${category}</span>
+                            <h2 class="card-title">${post.title.rendered}</h2>
+                            <p class="card-excerpt">${excerpt}</p>
+                            <a href="${post.link}" target="_blank" class="card-read-more">Read More &rarr;</a>
+                        </div>
+                    `;
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('a')) {
+                            window.open(post.link, '_blank');
+                        }
+                    });
+                    insightsGrid.appendChild(card);
+
+                    // DYNAMICALLY ADD SCHEMA FOR EACH ARTICLE
+                    const articleSchema = {
+                        "@context": "https://schema.org",
+                        "@type": "BlogPosting",
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": post.link
+                        },
+                        "headline": post.title.rendered,
+                        "image": imageUrl,
+                        "datePublished": post.date_gmt,
+                        "dateModified": post.modified_gmt,
+                        "author": {
+                            "@type": "Person",
+                            "name": post._embedded.author[0].name
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "Your Company Name",
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": "https://placehold.co/200x60/281345/FFFFFF?text=Your+Logo"
+                            }
+                        },
+                        "description": excerpt
+                    };
+                    appendSchema(articleSchema);
+                    
+                    // Add to ItemList for main page schema
+                    articleListSchema.itemListElement.push({
+                        "@type": "ListItem",
+                        "position": index + 1,
+                        "url": post.link
+                    });
+                });
+                
+                // Add the complete ItemList schema
+                appendSchema(articleListSchema);
+            }
+
+            function populateFilters(posts) {
+                const categories = new Set();
+                posts.forEach(post => {
+                    const postCategories = post._embedded?.['wp:term']?.[0];
+                    if (postCategories) {
+                        postCategories.forEach(cat => categories.add(cat.name));
+                    }
+                });
+                categories.forEach(category => {
+                    const button = document.createElement('button');
+                    button.textContent = category;
+                    button.dataset.category = category;
+                    filterButtonsContainer.appendChild(button);
+                });
+            }
+            
+            filterButtonsContainer.addEventListener('click', function(e) {
+                if(e.target.tagName === 'BUTTON') {
+                    document.querySelector('.filter-buttons button.active').classList.remove('active');
+                    e.target.classList.add('active');
+                    
+                    const category = e.target.dataset.category;
+                    if (category === 'all') {
+                        displayPosts(allPosts);
+                    } else {
+                        const filteredPosts = allPosts.filter(post => 
+                            post._embedded?.['wp:term']?.[0]?.some(cat => cat.name === category)
+                        );
+                        displayPosts(filteredPosts);
+                    }
+                }
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredPosts = allPosts.filter(post => 
+                    post.title.rendered.toLowerCase().includes(searchTerm) ||
+                    post.excerpt.rendered.toLowerCase().includes(searchTerm)
+                );
+                displayPosts(filteredPosts);
+            });
+            
+            // Modal logic
+            openModalBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.add('show');
+                document.body.classList.add('modal-open');
+            });
+            
+            closeModalBtn.addEventListener('click', () => {
+                modal.classList.remove('show');
+                document.body.classList.remove('modal-open');
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                    document.body.classList.remove('modal-open');
+                }
+            });
+
+            leadForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                console.log('Form submitted with:', {
+                    name: e.target.name.value,
+                    email: e.target.email.value
+                });
+                leadForm.innerHTML = `<p class="text-center text-lg">Thank you! We'll be in touch.</p>`;
+            });
+
+            fetchPosts();
+        });
+    </script>
+
+</body>
+</html>

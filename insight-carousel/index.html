@@ -10,8 +10,8 @@
         /* Performance optimizations */
         .related-posts-carousel-container {
             max-width: 1200px;
-            margin: 3rem auto 2rem;
-            padding: 20px 20px 0;
+            margin: 1.5rem auto 2rem;
+            padding: 15px 20px 0;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             position: relative;
             contain: layout style paint;
@@ -161,6 +161,8 @@
                 transform: translateY(-8px) scale(1.02) translateZ(0);
                 box-shadow: 0 16px 48px rgba(114, 22, 244, 0.2), 0 0 0 1px rgba(199, 125, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.9);
                 border-color: rgba(199, 125, 255, 0.4);
+            .post-title {
+                font-size: 1.15rem;
             }
         }
 
@@ -189,7 +191,7 @@
         .post-meta {
             display: flex;
             gap: 0.5rem;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.2rem;
             flex-wrap: wrap;
             position: relative;
             z-index: 2;
@@ -207,7 +209,7 @@
         }
 
         .post-title {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: #281345;
             margin-bottom: 0.4rem;
@@ -226,7 +228,7 @@
             line-height: 1.4;
             margin-bottom: 0.6rem;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
             position: relative;
@@ -288,7 +290,7 @@
 
         .carousel-tab {
             position: relative;
-            z-index: 3;
+            z-index: 2;
             flex: 1;
             height: 100%;
             background: transparent;
@@ -300,7 +302,12 @@
         }
 
         .carousel-tab:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .carousel-tab:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .carousel-tab-slider {
@@ -308,7 +315,7 @@
             top: 8px;
             left: 8px;
             height: calc(100% - 16px);
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.7), rgba(143, 71, 246, 0.8), rgba(157, 78, 221, 0.7));
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.8), rgba(143, 71, 246, 0.9), rgba(157, 78, 221, 0.8));
             backdrop-filter: blur(12px) saturate(130%);
             -webkit-backdrop-filter: blur(12px) saturate(130%);
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -442,8 +449,8 @@
 
         @media (max-width: 768px) {
             .related-posts-carousel-container {
-                padding: 15px 15px 0;
-                margin: 2rem auto 1rem;
+                padding: 10px 15px 0;
+                margin: 1rem auto 1rem;
             }
 
             .carousel-header {
@@ -479,6 +486,10 @@
             .carousel-track {
                 gap: 1rem;
             }
+            
+            .post-title {
+                font-size: 1.15rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -506,6 +517,10 @@
 
             .carousel-title {
                 font-size: 1.6rem;
+            }
+            
+            .post-title {
+                font-size: 1.1rem;
             }
         }
 
@@ -661,7 +676,7 @@
                             return;
                         }
 
-                        // Limit and cache
+                        // Limit to 6 posts but choose from 8 for better variety
                         this.posts = this.shuffleArray(relatedPosts).slice(0, 6);
                         this.cache.set(cacheKey, this.posts);
                     }
@@ -704,6 +719,7 @@
                                 <div class="skeleton-text title" style="width: 60%;"></div>
                                 <div class="skeleton-text excerpt"></div>
                                 <div class="skeleton-text excerpt"></div>
+                                <div class="skeleton-text excerpt"></div>
                                 <div style="height: 44px; background: rgba(114, 22, 244, 0.1); border-radius: 12px; margin-top: auto;"></div>
                             </div>
                         </div>
@@ -738,16 +754,28 @@
                 card.onclick = () => window.open(post.link, '_blank');
                 
                 let excerpt = '';
+                
+                // Try to get excerpt from post excerpt first
                 if (post.excerpt?.rendered) {
                     excerpt = this.stripHtml(post.excerpt.rendered);
-                } else if (post.content?.rendered) {
-                    excerpt = this.generateExcerpt(post.content.rendered);
+                    excerpt = this.cleanExcerpt(excerpt, post.title?.rendered || '');
                 }
                 
-                excerpt = this.cleanExcerpt(excerpt, post.title?.rendered || '');
+                // If excerpt is too short or empty, try content
+                if (!excerpt || excerpt.length < 60) {
+                    if (post.content?.rendered) {
+                        excerpt = this.generateExcerpt(post.content.rendered);
+                    }
+                }
                 
-                if (excerpt.length < 50) {
+                // Only use fallback if we still don't have good content
+                if (!excerpt || excerpt.length < 60) {
                     excerpt = this.generateFallbackExcerpt(post.title?.rendered || '');
+                }
+                
+                // Ensure we have some content
+                if (!excerpt) {
+                    excerpt = 'Click to read more about this post and discover valuable insights for your professional development.';
                 }
                 
                 card.innerHTML = `
@@ -847,8 +875,8 @@
 
             async fetchRecentPosts(excludeId = null) {
                 try {
-                    // Fetch even fewer posts initially
-                    let url = '/wp-json/wp/v2/posts?per_page=4&orderby=date&_fields=id,title,excerpt,content,featured_media,date,link';
+                    // Get more posts to choose from and include full content for better excerpts
+                    let url = '/wp-json/wp/v2/posts?per_page=8&orderby=date&_fields=id,title,excerpt,content,featured_media,date,link';
                     if (excludeId) {
                         url += `&exclude=${excludeId}`;
                     }
@@ -885,32 +913,45 @@
                 return temp.textContent || temp.innerText || '';
             }
 
-            generateExcerpt(content, maxLength = 140) {
+            generateExcerpt(content, maxLength = 220) {
                 const text = this.stripHtml(content);
-                const cleanedText = text
-                    .replace(/\[.*?\]/g, '')
-                    .replace(/\s+/g, ' ')
+                
+                // More aggressive cleaning to get actual content
+                let cleanedText = text
+                    .replace(/\[.*?\]/g, '') // Remove shortcodes
+                    .replace(/Real Treasury\s*[-–—]?\s*/gi, '') // Remove site name
+                    .replace(/US Banking\s*/gi, '')
+                    .replace(/Commercial Real Estate \(CRE\)\s*/gi, '')
+                    .replace(/Concentration Report\s*/gi, '')
+                    .replace(/^[^\w]*/, '') // Remove leading non-word characters
+                    .replace(/\s+/g, ' ') // Normalize whitespace
+                    .replace(/^(The|A|An)\s+/i, '') // Remove leading articles
                     .trim();
                 
-                if (cleanedText.length <= maxLength) return cleanedText;
-                
-                const truncated = cleanedText.substring(0, maxLength);
-                const lastSentenceEnd = Math.max(
-                    truncated.lastIndexOf('.'),
-                    truncated.lastIndexOf('!'),
-                    truncated.lastIndexOf('?')
-                );
-                
-                if (lastSentenceEnd > maxLength * 0.6) {
-                    return truncated.substring(0, lastSentenceEnd + 1);
+                // If we have meaningful content, use it
+                if (cleanedText.length >= 60) {
+                    if (cleanedText.length <= maxLength) return cleanedText;
+                    
+                    const truncated = cleanedText.substring(0, maxLength);
+                    const lastSentenceEnd = Math.max(
+                        truncated.lastIndexOf('.'),
+                        truncated.lastIndexOf('!'),
+                        truncated.lastIndexOf('?')
+                    );
+                    
+                    if (lastSentenceEnd > maxLength * 0.6) {
+                        return truncated.substring(0, lastSentenceEnd + 1);
+                    }
+                    
+                    const lastSpace = truncated.lastIndexOf(' ');
+                    if (lastSpace > maxLength * 0.7) {
+                        return truncated.substring(0, lastSpace) + '...';
+                    }
+                    
+                    return truncated + '...';
                 }
                 
-                const lastSpace = truncated.lastIndexOf(' ');
-                if (lastSpace > maxLength * 0.7) {
-                    return truncated.substring(0, lastSpace) + '...';
-                }
-                
-                return truncated + '...';
+                return ''; // Return empty if no meaningful content found
             }
 
             cleanExcerpt(text, title) {
@@ -924,28 +965,31 @@
                     .replace(/Real Treasury\s*/gi, '')
                     .replace(/\s*[-–—]\s*\d{4}.*$/, '')
                     .replace(/^[^\w]*/, '')
+                    .replace(/^(Read more|Continue reading|Learn more)\s*/i, '') // Remove common link text
+                    .replace(/\s*\[.*?\]\s*/g, '') // Remove any remaining shortcodes
                     .trim();
                 
-                if (cleaned.length < 30) {
-                    return this.generateFallbackExcerpt(title);
+                // If we have meaningful content (lowered threshold), return it
+                if (cleaned.length >= 40) {
+                    return cleaned;
                 }
                 
-                return cleaned;
+                return ''; // Return empty to trigger better content extraction
             }
 
             generateFallbackExcerpt(title) {
                 const titleLower = (title || '').toLowerCase();
                 
                 if (titleLower.includes('report') || titleLower.includes('cre') || titleLower.includes('bank')) {
-                    return 'Comprehensive analysis and insights for banking and real estate professionals, featuring key trends and strategic recommendations.';
+                    return 'Comprehensive analysis and insights for banking and real estate professionals, featuring key trends, strategic recommendations, and data-driven perspectives on market developments. Essential reading for industry decision-makers seeking to navigate evolving regulatory landscapes and capitalize on emerging opportunities.';
                 } else if (titleLower.includes('podcast') || titleLower.includes('interview')) {
-                    return 'Expert discussion on treasury management strategies, industry trends, and innovative financial solutions.';
+                    return 'Expert discussion on treasury management strategies, industry trends, and innovative financial solutions. Join thought leaders as they explore cutting-edge approaches to financial technology, risk management, and operational excellence in today\'s dynamic business environment.';
                 } else if (titleLower.includes('event') || titleLower.includes('conference')) {
-                    return 'Join industry leaders to explore the latest developments in treasury technology and financial innovation.';
+                    return 'Join industry leaders to explore the latest developments in treasury technology and financial innovation. Network with peers, discover emerging trends, and gain actionable insights from experts who are shaping the future of financial services and treasury management.';
                 } else if (titleLower.includes('tms') || titleLower.includes('technology')) {
-                    return 'Discover how modern technology solutions are transforming treasury operations and driving efficiency gains.';
+                    return 'Discover how modern technology solutions are transforming treasury operations and driving efficiency gains. Learn about the latest innovations in financial technology, automation tools, and digital transformation strategies that are revolutionizing how organizations manage their financial operations.';
                 } else {
-                    return 'Essential insights for treasury professionals navigating the evolving landscape of financial management and technology.';
+                    return 'Essential insights for treasury professionals navigating the evolving landscape of financial management and technology. Stay informed about industry best practices, regulatory changes, and strategic approaches that drive operational excellence and sustainable growth in today\'s competitive marketplace.';
                 }
             }
 

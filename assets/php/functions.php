@@ -1360,8 +1360,8 @@ function remove_astra_post_footer_elements() {
 add_action('wp', 'remove_astra_post_footer_elements');
 
 /**
- * Display related posts after the single post content.
- * Uses a simple slider layout with horizontal scrolling.
+ * Display related posts with glassmorphism styling after single post content.
+ * Updated version with modern glassmorphism design
  */
 function display_related_posts() {
     if ( ! is_single() ) {
@@ -1380,7 +1380,7 @@ function display_related_posts() {
     $related = new WP_Query(
         array(
             'post_type'      => 'post',
-            'posts_per_page' => 6,
+            'posts_per_page' => 3, // Changed from 6 to 3 for better layout
             'post__not_in'   => array( $post->ID ),
             'category__in'   => $category_ids,
             'orderby'        => 'rand',
@@ -1394,28 +1394,36 @@ function display_related_posts() {
     );
 
     if ( $related->have_posts() ) {
-        echo '<aside class="rt-related-posts">';
-        echo '<h3 class="rt-related-heading">Related Posts</h3>';
-        echo '<div class="rt-related-container">';
+        echo '<section class="custom-related-posts">';
+        echo '<h2 class="related-posts-title">Related Posts</h2>';
+        echo '<div class="related-posts-grid">';
 
         while ( $related->have_posts() ) {
             $related->the_post();
-            echo '<article class="rt-related-item">';
-            if ( has_post_thumbnail() ) {
-                echo '<a href="' . esc_url( get_permalink() ) . '" class="rt-related-thumb-link">';
-                the_post_thumbnail( 'medium', array( 'class' => 'rt-related-thumb' ) );
-                echo '</a>';
+
+            echo '<article class="related-post-item">';
+            echo '<h3 class="related-post-title">';
+            echo '<a href="' . esc_url( get_permalink() ) . '">' . get_the_title() . '</a>';
+            echo '</h3>';
+
+            $excerpt = get_the_excerpt();
+            if ( empty( $excerpt ) ) {
+                $excerpt = wp_trim_words( get_the_content(), 20, '...' );
             }
-            echo '<h4 class="rt-related-title"><a href="' . esc_url( get_permalink() ) . '">' . get_the_title() . '</a></h4>';
+
+            echo '<p class="related-post-excerpt">' . esc_html( $excerpt ) . '</p>';
+            echo '<a href="' . esc_url( get_permalink() ) . '" class="related-post-link">Read More →</a>';
             echo '</article>';
         }
 
-        echo '</div></aside>';
+        echo '</div>';
+        echo '</section>';
     }
 
     wp_reset_postdata();
 }
 
+// Hook it to display after post content
 add_action( 'astra_entry_after', 'display_related_posts', 25 );
 
 /**

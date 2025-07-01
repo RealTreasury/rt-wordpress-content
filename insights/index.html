@@ -44,19 +44,19 @@
             overflow: hidden;
         }
 
-        .insight-hero {
+        .hero-section {
             padding: 8rem 1.5rem 8rem;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             text-align: center;
         }
 
-        .insight-hero h1 {
+        .hero-section h1 {
             font-size: 3.5rem;
             font-weight: 800;
             color: var(--dark-text);
         }
 
-        .insight-hero p {
+        .hero-section p {
             font-size: 1.25rem;
             color: var(--gray-text);
             max-width: 650px;
@@ -350,7 +350,7 @@
         }
 
         @media (max-width: 768px) {
-            .insight-hero h1 { font-size: 2.5rem; }
+            .hero-section h1 { font-size: 2.5rem; }
             .cta-banner { flex-direction: column; text-align: center; }
             .filters-and-search { flex-direction: column; align-items: stretch; }
             .insights-grid { grid-template-columns: 1fr; }
@@ -403,7 +403,7 @@
 </head>
 <body>
 
-    <header class="insight-hero">
+    <header class="hero-section">
         <div class="container mx-auto">
             <h1>Insights & Perspectives</h1>
             <p>Explore our latest articles, research, and expert analysis on the trends shaping the future of technology, business, and innovation.</p>
@@ -519,7 +519,7 @@
                     card.className = 'insight-card';
                     card.style.animationDelay = `${index * 100}ms`;
                     card.innerHTML = `
-                        <img src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" loading="lazy" alt="Blog header for ${post.title.rendered}" class="card-image">
+                        <img src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" loading="lazy" alt="${post.title.rendered}" class="card-image">
                         <div class="card-content">
                             <span class="card-category">${category}</span>
                             <h2 class="card-title">${post.title.rendered}</h2>
@@ -647,6 +647,42 @@
             fetchPosts();
         });
     </script>
+
+<div class="custom-related-posts-wrapper">
+  <div class="custom-related-posts">
+    <h3 class="related-posts-title">Related Posts</h3>
+    <div class="related-posts-grid">
+      <article class="related-post-item">
+        <div class="related-post-content">
+          <h4 class="related-post-title">
+            <a href="/insights/2024/tms-data-flow/">TMS Data Flow</a>
+          </h4>
+          <div class="related-post-excerpt">Explore how transaction and balance data moves through a modern treasury system.</div>
+          <a href="/insights/2024/tms-data-flow/" class="related-post-link">Read More →</a>
+        </div>
+      </article>
+      <article class="related-post-item">
+        <div class="related-post-content">
+          <h4 class="related-post-title">
+            <a href="/insights/2024/payment-networks-explained/">Payment Networks Explained</a>
+          </h4>
+          <div class="related-post-excerpt">Understand the major global payment rails supporting corporate treasury.</div>
+          <a href="/insights/2024/payment-networks-explained/" class="related-post-link">Read More →</a>
+        </div>
+      </article>
+      <article class="related-post-item">
+        <div class="related-post-content">
+          <h4 class="related-post-title">
+            <a href="/insights/2025/tms-selection-guide/">TMS Selection Guide</a>
+          </h4>
+          <div class="related-post-excerpt">A step-by-step approach for evaluating and choosing treasury technology.</div>
+          <a href="/insights/2025/tms-selection-guide/" class="related-post-link">Read More →</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
 
 </body>
 </html>

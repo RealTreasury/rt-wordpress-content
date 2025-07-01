@@ -1396,6 +1396,3 @@ function display_custom_related_posts() {
 
     wp_reset_postdata();
 }
-
-// Hook to display at end of post content
-add_action( 'astra_entry_after', 'display_custom_related_posts', 25 );

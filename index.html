@@ -1315,16 +1315,16 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
     <script>
-  function sendHeight() {
-    const height = document.documentElement.scrollHeight;
-    if (window !== window.parent) {
+  if (window !== window.parent) {
+    function sendHeight() {
+      const height = document.documentElement.scrollHeight;
       window.parent.postMessage({ type: "setHeight", height }, "*");
     }
-  }
 
-  window.addEventListener("DOMContentLoaded", sendHeight);
-  window.addEventListener("resize", sendHeight);
-  window.addEventListener("orientationchange", sendHeight);
+    window.addEventListener("DOMContentLoaded", sendHeight);
+    window.addEventListener("resize", sendHeight);
+    window.addEventListener("orientationchange", sendHeight);
+  }
 </script>
 
 </body>

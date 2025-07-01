@@ -584,13 +584,15 @@
         });
     </script>
 <script>
-function sendHeight() {
-  const height = document.documentElement.scrollHeight;
-  const id = window.frameElement?.id || 'iframe-default';
-  window.parent.postMessage({ type: "setHeight", height, id }, "*");
+if (window !== window.parent) {
+  function sendHeight() {
+    const height = document.documentElement.scrollHeight;
+    const id = window.frameElement?.id || 'iframe-default';
+    window.parent.postMessage({ type: "setHeight", height, id }, "*");
+  }
+  window.addEventListener("load", sendHeight);
+  window.addEventListener("resize", sendHeight);
 }
-window.addEventListener("load", sendHeight);
-window.addEventListener("resize", sendHeight);
 </script>
 
 

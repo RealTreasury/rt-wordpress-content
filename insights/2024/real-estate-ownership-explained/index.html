@@ -35,6 +35,7 @@
     }
     </script>
     
+    <link rel="stylesheet" href="/assets/css/shared.css">
     <style>
         :root {
             --primary-purple: #7216f4;
@@ -56,60 +57,6 @@
             line-height: 1.6;
         }
 
-        /* Hero Section */
-        .hero-section {
-            padding: 80px 20px 60px;
-            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        .hero-section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 20%, rgba(114, 22, 244, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-section h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            color: #281345;
-            background: linear-gradient(135deg, #281345 0%, #7216f4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-section .subtitle {
-            font-size: 1.4rem;
-            color: #7e7e7e;
-            margin-bottom: 2rem;
-            font-weight: 300;
-        }
-
-        .hero-cta {
-            display: inline-flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 2rem;
-        }
 
         /* Glass Card Styling */
         .glass-card {
@@ -215,42 +162,6 @@
             font-weight: bold;
         }
 
-        /* CTA Buttons */
-        .cta-button {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            color: white;
-            padding: 16px 28px;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
-        }
-
-        .cta-button:hover {
-            background: linear-gradient(135deg, #7c3aed, #6d28d9);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
-            text-decoration: none;
-            color: white;
-        }
-
-        .cta-button.secondary {
-            background: transparent;
-            color: #7216f4;
-            border: 2px solid #7216f4;
-        }
-
-        .cta-button.secondary:hover {
-            background: #7216f4;
-            color: white;
-        }
 
         /* Lead Magnet */
         .lead-magnet {
@@ -416,37 +327,16 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero-section h1 {
-                font-size: 2.5rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .grid-2, .grid-3 {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero-cta {
-                flex-direction: column;
-                align-items: center;
-            }
-            
             .content-section {
                 padding: 40px 20px;
             }
         }
 
         @media (max-width: 480px) {
-            .hero-section {
-                padding: 40px 15px 30px;
-            }
-            
             .lead-form {
                 padding: 24px 20px;
             }
-            
+
             .modal-content {
                 width: 95%;
             }
@@ -455,7 +345,7 @@
 </head>
 <body>
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="insight-hero">
         <div class="hero-content">
             <h1>Real Estate Ownership Explained</h1>
             <p class="subtitle">Understand the different types of property ownership and how to manage them effectively</p>

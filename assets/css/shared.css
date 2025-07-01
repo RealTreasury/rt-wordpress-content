@@ -283,6 +283,80 @@ body.modal-open {
     transform: scale(1.1) !important;
 }
 
+/* ===============================================================
+   Insight Pages Shared Components
+   =============================================================== */
+.insight-hero {
+    padding: 80px 20px;
+    background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.insight-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(114, 22, 244, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.insight-hero h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: #281345;
+    background: linear-gradient(135deg, #281345 0%, #7216f4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: var(--gray-text);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.cta-button {
+    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
+    color: #ffffff !important;
+    padding: 16px 32px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    transition: all 0.3s ease !important;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(114, 22, 244, 0.3) !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+@media (max-width: 768px) {
+    .insight-hero h1 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .insight-hero {
+        padding: 40px 15px;
+    }
+}
+
 /* Form title */
 .video-access-form h3 {
     text-align: center !important;

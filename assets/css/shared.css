@@ -1905,3 +1905,179 @@ p {
     color: #333 !important;
     transform: scale(1.1) !important;
 }
+/* Custom Related Posts Styling */
+.custom-related-posts-wrapper {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid #f1f1f1;
+}
+
+.custom-related-posts {
+    max-width: 100%;
+}
+
+.related-posts-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #333;
+    text-align: center;
+    position: relative;
+}
+
+.related-posts-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: #0073aa;
+}
+
+.related-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.related-post-item {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.related-post-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.related-post-thumbnail {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+}
+
+.related-post-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.related-post-item:hover .related-post-img {
+    transform: scale(1.1);
+}
+
+.related-post-content {
+    padding: 1.5rem;
+}
+
+.related-post-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+}
+
+.related-post-title a {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.related-post-title a:hover {
+    color: #0073aa;
+}
+
+.related-post-meta {
+    margin-bottom: 1rem;
+}
+
+.related-post-date {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.related-post-excerpt {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.related-post-link {
+    color: #0073aa;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.related-post-link:hover {
+    color: #005a87;
+    transform: translateX(5px);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .related-posts-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .related-posts-title {
+        font-size: 1.5rem;
+    }
+    
+    .related-post-content {
+        padding: 1.2rem;
+    }
+    
+    .related-post-thumbnail {
+        height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-related-posts-wrapper {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+    }
+    
+    .related-post-content {
+        padding: 1rem;
+    }
+}
+
+/* Integration with Astra theme colors */
+body.ast-desktop .custom-related-posts-wrapper {
+    background: inherit;
+}
+
+/* Dark mode support if your theme has it */
+@media (prefers-color-scheme: dark) {
+    .related-post-item {
+        background: #1a1a1a;
+        border-color: #333;
+    }
+    
+    .related-posts-title,
+    .related-post-title a {
+        color: #fff;
+    }
+    
+    .related-post-excerpt {
+        color: #ccc;
+    }
+    
+    .related-post-date {
+        color: #999;
+    }
+}

@@ -12,3 +12,10 @@ npm run build
 ```
 
 The `build` script renders every template in `templates/` and writes the resulting HTML files back into the repository structure.
+
+## WordPress Additional CSS
+
+The WordPress theme previously enqueued `assets/css/shared.css`. After removing
+that function, copy the contents of `assets/css/shared.css` into the
+WordPress **Additional CSS** area (Appearance → Customize → Additional CSS) to
+retain the same styling.

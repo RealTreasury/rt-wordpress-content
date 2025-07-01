@@ -1518,3 +1518,13 @@ p {
     color: #333 !important;
     transform: scale(1.1) !important
 }
+.navigation.post-navigation,
+.nav-links,
+.post-navigation,
+nav[class*="post-navigation"],
+.single-post-nav,
+.entry-navigation,
+.post-nav,
+[class*="post-navigation"] {
+    display: none !important;
+}

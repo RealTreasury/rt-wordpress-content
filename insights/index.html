@@ -519,7 +519,7 @@
                     card.className = 'insight-card';
                     card.style.animationDelay = `${index * 100}ms`;
                     card.innerHTML = `
-                        <img src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" loading="lazy" alt="${post.title.rendered}" class="card-image">
+                        <img loading="lazy" src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" loading="lazy" alt="${post.title.rendered}" class="card-image">
                         <div class="card-content">
                             <span class="card-category">${category}</span>
                             <h2 class="card-title">${post.title.rendered}</h2>

@@ -1408,3 +1408,101 @@ function add_custom_related_posts() {
     }
 }
 add_action('wp', 'add_custom_related_posts');
+
+<?php
+// Remove default Astra post footer elements
+function remove_astra_post_footer_elements() {
+    if (is_single()) {
+        // Remove the post navigation (Previous/Next post links)
+        remove_action('astra_entry_after', 'astra_single_post_navigation_markup', 15);
+        
+        // Remove author box if it exists
+        remove_action('astra_entry_after', 'astra_author_box_markup', 10);
+        
+        // Remove any existing related posts (if Astra Pro)
+        remove_action('astra_entry_after', 'astra_single_post_related_posts_markup', 20);
+        
+        // Remove post meta from bottom if it exists
+        remove_action('astra_entry_bottom', 'astra_entry_meta', 10);
+    }
+}
+add_action('wp', 'remove_astra_post_footer_elements');
+
+// Custom Related Posts Function
+function custom_related_posts_section() {
+    if (!is_single()) return;
+    
+    global $post;
+    
+    // Get current post categories
+    $categories = get_the_category($post->ID);
+    if (empty($categories)) return;
+    
+    $category_ids = wp_list_pluck($categories, 'term_id');
+    
+    // Query for related posts
+    $related_posts = new WP_Query(array(
+        'post_type' => 'post',
+        'posts_per_page' => 3,
+        'post__not_in' => array($post->ID),
+        'category__in' => $category_ids,
+        'orderby' => 'rand',
+        'meta_query' => array(
+            array(
+                'key' => '_thumbnail_id',
+                'compare' => 'EXISTS'
+            ),
+        ),
+    ));
+    
+    if ($related_posts->have_posts()) : ?>
+        <div class="custom-related-posts-wrapper">
+            <div class="custom-related-posts">
+                <h3 class="related-posts-title">Related Posts</h3>
+                <div class="related-posts-grid">
+                    <?php while ($related_posts->have_posts()) : $related_posts->the_post(); ?>
+                        <article class="related-post-item">
+                            <?php if (has_post_thumbnail()) : ?>
+                                <div class="related-post-thumbnail">
+                                    <a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">
+                                        <?php the_post_thumbnail('medium', array('class' => 'related-post-img')); ?>
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <div class="related-post-content">
+                                <h4 class="related-post-title">
+                                    <a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">
+                                        <?php the_title(); ?>
+                                    </a>
+                                </h4>
+                                
+                                <div class="related-post-meta">
+                                    <span class="related-post-date"><?php echo get_the_date(); ?></span>
+                                </div>
+                                
+                                <div class="related-post-excerpt">
+                                    <?php echo wp_trim_words(get_the_excerpt(), 20, '...'); ?>
+                                </div>
+                                
+                                <a href="<?php the_permalink(); ?>" class="related-post-link">Read More →</a>
+                            </div>
+                        </article>
+                    <?php endwhile; ?>
+                </div>
+            </div>
+        </div>
+    <?php 
+    endif;
+    
+    wp_reset_postdata();
+}
+
+// Add custom related posts to the post footer area
+function add_custom_related_posts() {
+    if (is_single()) {
+        add_action('astra_entry_after', 'custom_related_posts_section', 25);
+    }
+}
+add_action('wp', 'add_custom_related_posts');
+?>

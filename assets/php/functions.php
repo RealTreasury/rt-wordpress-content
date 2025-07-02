@@ -1514,31 +1514,5 @@ add_action('admin_footer', function() {
         echo '<script>console.log("REST API Status:", ' . json_encode($status) . ');</script>';
     }
 });
-function custom_mega_menu_hover_script() {
-    $script = "
-    jQuery(document).ready(function($) {
-        var hideTimer;
 
-        $('li.mega-menu-item.mega-menu-megamenu').each(function() {
-            var menuItem = $(this);
-
-            menuItem.on('mouseenter', function() {
-                clearTimeout(hideTimer);
-                menuItem.addClass('mega-menu-open');
-            });
-
-            menuItem.on('mouseleave', function() {
-                hideTimer = setTimeout(function() {
-                    menuItem.removeClass('mega-menu-open');
-                }, 300);
-            });
-        });
-    });
-    ";
-    
-    // Safely add the inline script to the page, dependent on jQuery
-    wp_add_inline_script('jquery-core', $script);
-}
-// Hook the function into WordPress's script loading queue
-add_action('wp_enqueue_scripts', 'custom_mega_menu_hover_script');
 ?>

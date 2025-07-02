@@ -494,7 +494,6 @@
             letter-spacing: 1px;
         }
 
-        /* UPDATED PIE CHART CSS */
         .pie-chart {
             width: 300px;
             height: 300px;
@@ -508,7 +507,7 @@
             margin: 0 auto 40px;
             position: relative;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            border: 4px solid white; /* Added border for definition */
+            border: 4px solid white;
         }
 
         .chart-legend {
@@ -533,7 +532,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
         
-        /* UPDATED LEGEND COLORS */
         .legend-color.no-decision { background: var(--pie-no-decision); }
         .legend-color.surprised { background: var(--pie-surprised); }
         .legend-color.unhappy { background: var(--pie-unhappy); }
@@ -684,12 +682,12 @@
         
         .learn-section .section-header h2 {
             color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
         }
 
         .learn-section .section-header p {
             color: rgba(255, 255, 255, 0.95);
-            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
         .learn-grid {
@@ -731,7 +729,7 @@
             margin-bottom: 15px;
             color: white;
             font-weight: 700;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
         }
         
         .learn-item p {
@@ -739,7 +737,7 @@
             font-size: 1rem;
             line-height: 1.6;
             font-weight: 500;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
         }
 
         /* Final CTA */
@@ -815,7 +813,7 @@
         .fixed-cta {
             position: fixed;
             bottom: 25px;
-            right: 25px;
+            right: 100px; /* UPDATED: Increased space from right edge */
             z-index: 99;
             background: var(--gradient-primary);
             color: white;
@@ -876,7 +874,7 @@
 
             .fixed-cta {
                 bottom: 15px;
-                right: 15px;
+                right: 85px; /* UPDATED: Increased space from right edge */
                 padding: 15px 25px;
                 font-size: 1rem;
             }

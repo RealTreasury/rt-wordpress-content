@@ -1396,3 +1396,567 @@ function display_custom_related_posts() {
 
     wp_reset_postdata();
 }
+<?php
+// Latest Insights Widget Integration for WordPress
+// Add this to your functions.php file
+
+// 1. Create shortcode for the insights widget
+add_shortcode('latest_insights_widget', 'latest_insights_widget_shortcode');
+function latest_insights_widget_shortcode($atts) {
+    $atts = shortcode_atts(array(
+        'count' => 4,
+        'class' => 'latest-insights-mega-widget'
+    ), $atts);
+    
+    // Generate unique ID to prevent conflicts
+    $widget_id = 'insights-widget-' . uniqid();
+    
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr($atts['class']); ?>" id="<?php echo esc_attr($widget_id); ?>">
+        <div class="widget-header">
+            <h3 class="widget-title">Latest Insights</h3>
+        </div>
+        
+        <div class="content-area">
+            <div class="insights-track">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading insights...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation" style="display: none;">
+            <!-- Navigation dots will be added here -->
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait a bit to ensure all scripts are loaded
+        setTimeout(function() {
+            if (typeof LatestInsightsMegaWidget !== 'undefined') {
+                new LatestInsightsMegaWidget(document.getElementById('<?php echo esc_js($widget_id); ?>'));
+            } else {
+                console.log('LatestInsightsMegaWidget not found, loading fallback...');
+                loadInsightsWidgetFallback('<?php echo esc_js($widget_id); ?>');
+            }
+        }, 100);
+    });
+    </script>
+    <?php
+    
+    return ob_get_clean();
+}
+
+// 2. Enqueue the widget styles and scripts
+add_action('wp_enqueue_scripts', 'enqueue_insights_widget_assets');
+function enqueue_insights_widget_assets() {
+    // Only load on pages that might use the widget
+    if (is_home() || is_front_page() || has_shortcode(get_post()->post_content ?? '', 'latest_insights_widget')) {
+        
+        // Add inline CSS for the widget
+        wp_add_inline_style('astra-theme-css', get_insights_widget_css());
+        
+        // Add inline JavaScript for the widget
+        wp_add_inline_script('jquery', get_insights_widget_js(), 'after');
+    }
+}
+
+// 3. Widget CSS (extracted from your HTML file)
+function get_insights_widget_css() {
+    return '
+    /* Latest Insights Widget - WordPress Integration */
+    .latest-insights-mega-widget {
+        width: 320px !important;
+        max-width: 320px !important;
+        min-width: 300px !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(248, 248, 248, 0.4)) !important;
+        backdrop-filter: blur(20px) saturate(130%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
+        border: 1px solid rgba(114, 22, 244, 0.2) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 32px rgba(114, 22, 244, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+        overflow: visible !important;
+        position: relative !important;
+        box-sizing: border-box !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .latest-insights-mega-widget .widget-header {
+        background: linear-gradient(135deg, rgba(114, 22, 244, 0.15), rgba(143, 71, 246, 0.2)) !important;
+        backdrop-filter: blur(20px) saturate(150%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+        color: #281345 !important;
+        padding: 14px 20px !important;
+        text-align: center !important;
+        position: relative !important;
+        border-radius: 16px 16px 0 0 !important;
+        border: 1px solid rgba(114, 22, 244, 0.2) !important;
+        border-bottom: none !important;
+        margin: 0 !important;
+    }
+
+    .latest-insights-mega-widget .widget-title {
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        margin: 0 !important;
+        color: #281345 !important;
+        padding: 0 !important;
+        letter-spacing: 0.3px !important;
+    }
+
+    .latest-insights-mega-widget .content-area {
+        height: 300px !important;
+        overflow: hidden !important;
+        position: relative !important;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 248, 248, 0.6)) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border-left: 1px solid rgba(114, 22, 244, 0.1) !important;
+        border-right: 1px solid rgba(114, 22, 244, 0.1) !important;
+    }
+
+    .latest-insights-mega-widget .insights-track {
+        display: flex !important;
+        height: 100% !important;
+        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        background: transparent !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .latest-insights-mega-widget .insight-card {
+        flex: 0 0 100% !important;
+        padding: 16px 20px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        cursor: pointer !important;
+        transition: background-color 0.2s ease !important;
+        box-sizing: border-box !important;
+        background: transparent !important;
+        height: 100% !important;
+        margin: 0 !important;
+    }
+
+    .latest-insights-mega-widget .insight-title {
+        font-size: 1.2rem !important;
+        font-weight: 700 !important;
+        color: #1f2937 !important;
+        line-height: 1.4 !important;
+        margin-bottom: 14px !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 4 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        margin-top: 0 !important;
+    }
+
+    .latest-insights-mega-widget .insight-excerpt {
+        font-size: 0.9rem !important;
+        color: #6b7280 !important;
+        line-height: 1.5 !important;
+        margin-bottom: 16px !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 5 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        flex-grow: 1 !important;
+        padding: 0 !important;
+    }
+
+    .latest-insights-mega-widget .insight-footer {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 12px !important;
+        margin-top: auto !important;
+        padding: 0 !important;
+    }
+
+    .latest-insights-mega-widget .insight-date {
+        font-size: 0.75rem !important;
+        color: #8b5cf6 !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        white-space: nowrap !important;
+        opacity: 0.9 !important;
+    }
+
+    .latest-insights-mega-widget .read-more {
+        background: linear-gradient(135deg, rgba(114, 22, 244, 0.2), rgba(143, 71, 246, 0.25)) !important;
+        color: #281345 !important;
+        border: 1px solid rgba(114, 22, 244, 0.3) !important;
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+    }
+
+    .latest-insights-mega-widget .navigation {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 14px !important;
+        gap: 8px !important;
+        background: linear-gradient(135deg, rgba(248, 248, 248, 0.6), rgba(255, 255, 255, 0.4)) !important;
+        border-radius: 0 0 16px 16px !important;
+        margin: 0 !important;
+    }
+
+    .latest-insights-mega-widget .nav-dot {
+        min-width: 44px !important;
+        min-height: 32px !important;
+        border-radius: 20px !important;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(248, 248, 248, 0.4)) !important;
+        border: 1px solid rgba(114, 22, 244, 0.2) !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        margin: 0 2px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        color: rgba(114, 22, 244, 0.8) !important;
+    }
+
+    .latest-insights-mega-widget .nav-dot.active {
+        background: linear-gradient(135deg, rgba(114, 22, 244, 0.2), rgba(143, 71, 246, 0.25)) !important;
+        color: #281345 !important;
+    }
+
+    .latest-insights-mega-widget .loading-state {
+        height: 260px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #6b7280 !important;
+        text-align: center !important;
+        padding: 20px !important;
+        background: white !important;
+    }
+
+    .latest-insights-mega-widget .loading-spinner {
+        width: 24px !important;
+        height: 24px !important;
+        border: 2px solid rgba(114, 22, 244, 0.2) !important;
+        border-top: 2px solid #7216f4 !important;
+        border-radius: 50% !important;
+        animation: spin 1s linear infinite !important;
+        margin-bottom: 12px !important;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    ';
+}
+
+// 4. Widget JavaScript (extracted and modified from your HTML file)
+function get_insights_widget_js() {
+    return '
+    // Fallback function if main widget class is not available
+    function loadInsightsWidgetFallback(widgetId) {
+        const widget = document.getElementById(widgetId);
+        if (!widget) return;
+        
+        const track = widget.querySelector(".insights-track");
+        if (!track) return;
+        
+        // Show fallback content
+        track.innerHTML = `
+            <div class="fallback-content" style="padding: 20px; text-align: left; background: white; height: 260px; display: flex; flex-direction: column;">
+                <h4 style="font-size: 1.1rem; color: #1f2937; margin-bottom: 12px; font-weight: 700;">Treasury Technology Insights</h4>
+                <p style="font-size: 0.9rem; color: #6b7280; line-height: 1.5; flex-grow: 1;">Stay ahead with expert analysis on treasury management systems, risk assessment, and financial technology trends shaping the industry.</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                    <div style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600;">RECENT</div>
+                    <a href="/insights" style="background: linear-gradient(135deg, rgba(114, 22, 244, 0.2), rgba(143, 71, 246, 0.25)); color: #281345; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600;">Explore All</a>
+                </div>
+            </div>
+        `;
+    }
+
+    // Enhanced Widget Class with WordPress integration
+    class LatestInsightsMegaWidget {
+        constructor(element) {
+            this.widget = element;
+            this.currentIndex = 0;
+            this.insights = [];
+            this.track = this.widget.querySelector(".insights-track");
+            this.navigation = this.widget.querySelector(".navigation");
+            
+            this.init();
+        }
+
+        async init() {
+            try {
+                await this.loadInsights();
+                
+                if (this.insights.length > 0) {
+                    this.renderInsights();
+                    this.setupNavigation();
+                    this.bindEvents();
+                } else {
+                    this.showFallbackContent();
+                }
+                
+            } catch (error) {
+                console.log("Insights widget: API failed, showing fallback content");
+                this.showFallbackContent();
+            }
+        }
+
+        async loadInsights() {
+            // Try WordPress API first
+            try {
+                const apiUrl = window.location.origin + "/wp-json/wp/v2/posts?per_page=4&orderby=date&_fields=id,title,excerpt,date,link";
+                const response = await fetch(apiUrl);
+                
+                if (response.ok) {
+                    const posts = await response.json();
+                    
+                    if (posts && posts.length > 0) {
+                        this.insights = posts.map(post => ({
+                            id: post.id,
+                            title: post.title?.rendered || "Untitled",
+                            excerpt: this.cleanExcerpt(post.excerpt?.rendered || ""),
+                            date: post.date,
+                            link: post.link
+                        })).filter(insight => insight.title && insight.excerpt);
+                        
+                        if (this.insights.length > 0) {
+                            return;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log("WordPress API not available, using demo data");
+            }
+
+            // Fallback to demo data
+            this.insights = [
+                {
+                    id: 1,
+                    title: "Treasury Technology Trends 2025: Transforming Financial Operations",
+                    excerpt: "Explore the cutting-edge innovations reshaping treasury management systems and discover how modern financial technology is driving operational efficiency and strategic decision-making.",
+                    date: new Date().toISOString(),
+                    link: "/insights/treasury-tech-trends-2025"
+                },
+                {
+                    id: 2,
+                    title: "Risk Management Best Practices for Modern Treasury Teams",
+                    excerpt: "Essential strategies for implementing robust risk assessment frameworks that protect your organization while enabling growth opportunities in an evolving financial landscape.",
+                    date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                    link: "/insights/risk-management-practices"
+                },
+                {
+                    id: 3,
+                    title: "Cash Flow Optimization Strategies for Enhanced Liquidity Management",
+                    excerpt: "Discover proven methodologies for improving liquidity management, optimizing working capital, and leveraging advanced technology solutions to enhance treasury operations.",
+                    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                    link: "/insights/cash-flow-optimization"
+                }
+            ];
+        }
+
+        cleanExcerpt(html) {
+            if (!html) return "Discover valuable insights and strategic analysis for treasury professionals navigating the evolving landscape of financial technology.";
+            
+            const temp = document.createElement("div");
+            temp.innerHTML = html;
+            let text = temp.textContent || temp.innerText || "";
+            
+            text = text
+                .replace(/\[.*?\]/g, "")
+                .replace(/Real Treasury\s*[-–—]?\s*/gi, "")
+                .replace(/\s+/g, " ")
+                .trim();
+            
+            if (text.length < 30) {
+                return "Discover valuable insights and strategic analysis for treasury professionals navigating the evolving landscape of financial technology.";
+            }
+            
+            if (text.length > 160) {
+                const truncated = text.substring(0, 160);
+                const lastSpace = truncated.lastIndexOf(" ");
+                return (lastSpace > 120 ? truncated.substring(0, lastSpace) : truncated).trim() + "...";
+            }
+            
+            return text;
+        }
+
+        showFallbackContent() {
+            this.track.innerHTML = `
+                <div class="fallback-content" style="padding: 20px; text-align: left; background: white; height: 260px; display: flex; flex-direction: column;">
+                    <h4 style="font-size: 1.1rem; color: #1f2937; margin-bottom: 12px; font-weight: 700;">Treasury Technology Insights</h4>
+                    <p style="font-size: 0.9rem; color: #6b7280; line-height: 1.5; flex-grow: 1;">Stay ahead with expert analysis on treasury management systems, risk assessment, and financial technology trends shaping the industry.</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                        <div style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600;">RECENT</div>
+                        <a href="/insights" style="background: linear-gradient(135deg, rgba(114, 22, 244, 0.2), rgba(143, 71, 246, 0.25)); color: #281345; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600;">Explore All</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        renderInsights() {
+            if (this.insights.length === 0) return;
+            
+            this.track.innerHTML = this.insights.map(insight => `
+                <div class="insight-card" onclick="window.open(\'${insight.link}\', \'_blank\')">
+                    <h4 class="insight-title">${this.escapeHtml(insight.title)}</h4>
+                    <p class="insight-excerpt">${this.escapeHtml(insight.excerpt)}</p>
+                    <div class="insight-footer">
+                        <div class="insight-date">${this.formatDate(insight.date)}</div>
+                        <a href="${insight.link}" class="read-more" target="_blank" onclick="event.stopPropagation();">Read More</a>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        setupNavigation() {
+            if (this.insights.length <= 1) return;
+            
+            this.navigation.innerHTML = this.insights.map((_, index) => 
+                `<div class="nav-dot ${index === 0 ? "active" : ""}" data-index="${index}" data-label="${index + 1}">${index + 1}</div>`
+            ).join("");
+            
+            this.navigation.style.display = "flex";
+        }
+
+        bindEvents() {
+            this.navigation.addEventListener("click", (e) => {
+                if (e.target.classList.contains("nav-dot")) {
+                    const index = parseInt(e.target.dataset.index);
+                    this.goToSlide(index);
+                }
+            });
+
+            if (this.insights.length > 1) {
+                setInterval(() => {
+                    this.nextSlide();
+                }, 12000);
+            }
+        }
+
+        goToSlide(index) {
+            this.currentIndex = index;
+            this.updateDisplay();
+        }
+
+        nextSlide() {
+            this.currentIndex = (this.currentIndex + 1) % this.insights.length;
+            this.updateDisplay();
+        }
+
+        updateDisplay() {
+            const offset = this.currentIndex * 100;
+            this.track.style.transform = `translateX(-${offset}%)`;
+            
+            const dots = this.navigation.querySelectorAll(".nav-dot");
+            dots.forEach((dot, index) => {
+                dot.classList.toggle("active", index === this.currentIndex);
+            });
+        }
+
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) return "Yesterday";
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+            
+            return date.toLocaleDateString("en-US", { 
+                month: "short", 
+                day: "numeric"
+            });
+        }
+
+        escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    }
+
+    // Make the class globally available
+    window.LatestInsightsMegaWidget = LatestInsightsMegaWidget;
+    ';
+}
+
+// 5. Add widget to WordPress admin (optional)
+add_action('widgets_init', 'register_latest_insights_widget');
+function register_latest_insights_widget() {
+    register_widget('Latest_Insights_Widget');
+}
+
+class Latest_Insights_Widget extends WP_Widget {
+    public function __construct() {
+        parent::__construct(
+            'latest_insights_widget',
+            'Latest Insights Widget',
+            array('description' => 'Displays latest insights in a glassmorphism style widget')
+        );
+    }
+
+    public function widget($args, $instance) {
+        echo $args['before_widget'];
+        echo do_shortcode('[latest_insights_widget]');
+        echo $args['after_widget'];
+    }
+
+    public function form($instance) {
+        echo '<p>This widget displays your latest insights automatically. No configuration needed.</p>';
+    }
+}
+
+// 6. Add CSS to fix mega menu conflicts specifically
+add_action('wp_head', 'fix_mega_menu_widget_conflicts');
+function fix_mega_menu_widget_conflicts() {
+    ?>
+    <style>
+    /* Fix mega menu widget conflicts */
+    #mega-menu-wrap-max_mega_menu_1 .latest-insights-mega-widget {
+        width: 320px !important;
+        max-width: 320px !important;
+        min-width: 300px !important;
+        overflow: visible !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+    
+    #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .mega-menu-column {
+        min-width: auto !important;
+        width: auto !important;
+        max-width: none !important;
+        overflow: visible !important;
+    }
+    
+    /* Ensure widget loads properly in mega menu */
+    .mega-menu-column .latest-insights-mega-widget {
+        margin: 10px auto !important;
+    }
+    </style>
+    <?php
+}

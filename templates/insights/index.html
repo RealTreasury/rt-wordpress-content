@@ -464,8 +464,7 @@
             const closeModalBtn = document.getElementById('closeModalBtn');
             const leadForm = document.getElementById('leadForm');
 
-            const siteUrl = 'https://aisbee08e5bdvaliantmaker.wpcomstaging.com';
-            const apiUrl = `${siteUrl}/wp-json/wp/v2/posts?_embed&per_page=12`;
+            const apiUrl = '/wp-json/wp/v2/posts?_embed&per_page=12';
 
             let allPosts = [];
 
@@ -482,9 +481,12 @@
                     const response = await fetch(apiUrl);
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     const posts = await response.json();
-                    allPosts = posts;
-                    displayPosts(posts);
-                    populateFilters(posts);
+                    allPosts = posts.filter(post => {
+                        const cats = post._embedded?.['wp:term']?.[0] || [];
+                        return cats.some(cat => cat.name !== 'Uncategorized');
+                    });
+                    displayPosts(allPosts);
+                    populateFilters(allPosts);
                 } catch (error) {
                     insightsGrid.innerHTML = `<p class="text-center text-red-500 col-span-full">Could not load insights. Please try again later.</p>`;
                     console.error('Error fetching posts:', error);
@@ -511,16 +513,18 @@
                     const srcset = sizes ? Object.values(sizes).map(size => `${size.source_url} ${size.width}w`).join(', ') : '';
                     const width = featuredMedia?.media_details?.width || 600;
                     const height = featuredMedia?.media_details?.height || 400;
-                    const category = post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Uncategorized';
+                    const categoryNames = post._embedded?.['wp:term']?.[0]?.map(cat => cat.name).filter(name => name !== 'Uncategorized') || [];
+                    const category = categoryNames.length > 0 ? categoryNames[0] : '';
                     const excerpt = post.excerpt.rendered.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
 
                     const card = document.createElement('article');
                     card.className = 'insight-card';
                     card.style.animationDelay = `${index * 100}ms`;
+                    const categorySpan = category ? `<span class="card-category">${category}</span>` : '';
                     card.innerHTML = `
                         <img loading="lazy" src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" loading="lazy" alt="${post.title.rendered}" class="card-image">
                         <div class="card-content">
-                            <span class="card-category">${category}</span>
+                            ${categorySpan}
                             <h2 class="card-title">${post.title.rendered}</h2>
                             <p class="card-excerpt">${excerpt}</p>
                             <a href="${post.link}" target="_blank" class="card-read-more">Read More &rarr;</a>
@@ -578,7 +582,11 @@
                 posts.forEach(post => {
                     const postCategories = post._embedded?.['wp:term']?.[0];
                     if (postCategories) {
-                        postCategories.forEach(cat => categories.add(cat.name));
+                        postCategories.forEach(cat => {
+                            if (cat.name !== 'Uncategorized') {
+                                categories.add(cat.name);
+                            }
+                        });
                     }
                 });
                 categories.forEach(category => {

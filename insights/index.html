@@ -3,588 +3,789 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Treasury Tech Categories | Real Treasury</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    
+    <!-- SEO & AI Optimized Meta Tags -->
+    <title>Expert Insights on AI, Tech & Business Strategy | Your Company Name</title>
+    <meta name="description" content="Explore cutting-edge articles and analysis from [Your Company Name]'s experts. Drive your business forward with insights on AI, technology, and market strategy.">
+    <link rel="canonical" href="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url">
 
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url">
+    <meta property="og:title" content="Expert Insights on AI, Tech & Business Strategy | Your Company Name">
+    <meta property="og:description" content="Explore cutting-edge articles on AI, technology, and market strategy to drive your business forward.">
+    <meta property="og:image" content="https://placehold.co/1200x630/7216f4/FFFFFF?text=Expert+Insights">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url">
+    <meta property="twitter:title" content="Expert Insights on AI, Tech & Business Strategy | Your Company Name">
+    <meta property="twitter:description" content="Explore cutting-edge articles on AI, technology, and market strategy to drive your business forward.">
+    <meta property="twitter:image" content="https://placehold.co/1200x630/7216f4/FFFFFF?text=Expert+Insights">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
         :root {
-            --primary: #7216f4;
-            --primary-light: #8f47f6;
-            --text: #0a0a0a;
-            --text-light: #525252;
-            --bg: #ffffff;
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: var(--text);
-            line-height: 1.4;
-            background: var(--bg);
+            font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: var(--dark-text);
+            background-color: #f8f9fa;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 32px;
-        }
-
-        /* Hero */
-        .hero {
-            padding: 60px 0 80px;
-            background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
-        }
-
-        .hero-content {
-            text-align: center;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: clamp(48px, 8vw, 80px);
-            font-weight: 900;
-            line-height: 0.95;
-            margin-bottom: 20px;
-            letter-spacing: -0.04em;
-            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-subtitle {
-            font-size: 20px;
-            color: var(--text-light);
-            margin-bottom: 40px;
-            font-weight: 500;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-image {
-            margin: 0 auto 50px;
-            border-radius: 20px;
+        
+        body.modal-open {
             overflow: hidden;
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.12),
-                0 0 0 1px rgba(0, 0, 0, 0.05);
-            transform: perspective(1000px) rotateX(2deg);
         }
 
-        .hero-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
-            max-width: 450px;
-            margin: 0 auto;
-        }
-
-        .stat {
+        .hero-section {
+            padding: 8rem 1.5rem 8rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             text-align: center;
         }
 
-        .stat-number {
-            font-size: 44px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-            margin-bottom: 6px;
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        /* Market Section */
-        .market-section {
-            padding: 80px 0;
-            background: #fafafa;
-        }
-
-        .market-content {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 60px;
-            align-items: center;
-            margin-bottom: 60px;
-        }
-
-        .market-text h2 {
-            font-size: 44px;
+        .hero-section h1 {
+            font-size: 3.5rem;
             font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            letter-spacing: -0.02em;
+            color: var(--dark-text);
         }
 
-        .market-text p {
-            font-size: 18px;
-            color: var(--text-light);
-            font-weight: 500;
-            line-height: 1.5;
+        .hero-section p {
+            font-size: 1.25rem;
+            color: var(--gray-text);
+            max-width: 650px;
+            margin: 1.5rem auto 0;
         }
 
-        .market-image {
+        .insights-container {
+            max-width: 1200px;
+            margin: -4rem auto 0;
+            padding: 0 1.5rem 4rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .cta-banner {
+            padding: 2.5rem;
+            margin-bottom: 3rem;
             border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 
-                0 16px 32px rgba(0, 0, 0, 0.1),
-                0 0 0 1px rgba(0, 0, 0, 0.05);
-        }
-
-        .market-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* Categories */
-        .categories-section {
-            padding: 80px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-title {
-            font-size: 44px;
-            font-weight: 800;
-            margin-bottom: 16px;
-            letter-spacing: -0.02em;
-        }
-
-        .section-subtitle {
-            font-size: 18px;
-            color: var(--text-light);
-            font-weight: 500;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 32px;
-        }
-
-        .category-card {
-            background: white;
-            border-radius: 20px;
-            padding: 36px;
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 2px solid transparent;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.06),
-                0 0 0 1px rgba(0, 0, 0, 0.04);
-        }
-
-        .category-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            border-radius: 20px 20px 0 0;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .category-card:nth-child(1)::before {
-            background: linear-gradient(90deg, #3b82f6, #1e40af);
-        }
-
-        .category-card:nth-child(2)::before {
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
-        }
-
-        .category-card:nth-child(3)::before {
-            background: linear-gradient(90deg, #10b981, #047857);
-        }
-
-        .category-card:hover {
-            transform: translateY(-6px) scale(1.015);
-            box-shadow: 
-                0 24px 48px rgba(0, 0, 0, 0.12),
-                0 0 0 1px rgba(0, 0, 0, 0.06);
-        }
-
-        .category-card:hover::before {
-            opacity: 1;
-        }
-
-        .category-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            margin-bottom: 24px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .category-title {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            letter-spacing: -0.01em;
-        }
-
-        .category-price {
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 24px;
-        }
-
-        .category-features {
-            list-style: none;
-            margin-bottom: 28px;
-        }
-
-        .category-features li {
-            padding: 8px 0;
-            display: flex;
-            align-items: center;
-            color: var(--text);
-            font-weight: 500;
-            font-size: 15px;
-        }
-
-        .category-features li::before {
-            content: '✓';
-            background: var(--primary);
-            color: white;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 11px;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
-
-        .category-example {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 12px;
-            padding: 20px;
-            border-left: 3px solid var(--primary);
-        }
-
-        .example-label {
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .example-text {
-            font-size: 14px;
-            color: var(--text-light);
-            font-weight: 500;
-            line-height: 1.4;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 80px 0;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
-        }
-
-        .cta-content {
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .cta-content h2 {
-            font-size: 44px;
-            font-weight: 800;
-            margin-bottom: 16px;
-            letter-spacing: -0.02em;
-        }
-
-        .cta-content p {
-            font-size: 18px;
-            opacity: 0.9;
-            margin-bottom: 48px;
-            font-weight: 500;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 24px;
-            max-width: 850px;
-            margin: 0 auto;
-        }
-
-        .cta-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.6);
+            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            padding: 32px 24px;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(114, 22, 244, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
         }
-
-        .cta-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-3px);
-            color: white;
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-        }
-
-        .cta-icon {
-            font-size: 28px;
-            margin-bottom: 16px;
-            display: block;
-        }
-
-        .cta-title {
+        
+        .cta-banner h2 {
+            font-size: 1.75rem;
             font-weight: 700;
-            font-size: 18px;
-            margin-bottom: 8px;
+            color: var(--dark-text);
+            line-height: 1.3;
+        }
+        
+        .cta-banner p {
+            color: var(--gray-text);
+            max-width: 500px;
         }
 
-        .cta-desc {
-            font-size: 14px;
-            opacity: 0.8;
-            font-weight: 500;
+        .cta-banner .cta-button {
+            background: var(--primary-purple);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .cta-banner .cta-button:hover {
+            background: var(--secondary-purple);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.3);
         }
 
-        /* Responsive */
+        .filters-and-search {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .filter-buttons button {
+            background: transparent;
+            border: 1px solid rgba(114, 22, 244, 0.3);
+            color: var(--dark-text);
+            padding: 0.6rem 1.1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-buttons button:hover, .filter-buttons button.active {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .search-bar {
+            position: relative;
+            min-width: 280px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1.25rem;
+            padding-right: 3rem;
+            border-radius: 10px;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            background: white;
+            font-size: 1rem;
+        }
+
+        .search-bar svg {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-text);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            min-height: 300px;
+        }
+        
+        .loader {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.2rem;
+            color: var(--dark-text);
+            grid-column: 1 / -1;
+        }
+
+        .insight-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .insight-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(114, 22, 244, 0.2);
+        }
+
+        .insight-card .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #e0e0e0;
+            transition: opacity 0.3s ease;
+        }
+
+        .insight-card .card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .insight-card .card-category {
+            color: var(--primary-purple);
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            min-height: 1.2rem;
+        }
+
+        .insight-card .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+            min-height: 3.5rem; /* 2 lines */
+        }
+        
+        .insight-card .card-excerpt {
+            color: var(--gray-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+        
+        .insight-card .card-read-more {
+            color: var(--secondary-purple);
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            align-self: flex-start;
+        }
+        
+        /* Skeleton Styles */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton {
+            background: #f0f0f0;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        .card-image-skeleton {
+            width: 100%;
+            height: 200px;
+        }
+        .skeleton-text {
+            height: 1em;
+            margin-bottom: 0.75rem;
+            border-radius: 4px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 5, 20, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 248, 248, 0.98));
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 520px;
+            width: calc(100% - 40px);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transform: scale(0.95);
+            transition: all 0.4s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 16px; right: 16px;
+            width: 32px; height: 32px;
+            background: rgba(0,0,0,0.05);
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            line-height: 32px;
+            text-align: center;
+            cursor: pointer;
+            color: var(--gray-text);
+        }
+        
+        .modal-content h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-content p {
+            text-align: center;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+        
+        .form-row { margin-bottom: 1rem; }
+        .form-row label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: var(--primary-purple);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+             background: var(--secondary-purple);
+        }
+
+        .show-more-btn {
+            display: none; /* Initially hidden */
+            margin: 2rem auto 0;
+            background: var(--primary-purple);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .show-more-btn:hover {
+            background: var(--secondary-purple);
+        }
+        
+        .show-more-btn.loading {
+            cursor: wait;
+            background: var(--secondary-purple);
+        }
+
         @media (max-width: 768px) {
-            .container {
-                padding: 0 20px;
-            }
-
-            .hero {
-                padding: 40px 0 60px;
-            }
-
-            .hero-subtitle {
-                font-size: 16px;
-            }
-
-            .market-content {
-                grid-template-columns: 1fr;
-                gap: 32px;
-            }
-
-            .market-text h2 {
-                font-size: 32px;
-            }
-
-            .section-title {
-                font-size: 32px;
-            }
-
-            .categories-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .category-card {
-                padding: 28px;
-            }
-
-            .stats-grid {
-                gap: 20px;
-            }
-
-            .stat-number {
-                font-size: 32px;
-            }
-
-            .cta-content h2 {
-                font-size: 32px;
-            }
-
-            .cta-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
+            .hero-section h1 { font-size: 2.5rem; }
+            .cta-banner { flex-direction: column; text-align: center; }
+            .filters-and-search { flex-direction: column; align-items: stretch; }
+            .insights-grid { grid-template-columns: 1fr; }
         }
     </style>
+    
+    <!-- Static Schema for the Page and Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "Your Company Name",
+          "url": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com",
+          "logo": "https://placehold.co/200x60/281345/FFFFFF?text=Your+Logo",
+          "sameAs": [
+            "https://twitter.com/yourprofile",
+            "https://www.linkedin.com/company/yourprofile"
+          ]
+        },
+        {
+          "@type": "WebPage",
+          "url": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url",
+          "name": "Expert Insights on AI, Tech & Business Strategy",
+          "description": "Explore cutting-edge articles and analysis from [Your Company Name]'s experts. Drive your business forward with insights on AI, technology, and market strategy.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Your Company Name"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Insights",
+            "item": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url"
+          }]
+        }
+      ]
+    }
+    </script>
+
 </head>
 <body>
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Treasury Tech<br>Made Simple</h1>
-                <p class="hero-subtitle">Three clear categories to help you navigate 200+ treasury technology solutions and find the perfect fit for your organization.</p>
-                
-                <div class="hero-image">
-                    <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/07/Portal-Landing.png" alt="Treasury Tech Portal" loading="lazy">
-                </div>
 
-                <div class="stats-grid">
-                    <div class="stat">
-                        <div class="stat-number">200+</div>
-                        <div class="stat-label">Solutions</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">3</div>
-                        <div class="stat-label">Categories</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">1000+</div>
-                        <div class="stat-label">Companies</div>
-                    </div>
-                </div>
-            </div>
+    <header class="hero-section">
+        <div class="container mx-auto">
+            <h1>Insights & Perspectives</h1>
+            <p>Explore our latest articles, research, and expert analysis on the trends shaping the future of technology, business, and innovation.</p>
         </div>
-    </section>
+    </header>
 
-    <section class="market-section">
-        <div class="container">
-            <div class="market-content">
-                <div class="market-text">
-                    <h2>The Treasury Tech Landscape</h2>
-                    <p>The treasury technology market has exploded with innovation, creating hundreds of solutions across different categories and price points. Understanding which category fits your needs is the first step to making the right investment.</p>
-                </div>
-                <div class="market-image">
-                    <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/TMS-Marketplace-US-03-2025-no-logo-no-title.png" alt="Treasury Tech Market Map" loading="lazy">
-                </div>
+    <main class="insights-container">
+        
+        <section class="cta-banner">
+            <div>
+                <h2>Unlock Exclusive Content</h2>
+                <p>Join our newsletter for in-depth analysis, whitepapers, and direct access to our expert insights.</p>
             </div>
+            <a href="#" id="openModalBtn" class="cta-button">Get Access Now</a>
+        </section>
+
+        <nav class="filters-and-search" aria-label="Insights Filters and Search">
+            <div id="filterButtons" class="filter-buttons">
+                <!-- Filter buttons will be populated dynamically -->
+            </div>
+            <div class="search-bar" role="search">
+                <input type="search" id="searchInput" class="search-input" placeholder="Search insights...">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+        </nav>
+
+        <section id="insightsGrid" class="insights-grid">
+            <!-- Posts will be loaded here -->
+        </section>
+        <button id="showMoreBtn" class="show-more-btn">Show More</button>
+    </main>
+
+    <!-- Modal for Lead Capture -->
+    <div id="leadModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <button id="closeModalBtn" class="close-btn" aria-label="Close modal">&times;</button>
+            <h3 id="modalTitle">Access Exclusive Insights</h3>
+            <p>Enter your details below to receive our premium content and newsletter.</p>
+            <form id="leadForm">
+                <div class="form-row">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <button type="submit" class="submit-btn">Unlock Now</button>
+            </form>
         </div>
-    </section>
+    </div>
 
-    <section class="categories-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Three Categories</h2>
-                <p class="section-subtitle">Every treasury solution fits into one of these categories, each designed for different organizational needs and growth stages.</p>
-            </div>
-
-            <div class="categories-grid">
-                <div class="category-card">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #3b82f6, #1e40af); color: white;">💰</div>
-                    <h3 class="category-title">Cash Tools</h3>
-                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 16px; margin-bottom: 32px;">Required Core Functions</div>
-                    <ul class="category-features">
-                        <li>Bank connectivity (API, SFTP)</li>
-                        <li>Basic forecasting tools</li>
-                        <li>Global cash visibility</li>
-                        <li>Transaction search, sort, tag, group</li>
-                    </ul>
-                    <div class="category-example">
-                        <div class="example-label">Real Example</div>
-                        <div class="example-text">A $50M regional manufacturer consolidates 5 bank accounts and builds 13-week cash forecasts to improve visibility</div>
-                    </div>
-                </div>
-
-                <div class="category-card">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #7216f4, #8f47f6); color: white;">⚡</div>
-                    <h3 class="category-title">TMS-Lite</h3>
-                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 16px; margin-bottom: 32px;">Required Core Functions</div>
-                    <ul class="category-features">
-                        <li>All Cash Tools functions</li>
-                        <li>Cash positioning & reconciliation</li>
-                        <li>Market data (FX spot rates)</li>
-                        <li>Treasury payments (API workflows)</li>
-                    </ul>
-                    <div class="category-example">
-                        <div class="example-label">Real Example</div>
-                        <div class="example-text">A $200M retailer automates daily payments across 15 locations with structured approval workflows</div>
-                    </div>
-                </div>
-
-                <div class="category-card">
-                    <div class="category-icon" style="background: linear-gradient(135deg, #10b981, #047857); color: white;">🏢</div>
-                    <h3 class="category-title">TRMS</h3>
-                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 16px; margin-bottom: 32px;">Required Core Functions</div>
-                    <ul class="category-features">
-                        <li>All TMS-Lite functions</li>
-                        <li>Derivatives (Interest & FX)</li>
-                        <li>Intercompany loan tracking</li>
-                        <li>Independent instrument valuations</li>
-                    </ul>
-                    <div class="category-example">
-                        <div class="example-label">Real Example</div>
-                        <div class="example-text">A $5B multinational manages FX exposure across 50+ entities with automated hedging strategies</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="cta-section">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Find Your Path</h2>
-                <p>Get personalized guidance on the right treasury technology strategy for your organization's unique needs and growth trajectory.</p>
-                
-                <div class="cta-grid">
-                    <a href="https://realtreasury.com/strategy-session" class="cta-card">
-                        <span class="cta-icon">📞</span>
-                        <div class="cta-title">Strategy Session</div>
-                        <div class="cta-desc">15-minute consultation</div>
-                    </a>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            class InsightsPage {
+                constructor() {
+                    // DOM Elements
+                    this.grid = document.getElementById('insightsGrid');
+                    this.searchInput = document.getElementById('searchInput');
+                    this.filterContainer = document.getElementById('filterButtons');
+                    this.showMoreBtn = document.getElementById('showMoreBtn');
                     
-                    <a href="https://realtreasury.com/vendor-demo-library" class="cta-card">
-                        <span class="cta-icon">🎬</span>
-                        <div class="cta-title">Demo Library</div>
-                        <div class="cta-desc">Curated solution demos</div>
-                    </a>
+                    // State
+                    this.allPosts = [];
+                    this.currentPosts = [];
+                    this.postsPerPage = 9;
+                    this.displayedCount = 0;
+                    this.currentFilter = 'all';
+                    this.currentSearch = '';
+                    this.isLoading = false;
+
+                    // Caches for performance
+                    this.mediaCache = new Map();
+                    this.categoryCache = new Map();
+                    this.authorCache = new Map();
                     
-                    <a href="https://realtreasury.com/treasury-insights-workshop" class="cta-card">
-                        <span class="cta-icon">🎓</span>
-                        <div class="cta-title">Workshop</div>
-                        <div class="cta-desc">Treasury best practices</div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+                    // Lazy loading observer
+                    this.observer = new IntersectionObserver(this.onCardVisible.bind(this), {
+                        rootMargin: '200px',
+                    });
+
+                    this.init();
+                }
+
+                init() {
+                    this.bindEvents();
+                    this.fetchInitialData();
+                }
+
+                bindEvents() {
+                    this.showMoreBtn.addEventListener('click', () => this.loadMorePosts());
+                    this.searchInput.addEventListener('input', this.debounce(this.handleSearch.bind(this), 300));
+                    this.filterContainer.addEventListener('click', (e) => this.handleFilterClick(e));
+                    
+                    // Modal Events
+                    const modal = document.getElementById('leadModal');
+                    document.getElementById('openModalBtn').addEventListener('click', (e) => {
+                        e.preventDefault();
+                        modal.classList.add('show');
+                        document.body.classList.add('modal-open');
+                    });
+                    const closeModal = () => {
+                        modal.classList.remove('show');
+                        document.body.classList.remove('modal-open');
+                    };
+                    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) closeModal();
+                    });
+                    document.getElementById('leadForm').addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        e.target.innerHTML = `<p class="text-center text-lg">Thank you! We'll be in touch.</p>`;
+                    });
+                }
+
+                async fetchInitialData() {
+                    if (this.isLoading) return;
+                    this.isLoading = true;
+                    this.grid.innerHTML = `<div class="loader">Loading latest insights...</div>`;
+
+                    try {
+                        // More efficient API call using _fields
+                        const postsApiUrl = `/wp-json/wp/v2/posts?per_page=100&orderby=date&_fields=id,title,excerpt,link,featured_media,author,categories,date_gmt,modified_gmt`;
+                        const response = await fetch(postsApiUrl);
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        
+                        let posts = await response.json();
+                        // Filter out uncategorized posts immediately
+                        this.allPosts = posts;
+                        
+                        await this.populateFilters();
+                        this.applyFilters();
+
+                    } catch (error) {
+                        this.grid.innerHTML = `<p class="text-center text-red-500 col-span-full">Could not load insights. Please try again later.</p>`;
+                        console.error('Error fetching posts:', error);
+                    } finally {
+                        this.isLoading = false;
+                    }
+                }
+
+                async populateFilters() {
+                    const categoryIds = [...new Set(this.allPosts.flatMap(p => p.categories))];
+                    if (categoryIds.length === 0) return;
+
+                    const categoriesApiUrl = `/wp-json/wp/v2/categories?include=${categoryIds.join(',')}&_fields=id,name,slug`;
+                    const response = await fetch(categoriesApiUrl);
+                    const categories = await response.json();
+                    
+                    categories.forEach(cat => this.categoryCache.set(cat.id, cat));
+                    
+                    // Filter out "Uncategorized" before displaying
+                    const displayCategories = categories.filter(c => c.slug !== 'uncategorized');
+
+                    this.filterContainer.innerHTML = `<button class="active" data-category="all">All</button>`;
+                    displayCategories.forEach(cat => {
+                        const button = document.createElement('button');
+                        button.textContent = cat.name;
+                        button.dataset.category = cat.id;
+                        this.filterContainer.appendChild(button);
+                    });
+                }
+                
+                applyFilters() {
+                    let posts = this.allPosts;
+
+                    // Filter by category
+                    if (this.currentFilter !== 'all') {
+                        posts = posts.filter(post => post.categories.includes(parseInt(this.currentFilter)));
+                    }
+
+                    // Filter by search term
+                    if (this.currentSearch) {
+                        const searchTerm = this.currentSearch.toLowerCase();
+                        posts = posts.filter(post =>
+                            post.title.rendered.toLowerCase().includes(searchTerm) ||
+                            post.excerpt.rendered.toLowerCase().includes(searchTerm)
+                        );
+                    }
+
+                    this.currentPosts = posts;
+                    this.displayedCount = 0;
+                    this.grid.innerHTML = ''; // Clear grid for new filter results
+                    this.loadMorePosts();
+                }
+                
+                loadMorePosts() {
+                    const toDisplay = this.currentPosts.slice(this.displayedCount, this.displayedCount + this.postsPerPage);
+
+                    if (toDisplay.length === 0 && this.displayedCount === 0) {
+                        this.grid.innerHTML = `<p class="text-center col-span-full">No insights found.</p>`;
+                        this.showMoreBtn.style.display = 'none';
+                        return;
+                    }
+                    
+                    toDisplay.forEach((post, index) => {
+                        const card = this.createSkeletonCard(post, index);
+                        this.grid.appendChild(card);
+                        this.observer.observe(card);
+                    });
+
+                    this.displayedCount += toDisplay.length;
+                    this.showMoreBtn.style.display = this.displayedCount < this.currentPosts.length ? 'block' : 'none';
+                }
+
+                createSkeletonCard(post, index) {
+                    const card = document.createElement('article');
+                    card.className = 'insight-card';
+                    card.dataset.postId = post.id;
+                    card.style.animationDelay = `${(index % this.postsPerPage) * 100}ms`;
+                    card.innerHTML = `
+                        <div class="card-image-skeleton skeleton"></div>
+                        <div class="card-content">
+                            <span class="card-category"><div class="skeleton-text" style="width: 40%;"></div></span>
+                            <h2 class="card-title"><div class="skeleton-text" style="width: 100%;"></div><div class="skeleton-text" style="width: 80%;"></div></h2>
+                            <p class="card-excerpt"><div class="skeleton-text"></div><div class="skeleton-text"></div><div class="skeleton-text" style="width: 70%;"></div></p>
+                            <span class="card-read-more">&nbsp;</span>
+                        </div>
+                    `;
+                    return card;
+                }
+
+                onCardVisible(entries, observer) {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const card = entry.target;
+                            observer.unobserve(card);
+                            const post = this.allPosts.find(p => p.id == card.dataset.postId);
+                            if (post) this.populateCard(card, post);
+                        }
+                    });
+                }
+                
+                async populateCard(card, post) {
+                    const categoryName = await this.getCategoryName(post.categories);
+                    const imageUrl = await this.getImageUrl(post.featured_media, post.title.rendered);
+                    const excerpt = post.excerpt.rendered.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
+                    
+                    card.innerHTML = `
+                        <img src="${imageUrl}" alt="${post.title.rendered}" class="card-image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/eeeeee/777777?text=Image+Error';">
+                        <div class="card-content">
+                            <span class="card-category">${categoryName}</span>
+                            <h2 class="card-title">${post.title.rendered}</h2>
+                            <p class="card-excerpt">${excerpt}</p>
+                            <a href="${post.link}" target="_blank" class="card-read-more">Read More &rarr;</a>
+                        </div>
+                    `;
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('a')) window.open(post.link, '_blank');
+                    });
+                    
+                    // Add schema for this specific article
+                    this.appendArticleSchema(post, imageUrl, excerpt);
+                }
+
+                async getCategoryName(categoryIds) {
+                    if (!categoryIds || categoryIds.length === 0) return '';
+                    // Find the first valid, non-"uncategorized" category
+                    for (const id of categoryIds) {
+                        const cat = this.categoryCache.get(id);
+                        if (cat && cat.slug !== 'uncategorized') {
+                            return cat.name;
+                        }
+                    }
+                    return ''; // Return empty if only "uncategorized" or no valid category found
+                }
+
+                async getImageUrl(mediaId, title) {
+                    if (!mediaId) return `https://placehold.co/600x400/7216f4/FFFFFF?text=${encodeURIComponent(title.split(' ')[0])}`;
+                    if (this.mediaCache.has(mediaId)) return this.mediaCache.get(mediaId);
+
+                    try {
+                        const response = await fetch(`/wp-json/wp/v2/media/${mediaId}?_fields=media_details`);
+                        const media = await response.json();
+                        const imageUrl = media.media_details?.sizes?.large?.source_url || media.media_details?.sizes?.full?.source_url;
+                        this.mediaCache.set(mediaId, imageUrl);
+                        return imageUrl;
+                    } catch (e) {
+                        return `https://placehold.co/600x400/7216f4/FFFFFF?text=Image+Not+Found`;
+                    }
+                }
+                
+                handleSearch(e) {
+                    this.currentSearch = e.target.value;
+                    this.applyFilters();
+                }
+
+                handleFilterClick(e) {
+                    if (e.target.tagName !== 'BUTTON') return;
+                    this.filterContainer.querySelector('.active').classList.remove('active');
+                    e.target.classList.add('active');
+                    this.currentFilter = e.target.dataset.category;
+                    this.applyFilters();
+                }
+                
+                appendArticleSchema(post, imageUrl, excerpt) {
+                    // This function is for dynamically adding structured data for each post
+                    const authorName = this.authorCache.get(post.author)?.name || 'Your Company Name';
+                    const articleSchema = {
+                        "@context": "https://schema.org",
+                        "@type": "BlogPosting",
+                        "mainEntityOfPage": { "@type": "WebPage", "@id": post.link },
+                        "headline": post.title.rendered,
+                        "image": imageUrl,
+                        "datePublished": post.date_gmt,
+                        "dateModified": post.modified_gmt,
+                        "author": { "@type": "Person", "name": authorName },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "Your Company Name",
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": "https://placehold.co/200x60/281345/FFFFFF?text=Your+Logo"
+                            }
+                        },
+                        "description": excerpt
+                    };
+                    const script = document.createElement('script');
+                    script.type = 'application/ld+json';
+                    script.text = JSON.stringify(articleSchema);
+                    document.head.appendChild(script);
+                }
+
+                debounce(func, delay) {
+                    let timeout;
+                    return (...args) => {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => func.apply(this, args), delay);
+                    };
+                }
+            }
+
+            new InsightsPage();
+        });
+    </script>
+
 </body>
 </html>

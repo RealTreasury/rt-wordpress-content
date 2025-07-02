@@ -183,6 +183,24 @@
             font-size: 1.2rem;
             color: var(--dark-text);
             grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-top: 2px solid #7216f4;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .insight-card {
@@ -212,7 +230,7 @@
             box-shadow: 0 16px 40px rgba(114, 22, 244, 0.2);
         }
 
-        .insight-card .card-image {
+        .insight-card .card-image, .insight-card .card-image-skeleton {
             width: 100%;
             height: 200px;
             object-fit: cover;
@@ -242,7 +260,11 @@
             color: var(--dark-text);
             line-height: 1.4;
             margin-bottom: 0.75rem;
-            min-height: 3.5rem; /* 2 lines */
+            min-height: 3.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         
         .insight-card .card-excerpt {
@@ -251,6 +273,10 @@
             line-height: 1.6;
             flex-grow: 1;
             margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         
         .insight-card .card-read-more {
@@ -259,6 +285,12 @@
             text-decoration: none;
             transition: color 0.3s ease;
             align-self: flex-start;
+        }
+
+        .insight-card .card-date {
+            color: var(--gray-text);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
         }
         
         /* Skeleton Styles */
@@ -375,7 +407,7 @@
         }
 
         .show-more-btn {
-            display: none; /* Initially hidden */
+            display: none;
             margin: 2rem auto 0;
             background: var(--primary-purple);
             color: white;
@@ -394,6 +426,14 @@
         .show-more-btn.loading {
             cursor: wait;
             background: var(--secondary-purple);
+        }
+
+        .error-message, .no-posts-message {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-text);
+            font-size: 1.1rem;
+            grid-column: 1 / -1;
         }
 
         @media (max-width: 768px) {
@@ -469,7 +509,7 @@
 
         <nav class="filters-and-search" aria-label="Insights Filters and Search">
             <div id="filterButtons" class="filter-buttons">
-                <!-- Filter buttons will be populated dynamically -->
+                <button class="active" data-category="all">All</button>
             </div>
             <div class="search-bar" role="search">
                 <input type="search" id="searchInput" class="search-input" placeholder="Search insights...">
@@ -478,7 +518,10 @@
         </nav>
 
         <section id="insightsGrid" class="insights-grid">
-            <!-- Posts will be loaded here -->
+            <div class="loader">
+                <div class="loading-spinner"></div>
+                <p>Loading latest insights...</p>
+            </div>
         </section>
         <button id="showMoreBtn" class="show-more-btn">Show More</button>
     </main>
@@ -504,95 +547,113 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            class InsightsPage {
-                constructor() {
-                    // DOM Elements
-                    this.grid = document.getElementById('insightsGrid');
-                    this.searchInput = document.getElementById('searchInput');
-                    this.filterContainer = document.getElementById('filterButtons');
-                    this.showMoreBtn = document.getElementById('showMoreBtn');
+        class InsightsPage {
+            constructor() {
+                // DOM Elements
+                this.grid = document.getElementById('insightsGrid');
+                this.searchInput = document.getElementById('searchInput');
+                this.filterContainer = document.getElementById('filterButtons');
+                this.showMoreBtn = document.getElementById('showMoreBtn');
+                
+                // State
+                this.allPosts = [];
+                this.currentPosts = [];
+                this.postsPerPage = 9;
+                this.displayedCount = 0;
+                this.currentFilter = 'all';
+                this.currentSearch = '';
+                this.isLoading = false;
+
+                // Caches for performance
+                this.cache = new Map();
+                this.categoryCache = new Map();
+                
+                // Intersection observer for lazy loading
+                this.observer = new IntersectionObserver(this.onCardVisible.bind(this), {
+                    rootMargin: '200px',
+                });
+
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.fetchInitialData();
+            }
+
+            bindEvents() {
+                this.showMoreBtn.addEventListener('click', () => this.loadMorePosts());
+                this.searchInput.addEventListener('input', this.debounce(this.handleSearch.bind(this), 300));
+                this.filterContainer.addEventListener('click', (e) => this.handleFilterClick(e));
+                
+                // Modal Events
+                this.setupModal();
+            }
+
+            setupModal() {
+                const modal = document.getElementById('leadModal');
+                document.getElementById('openModalBtn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    modal.classList.add('show');
+                    document.body.classList.add('modal-open');
+                });
+                
+                const closeModal = () => {
+                    modal.classList.remove('show');
+                    document.body.classList.remove('modal-open');
+                };
+                
+                document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+                
+                document.getElementById('leadForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    e.target.innerHTML = `<p class="text-center text-lg">Thank you! We'll be in touch.</p>`;
+                });
+            }
+
+            async fetchInitialData() {
+                if (this.isLoading) return;
+                this.isLoading = true;
+
+                try {
+                    console.log('Fetching posts...');
                     
-                    // State
-                    this.allPosts = [];
-                    this.currentPosts = [];
-                    this.postsPerPage = 9;
-                    this.displayedCount = 0;
-                    this.currentFilter = 'all';
-                    this.currentSearch = '';
-                    this.isLoading = false;
-
-                    // Caches for performance
-                    this.mediaCache = new Map();
-                    this.categoryCache = new Map();
-                    this.authorCache = new Map();
+                    // Use similar endpoint as carousel
+                    const postsApiUrl = `/wp-json/wp/v2/posts?per_page=30&orderby=date&_fields=id,title,excerpt,link,featured_media,author,categories,date_gmt,modified_gmt`;
+                    const response = await fetch(postsApiUrl);
                     
-                    // Lazy loading observer
-                    this.observer = new IntersectionObserver(this.onCardVisible.bind(this), {
-                        rootMargin: '200px',
-                    });
-
-                    this.init();
-                }
-
-                init() {
-                    this.bindEvents();
-                    this.fetchInitialData();
-                }
-
-                bindEvents() {
-                    this.showMoreBtn.addEventListener('click', () => this.loadMorePosts());
-                    this.searchInput.addEventListener('input', this.debounce(this.handleSearch.bind(this), 300));
-                    this.filterContainer.addEventListener('click', (e) => this.handleFilterClick(e));
-                    
-                    // Modal Events
-                    const modal = document.getElementById('leadModal');
-                    document.getElementById('openModalBtn').addEventListener('click', (e) => {
-                        e.preventDefault();
-                        modal.classList.add('show');
-                        document.body.classList.add('modal-open');
-                    });
-                    const closeModal = () => {
-                        modal.classList.remove('show');
-                        document.body.classList.remove('modal-open');
-                    };
-                    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-                    modal.addEventListener('click', (e) => {
-                        if (e.target === modal) closeModal();
-                    });
-                    document.getElementById('leadForm').addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        e.target.innerHTML = `<p class="text-center text-lg">Thank you! We'll be in touch.</p>`;
-                    });
-                }
-
-                async fetchInitialData() {
-                    if (this.isLoading) return;
-                    this.isLoading = true;
-                    this.grid.innerHTML = `<div class="loader">Loading latest insights...</div>`;
-
-                    try {
-                        // More efficient API call using _fields
-                        const postsApiUrl = `/wp-json/wp/v2/posts?per_page=100&orderby=date&_fields=id,title,excerpt,link,featured_media,author,categories,date_gmt,modified_gmt`;
-                        const response = await fetch(postsApiUrl);
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                        
-                        let posts = await response.json();
-                        // Filter out uncategorized posts immediately
-                        this.allPosts = posts;
-                        
-                        await this.populateFilters();
-                        this.applyFilters();
-
-                    } catch (error) {
-                        this.grid.innerHTML = `<p class="text-center text-red-500 col-span-full">Could not load insights. Please try again later.</p>`;
-                        console.error('Error fetching posts:', error);
-                    } finally {
-                        this.isLoading = false;
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                }
+                    
+                    let posts = await response.json();
+                    console.log(`Fetched ${posts.length} posts`);
+                    
+                    if (posts.length === 0) {
+                        this.showNoPostsMessage();
+                        return;
+                    }
+                    
+                    this.allPosts = posts;
+                    
+                    // Load categories
+                    await this.loadCategories();
+                    this.populateFilters();
+                    this.applyFilters();
 
-                async populateFilters() {
+                } catch (error) {
+                    console.error('Error fetching posts:', error);
+                    this.showErrorMessage(error.message);
+                } finally {
+                    this.isLoading = false;
+                }
+            }
+
+            async loadCategories() {
+                try {
                     const categoryIds = [...new Set(this.allPosts.flatMap(p => p.categories))];
                     if (categoryIds.length === 0) return;
 
@@ -600,189 +661,284 @@
                     const response = await fetch(categoriesApiUrl);
                     const categories = await response.json();
                     
-                    categories.forEach(cat => this.categoryCache.set(cat.id, cat));
-                    
-                    // Filter out "Uncategorized" before displaying
-                    const displayCategories = categories.filter(c => c.slug !== 'uncategorized');
-
-                    this.filterContainer.innerHTML = `<button class="active" data-category="all">All</button>`;
-                    displayCategories.forEach(cat => {
-                        const button = document.createElement('button');
-                        button.textContent = cat.name;
-                        button.dataset.category = cat.id;
-                        this.filterContainer.appendChild(button);
-                    });
-                }
-                
-                applyFilters() {
-                    let posts = this.allPosts;
-
-                    // Filter by category
-                    if (this.currentFilter !== 'all') {
-                        posts = posts.filter(post => post.categories.includes(parseInt(this.currentFilter)));
-                    }
-
-                    // Filter by search term
-                    if (this.currentSearch) {
-                        const searchTerm = this.currentSearch.toLowerCase();
-                        posts = posts.filter(post =>
-                            post.title.rendered.toLowerCase().includes(searchTerm) ||
-                            post.excerpt.rendered.toLowerCase().includes(searchTerm)
-                        );
-                    }
-
-                    this.currentPosts = posts;
-                    this.displayedCount = 0;
-                    this.grid.innerHTML = ''; // Clear grid for new filter results
-                    this.loadMorePosts();
-                }
-                
-                loadMorePosts() {
-                    const toDisplay = this.currentPosts.slice(this.displayedCount, this.displayedCount + this.postsPerPage);
-
-                    if (toDisplay.length === 0 && this.displayedCount === 0) {
-                        this.grid.innerHTML = `<p class="text-center col-span-full">No insights found.</p>`;
-                        this.showMoreBtn.style.display = 'none';
-                        return;
-                    }
-                    
-                    toDisplay.forEach((post, index) => {
-                        const card = this.createSkeletonCard(post, index);
-                        this.grid.appendChild(card);
-                        this.observer.observe(card);
-                    });
-
-                    this.displayedCount += toDisplay.length;
-                    this.showMoreBtn.style.display = this.displayedCount < this.currentPosts.length ? 'block' : 'none';
-                }
-
-                createSkeletonCard(post, index) {
-                    const card = document.createElement('article');
-                    card.className = 'insight-card';
-                    card.dataset.postId = post.id;
-                    card.style.animationDelay = `${(index % this.postsPerPage) * 100}ms`;
-                    card.innerHTML = `
-                        <div class="card-image-skeleton skeleton"></div>
-                        <div class="card-content">
-                            <span class="card-category"><div class="skeleton-text" style="width: 40%;"></div></span>
-                            <h2 class="card-title"><div class="skeleton-text" style="width: 100%;"></div><div class="skeleton-text" style="width: 80%;"></div></h2>
-                            <p class="card-excerpt"><div class="skeleton-text"></div><div class="skeleton-text"></div><div class="skeleton-text" style="width: 70%;"></div></p>
-                            <span class="card-read-more">&nbsp;</span>
-                        </div>
-                    `;
-                    return card;
-                }
-
-                onCardVisible(entries, observer) {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const card = entry.target;
-                            observer.unobserve(card);
-                            const post = this.allPosts.find(p => p.id == card.dataset.postId);
-                            if (post) this.populateCard(card, post);
+                    categories.forEach(cat => {
+                        if (cat.slug !== 'uncategorized') {
+                            this.categoryCache.set(cat.id, cat);
                         }
                     });
-                }
-                
-                async populateCard(card, post) {
-                    const categoryName = await this.getCategoryName(post.categories);
-                    const imageUrl = await this.getImageUrl(post.featured_media, post.title.rendered);
-                    const excerpt = post.excerpt.rendered.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
                     
-                    card.innerHTML = `
-                        <img src="${imageUrl}" alt="${post.title.rendered}" class="card-image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/eeeeee/777777?text=Image+Error';">
-                        <div class="card-content">
-                            <span class="card-category">${categoryName}</span>
-                            <h2 class="card-title">${post.title.rendered}</h2>
-                            <p class="card-excerpt">${excerpt}</p>
-                            <a href="${post.link}" target="_blank" class="card-read-more">Read More &rarr;</a>
-                        </div>
-                    `;
-                    card.addEventListener('click', (e) => {
-                        if (!e.target.closest('a')) window.open(post.link, '_blank');
-                    });
-                    
-                    // Add schema for this specific article
-                    this.appendArticleSchema(post, imageUrl, excerpt);
-                }
-
-                async getCategoryName(categoryIds) {
-                    if (!categoryIds || categoryIds.length === 0) return '';
-                    // Find the first valid, non-"uncategorized" category
-                    for (const id of categoryIds) {
-                        const cat = this.categoryCache.get(id);
-                        if (cat && cat.slug !== 'uncategorized') {
-                            return cat.name;
-                        }
-                    }
-                    return ''; // Return empty if only "uncategorized" or no valid category found
-                }
-
-                async getImageUrl(mediaId, title) {
-                    if (!mediaId) return `https://placehold.co/600x400/7216f4/FFFFFF?text=${encodeURIComponent(title.split(' ')[0])}`;
-                    if (this.mediaCache.has(mediaId)) return this.mediaCache.get(mediaId);
-
-                    try {
-                        const response = await fetch(`/wp-json/wp/v2/media/${mediaId}?_fields=media_details`);
-                        const media = await response.json();
-                        const imageUrl = media.media_details?.sizes?.large?.source_url || media.media_details?.sizes?.full?.source_url;
-                        this.mediaCache.set(mediaId, imageUrl);
-                        return imageUrl;
-                    } catch (e) {
-                        return `https://placehold.co/600x400/7216f4/FFFFFF?text=Image+Not+Found`;
-                    }
-                }
-                
-                handleSearch(e) {
-                    this.currentSearch = e.target.value;
-                    this.applyFilters();
-                }
-
-                handleFilterClick(e) {
-                    if (e.target.tagName !== 'BUTTON') return;
-                    this.filterContainer.querySelector('.active').classList.remove('active');
-                    e.target.classList.add('active');
-                    this.currentFilter = e.target.dataset.category;
-                    this.applyFilters();
-                }
-                
-                appendArticleSchema(post, imageUrl, excerpt) {
-                    // This function is for dynamically adding structured data for each post
-                    const authorName = this.authorCache.get(post.author)?.name || 'Your Company Name';
-                    const articleSchema = {
-                        "@context": "https://schema.org",
-                        "@type": "BlogPosting",
-                        "mainEntityOfPage": { "@type": "WebPage", "@id": post.link },
-                        "headline": post.title.rendered,
-                        "image": imageUrl,
-                        "datePublished": post.date_gmt,
-                        "dateModified": post.modified_gmt,
-                        "author": { "@type": "Person", "name": authorName },
-                        "publisher": {
-                            "@type": "Organization",
-                            "name": "Your Company Name",
-                            "logo": {
-                                "@type": "ImageObject",
-                                "url": "https://placehold.co/200x60/281345/FFFFFF?text=Your+Logo"
-                            }
-                        },
-                        "description": excerpt
-                    };
-                    const script = document.createElement('script');
-                    script.type = 'application/ld+json';
-                    script.text = JSON.stringify(articleSchema);
-                    document.head.appendChild(script);
-                }
-
-                debounce(func, delay) {
-                    let timeout;
-                    return (...args) => {
-                        clearTimeout(timeout);
-                        timeout = setTimeout(() => func.apply(this, args), delay);
-                    };
+                    console.log(`Loaded ${this.categoryCache.size} categories`);
+                } catch (error) {
+                    console.error('Error loading categories:', error);
                 }
             }
 
+            populateFilters() {
+                const categories = Array.from(this.categoryCache.values());
+                
+                this.filterContainer.innerHTML = `<button class="active" data-category="all">All</button>`;
+                
+                categories.forEach(cat => {
+                    const button = document.createElement('button');
+                    button.textContent = cat.name;
+                    button.dataset.category = cat.id;
+                    this.filterContainer.appendChild(button);
+                });
+            }
+            
+            applyFilters() {
+                let posts = this.allPosts;
+
+                // Filter by category
+                if (this.currentFilter !== 'all') {
+                    posts = posts.filter(post => post.categories.includes(parseInt(this.currentFilter)));
+                }
+
+                // Filter by search term
+                if (this.currentSearch) {
+                    const searchTerm = this.currentSearch.toLowerCase();
+                    posts = posts.filter(post =>
+                        post.title.rendered.toLowerCase().includes(searchTerm) ||
+                        (post.excerpt.rendered && post.excerpt.rendered.toLowerCase().includes(searchTerm))
+                    );
+                }
+
+                this.currentPosts = posts;
+                this.displayedCount = 0;
+                this.grid.innerHTML = '';
+                this.loadMorePosts();
+            }
+            
+            loadMorePosts() {
+                const toDisplay = this.currentPosts.slice(this.displayedCount, this.displayedCount + this.postsPerPage);
+
+                if (toDisplay.length === 0 && this.displayedCount === 0) {
+                    this.showNoPostsMessage();
+                    this.showMoreBtn.style.display = 'none';
+                    return;
+                }
+                
+                toDisplay.forEach((post, index) => {
+                    const card = this.createSkeletonCard(post, index);
+                    this.grid.appendChild(card);
+                    
+                    // Load real content immediately
+                    setTimeout(() => {
+                        this.populateCard(card, post);
+                    }, index * 50);
+                });
+
+                this.displayedCount += toDisplay.length;
+                this.showMoreBtn.style.display = this.displayedCount < this.currentPosts.length ? 'block' : 'none';
+            }
+
+            createSkeletonCard(post, index) {
+                const card = document.createElement('article');
+                card.className = 'insight-card';
+                card.dataset.postId = post.id;
+                card.style.animationDelay = `${(index % this.postsPerPage) * 100}ms`;
+                
+                card.innerHTML = `
+                    <div class="card-image-skeleton skeleton"></div>
+                    <div class="card-content">
+                        <div class="card-date"><div class="skeleton-text" style="width: 30%;"></div></div>
+                        <span class="card-category"><div class="skeleton-text" style="width: 40%;"></div></span>
+                        <h2 class="card-title">
+                            <div class="skeleton-text" style="width: 100%;"></div>
+                            <div class="skeleton-text" style="width: 80%;"></div>
+                        </h2>
+                        <p class="card-excerpt">
+                            <div class="skeleton-text"></div>
+                            <div class="skeleton-text"></div>
+                            <div class="skeleton-text" style="width: 70%;"></div>
+                        </p>
+                        <span class="card-read-more">&nbsp;</span>
+                    </div>
+                `;
+                
+                return card;
+            }
+
+            async populateCard(card, post) {
+                try {
+                    const categoryName = this.getCategoryName(post.categories);
+                    const imageUrl = await this.getImageUrl(post.featured_media, post.title.rendered);
+                    const excerpt = this.generateExcerpt(post.excerpt?.rendered || '', post.title?.rendered || '');
+                    const formattedDate = this.formatDate(post.date_gmt);
+                    
+                    card.innerHTML = `
+                        <img src="${imageUrl}" alt="${this.escapeHtml(post.title.rendered)}" class="card-image" 
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x400/eeeeee/777777?text=Image+Error';">
+                        <div class="card-content">
+                            <div class="card-date">${formattedDate}</div>
+                            <span class="card-category">${categoryName}</span>
+                            <h2 class="card-title">${this.escapeHtml(post.title.rendered)}</h2>
+                            <p class="card-excerpt">${this.escapeHtml(excerpt)}</p>
+                            <a href="${post.link}" target="_blank" class="card-read-more">Read More &rarr;</a>
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('a')) {
+                            window.open(post.link, '_blank');
+                        }
+                    });
+                    
+                } catch (error) {
+                    console.error('Error populating card:', error);
+                }
+            }
+
+            getCategoryName(categoryIds) {
+                if (!categoryIds || categoryIds.length === 0) return '';
+                
+                for (const id of categoryIds) {
+                    const cat = this.categoryCache.get(id);
+                    if (cat && cat.slug !== 'uncategorized') {
+                        return cat.name;
+                    }
+                }
+                return '';
+            }
+
+            async getImageUrl(mediaId, title) {
+                if (!mediaId) {
+                    return `https://placehold.co/600x400/7216f4/FFFFFF?text=${encodeURIComponent(title.split(' ')[0] || 'Post')}`;
+                }
+                
+                const cacheKey = `image_${mediaId}`;
+                if (this.cache.has(cacheKey)) {
+                    return this.cache.get(cacheKey);
+                }
+
+                try {
+                    const response = await fetch(`/wp-json/wp/v2/media/${mediaId}?_fields=media_details,source_url`);
+                    if (!response.ok) throw new Error('Media not found');
+                    
+                    const media = await response.json();
+                    const imageUrl = media.media_details?.sizes?.medium?.source_url || 
+                                   media.media_details?.sizes?.large?.source_url || 
+                                   media.source_url;
+                    
+                    this.cache.set(cacheKey, imageUrl);
+                    return imageUrl;
+                } catch (error) {
+                    console.error('Error loading image:', error);
+                    return `https://placehold.co/600x400/7216f4/FFFFFF?text=Image+Not+Found`;
+                }
+            }
+
+            generateExcerpt(excerptHtml, title) {
+                if (!excerptHtml) {
+                    // Generate fallback based on title
+                    return this.generateFallbackExcerpt(title);
+                }
+
+                // Clean HTML and create excerpt
+                let text = this.stripHtml(excerptHtml);
+                
+                // Clean up common issues
+                text = text
+                    .replace(/\[.*?\]/g, '') // Remove shortcodes
+                    .replace(/^[^\w]*/, '') // Remove leading non-word characters
+                    .replace(/\s+/g, ' ') // Normalize whitespace
+                    .trim();
+
+                if (text.length > 200) {
+                    const truncated = text.substring(0, 200);
+                    const lastSpace = truncated.lastIndexOf(' ');
+                    if (lastSpace > 150) {
+                        return truncated.substring(0, lastSpace) + '...';
+                    }
+                    return truncated + '...';
+                }
+
+                return text || this.generateFallbackExcerpt(title);
+            }
+
+            generateFallbackExcerpt(title) {
+                const titleLower = (title || '').toLowerCase();
+                
+                if (titleLower.includes('report') || titleLower.includes('analysis')) {
+                    return 'Comprehensive analysis and insights for business professionals, featuring key trends and strategic recommendations.';
+                } else if (titleLower.includes('technology') || titleLower.includes('innovation')) {
+                    return 'Exploring the latest technological innovations and their impact on business strategy and operations.';
+                } else if (titleLower.includes('market') || titleLower.includes('industry')) {
+                    return 'Market insights and industry analysis to help you stay ahead of emerging trends and opportunities.';
+                } else {
+                    return 'Essential insights for business professionals navigating the evolving landscape of technology and innovation.';
+                }
+            }
+
+            stripHtml(html) {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                return temp.textContent || temp.innerText || '';
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            formatDate(dateString) {
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    });
+                } catch (error) {
+                    return 'Recent';
+                }
+            }
+                
+            handleSearch(e) {
+                this.currentSearch = e.target.value;
+                this.applyFilters();
+            }
+
+            handleFilterClick(e) {
+                if (e.target.tagName !== 'BUTTON') return;
+                
+                this.filterContainer.querySelector('.active').classList.remove('active');
+                e.target.classList.add('active');
+                this.currentFilter = e.target.dataset.category;
+                this.applyFilters();
+            }
+
+            showNoPostsMessage() {
+                this.grid.innerHTML = `
+                    <div class="no-posts-message">
+                        <h3>No insights found</h3>
+                        <p>Check back later for more content!</p>
+                    </div>
+                `;
+            }
+
+            showErrorMessage(error) {
+                this.grid.innerHTML = `
+                    <div class="error-message">
+                        <h3>Unable to load posts</h3>
+                        <p>Error: ${error}</p>
+                        <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #7216f4; color: white; border: none; border-radius: 8px; cursor: pointer;">Retry</button>
+                    </div>
+                `;
+            }
+
+            debounce(func, delay) {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), delay);
+                };
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
             new InsightsPage();
         });
     </script>

@@ -3,79 +3,586 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demystifying the Treasury Tech Market | Real Treasury</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Treasury Tech Categories | Real Treasury</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7216f4;
+            --primary-light: #8f47f6;
+            --text: #0a0a0a;
+            --text-light: #525252;
+            --bg: #ffffff;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
-            color: #1a202c;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            line-height: 1.4;
+            background: var(--bg);
         }
-        .hero-gradient {
-            background: radial-gradient(circle at 20% 80%, rgba(240,235,255,0.5), transparent 40%),
-                        radial-gradient(circle at 80% 30%, rgba(230,240,255,0.6), transparent 50%),
-                        #f8f9fa;
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 32px;
         }
-        .primary-gradient {
-            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+
+        /* Hero */
+        .hero {
+            padding: 60px 0 80px;
+            background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
         }
-        .primary-gradient-hover:hover {
-            background: linear-gradient(135deg, #8f47f6 0%, #9d4edd 100%);
+
+        .hero-content {
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
         }
-        html { scroll-behavior: smooth; }
+
+        .hero h1 {
+            font-size: clamp(48px, 8vw, 80px);
+            font-weight: 900;
+            line-height: 0.95;
+            margin-bottom: 20px;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            font-weight: 500;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-image {
+            margin: 0 auto 50px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+            transform: perspective(1000px) rotateX(2deg);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 44px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Market Section */
+        .market-section {
+            padding: 80px 0;
+            background: #fafafa;
+        }
+
+        .market-content {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .market-text h2 {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .market-text p {
+            font-size: 18px;
+            color: var(--text-light);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .market-image {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 
+                0 16px 32px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+
+        .market-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Categories */
+        .categories-section {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 44px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-light);
+            font-weight: 500;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 32px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 36px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 20px 20px 0 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .category-card:nth-child(1)::before {
+            background: linear-gradient(90deg, #3b82f6, #1e40af);
+        }
+
+        .category-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .category-card:nth-child(3)::before {
+            background: linear-gradient(90deg, #10b981, #047857);
+        }
+
+        .category-card:hover {
+            transform: translateY(-6px) scale(1.015);
+            box-shadow: 
+                0 24px 48px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(0, 0, 0, 0.06);
+        }
+
+        .category-card:hover::before {
+            opacity: 1;
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 24px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .category-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .category-price {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+
+        .category-features {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .category-features li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .category-features li::before {
+            content: '✓';
+            background: var(--primary);
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 11px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .category-example {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .example-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .example-text {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+        }
+
+        .cta-content {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-content h2 {
+            font-size: 44px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .cta-content p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 48px;
+            font-weight: 500;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .cta-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+
+        .cta-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            color: white;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-icon {
+            font-size: 28px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .cta-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .cta-desc {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .hero {
+                padding: 40px 0 60px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .market-content {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .market-text h2 {
+                font-size: 32px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .category-card {
+                padding: 28px;
+            }
+
+            .stats-grid {
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .cta-content h2 {
+                font-size: 32px;
+            }
+
+            .cta-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
     </style>
 </head>
-<body class="antialiased">
-    <main class="hero-gradient">
-        <div class="container mx-auto px-6 pt-20 pb-16 text-center">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">Demystifying the Treasury Tech Market</h1>
-            <p class="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-gray-700">Choosing treasury technology can feel overwhelming. We break the landscape into three clear categories so you can chart the right path forward.</p>
-            <div class="mt-10 max-w-4xl mx-auto">
-                <img loading="lazy" src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/07/Portal-Landing.png" alt="Screenshot of the Treasury Tech Portal" class="rounded-xl shadow-lg w-full">
+<body>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Treasury Tech<br>Made Simple</h1>
+                <p class="hero-subtitle">Three clear categories to help you navigate 200+ treasury technology solutions and find the perfect fit for your organization.</p>
+                
+                <div class="hero-image">
+                    <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/07/Portal-Landing.png" alt="Treasury Tech Portal" loading="lazy">
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat">
+                        <div class="stat-number">200+</div>
+                        <div class="stat-label">Solutions</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Categories</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">1000+</div>
+                        <div class="stat-label">Companies</div>
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
+    </section>
 
-    <section class="py-16 bg-white" id="cash-tools">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4 text-center">1. Cash Tools</h2>
-            <p class="text-gray-700 mb-4">Cash Tools are the entry point to treasury technology. They give you a single place to see bank balances, manage simple forecasts, and handle routine transactions. Think of them as the digital version of a checkbook—ideal for teams with straightforward cash needs.</p>
-            <p class="text-gray-700">For example, a regional manufacturer might use a Cash Tool to consolidate balances from a handful of banks and build a 13-week forecast.</p>
+    <section class="market-section">
+        <div class="container">
+            <div class="market-content">
+                <div class="market-text">
+                    <h2>The Treasury Tech Landscape</h2>
+                    <p>The treasury technology market has exploded with innovation, creating hundreds of solutions across different categories and price points. Understanding which category fits your needs is the first step to making the right investment.</p>
+                </div>
+                <div class="market-image">
+                    <img src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/TMS-Marketplace-US-03-2025-no-logo-no-title.png" alt="Treasury Tech Market Map" loading="lazy">
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="py-16 bg-gray-50" id="tms-lite">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4 text-center">2. TMS-Lite</h2>
-            <p class="text-gray-700 mb-4">TMS-Lite platforms add more horsepower with automated payments, bank connectivity, and approval workflows. They are perfect for growing companies that have outgrown spreadsheets but don't need every bell and whistle of a full-scale system. Picture upgrading from a sedan to a roomy SUV&mdash;more capacity without the complexity.</p>
-            <p class="text-gray-700">A fast-growing retailer expanding overseas might adopt a TMS-Lite solution to manage multiple bank portals and streamline daily payments.</p>
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Three Categories</h2>
+                <p class="section-subtitle">Every treasury solution fits into one of these categories, each designed for different organizational needs and growth stages.</p>
+            </div>
+
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #3b82f6, #1e40af); color: white;">💰</div>
+                    <h3 class="category-title">Cash Tools</h3>
+                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 16px; margin-bottom: 32px;">Required Core Functions</div>
+                    <ul class="category-features">
+                        <li>Bank connectivity (API, SFTP)</li>
+                        <li>Basic forecasting tools</li>
+                        <li>Global cash visibility</li>
+                        <li>Transaction search, sort, tag, group</li>
+                    </ul>
+                    <div class="category-example">
+                        <div class="example-label">Real Example</div>
+                        <div class="example-text">A $50M regional manufacturer consolidates 5 bank accounts and builds 13-week cash forecasts to improve visibility</div>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #7216f4, #8f47f6); color: white;">⚡</div>
+                    <h3 class="category-title">TMS-Lite</h3>
+                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 16px; margin-bottom: 32px;">Required Core Functions</div>
+                    <ul class="category-features">
+                        <li>All Cash Tools functions</li>
+                        <li>Cash positioning & reconciliation</li>
+                        <li>Market data (FX spot rates)</li>
+                        <li>Treasury payments (API workflows)</li>
+                    </ul>
+                    <div class="category-example">
+                        <div class="example-label">Real Example</div>
+                        <div class="example-text">A $200M retailer automates daily payments across 15 locations with structured approval workflows</div>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #10b981, #047857); color: white;">🏢</div>
+                    <h3 class="category-title">TRMS</h3>
+                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 16px; margin-bottom: 32px;">Required Core Functions</div>
+                    <ul class="category-features">
+                        <li>All TMS-Lite functions</li>
+                        <li>Derivatives (Interest & FX)</li>
+                        <li>Intercompany loan tracking</li>
+                        <li>Independent instrument valuations</li>
+                    </ul>
+                    <div class="category-example">
+                        <div class="example-label">Real Example</div>
+                        <div class="example-text">A $5B multinational manages FX exposure across 50+ entities with automated hedging strategies</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="py-16 bg-white" id="trms">
-        <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4 text-center">3. TRMS</h2>
-            <p class="text-gray-700 mb-4">Treasury &amp; Risk Management Systems (TRMS) deliver the most comprehensive functionality, from complex risk analytics to global cash pooling. These platforms are designed for enterprises with large international footprints and sophisticated treasury operations. Think of them as a fully loaded fleet ready for any journey.</p>
-            <p class="text-gray-700">A multinational corporation with dozens of entities relies on a TRMS to manage FX exposure, intercompany lending, and regulatory reporting in one place.</p>
-        </div>
-    </section>
-
-    <section class="py-16 bg-gray-50" id="working-together">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">How the Categories Work Together</h2>
-            <p class="text-gray-700 max-w-3xl mx-auto">Many organizations combine elements from all three categories. Cash Tools handle daily visibility, a TMS-Lite platform automates payments, and a TRMS provides advanced risk management. The right mix depends on your cash complexity, geographic reach, and strategic goals.</p>
-            <p class="text-gray-700 mt-4">When evaluating options, consider where you are today and where you want to be in the next few years. Our team can help you map a technology stack that grows alongside your business.</p>
-        </div>
-    </section>
-
-    <section class="py-16 hero-gradient" id="cta">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">Ready to Explore Further?</h2>
-            <div class="flex flex-col md:flex-row justify-center gap-4">
-                <a href="https://realtreasury.com/strategy-session" class="px-6 py-3 text-white font-bold rounded-lg primary-gradient primary-gradient-hover">Book a 15-Minute Strategy Session</a>
-                <a href="https://realtreasury.com/vendor-demo-library" class="px-6 py-3 text-white font-bold rounded-lg primary-gradient primary-gradient-hover">Request Demo Library Access</a>
-                <a href="https://realtreasury.com/treasury-insights-workshop" class="px-6 py-3 text-white font-bold rounded-lg primary-gradient primary-gradient-hover">Join Our Insights Workshop</a>
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Find Your Path</h2>
+                <p>Get personalized guidance on the right treasury technology strategy for your organization's unique needs and growth trajectory.</p>
+                
+                <div class="cta-grid">
+                    <a href="https://realtreasury.com/strategy-session" class="cta-card">
+                        <span class="cta-icon">📞</span>
+                        <div class="cta-title">Strategy Session</div>
+                        <div class="cta-desc">15-minute consultation</div>
+                    </a>
+                    
+                    <a href="https://realtreasury.com/vendor-demo-library" class="cta-card">
+                        <span class="cta-icon">🎬</span>
+                        <div class="cta-title">Demo Library</div>
+                        <div class="cta-desc">Curated solution demos</div>
+                    </a>
+                    
+                    <a href="https://realtreasury.com/treasury-insights-workshop" class="cta-card">
+                        <span class="cta-icon">🎓</span>
+                        <div class="cta-title">Workshop</div>
+                        <div class="cta-desc">Treasury best practices</div>
+                    </a>
+                </div>
             </div>
         </div>
     </section>

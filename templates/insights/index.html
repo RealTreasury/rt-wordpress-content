@@ -348,6 +348,23 @@
              background: var(--secondary-purple);
         }
 
+        .show-more-btn {
+            display: none;
+            margin: 2rem auto 0;
+            background: var(--primary-purple);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .show-more-btn:hover {
+            background: var(--secondary-purple);
+        }
+
         @media (max-width: 768px) {
             .hero-section h1 { font-size: 2.5rem; }
             .cta-banner { flex-direction: column; text-align: center; }
@@ -432,6 +449,7 @@
         <section id="insightsGrid" class="insights-grid">
             <div class="loader">Loading latest insights...</div>
         </section>
+        <button id="showMoreBtn" class="show-more-btn">Show More</button>
     </main>
 
     <!-- Modal for Lead Capture -->
@@ -459,14 +477,18 @@
             const insightsGrid = document.getElementById('insightsGrid');
             const searchInput = document.getElementById('searchInput');
             const filterButtonsContainer = document.getElementById('filterButtons');
+            const showMoreBtn = document.getElementById('showMoreBtn');
             const modal = document.getElementById('leadModal');
             const openModalBtn = document.getElementById('openModalBtn');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const leadForm = document.getElementById('leadForm');
 
-            const apiUrl = '/wp-json/wp/v2/posts?_embed&per_page=12';
+            const apiUrl = '/wp-json/wp/v2/posts?_embed&per_page=100';
 
             let allPosts = [];
+            let currentPosts = [];
+            const POSTS_PER_PAGE = 12;
+            let displayedCount = POSTS_PER_PAGE;
 
             // Function to create and append schema
             function appendSchema(schema) {
@@ -485,7 +507,9 @@
                         const cats = post._embedded?.['wp:term']?.[0] || [];
                         return cats.some(cat => cat.name !== 'Uncategorized');
                     });
-                    displayPosts(allPosts);
+                    currentPosts = allPosts;
+                    displayedCount = POSTS_PER_PAGE;
+                    displayPosts(currentPosts.slice(0, displayedCount));
                     populateFilters(allPosts);
                 } catch (error) {
                     insightsGrid.innerHTML = `<p class="text-center text-red-500 col-span-full">Could not load insights. Please try again later.</p>`;
@@ -497,6 +521,7 @@
                 insightsGrid.innerHTML = '';
                 if (posts.length === 0) {
                     insightsGrid.innerHTML = `<p class="text-center col-span-full">No insights found.</p>`;
+                    showMoreBtn.style.display = 'none';
                     return;
                 }
                 
@@ -575,6 +600,7 @@
                 
                 // Add the complete ItemList schema
                 appendSchema(articleListSchema);
+                showMoreBtn.style.display = displayedCount < currentPosts.length ? 'block' : 'none';
             }
 
             function populateFilters(posts) {
@@ -604,23 +630,25 @@
                     
                     const category = e.target.dataset.category;
                     if (category === 'all') {
-                        displayPosts(allPosts);
+                        currentPosts = allPosts;
                     } else {
-                        const filteredPosts = allPosts.filter(post => 
+                        currentPosts = allPosts.filter(post =>
                             post._embedded?.['wp:term']?.[0]?.some(cat => cat.name === category)
                         );
-                        displayPosts(filteredPosts);
                     }
+                    displayedCount = POSTS_PER_PAGE;
+                    displayPosts(currentPosts.slice(0, displayedCount));
                 }
             });
 
             searchInput.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase();
-                const filteredPosts = allPosts.filter(post => 
+                currentPosts = allPosts.filter(post =>
                     post.title.rendered.toLowerCase().includes(searchTerm) ||
                     post.excerpt.rendered.toLowerCase().includes(searchTerm)
                 );
-                displayPosts(filteredPosts);
+                displayedCount = POSTS_PER_PAGE;
+                displayPosts(currentPosts.slice(0, displayedCount));
             });
             
             // Modal logic
@@ -649,6 +677,11 @@
                     email: e.target.email.value
                 });
                 leadForm.innerHTML = `<p class="text-center text-lg">Thank you! We'll be in touch.</p>`;
+            });
+
+            showMoreBtn.addEventListener('click', () => {
+                displayedCount += POSTS_PER_PAGE;
+                displayPosts(currentPosts.slice(0, displayedCount));
             });
 
             fetchPosts();

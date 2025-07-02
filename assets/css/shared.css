@@ -1614,3 +1614,8 @@ nav[class*="post-navigation"],
         box-shadow: 0 8px 25px rgba(0, 0, 0, .2) !important;
     }
 }
+/* Final CSS for the JavaScript Fix */
+.latest-insights-mega-widget {
+    /* This rule just makes the widget fade smoothly when the script shows/hides it. */
+    transition: opacity 0.3s ease !important;
+}

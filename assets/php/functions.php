@@ -1417,4 +1417,103 @@ function display_related_posts() {
 }
 
 // add_action( 'astra_entry_after', 'display_related_posts', 25 );
+// ===============================================================
+// WordPress REST API Fixes for Insights Page
+// ===============================================================
+
+// Force enable REST API (in case it's disabled)
+add_filter('rest_enabled', '__return_true');
+add_filter('rest_jsonp_enabled', '__return_true');
+
+// Add CORS headers for REST API requests
+add_action('rest_api_init', function() {
+    remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
+    add_filter('rest_pre_serve_request', function($value) {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Authorization, Content-Type');
+        header('Access-Control-Allow-Credentials: true');
+        return $value;
+    });
+});
+
+// Alternative REST API rewrite rules (backup routes)
+add_action('init', function() {
+    add_rewrite_rule('^api/posts/?', 'index.php?rest_route=/wp/v2/posts', 'top');
+    add_rewrite_rule('^api/categories/?', 'index.php?rest_route=/wp/v2/categories', 'top');
+    
+    // Flush rewrite rules if needed (only runs once)
+    if (get_option('custom_api_rules_flushed') != '1') {
+        flush_rewrite_rules();
+        update_option('custom_api_rules_flushed', '1');
+    }
+});
+
+// Add debug endpoint to test API functionality
+add_action('rest_api_init', function() {
+    register_rest_route('custom/v1', '/test', array(
+        'methods' => 'GET',
+        'callback' => function() {
+            return array(
+                'status' => 'success',
+                'message' => 'Custom REST API is working!',
+                'timestamp' => current_time('mysql'),
+                'posts_count' => wp_count_posts()->publish
+            );
+        },
+        'permission_callback' => '__return_true'
+    ));
+});
+
+// Custom posts endpoint with better error handling
+add_action('rest_api_init', function() {
+    register_rest_route('custom/v1', '/posts', array(
+        'methods' => 'GET',
+        'callback' => function($request) {
+            $per_page = $request->get_param('per_page') ?: 12;
+            $posts = get_posts(array(
+                'numberposts' => $per_page,
+                'post_status' => 'publish',
+                'post_type' => 'post'
+            ));
+            
+            $formatted_posts = array();
+            foreach ($posts as $post) {
+                $formatted_posts[] = array(
+                    'id' => $post->ID,
+                    'title' => array('rendered' => $post->post_title),
+                    'excerpt' => array('rendered' => wp_trim_words($post->post_content, 30)),
+                    'link' => get_permalink($post->ID),
+                    'date' => $post->post_date,
+                    'featured_media' => get_post_thumbnail_id($post->ID)
+                );
+            }
+            
+            return $formatted_posts;
+        },
+        'permission_callback' => '__return_true'
+    ));
+});
+
+// Debug function to check REST API status
+function debug_rest_api_status() {
+    $status = array(
+        'rest_enabled' => rest_enabled(),
+        'rest_url' => rest_url(),
+        'posts_count' => wp_count_posts()->publish,
+        'current_user_can' => current_user_can('read'),
+        'permalink_structure' => get_option('permalink_structure')
+    );
+    
+    error_log('REST API Debug: ' . print_r($status, true));
+    return $status;
+}
+
+// Add debug info to admin footer (only for admins)
+add_action('admin_footer', function() {
+    if (current_user_can('manage_options')) {
+        $status = debug_rest_api_status();
+        echo '<script>console.log("REST API Status:", ' . json_encode($status) . ');</script>';
+    }
+});
 ?>

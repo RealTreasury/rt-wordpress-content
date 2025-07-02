@@ -1632,32 +1632,43 @@ nav[class*="post-navigation"],
 #mega-menu-wrap-max_mega_menu_1 li.mega-menu-item.mega-menu-open > .mega-sub-menu {
     pointer-events: auto;
 }
-/* ===== v3: FIX for Disappearing Carousel ===== */
+/* ===== v4: FIX for Disappearing Carousel (JS-Powered) ===== */
 
 /*
- * STEP 1: Default State (Hidden with Delay)
- * The carousel starts transparent and non-interactive. We apply a transition that will
- * fade the opacity out over 0.2 seconds and only hide it (visibility) *after*
- * the fade is complete. This delay is the key to the fix.
+ * STEP 1: HIDE the sub-menu and widget by default.
+ * We use opacity and visibility for a smooth transition.
 */
-.latest-insights-mega-widget {
+#mega-menu-wrap-max_mega_menu_1 ul.mega-sub-menu {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
     transition: opacity 0.2s ease, visibility 0s linear 0.2s !important;
 }
 
+/* We have to hide the widget separately as well */
+.latest-insights-mega-widget {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease;
+}
+
+
 /*
- * STEP 2: Visible State (On Hover)
- * When the parent menu item is hovered, we make the carousel appear immediately.
- * We override the transition delay to ensure it shows instantly. Because the carousel
- * itself is now part of the hover area, the menu will stay open as long as your
- * mouse is over it or the sub-menu.
+ * STEP 2: SHOW the sub-menu and widget when the JS adds the class.
+ * This rule makes everything visible when the parent LI has the .mega-menu-open class.
 */
-li.mega-menu-item:hover .latest-insights-mega-widget,
-li.mega-menu-item.mega-menu-open .latest-insights-mega-widget {
+#mega-menu-wrap-max_mega_menu_1 li.mega-menu-item.mega-menu-open > ul.mega-sub-menu {
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
-    transition-delay: 0s !important; /* Ensures the carousel appears without delay */
+    /* This transition-delay reset ensures it appears instantly */
+    transition-delay: 0s !important;
+}
+
+/* And the same for the widget inside */
+li.mega-menu-item.mega-menu-open .latest-insights-mega-widget {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
 }

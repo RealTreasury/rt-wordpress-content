@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Selection Workshop: 6 Steps to Treasury Tech Without Regret | Real Treasury</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+            --white: #ffffff;
+            --light-bg: #f8f8f8;
+            --gradient-primary: linear-gradient(135deg, #7216f4, #8f47f6, #c77dff);
+            --gradient-danger: linear-gradient(135deg, #e74c3c, #c0392b);
+            --gradient-success: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            overflow-x: hidden;
+            background: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 80%;
+            left: 50%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f8f8f8, #ffffff);
+            padding: 60px 0 80px;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(114, 22, 244, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(199, 125, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .hero-text h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .urgency-banner {
+            background: var(--gradient-danger);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .workshop-details {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 248, 248, 0.98));
+            backdrop-filter: blur(20px);
+            border: 3px solid;
+            border-image: var(--gradient-primary) 1;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 40px rgba(114, 22, 244, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .workshop-details::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient-primary);
+        }
+
+        .workshop-details h3 {
+            color: var(--primary-purple);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .workshop-details p {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin: 0;
+        }
+
+        .cta-button {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(114, 22, 244, 0.5);
+            color: white;
+        }
+
+        .hero-visual {
+            position: relative;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 248, 248, 0.95));
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(199, 125, 255, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-danger);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(114, 22, 244, 0.25);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            background: var(--gradient-danger);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--dark-text);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #ffffff, #f8f8f8);
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-header h2 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-danger);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .section-header h2::after {
+            content: '❌';
+            position: absolute;
+            top: -20px;
+            right: -50px;
+            font-size: 2rem;
+            animation: shake 1s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+
+        .section-header p {
+            font-size: 1.4rem;
+            color: var(--gray-text);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 500;
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .problem-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 248, 248, 0.98));
+            backdrop-filter: blur(20px);
+            border: 3px solid rgba(231, 76, 60, 0.3);
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.15);
+        }
+
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient-danger);
+        }
+
+        .problem-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(231, 76, 60, 0.25);
+            border-color: rgba(231, 76, 60, 0.6);
+        }
+
+        .problem-number {
+            background: var(--gradient-danger);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .problem-card h3 {
+            color: var(--dark-text);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .problem-card p {
+            color: var(--gray-text);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* Survey Results */
+        .survey-section {
+            padding: 100px 0;
+            background: var(--gradient-primary);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .survey-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="0,0 1000,100 1000,0"/></svg>');
+            background-size: cover;
+        }
+
+        .survey-visual {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .survey-chart {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .survey-chart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: var(--gradient-primary);
+        }
+
+        .chart-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark-text);
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pie-chart {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #333333 0% 50%,
+                #999999 50% 80%, 
+                #666666 80% 95%,
+                var(--primary-purple) 95% 100%
+            );
+            margin: 0 auto 40px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: spin 20s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .chart-legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .legend-color.no-decision { background: #333333; }
+        .legend-color.surprised { background: #999999; }
+        .legend-color.unhappy { background: #666666; }
+        .legend-color.happy { background: var(--primary-purple); }
+
+        .survey-text h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .survey-text p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .shocking-stat {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .shocking-stat .big-number {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #ffff00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            display: block;
+            line-height: 1;
+        }
+
+        .shocking-stat .big-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            margin-top: 10px;
+        }
+
+        /* Solution Section */
+        .solution-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #ffffff, #f8f8f8);
+            position: relative;
+        }
+
+        .solution-section .section-header h2 {
+            background: var(--gradient-success);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .solution-section .section-header h2::after {
+            content: '✅';
+            position: absolute;
+            top: -20px;
+            right: -50px;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .method-step {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 248, 248, 0.98));
+            backdrop-filter: blur(20px);
+            border: 3px solid rgba(46, 204, 113, 0.3);
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.15);
+        }
+
+        .method-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: var(--gradient-success);
+        }
+
+        .method-step:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(46, 204, 113, 0.25);
+            border-color: rgba(46, 204, 113, 0.6);
+        }
+
+        .step-letter {
+            background: var(--gradient-success);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .method-step h3 {
+            color: var(--dark-text);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .method-step p {
+            color: var(--gray-text);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* What You'll Learn */
+        .learn-section {
+            padding: 100px 0;
+            background: var(--gradient-primary);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .learn-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            margin-top: 60px;
+        }
+
+        .learn-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .learn-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffff00, #ff6b6b);
+        }
+
+        .learn-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .learn-item h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .learn-item p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f8f8f8, #ffffff);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(114, 22, 244, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(143, 71, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-content h2 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-content p {
+            font-size: 1.4rem;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .urgency-text {
+            background: var(--gradient-danger);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 40px 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+            animation: pulse 3s infinite;
+        }
+
+        .bonus-offer {
+            background: var(--gradient-success);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+        }
+
+        /* Fixed CTA Button */
+        .fixed-cta {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 99;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 18px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 6px 25px rgba(114, 22, 244, 0.5);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .fixed-cta:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(114, 22, 244, 0.6);
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content,
+            .survey-visual {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+
+            .section-header h2 {
+                font-size: 2.5rem;
+            }
+
+            .survey-text h2 {
+                font-size: 2.2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .problems-grid,
+            .method-grid,
+            .learn-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .pie-chart {
+                width: 250px;
+                height: 250px;
+            }
+
+            .fixed-cta {
+                bottom: 15px;
+                right: 15px;
+                padding: 15px 25px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Particle Effect */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--primary-purple);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particle-float 8s linear infinite;
+        }
+
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="animated-bg">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <div class="urgency-banner">
+                        🚨 WORKSHOP HAPPENING SOON - LIMITED SEATS! 🚨
+                    </div>
+                    
+                    <h1>Stop Making COSTLY Treasury Tech Selection Mistakes</h1>
+                    <p class="hero-subtitle">Learn the proven 6-step framework that eliminates regret and ensures you select the RIGHT technology for your treasury needs</p>
+                    
+                    <div class="workshop-details">
+                        <h3>🎯 FREE EXCLUSIVE WORKSHOP</h3>
+                        <p>Tuesday, July 15 | 12:00 PM ET / 9:00 AM PT</p>
+                    </div>
+                    
+                    <a href="#register" class="cta-button">🚀 SECURE YOUR SPOT NOW</a>
+                </div>
+                
+                <div class="hero-visual">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-number">50%</span>
+                            <span class="stat-label">MAKE NO DECISION</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">15%</span>
+                            <span class="stat-label">END UP UNHAPPY</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">30%</span>
+                            <span class="stat-label">HAPPY BUT SURPRISED</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">5%</span>
+                            <span class="stat-label">TRULY SATISFIED</span>
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: var(--gray-text); font-style: italic; margin-top: 20px; font-weight: 600;">📊 SHOCKING Survey Results - TMS Projects</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Most Tech Selections FAIL MISERABLY</h2>
+                <p>These 5 critical mistakes cost treasury teams MILLIONS in wasted time, resources, and missed opportunities</p>
+            </div>
+            
+            <div class="problems-grid">
+                <div class="problem-card">
+                    <div class="problem-number">1</div>
+                    <h3>❌ No Clear Requirements</h3>
+                    <p>Getting what you WANTED, not what you actually NEEDED. Without proper requirements, you're flying blind into disaster.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-number">2</div>
+                    <h3>❌ Buying on Looks</h3>
+                    <p>Choosing based on flashy dashboards, pretty colors, and visual appeal instead of REAL functional capabilities.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-number">3</div>
+                    <h3>❌ Falling for Sales Tactics</h3>
+                    <p>Selecting the BEST SALESPERSON or being swayed by empty buzzwords like AI, ML, API, and LLM without substance.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-number">4</div>
+                    <h3>❌ Taking the Easy Path</h3>
+                    <p>Choosing what seems familiar, had the best demo, or what you used at your last company. COMFORT ZONE = DANGER ZONE.</p>
+                </div>
+                
+                <div class="problem-card">
+                    <div class="problem-number">5</div>
+                    <h3>❌ Going Cheap</h3>
+                    <p>Selecting the LOWEST PRICE option regardless of whether it meets your actual requirements. You get what you pay for!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Survey Results -->
+    <section class="survey-section">
+        <div class="particles" id="particles"></div>
+        <div class="container">
+            <div class="survey-visual">
+                <div class="survey-chart">
+                    <h3 class="chart-title">💥 SHOCKING Survey Results</h3>
+                    <div class="pie-chart"></div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color no-decision"></div>
+                            <span>50% No Decision</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color surprised"></div>
+                            <span>30% Happy, Surprised</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color unhappy"></div>
+                            <span>15% Unhappy</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color happy"></div>
+                            <span>5% Happy</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="survey-text">
+                    <h2>🔥 The Reality is SHOCKING!</h2>
+                    <p>Our exclusive research reveals that <strong>95% of treasury teams are NOT satisfied</strong> with their technology selection outcomes.</p>
+                    
+                    <div class="shocking-stat">
+                        <span class="big-number">95%</span>
+                        <span class="big-text">ARE MAKING COSTLY MISTAKES!</span>
+                    </div>
+                    
+                    <p style="font-size: 1.4rem; font-weight: 700;">❓ What level of risk is acceptable to YOU?</p>
+                    
+                    <p>Most treasury professionals enter technology selection with good intentions but WITHOUT a proven framework. The result? Wasted time, frustrated teams, and technology that FAILS to deliver on its promises.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>The ERR NOT™ Method</h2>
+                <p>Our PROVEN 6-step framework that ensures you select the RIGHT technology without regret - GUARANTEED!</p>
+            </div>
+            
+            <div class="method-grid">
+                <div class="method-step">
+                    <div class="step-letter">E</div>
+                    <h3>✅ Education</h3>
+                    <p>Gain COMPREHENSIVE understanding of vendor and product options currently available in the market. Knowledge is POWER!</p>
+                </div>
+                
+                <div class="method-step">
+                    <div class="step-letter">R</div>
+                    <h3>✅ Requirements</h3>
+                    <p>Determine and prioritize your ACTUAL requirements based on business needs, not wants. No more wishful thinking!</p>
+                </div>
+                
+                <div class="method-step">
+                    <div class="step-letter">R</div>
+                    <h3>✅ RFI/RFP</h3>
+                    <p>Create BESPOKE RFI/RFP documents designed to effectively shortlist the RIGHT vendors for YOUR needs.</p>
+                </div>
+                
+                <div class="method-step">
+                    <div class="step-letter">N</div>
+                    <h3>✅ uNique</h3>
+                    <p>Create CUSTOM demo scripts that highlight strengths and weaknesses of each vendor against your high-priority requirements.</p>
+                </div>
+                
+                <div class="method-step">
+                    <div class="step-letter">O</div>
+                    <h3>✅ Obvious Winner</h3>
+                    <p>Run a post-demo process to rank vendors OBJECTIVELY and make the winner (and backup) crystal clear.</p>
+                </div>
+                
+                <div class="method-step">
+                    <div class="step-letter">T</div>
+                    <h3>✅ Transformation</h3>
+                    <p>Implement better practices and processes to ensure MARKED improvement in your future state over current state.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What You'll Learn -->
+    <section class="learn-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 style="color: white;">💎 What You'll MASTER in This Workshop</h2>
+                <p style="color: rgba(255, 255, 255, 0.9);">Walk away with ACTIONABLE insights and a proven framework you can implement IMMEDIATELY for GUARANTEED success!</p>
+            </div>
+            
+            <div class="learn-grid">
+                <div class="learn-item">
+                    <h4>🚫 Avoid COSTLY Missteps</h4>
+                    <p>Learn the 5 critical mistakes that waste time and money, and how to avoid them COMPLETELY.</p>
+                </div>
+                
+                <div class="learn-item">
+                    <h4>🎯 Structured Evaluation Process</h4>
+                    <p>Get the EXACT framework for evaluating technology options systematically and objectively.</p>
+                </div>
+                
+                <div class="learn-item">
+                    <h4>📋 Requirements That MATTER</h4>
+                    <p>Discover how to create requirements that actually drive the RIGHT decisions and outcomes.</p>
+                </div>
+                
+                <div class="learn-item">
+                    <h4>🎭 Effective Vendor Demos</h4>
+                    <p>Master the art of vendor demos that reveal TRUE capabilities and expose weaknesses.</p>
+                </div>
+                
+                <div class="learn-item">
+                    <h4>💪 Confident Decision Making</h4>
+                    <p>Learn the framework for making technology decisions with CONFIDENCE and without regret.</p>
+                </div>
+                
+                <div class="learn-item">
+                    <h4>🚀 Implementation SUCCESS</h4>
+                    <p>Get insights on ensuring your selected technology delivers on its promises post-implementation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta" id="register">
+        <div class="container">
+            <div class="cta-content">
+                <h2>🔥 Reserve Your Spot TODAY!</h2>
+                <p>Join treasury professionals who are DONE making costly technology selection mistakes.</p>
+                
+                <div class="urgency-text">
+                    ⏰ <strong>URGENT - LIMITED SEATS:</strong> This exclusive workshop is limited to ensure personalized attention and MAXIMUM value for all participants. Seats are filling FAST!
+                </div>
+                
+                <a href="#" class="cta-button" style="font-size: 1.3rem; padding: 25px 50px;">🎯 CLAIM YOUR FREE SPOT NOW</a>
+                
+                <div class="bonus-offer">
+                    🎁 <strong>EXCLUSIVE BONUS:</strong> All attendees receive a FREE 30-minute consultation with our treasury technology experts (Value: $500)
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fixed CTA Button -->
+    <a href="#register" class="fixed-cta">🚀 REGISTER NOW</a>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and sections
+        document.querySelectorAll('.problem-card, .method-step, .learn-item, .stat-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Hide/show fixed CTA based on scroll position
+        let lastScrollTop = 0;
+        const fixedCta = document.querySelector('.fixed-cta');
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 300) {
+                fixedCta.style.transform = 'translateY(100px)';
+            } else {
+                fixedCta.style.transform = 'translateY(0)';
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+
+        // Particle effect
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.width = particle.style.height = Math.random() * 10 + 5 + 'px';
+            particle.style.animationDuration = Math.random() * 3 + 5 + 's';
+            particle.style.opacity = Math.random() * 0.5 + 0.2;
+            
+            const particlesContainer = document.getElementById('particles');
+            if (particlesContainer) {
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 8000);
+            }
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 500);
+
+        // Add dynamic text animation
+        const urgencyBanner = document.querySelector('.urgency-banner');
+        if (urgencyBanner) {
+            setInterval(() => {
+                urgencyBanner.style.background = urgencyBanner.style.background === 'var(--gradient-danger)' 
+                    ? 'linear-gradient(135deg, #ff6b6b, #ee5a52)' 
+                    : 'var(--gradient-danger)';
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

@@ -13,6 +13,8 @@ npm run build
 
 The `build` script renders every template in `templates/` and writes the resulting HTML files back into the repository structure.
 
+The compiled pages live in the `insights/` directory. These HTML files are standalone and can be pasted directly into WordPress. They are generated from EJS templates that rely on shared partials, so remember to run `npm run build` whenever a template or partial changes.
+
 ## WordPress Additional CSS
 
 The file `assets/css/shared.css` is version controlled in this repository but is

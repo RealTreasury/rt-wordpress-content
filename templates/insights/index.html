@@ -615,6 +615,7 @@
                         });
                     }
                 });
+                filterButtonsContainer.innerHTML = '<button class="active" data-category="all">All</button>';
                 categories.forEach(category => {
                     const button = document.createElement('button');
                     button.textContent = category;

@@ -1396,4 +1396,3 @@ function display_custom_related_posts() {
 
     wp_reset_postdata();
 }
-<?php

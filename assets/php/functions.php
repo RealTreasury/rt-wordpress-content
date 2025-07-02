@@ -1113,7 +1113,7 @@ document.addEventListener('wpcf7mailsent', function(event) {
     if (modal) modal.classList.remove('show');
     
     // Redirect immediately (no delay)
-    window.location.href = 'https://aisbee08e5bdvaliantmaker.wpcomstaging.com/treasury-tech-stack/';
+    window.location.href = 'https://aisbee08e5bdvaliantmaker.wpcomstaging.com/treasury-tech-portal/';
 });
 </script>
 <?php

@@ -1415,8 +1415,6 @@ function display_related_posts() {
 
     wp_reset_postdata();
 }
-
-// add_action( 'astra_entry_after', 'display_related_posts', 25 );
 // ===============================================================
 // WordPress REST API Fixes for Insights Page
 // ===============================================================
@@ -1495,14 +1493,14 @@ add_action('rest_api_init', function() {
     ));
 });
 
-// Debug function to check REST API status
+// Debug function to check REST API status (fixed version)
 function debug_rest_api_status() {
     $status = array(
-        'rest_enabled' => rest_enabled(),
         'rest_url' => rest_url(),
         'posts_count' => wp_count_posts()->publish,
         'current_user_can' => current_user_can('read'),
-        'permalink_structure' => get_option('permalink_structure')
+        'permalink_structure' => get_option('permalink_structure'),
+        'wp_version' => get_bloginfo('version')
     );
     
     error_log('REST API Debug: ' . print_r($status, true));
@@ -1516,4 +1514,5 @@ add_action('admin_footer', function() {
         echo '<script>console.log("REST API Status:", ' . json_encode($status) . ');</script>';
     }
 });
+
 ?>

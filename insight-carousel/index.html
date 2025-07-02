@@ -755,27 +755,15 @@
                 
                 let excerpt = '';
                 
-                // Try to get excerpt from post excerpt first
+                // Prioritize WordPress excerpt field as it's usually cleaner
                 if (post.excerpt?.rendered) {
                     excerpt = this.stripHtml(post.excerpt.rendered);
                     excerpt = this.cleanExcerpt(excerpt, post.title?.rendered || '');
                 }
                 
-                // If excerpt is too short or empty, try content
-                if (!excerpt || excerpt.length < 60) {
-                    if (post.content?.rendered) {
-                        excerpt = this.generateExcerpt(post.content.rendered);
-                    }
-                }
-                
-                // Only use fallback if we still don't have good content
-                if (!excerpt || excerpt.length < 60) {
+                // If no good excerpt, use title-based fallback
+                if (!excerpt || excerpt.length < 40) {
                     excerpt = this.generateFallbackExcerpt(post.title?.rendered || '');
-                }
-                
-                // Ensure we have some content
-                if (!excerpt) {
-                    excerpt = 'Click to read more about this post and discover valuable insights for your professional development.';
                 }
                 
                 card.innerHTML = `
@@ -875,8 +863,8 @@
 
             async fetchRecentPosts(excludeId = null) {
                 try {
-                    // Get more posts to choose from and include full content for better excerpts
-                    let url = '/wp-json/wp/v2/posts?per_page=8&orderby=date&_fields=id,title,excerpt,content,featured_media,date,link';
+                    // Focus on excerpt and basic fields for faster loading
+                    let url = '/wp-json/wp/v2/posts?per_page=8&orderby=date&_fields=id,title,excerpt,featured_media,date,link';
                     if (excludeId) {
                         url += `&exclude=${excludeId}`;
                     }
@@ -958,38 +946,38 @@
                 if (!text) return '';
                 
                 let cleaned = text
-                    .replace(/^Real Treasury\s*[-–—]\s*/i, '')
-                    .replace(/^US Banking\s*/i, '')
-                    .replace(/Commercial Real Estate \(CRE\)\s*/i, '')
-                    .replace(/Concentration Report\s*/i, '')
-                    .replace(/Real Treasury\s*/gi, '')
-                    .replace(/\s*[-–—]\s*\d{4}.*$/, '')
-                    .replace(/^[^\w]*/, '')
-                    .replace(/^(Read more|Continue reading|Learn more)\s*/i, '') // Remove common link text
-                    .replace(/\s*\[.*?\]\s*/g, '') // Remove any remaining shortcodes
+                    .replace(/\[.*?\]/g, '') // Remove shortcodes
+                    .replace(/^Real Treasury\s*[-–—]\s*/i, '') // Remove site prefix
+                    .replace(/\s*[-–—]\s*\d{4}.*$/, '') // Remove year suffixes
+                    .replace(/^[^\w]*/, '') // Remove leading non-word chars
+                    .replace(/\s+/g, ' ') // Normalize whitespace
                     .trim();
                 
-                // If we have meaningful content (lowered threshold), return it
-                if (cleaned.length >= 40) {
+                // Return cleaned content if it's reasonable length
+                if (cleaned.length >= 30 && cleaned.length <= 250) {
                     return cleaned;
                 }
                 
-                return ''; // Return empty to trigger better content extraction
+                return ''; // Return empty to trigger fallback
             }
 
             generateFallbackExcerpt(title) {
                 const titleLower = (title || '').toLowerCase();
                 
                 if (titleLower.includes('report') || titleLower.includes('cre') || titleLower.includes('bank')) {
-                    return 'Comprehensive analysis and insights for banking and real estate professionals, featuring key trends, strategic recommendations, and data-driven perspectives on market developments. Essential reading for industry decision-makers seeking to navigate evolving regulatory landscapes and capitalize on emerging opportunities.';
+                    return 'Comprehensive analysis and insights for banking professionals, featuring key trends and strategic recommendations for navigating today\'s market.';
                 } else if (titleLower.includes('podcast') || titleLower.includes('interview')) {
-                    return 'Expert discussion on treasury management strategies, industry trends, and innovative financial solutions. Join thought leaders as they explore cutting-edge approaches to financial technology, risk management, and operational excellence in today\'s dynamic business environment.';
+                    return 'Expert discussion on treasury management strategies, industry trends, and innovative solutions driving the future of financial services.';
                 } else if (titleLower.includes('event') || titleLower.includes('conference')) {
-                    return 'Join industry leaders to explore the latest developments in treasury technology and financial innovation. Network with peers, discover emerging trends, and gain actionable insights from experts who are shaping the future of financial services and treasury management.';
-                } else if (titleLower.includes('tms') || titleLower.includes('technology')) {
-                    return 'Discover how modern technology solutions are transforming treasury operations and driving efficiency gains. Learn about the latest innovations in financial technology, automation tools, and digital transformation strategies that are revolutionizing how organizations manage their financial operations.';
+                    return 'Join industry leaders to explore the latest developments in treasury technology and discover actionable insights from market experts.';
+                } else if (titleLower.includes('tms') || titleLower.includes('technology') || titleLower.includes('system')) {
+                    return 'Discover how modern technology solutions are transforming treasury operations and driving efficiency gains across the industry.';
+                } else if (titleLower.includes('payment') || titleLower.includes('network')) {
+                    return 'Explore the evolving landscape of payment systems and networks, with insights into emerging technologies and market trends.';
+                } else if (titleLower.includes('data') || titleLower.includes('flow')) {
+                    return 'Understanding data management and flow optimization strategies for improved treasury operations and decision-making processes.';
                 } else {
-                    return 'Essential insights for treasury professionals navigating the evolving landscape of financial management and technology. Stay informed about industry best practices, regulatory changes, and strategic approaches that drive operational excellence and sustainable growth in today\'s competitive marketplace.';
+                    return 'Essential insights for treasury professionals navigating the evolving landscape of financial management and technology innovation.';
                 }
             }
 

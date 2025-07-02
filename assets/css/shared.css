@@ -1528,6 +1528,92 @@ nav[class*="post-navigation"],
 [class*="post-navigation"] {
     display: none !important;
 }
+
+/* Adjust Max Mega Menu position on mobile */
+@media (max-width: 768px) { /* This targets mobile devices */
+    #mega-menu-wrap-primary #mega-menu-primary {
+        margin-top: -60px; /* Adjust this negative value as needed */
+    }
+}
+
+/* Mobile Frosted Glass Menu - Less than 687px */
+@media (max-width: 687px) {
+    /* Main mobile menu container */
+    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
+    #mega-menu-wrap-primary #mega-menu-primary,
+    .mega-menu-toggle + .mega-menu,
+    .mega-menu-mobile {
+        background: hsla(0, 0%, 100%, .25) !important;
+        backdrop-filter: blur(12px) saturate(120%) !important;
+        -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+        border-radius: 16px !important;
+        border: 1px solid hsla(0, 0%, 100%, .2) !important;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, .15) !important;
+        padding: 10px !important;
+        margin: 10px !important;
+    }
+    
+    /* Mobile submenu items */
+    #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu,
+    #mega-menu-wrap-primary .mega-sub-menu {
+        background: hsla(0, 0%, 100%, .15) !important;
+        backdrop-filter: blur(8px) saturate(110%) !important;
+        -webkit-backdrop-filter: blur(8px) saturate(110%) !important;
+        border-radius: 12px !important;
+        border: 1px solid hsla(0, 0%, 100%, .15) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, .1) !important;
+        margin: 5px 0 !important;
+        padding: 8px !important;
+    }
+    
+    /* Mobile menu links styling */
+    #mega-menu-wrap-max_mega_menu_1 .mega-menu-link,
+    #mega-menu-wrap-primary .mega-menu-link {
+        background: none !important;
+        border-radius: 8px !important;
+        transition: all .2s ease !important;
+    }
+    
+    /* Mobile menu links hover effect */
+    #mega-menu-wrap-max_mega_menu_1 .mega-menu-link:hover,
+    #mega-menu-wrap-primary .mega-menu-link:hover {
+        background: hsla(0, 0%, 100%, .3) !important;
+        backdrop-filter: blur(6px) !important;
+        -webkit-backdrop-filter: blur(6px) !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Additional frosted effect for mobile toggle area */
+    .mega-menu-toggle {
+        background: hsla(0, 0%, 100%, .2) !important;
+        backdrop-filter: blur(10px) saturate(115%) !important;
+        -webkit-backdrop-filter: blur(10px) saturate(115%) !important;
+        border-radius: 8px !important;
+        border: 1px solid hsla(0, 0%, 100%, .15) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, .1) !important;
+    }
+    
+    /* Ensure proper positioning */
+    #mega-menu-wrap-primary #mega-menu-primary {
+        margin-top: -60px;
+        position: relative;
+        z-index: 999;
+    }
+}
+
+/* Extra small screens - Enhanced frosted effect */
+@media (max-width: 480px) {
+    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
+    #mega-menu-wrap-primary #mega-menu-primary {
+        background: hsla(0, 0%, 100%, .3) !important;
+        backdrop-filter: blur(15px) saturate(125%) !important;
+        -webkit-backdrop-filter: blur(15px) saturate(125%) !important;
+        border-radius: 12px !important;
+        margin: 5px !important;
+        padding: 8px !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, .2) !important;
+    }
+}
 /* ===== FIX for Clickable Hidden Header Widget ===== */
 
 /*

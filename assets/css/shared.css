@@ -1528,3 +1528,21 @@ nav[class*="post-navigation"],
 [class*="post-navigation"] {
     display: none !important;
 }
+/* ===== FIX for Clickable Hidden Header Widget ===== */
+
+/*
+ * By default, this makes your hidden mega sub-menus non-interactive.
+ * This is the main fix that prevents the unwanted clicks.
+*/
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu {
+    pointer-events: none;
+}
+
+/*
+ * This makes the sub-menus interactive again only when they are
+ * supposed to be visible (e.g., on desktop hover or mobile tap).
+*/
+#mega-menu-wrap-max_mega_menu_1 li.mega-menu-item:hover > .mega-sub-menu,
+#mega-menu-wrap-max_mega_menu_1 li.mega-menu-item.mega-menu-open > .mega-sub-menu {
+    pointer-events: auto;
+}

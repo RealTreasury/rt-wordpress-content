@@ -249,8 +249,8 @@
                 log('Starting to fetch posts...');
                 updateStatus('🔄 Connecting to WordPress API...', 'loading');
                 
-                // Test the API endpoint
-                const apiUrl = '/wp-json/wp/v2/posts?per_page=12&_fields=id,title,excerpt,link,date,featured_media';
+                // Use the alternative route that works
+                const apiUrl = '/?rest_route=/wp/v2/posts&per_page=12&_fields=id,title,excerpt,link,date,featured_media';
                 log(`Fetching from: ${apiUrl}`);
                 
                 const response = await fetch(apiUrl);

@@ -442,51 +442,20 @@
             .filters-and-search { flex-direction: column; align-items: stretch; }
             .insights-grid { grid-template-columns: 1fr; }
         }
-    </style>
-    
-    <!-- Static Schema for the Page and Organization -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "Organization",
-          "name": "Your Company Name",
-          "url": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com",
-          "logo": "https://placehold.co/200x60/281345/FFFFFF?text=Your+Logo",
-          "sameAs": [
-            "https://twitter.com/yourprofile",
-            "https://www.linkedin.com/company/yourprofile"
-          ]
-        },
-        {
-          "@type": "WebPage",
-          "url": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url",
-          "name": "Expert Insights on AI, Tech & Business Strategy",
-          "description": "Explore cutting-edge articles and analysis from [Your Company Name]'s experts. Drive your business forward with insights on AI, technology, and market strategy.",
-          "publisher": {
-            "@type": "Organization",
-            "name": "Your Company Name"
-          }
-        },
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com"
-          },{
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Insights",
-            "item": "https://aisbee08e5bdvaliantmaker.wpcomstaging.com/your-insights-page-url"
-          }]
-        }
-      ]
-    }
-    </script>
 
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 9999;
+        }
+    </style>
 </head>
 <body>
 
@@ -526,6 +495,9 @@
         <button id="showMoreBtn" class="show-more-btn">Show More</button>
     </main>
 
+    <!-- Debug Info -->
+    <div id="debugInfo" class="debug-info" style="display: none;"></div>
+
     <!-- Modal for Lead Capture -->
     <div id="leadModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-content">
@@ -547,13 +519,37 @@
     </div>
 
     <script>
-        class InsightsPage {
+        // Global error handling
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.error);
+            updateDebugInfo('Error: ' + e.message + ' at ' + e.filename + ':' + e.lineno);
+        });
+
+        function updateDebugInfo(message) {
+            const debugDiv = document.getElementById('debugInfo');
+            if (debugDiv) {
+                debugDiv.style.display = 'block';
+                debugDiv.innerHTML = new Date().toLocaleTimeString() + ': ' + message;
+                setTimeout(() => {
+                    debugDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        class SimpleInsightsPage {
             constructor() {
-                // DOM Elements
+                updateDebugInfo('Starting InsightsPage...');
+                
+                // Safely get DOM elements
                 this.grid = document.getElementById('insightsGrid');
                 this.searchInput = document.getElementById('searchInput');
                 this.filterContainer = document.getElementById('filterButtons');
                 this.showMoreBtn = document.getElementById('showMoreBtn');
+                
+                if (!this.grid) {
+                    console.error('Grid element not found');
+                    return;
+                }
                 
                 // State
                 this.allPosts = [];
@@ -563,89 +559,130 @@
                 this.currentFilter = 'all';
                 this.currentSearch = '';
                 this.isLoading = false;
-
-                // Caches for performance
-                this.cache = new Map();
                 this.categoryCache = new Map();
                 
-                // Intersection observer for lazy loading
-                this.observer = new IntersectionObserver(this.onCardVisible.bind(this), {
-                    rootMargin: '200px',
-                });
-
+                updateDebugInfo('Initialized, fetching posts...');
                 this.init();
             }
 
             init() {
-                this.bindEvents();
-                this.fetchInitialData();
+                try {
+                    this.bindEvents();
+                    this.fetchPosts();
+                } catch (error) {
+                    console.error('Init error:', error);
+                    updateDebugInfo('Init error: ' + error.message);
+                }
             }
 
             bindEvents() {
-                this.showMoreBtn.addEventListener('click', () => this.loadMorePosts());
-                this.searchInput.addEventListener('input', this.debounce(this.handleSearch.bind(this), 300));
-                this.filterContainer.addEventListener('click', (e) => this.handleFilterClick(e));
-                
-                // Modal Events
-                this.setupModal();
+                try {
+                    // Safe event binding
+                    if (this.showMoreBtn) {
+                        this.showMoreBtn.addEventListener('click', () => {
+                            this.loadMorePosts();
+                        });
+                    }
+                    
+                    if (this.searchInput) {
+                        this.searchInput.addEventListener('input', (e) => {
+                            clearTimeout(this.searchTimeout);
+                            this.searchTimeout = setTimeout(() => {
+                                this.handleSearch(e);
+                            }, 300);
+                        });
+                    }
+                    
+                    if (this.filterContainer) {
+                        this.filterContainer.addEventListener('click', (e) => {
+                            this.handleFilterClick(e);
+                        });
+                    }
+                    
+                    this.setupModal();
+                } catch (error) {
+                    console.error('Event binding error:', error);
+                    updateDebugInfo('Event binding error: ' + error.message);
+                }
             }
 
             setupModal() {
-                const modal = document.getElementById('leadModal');
-                document.getElementById('openModalBtn').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    modal.classList.add('show');
-                    document.body.classList.add('modal-open');
-                });
-                
-                const closeModal = () => {
-                    modal.classList.remove('show');
-                    document.body.classList.remove('modal-open');
-                };
-                
-                document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) closeModal();
-                });
-                
-                document.getElementById('leadForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    e.target.innerHTML = `<p class="text-center text-lg">Thank you! We'll be in touch.</p>`;
-                });
-            }
-
-            async fetchInitialData() {
-                if (this.isLoading) return;
-                this.isLoading = true;
-
                 try {
-                    console.log('Fetching posts...');
+                    const modal = document.getElementById('leadModal');
+                    const openBtn = document.getElementById('openModalBtn');
+                    const closeBtn = document.getElementById('closeModalBtn');
+                    const form = document.getElementById('leadForm');
                     
-                    // Use similar endpoint as carousel
-                    const postsApiUrl = `/wp-json/wp/v2/posts?per_page=30&orderby=date&_fields=id,title,excerpt,link,featured_media,author,categories,date_gmt,modified_gmt`;
-                    const response = await fetch(postsApiUrl);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                    if (openBtn && modal) {
+                        openBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            modal.classList.add('show');
+                            document.body.classList.add('modal-open');
+                        });
                     }
                     
-                    let posts = await response.json();
-                    console.log(`Fetched ${posts.length} posts`);
+                    const closeModal = () => {
+                        if (modal) {
+                            modal.classList.remove('show');
+                            document.body.classList.remove('modal-open');
+                        }
+                    };
                     
-                    if (posts.length === 0) {
+                    if (closeBtn) {
+                        closeBtn.addEventListener('click', closeModal);
+                    }
+                    
+                    if (modal) {
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) closeModal();
+                        });
+                    }
+                    
+                    if (form) {
+                        form.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            e.target.innerHTML = `<p style="text-align: center; font-size: 1.1rem;">Thank you! We'll be in touch.</p>`;
+                        });
+                    }
+                } catch (error) {
+                    console.error('Modal setup error:', error);
+                }
+            }
+
+            async fetchPosts() {
+                if (this.isLoading) return;
+                this.isLoading = true;
+                
+                try {
+                    updateDebugInfo('Fetching posts from API...');
+                    
+                    const postsApiUrl = `/wp-json/wp/v2/posts?per_page=20&orderby=date&_fields=id,title,excerpt,link,featured_media,categories,date_gmt`;
+                    console.log('Fetching from:', postsApiUrl);
+                    
+                    const response = await fetch(postsApiUrl);
+                    console.log('Response status:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const posts = await response.json();
+                    console.log('Fetched posts:', posts.length);
+                    updateDebugInfo(`Fetched ${posts.length} posts`);
+                    
+                    if (!Array.isArray(posts) || posts.length === 0) {
                         this.showNoPostsMessage();
                         return;
                     }
                     
                     this.allPosts = posts;
-                    
-                    // Load categories
                     await this.loadCategories();
                     this.populateFilters();
                     this.applyFilters();
-
+                    
                 } catch (error) {
-                    console.error('Error fetching posts:', error);
+                    console.error('Fetch error:', error);
+                    updateDebugInfo('Fetch error: ' + error.message);
                     this.showErrorMessage(error.message);
                 } finally {
                     this.isLoading = false;
@@ -654,143 +691,170 @@
 
             async loadCategories() {
                 try {
-                    const categoryIds = [...new Set(this.allPosts.flatMap(p => p.categories))];
+                    const categoryIds = [...new Set(this.allPosts.flatMap(p => p.categories || []))];
                     if (categoryIds.length === 0) return;
 
                     const categoriesApiUrl = `/wp-json/wp/v2/categories?include=${categoryIds.join(',')}&_fields=id,name,slug`;
                     const response = await fetch(categoriesApiUrl);
-                    const categories = await response.json();
                     
-                    categories.forEach(cat => {
-                        if (cat.slug !== 'uncategorized') {
-                            this.categoryCache.set(cat.id, cat);
-                        }
-                    });
-                    
-                    console.log(`Loaded ${this.categoryCache.size} categories`);
+                    if (response.ok) {
+                        const categories = await response.json();
+                        categories.forEach(cat => {
+                            if (cat.slug !== 'uncategorized') {
+                                this.categoryCache.set(cat.id, cat);
+                            }
+                        });
+                        console.log(`Loaded ${this.categoryCache.size} categories`);
+                    }
                 } catch (error) {
-                    console.error('Error loading categories:', error);
+                    console.error('Categories error:', error);
                 }
             }
 
             populateFilters() {
-                const categories = Array.from(this.categoryCache.values());
-                
-                this.filterContainer.innerHTML = `<button class="active" data-category="all">All</button>`;
-                
-                categories.forEach(cat => {
-                    const button = document.createElement('button');
-                    button.textContent = cat.name;
-                    button.dataset.category = cat.id;
-                    this.filterContainer.appendChild(button);
-                });
+                try {
+                    if (!this.filterContainer) return;
+                    
+                    const categories = Array.from(this.categoryCache.values());
+                    this.filterContainer.innerHTML = `<button class="active" data-category="all">All</button>`;
+                    
+                    categories.forEach(cat => {
+                        const button = document.createElement('button');
+                        button.textContent = cat.name;
+                        button.dataset.category = cat.id;
+                        this.filterContainer.appendChild(button);
+                    });
+                } catch (error) {
+                    console.error('Filter population error:', error);
+                }
             }
             
             applyFilters() {
-                let posts = this.allPosts;
+                try {
+                    let posts = this.allPosts;
 
-                // Filter by category
-                if (this.currentFilter !== 'all') {
-                    posts = posts.filter(post => post.categories.includes(parseInt(this.currentFilter)));
+                    // Filter by category
+                    if (this.currentFilter !== 'all') {
+                        posts = posts.filter(post => (post.categories || []).includes(parseInt(this.currentFilter)));
+                    }
+
+                    // Filter by search term
+                    if (this.currentSearch) {
+                        const searchTerm = this.currentSearch.toLowerCase();
+                        posts = posts.filter(post => {
+                            const title = (post.title?.rendered || '').toLowerCase();
+                            const excerpt = (post.excerpt?.rendered || '').toLowerCase();
+                            return title.includes(searchTerm) || excerpt.includes(searchTerm);
+                        });
+                    }
+
+                    this.currentPosts = posts;
+                    this.displayedCount = 0;
+                    
+                    if (this.grid) {
+                        this.grid.innerHTML = '';
+                    }
+                    
+                    this.loadMorePosts();
+                } catch (error) {
+                    console.error('Filter error:', error);
                 }
-
-                // Filter by search term
-                if (this.currentSearch) {
-                    const searchTerm = this.currentSearch.toLowerCase();
-                    posts = posts.filter(post =>
-                        post.title.rendered.toLowerCase().includes(searchTerm) ||
-                        (post.excerpt.rendered && post.excerpt.rendered.toLowerCase().includes(searchTerm))
-                    );
-                }
-
-                this.currentPosts = posts;
-                this.displayedCount = 0;
-                this.grid.innerHTML = '';
-                this.loadMorePosts();
             }
             
             loadMorePosts() {
-                const toDisplay = this.currentPosts.slice(this.displayedCount, this.displayedCount + this.postsPerPage);
-
-                if (toDisplay.length === 0 && this.displayedCount === 0) {
-                    this.showNoPostsMessage();
-                    this.showMoreBtn.style.display = 'none';
-                    return;
-                }
-                
-                toDisplay.forEach((post, index) => {
-                    const card = this.createSkeletonCard(post, index);
-                    this.grid.appendChild(card);
-                    
-                    // Load real content immediately
-                    setTimeout(() => {
-                        this.populateCard(card, post);
-                    }, index * 50);
-                });
-
-                this.displayedCount += toDisplay.length;
-                this.showMoreBtn.style.display = this.displayedCount < this.currentPosts.length ? 'block' : 'none';
-            }
-
-            createSkeletonCard(post, index) {
-                const card = document.createElement('article');
-                card.className = 'insight-card';
-                card.dataset.postId = post.id;
-                card.style.animationDelay = `${(index % this.postsPerPage) * 100}ms`;
-                
-                card.innerHTML = `
-                    <div class="card-image-skeleton skeleton"></div>
-                    <div class="card-content">
-                        <div class="card-date"><div class="skeleton-text" style="width: 30%;"></div></div>
-                        <span class="card-category"><div class="skeleton-text" style="width: 40%;"></div></span>
-                        <h2 class="card-title">
-                            <div class="skeleton-text" style="width: 100%;"></div>
-                            <div class="skeleton-text" style="width: 80%;"></div>
-                        </h2>
-                        <p class="card-excerpt">
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text"></div>
-                            <div class="skeleton-text" style="width: 70%;"></div>
-                        </p>
-                        <span class="card-read-more">&nbsp;</span>
-                    </div>
-                `;
-                
-                return card;
-            }
-
-            async populateCard(card, post) {
                 try {
-                    const categoryName = this.getCategoryName(post.categories);
-                    const imageUrl = await this.getImageUrl(post.featured_media, post.title.rendered);
-                    const excerpt = this.generateExcerpt(post.excerpt?.rendered || '', post.title?.rendered || '');
+                    const toDisplay = this.currentPosts.slice(this.displayedCount, this.displayedCount + this.postsPerPage);
+
+                    if (toDisplay.length === 0 && this.displayedCount === 0) {
+                        this.showNoPostsMessage();
+                        if (this.showMoreBtn) {
+                            this.showMoreBtn.style.display = 'none';
+                        }
+                        return;
+                    }
+                    
+                    toDisplay.forEach((post, index) => {
+                        setTimeout(() => {
+                            this.createAndAddCard(post);
+                        }, index * 100);
+                    });
+
+                    this.displayedCount += toDisplay.length;
+                    
+                    if (this.showMoreBtn) {
+                        this.showMoreBtn.style.display = this.displayedCount < this.currentPosts.length ? 'block' : 'none';
+                    }
+                } catch (error) {
+                    console.error('Load more error:', error);
+                }
+            }
+
+            createAndAddCard(post) {
+                try {
+                    if (!this.grid) return;
+                    
+                    const card = document.createElement('article');
+                    card.className = 'insight-card';
+                    
+                    const categoryName = this.getCategoryName(post.categories || []);
+                    const title = post.title?.rendered || 'Untitled Post';
+                    const excerpt = this.generateExcerpt(post.excerpt?.rendered || '', title);
                     const formattedDate = this.formatDate(post.date_gmt);
+                    const imageUrl = this.getPlaceholderImage(title);
                     
                     card.innerHTML = `
-                        <img src="${imageUrl}" alt="${this.escapeHtml(post.title.rendered)}" class="card-image" 
+                        <img src="${imageUrl}" alt="${this.escapeHtml(title)}" class="card-image" 
                              onerror="this.onerror=null;this.src='https://placehold.co/600x400/eeeeee/777777?text=Image+Error';">
                         <div class="card-content">
                             <div class="card-date">${formattedDate}</div>
                             <span class="card-category">${categoryName}</span>
-                            <h2 class="card-title">${this.escapeHtml(post.title.rendered)}</h2>
+                            <h2 class="card-title">${this.escapeHtml(title)}</h2>
                             <p class="card-excerpt">${this.escapeHtml(excerpt)}</p>
-                            <a href="${post.link}" target="_blank" class="card-read-more">Read More &rarr;</a>
+                            <a href="${post.link || '#'}" target="_blank" class="card-read-more">Read More &rarr;</a>
                         </div>
                     `;
                     
                     card.addEventListener('click', (e) => {
-                        if (!e.target.closest('a')) {
+                        if (!e.target.closest('a') && post.link) {
                             window.open(post.link, '_blank');
                         }
                     });
                     
+                    this.grid.appendChild(card);
+                    
+                    // Try to load real image
+                    if (post.featured_media) {
+                        this.loadRealImage(card, post.featured_media, title);
+                    }
+                    
                 } catch (error) {
-                    console.error('Error populating card:', error);
+                    console.error('Card creation error:', error);
+                }
+            }
+
+            async loadRealImage(card, mediaId, title) {
+                try {
+                    const response = await fetch(`/wp-json/wp/v2/media/${mediaId}?_fields=media_details,source_url`);
+                    if (response.ok) {
+                        const media = await response.json();
+                        const imageUrl = media.media_details?.sizes?.medium?.source_url || 
+                                       media.media_details?.sizes?.large?.source_url || 
+                                       media.source_url;
+                        
+                        if (imageUrl) {
+                            const img = card.querySelector('.card-image');
+                            if (img) {
+                                img.src = imageUrl;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Image load error:', error);
                 }
             }
 
             getCategoryName(categoryIds) {
-                if (!categoryIds || categoryIds.length === 0) return '';
+                if (!Array.isArray(categoryIds) || categoryIds.length === 0) return '';
                 
                 for (const id of categoryIds) {
                     const cat = this.categoryCache.get(id);
@@ -801,48 +865,19 @@
                 return '';
             }
 
-            async getImageUrl(mediaId, title) {
-                if (!mediaId) {
-                    return `https://placehold.co/600x400/7216f4/FFFFFF?text=${encodeURIComponent(title.split(' ')[0] || 'Post')}`;
-                }
-                
-                const cacheKey = `image_${mediaId}`;
-                if (this.cache.has(cacheKey)) {
-                    return this.cache.get(cacheKey);
-                }
-
-                try {
-                    const response = await fetch(`/wp-json/wp/v2/media/${mediaId}?_fields=media_details,source_url`);
-                    if (!response.ok) throw new Error('Media not found');
-                    
-                    const media = await response.json();
-                    const imageUrl = media.media_details?.sizes?.medium?.source_url || 
-                                   media.media_details?.sizes?.large?.source_url || 
-                                   media.source_url;
-                    
-                    this.cache.set(cacheKey, imageUrl);
-                    return imageUrl;
-                } catch (error) {
-                    console.error('Error loading image:', error);
-                    return `https://placehold.co/600x400/7216f4/FFFFFF?text=Image+Not+Found`;
-                }
+            getPlaceholderImage(title) {
+                const firstWord = (title || '').split(' ')[0] || 'Post';
+                return `https://placehold.co/600x400/7216f4/FFFFFF?text=${encodeURIComponent(firstWord)}`;
             }
 
             generateExcerpt(excerptHtml, title) {
-                if (!excerptHtml) {
-                    // Generate fallback based on title
+                let text = excerptHtml ? this.stripHtml(excerptHtml) : '';
+                
+                if (!text || text.length < 30) {
                     return this.generateFallbackExcerpt(title);
                 }
 
-                // Clean HTML and create excerpt
-                let text = this.stripHtml(excerptHtml);
-                
-                // Clean up common issues
-                text = text
-                    .replace(/\[.*?\]/g, '') // Remove shortcodes
-                    .replace(/^[^\w]*/, '') // Remove leading non-word characters
-                    .replace(/\s+/g, ' ') // Normalize whitespace
-                    .trim();
+                text = text.replace(/\[.*?\]/g, '').replace(/\s+/g, ' ').trim();
 
                 if (text.length > 200) {
                     const truncated = text.substring(0, 200);
@@ -853,7 +888,7 @@
                     return truncated + '...';
                 }
 
-                return text || this.generateFallbackExcerpt(title);
+                return text;
             }
 
             generateFallbackExcerpt(title) {
@@ -863,23 +898,29 @@
                     return 'Comprehensive analysis and insights for business professionals, featuring key trends and strategic recommendations.';
                 } else if (titleLower.includes('technology') || titleLower.includes('innovation')) {
                     return 'Exploring the latest technological innovations and their impact on business strategy and operations.';
-                } else if (titleLower.includes('market') || titleLower.includes('industry')) {
-                    return 'Market insights and industry analysis to help you stay ahead of emerging trends and opportunities.';
                 } else {
                     return 'Essential insights for business professionals navigating the evolving landscape of technology and innovation.';
                 }
             }
 
             stripHtml(html) {
-                const temp = document.createElement('div');
-                temp.innerHTML = html;
-                return temp.textContent || temp.innerText || '';
+                try {
+                    const temp = document.createElement('div');
+                    temp.innerHTML = html;
+                    return temp.textContent || temp.innerText || '';
+                } catch (error) {
+                    return html;
+                }
             }
 
             escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
+                try {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                } catch (error) {
+                    return text;
+                }
             }
 
             formatDate(dateString) {
@@ -896,50 +937,64 @@
             }
                 
             handleSearch(e) {
-                this.currentSearch = e.target.value;
-                this.applyFilters();
+                try {
+                    this.currentSearch = e.target.value;
+                    this.applyFilters();
+                } catch (error) {
+                    console.error('Search error:', error);
+                }
             }
 
             handleFilterClick(e) {
-                if (e.target.tagName !== 'BUTTON') return;
-                
-                this.filterContainer.querySelector('.active').classList.remove('active');
-                e.target.classList.add('active');
-                this.currentFilter = e.target.dataset.category;
-                this.applyFilters();
+                try {
+                    if (e.target.tagName !== 'BUTTON') return;
+                    
+                    const activeBtn = this.filterContainer.querySelector('.active');
+                    if (activeBtn) {
+                        activeBtn.classList.remove('active');
+                    }
+                    
+                    e.target.classList.add('active');
+                    this.currentFilter = e.target.dataset.category;
+                    this.applyFilters();
+                } catch (error) {
+                    console.error('Filter click error:', error);
+                }
             }
 
             showNoPostsMessage() {
-                this.grid.innerHTML = `
-                    <div class="no-posts-message">
-                        <h3>No insights found</h3>
-                        <p>Check back later for more content!</p>
-                    </div>
-                `;
+                if (this.grid) {
+                    this.grid.innerHTML = `
+                        <div class="no-posts-message">
+                            <h3>No insights found</h3>
+                            <p>Check back later for more content!</p>
+                        </div>
+                    `;
+                }
             }
 
             showErrorMessage(error) {
-                this.grid.innerHTML = `
-                    <div class="error-message">
-                        <h3>Unable to load posts</h3>
-                        <p>Error: ${error}</p>
-                        <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #7216f4; color: white; border: none; border-radius: 8px; cursor: pointer;">Retry</button>
-                    </div>
-                `;
-            }
-
-            debounce(func, delay) {
-                let timeout;
-                return (...args) => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(this, args), delay);
-                };
+                if (this.grid) {
+                    this.grid.innerHTML = `
+                        <div class="error-message">
+                            <h3>Unable to load posts</h3>
+                            <p>Error: ${error}</p>
+                            <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #7216f4; color: white; border: none; border-radius: 8px; cursor: pointer;">Retry</button>
+                        </div>
+                    `;
+                }
             }
         }
 
         // Initialize when DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            new InsightsPage();
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                updateDebugInfo('DOM loaded, starting app...');
+                window.insightsApp = new SimpleInsightsPage();
+            } catch (error) {
+                console.error('App initialization error:', error);
+                updateDebugInfo('App init error: ' + error.message);
+            }
         });
     </script>
 

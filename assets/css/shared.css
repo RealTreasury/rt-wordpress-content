@@ -1530,11 +1530,35 @@ nav[class*="post-navigation"],
 }
 /* Insights Widget in Mega Menu - Add this to your shared.css file */
 
-/* Mega Menu Widget Container */
-#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .insights-widget {
-    width: 300px !important;
-    max-width: 300px !important;
-    min-width: 280px !important;
+/* UPDATED - Mega Menu Width Fix */
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .mega-menu-column {
+    min-width: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    overflow: visible !important;
+    position: relative !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-megamenu > ul.mega-sub-menu {
+    min-width: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .mega-menu-row {
+    min-width: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+}
+
+/* Widget compatibility - works with both class names */
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .insights-widget,
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .latest-insights-mega-widget {
+    width: 320px !important;
+    max-width: 320px !important;
+    min-width: 300px !important;
     margin: 0 !important;
     overflow: visible !important;
     position: relative !important;
@@ -1542,12 +1566,6 @@ nav[class*="post-navigation"],
     box-sizing: border-box !important;
 }
 
-/* Ensure mega menu columns can contain the widget */
-#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .mega-menu-column {
-    min-width: 320px !important;
-    overflow: visible !important;
-    position: relative !important;
-}
 
 /* Mega menu widget wrapper */
 #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .widget {
@@ -1610,18 +1628,7 @@ nav[class*="post-navigation"],
     border-width: 2px !important;
 }
 
-/* Ensure mega menu dropdown is wide enough */
-#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-megamenu > ul.mega-sub-menu {
-    min-width: 350px !important;
-    width: auto !important;
-    overflow: visible !important;
-}
 
-/* Override any max-width constraints on mega menu rows */
-#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .mega-menu-row {
-    min-width: 320px !important;
-    overflow: visible !important;
-}
 
 /* Responsive adjustments for mega menu widget */
 @media (max-width: 768px) {

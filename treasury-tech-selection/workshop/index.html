@@ -282,6 +282,11 @@
             height: 4px;
             background: var(--gradient-danger);
         }
+        
+        /* This is the new style for the success card */
+        .stat-card--success::before {
+            background: var(--gradient-success);
+        }
 
         .stat-card:hover {
             transform: translateY(-5px) scale(1.05);
@@ -297,6 +302,14 @@
             background-clip: text;
             display: block;
             line-height: 1;
+        }
+        
+        /* This is the new style for the success number */
+        .stat-card--success .stat-number {
+            background: var(--gradient-success);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .stat-label {
@@ -484,7 +497,7 @@
                 #333333 0% 50%,
                 #999999 50% 80%, 
                 #666666 80% 95%,
-                var(--primary-purple) 95% 100%
+                var(--gradient-success) 95% 100%
             );
             margin: 0 auto 40px;
             position: relative;
@@ -522,7 +535,7 @@
         .legend-color.no-decision { background: #333333; }
         .legend-color.surprised { background: #999999; }
         .legend-color.unhappy { background: #666666; }
-        .legend-color.happy { background: var(--primary-purple); }
+        .legend-color.happy { background: var(--gradient-success); }
 
         .survey-text h2 {
             font-size: 3rem;
@@ -948,7 +961,8 @@
                             <span class="stat-number">30%</span>
                             <span class="stat-label">HAPPY BUT SURPRISED</span>
                         </div>
-                        <div class="stat-card">
+                        <!-- The updated success card -->
+                        <div class="stat-card stat-card--success">
                             <span class="stat-number">5%</span>
                             <span class="stat-label">TRULY SATISFIED</span>
                         </div>

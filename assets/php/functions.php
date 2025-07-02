@@ -1327,13 +1327,43 @@ function add_bank_report_javascript() {
     </script>
     <?php
 }
-
+// Remove default Astra post footer elements
+function remove_astra_default_footer() {
+    if (is_single()) {
+        // Remove post meta
+        remove_action('astra_entry_after', 'astra_single_post_navigation_markup');
+        
+        // Remove author box if enabled
+        remove_action('astra_entry_after', 'astra_author_box_markup');
+        
+        // Remove related posts if Pro version
+        remove_action('astra_entry_after', 'astra_single_post_related_posts_markup');
+    }
+}
+add_action('wp', 'remove_astra_default_footer');
+// Remove default Astra post footer elements
+function remove_astra_post_footer_elements() {
+    if (is_single()) {
+        // Remove the post navigation (Previous/Next post links)
+        remove_action('astra_entry_after', 'astra_single_post_navigation_markup', 15);
+        
+        // Remove author box if it exists
+        remove_action('astra_entry_after', 'astra_author_box_markup', 10);
+        
+        // Remove any existing related posts (if Astra Pro)
+        remove_action('astra_entry_after', 'astra_single_post_related_posts_markup', 20);
+        
+        // Remove post meta from bottom if it exists
+        remove_action('astra_entry_bottom', 'astra_entry_meta', 10);
+    }
+}
+add_action('wp', 'remove_astra_post_footer_elements');
 
 /**
- * Display glassmorphism-styled related posts at end of post content
+ * Display related posts after the single post content.
+ * Uses a simple slider layout with horizontal scrolling.
  */
-function display_custom_related_posts() {
-    // Only show on single posts
+function display_related_posts() {
     if ( ! is_single() ) {
         return;
     }
@@ -1350,7 +1380,7 @@ function display_custom_related_posts() {
     $related = new WP_Query(
         array(
             'post_type'      => 'post',
-            'posts_per_page' => 3,
+            'posts_per_page' => 6,
             'post__not_in'   => array( $post->ID ),
             'category__in'   => $category_ids,
             'orderby'        => 'rand',
@@ -1364,35 +1394,27 @@ function display_custom_related_posts() {
     );
 
     if ( $related->have_posts() ) {
-        echo '<div class="related-posts-wrapper" style="background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 50%, #f0f0f0 100%); padding: 4rem 0; margin-top: 3rem;">';
-        echo '<div class="ast-container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">';
-        echo '<section class="custom-related-posts">';
-        echo '<h2 class="related-posts-title">Related Posts</h2>';
-        echo '<div class="related-posts-grid">';
+        echo '<aside class="rt-related-posts">';
+        echo '<h3 class="rt-related-heading">Related Posts</h3>';
+        echo '<div class="rt-related-container">';
 
         while ( $related->have_posts() ) {
             $related->the_post();
-
-            echo '<article class="related-post-item">';
-            echo '<h3 class="related-post-title">';
-            echo '<a href="' . esc_url( get_permalink() ) . '">' . get_the_title() . '</a>';
-            echo '</h3>';
-
-            $excerpt = get_the_excerpt();
-            if ( empty( $excerpt ) ) {
-                $excerpt = wp_trim_words( get_the_content(), 20, '...' );
+            echo '<article class="rt-related-item">';
+            if ( has_post_thumbnail() ) {
+                echo '<a href="' . esc_url( get_permalink() ) . '" class="rt-related-thumb-link">';
+                the_post_thumbnail( 'medium', array( 'class' => 'rt-related-thumb' ) );
+                echo '</a>';
             }
-
-            echo '<p class="related-post-excerpt">' . esc_html( $excerpt ) . '</p>';
-            echo '<a href="' . esc_url( get_permalink() ) . '" class="related-post-link">Read More →</a>';
+            echo '<h4 class="rt-related-title"><a href="' . esc_url( get_permalink() ) . '">' . get_the_title() . '</a></h4>';
             echo '</article>';
         }
 
-        echo '</div>';
-        echo '</section>';
-        echo '</div>';
-        echo '</div>';
+        echo '</div></aside>';
     }
 
     wp_reset_postdata();
 }
+
+// add_action( 'astra_entry_after', 'display_related_posts', 25 );
+?>

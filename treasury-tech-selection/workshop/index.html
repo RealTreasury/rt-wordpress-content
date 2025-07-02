@@ -21,7 +21,14 @@
             --light-bg: #f8f8f8;
             --gradient-primary: linear-gradient(135deg, #7216f4, #8f47f6, #c77dff);
             --gradient-danger: linear-gradient(135deg, #e74c3c, #c0392b);
+            --solid-danger: #e74c3c;
             --gradient-success: linear-gradient(135deg, #2ecc71, #27ae60);
+            
+            /* Colors from user's pie chart image */
+            --pie-no-decision: #333333;
+            --pie-surprised: #cccccc;
+            --pie-unhappy: #888888;
+            --pie-happy: var(--primary-purple);
         }
 
         body {
@@ -283,9 +290,8 @@
             background: var(--gradient-danger);
         }
         
-        /* This is the new style for the success card */
         .stat-card--success::before {
-            background: var(--gradient-success);
+            background: var(--gradient-primary); /* Changed from green to purple */
         }
 
         .stat-card:hover {
@@ -304,9 +310,8 @@
             line-height: 1;
         }
         
-        /* This is the new style for the success number */
         .stat-card--success .stat-number {
-            background: var(--gradient-success);
+            background: var(--gradient-primary); /* Changed from green to purple */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -489,25 +494,21 @@
             letter-spacing: 1px;
         }
 
+        /* UPDATED PIE CHART CSS */
         .pie-chart {
             width: 300px;
             height: 300px;
             border-radius: 50%;
             background: conic-gradient(
-                #333333 0% 50%,
-                #999999 50% 80%, 
-                #666666 80% 95%,
-                var(--gradient-success) 95% 100%
+                var(--pie-no-decision) 0% 50%,      /* 50% */
+                var(--pie-surprised) 50% 80%,       /* 30% */
+                var(--pie-unhappy) 80% 95%,         /* 15% */
+                var(--pie-happy) 95% 100%           /* 5% */
             );
             margin: 0 auto 40px;
             position: relative;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            animation: spin 20s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            border: 4px solid white; /* Added border for definition */
         }
 
         .chart-legend {
@@ -531,11 +532,12 @@
             border-radius: 50%;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
-
-        .legend-color.no-decision { background: #333333; }
-        .legend-color.surprised { background: #999999; }
-        .legend-color.unhappy { background: #666666; }
-        .legend-color.happy { background: var(--gradient-success); }
+        
+        /* UPDATED LEGEND COLORS */
+        .legend-color.no-decision { background: var(--pie-no-decision); }
+        .legend-color.surprised { background: var(--pie-surprised); }
+        .legend-color.unhappy { background: var(--pie-unhappy); }
+        .legend-color.happy { background: var(--pie-happy); }
 
         .survey-text h2 {
             font-size: 3rem;
@@ -679,6 +681,16 @@
             position: relative;
             overflow: hidden;
         }
+        
+        .learn-section .section-header h2 {
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .learn-section .section-header p {
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
 
         .learn-grid {
             display: grid;
@@ -719,13 +731,15 @@
             margin-bottom: 15px;
             color: white;
             font-weight: 700;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
-
+        
         .learn-item p {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
             font-size: 1rem;
             line-height: 1.6;
             font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
 
         /* Final CTA */
@@ -961,7 +975,6 @@
                             <span class="stat-number">30%</span>
                             <span class="stat-label">HAPPY BUT SURPRISED</span>
                         </div>
-                        <!-- The updated success card -->
                         <div class="stat-card stat-card--success">
                             <span class="stat-number">5%</span>
                             <span class="stat-label">TRULY SATISFIED</span>
@@ -1112,8 +1125,8 @@
     <section class="learn-section">
         <div class="container">
             <div class="section-header">
-                <h2 style="color: white;">💎 What You'll MASTER in This Workshop</h2>
-                <p style="color: rgba(255, 255, 255, 0.9);">Walk away with ACTIONABLE insights and a proven framework you can implement IMMEDIATELY for GUARANTEED success!</p>
+                <h2>💎 What You'll MASTER in This Workshop</h2>
+                <p>Walk away with ACTIONABLE insights and a proven framework you can implement IMMEDIATELY for GUARANTEED success!</p>
             </div>
             
             <div class="learn-grid">

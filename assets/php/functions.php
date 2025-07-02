@@ -788,7 +788,7 @@ function video_modal_button_shortcode($atts) {
 add_shortcode('video_button', 'video_modal_button_shortcode');
 
 // 12. Video Modal JavaScript and HTML (UPDATED WITH PERFECT CENTERING)
-function add_enhanced_video_modal_script() {
+function add_video_modal_script() {
     ?>
     <div id="videoModal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -799,214 +799,136 @@ function add_enhanced_video_modal_script() {
             </div>
         </div>
     </div>
-    
     <script>
+    // Modal Perfect Centering JavaScript
     document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('videoModal');
         const body = document.body;
-        let savedScrollPosition = 0;
 
-        // Function to close any open mega menus
-        function closeMegaMenus() {
-            // Close Max Mega Menu dropdowns
-            const megaMenuItems = document.querySelectorAll('.mega-menu-item');
-            megaMenuItems.forEach(item => {
-                item.classList.remove('mega-menu-item-has-children');
-                item.classList.remove('mega-toggle-on');
-            });
-            
-            // Hide mega menu sub-menus
-            const subMenus = document.querySelectorAll('.mega-sub-menu');
-            subMenus.forEach(subMenu => {
-                subMenu.style.display = 'none';
-                subMenu.style.visibility = 'hidden';
-                subMenu.style.opacity = '0';
-            });
-            
-            // Reset mega menu toggles
-            const toggles = document.querySelectorAll('.mega-menu-toggle');
-            toggles.forEach(toggle => {
-                toggle.classList.remove('mega-menu-toggle-open');
-                toggle.setAttribute('aria-expanded', 'false');
-            });
-        }
-
-        // Enhanced function to open modal
+        // Function to open modal with perfect centering
         function openModal() {
-            if (!modal) return;
-            
-            // Close any open mega menus first
-            closeMegaMenus();
-            
-            // Save current scroll position
-            savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Prevent background scrolling
-            body.style.position = 'fixed';
-            body.style.top = `-${savedScrollPosition}px`;
-            body.style.width = '100%';
-            body.style.overflow = 'hidden';
-            
-            // Add modal classes
-            body.classList.add('modal-open');
-            modal.style.display = 'flex';
-            modal.style.zIndex = '999999';
-            
-            // Force reflow then show
-            modal.offsetHeight;
-            setTimeout(() => {
-                modal.classList.add('show');
-            }, 10);
-            
-            // Accessibility
-            modal.setAttribute('aria-hidden', 'false');
-            modal.setAttribute('tabindex', '-1');
-            modal.focus();
-            
-            // Focus first input
-            const firstInput = modal.querySelector('input:not([type="hidden"]), textarea, select');
-            if (firstInput) {
-                setTimeout(() => firstInput.focus(), 200);
+            if (modal) {
+                // Prevent background scrolling
+                const scrollY = window.scrollY;
+                body.style.position = 'fixed';
+                body.style.top = `-${scrollY}px`;
+                body.style.width = '100%';
+
+                // Add classes
+                body.classList.add('modal-open');
+                modal.style.display = 'flex';
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+
+                // Force repaint to ensure centering
+                modal.offsetHeight;
+
+                // Focus management for accessibility
+                modal.setAttribute('aria-hidden', 'false');
+                const firstInput = modal.querySelector('input, textarea, select, button');
+                if (firstInput) {
+                    setTimeout(() => firstInput.focus(), 100);
+                }
             }
-            
-            console.log('✅ Video modal opened successfully');
         }
 
-        // Enhanced function to close modal
+        // Function to close modal and restore scroll
         function closeModal() {
-            if (!modal) return;
-            
-            // Remove modal classes
-            modal.classList.remove('show');
-            
-            setTimeout(() => {
-                modal.style.display = 'none';
+            if (modal) {
+                // Get the scroll position that was saved
+                const scrollY = body.style.top;
+
+                // Remove modal
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
                 body.classList.remove('modal-open');
-                
+
                 // Restore scroll position
                 body.style.position = '';
                 body.style.top = '';
                 body.style.width = '';
-                body.style.overflow = '';
-                
-                // Restore scroll position
-                window.scrollTo(0, savedScrollPosition);
-                
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+
                 // Accessibility
                 modal.setAttribute('aria-hidden', 'true');
-                modal.removeAttribute('tabindex');
-                
-            }, 300);
-            
-            console.log('✅ Video modal closed successfully');
+            }
         }
 
-        // Enhanced click handler with better targeting
+        // Enhanced button click handlers
         document.addEventListener('click', function(e) {
-            const target = e.target;
-            const closestLink = target.closest('a');
-            
-            // Check for modal trigger elements
-            const isModalTrigger = (
-                target.matches('.open-video-modal') ||
-                target.closest('.open-video-modal') ||
-                (closestLink && closestLink.getAttribute('href') === '#openVideoModal') ||
-                target.getAttribute('data-action') === 'open-video-modal' ||
-                target.closest('[data-action="open-video-modal"]')
-            );
-            
-            if (isModalTrigger) {
+            // Open modal buttons
+            if (e.target.matches('a[href="#openVideoModal"]') ||
+                e.target.closest('a[href="#openVideoModal"]') ||
+                e.target.matches('.open-video-modal') ||
+                e.target.closest('.open-video-modal')) {
                 e.preventDefault();
                 e.stopPropagation();
                 openModal();
                 return false;
             }
-            
-            // Close modal triggers
-            if (target.matches('.close-btn') || target.closest('.close-btn')) {
+
+            // Close modal buttons
+            if (e.target.matches('.close-btn') ||
+                e.target.closest('.close-btn')) {
                 e.preventDefault();
                 e.stopPropagation();
                 closeModal();
                 return false;
             }
-            
+
             // Click outside modal to close
-            if (target === modal && !target.closest('.modal-content')) {
+            if (e.target === modal && !e.target.closest('.modal-content')) {
                 e.preventDefault();
                 closeModal();
             }
         });
 
-        // Keyboard navigation
+        // Handle menu clicks (#openVideoModal)
+        document.addEventListener('click', function(e) {
+            if (e.target.getAttribute('href') === '#openVideoModal' ||
+                e.target.closest('a[href="#openVideoModal"]')) {
+                e.preventDefault();
+                openModal();
+            }
+        });
+
+        // Handle data attribute clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.getAttribute('data-open-modal') === 'video' ||
+                e.target.closest('[data-open-modal="video"]')) {
+                e.preventDefault();
+                openModal();
+            }
+        });
+
+        // Close modal on Escape key
         document.addEventListener('keydown', function(e) {
-            if (!modal || !modal.classList.contains('show')) return;
-            
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape' && modal && modal.classList.contains('show')) {
                 e.preventDefault();
                 closeModal();
             }
-            
-            // Tab trapping within modal
-            if (e.key === 'Tab') {
-                const focusableElements = modal.querySelectorAll(
-                    'input:not([type="hidden"]), textarea, select, button, a[href]'
-                );
-                const firstElement = focusableElements[0];
-                const lastElement = focusableElements[focusableElements.length - 1];
-                
-                if (e.shiftKey && document.activeElement === firstElement) {
-                    e.preventDefault();
-                    lastElement.focus();
-                } else if (!e.shiftKey && document.activeElement === lastElement) {
-                    e.preventDefault();
-                    firstElement.focus();
-                }
-            }
         });
 
-        // Handle Contact Form 7 success
+        // Handle Contact Form 7 events
         document.addEventListener('wpcf7mailsent', function(event) {
-            console.log('✅ Form submitted successfully');
-            
-            // Show success message briefly
-            const successMessage = document.createElement('div');
-            successMessage.innerHTML = `
-                <div style="
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: linear-gradient(135deg, #4CAF50, #45a049);
-                    color: white;
-                    padding: 15px 25px;
-                    border-radius: 8px;
-                    z-index: 1000000;
-                    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-                    font-weight: 600;
-                ">
-                    ✅ Success! Redirecting to videos...
-                </div>
-            `;
-            document.body.appendChild(successMessage);
-            
-            // Close modal and redirect
-            setTimeout(() => {
+            console.log('Form sent successfully');
+            // Close modal after successful submission
+            setTimeout(function() {
                 closeModal();
-                window.location.href = 'https://aisbee08e5bdvaliantmaker.wpcomstaging.com/treasury-tech-portal/';
-            }, 1500);
+            }, 2000);
         });
 
-        // Handle resize events
-        let resizeTimeout;
+        // Handle resize to maintain centering
         window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                if (modal && modal.classList.contains('show')) {
-                    // Maintain modal centering on resize
-                    modal.style.display = 'none';
-                    modal.offsetHeight; // Force reflow
-                    modal.style.display = 'flex';
-                }
-            }, 100);
+            if (modal && modal.classList.contains('show')) {
+                // Force recalculation of centering
+                modal.style.display = 'none';
+                modal.offsetHeight; // Force repaint
+                modal.style.display = 'flex';
+            }
         });
 
         // Initialize modal state
@@ -1014,20 +936,12 @@ function add_enhanced_video_modal_script() {
             modal.setAttribute('aria-hidden', 'true');
             modal.setAttribute('role', 'dialog');
             modal.setAttribute('aria-modal', 'true');
-            modal.setAttribute('aria-labelledby', 'modal-title');
         }
-
-        // Global functions for external access
-        window.openVideoModal = openModal;
-        window.closeVideoModal = closeModal;
-        
-        console.log('🎬 Enhanced video modal system initialized');
     });
     </script>
     <?php
 }
-// remove_action('wp_footer', 'add_video_modal_script');
-add_action('wp_footer', 'add_enhanced_video_modal_script');
+add_action('wp_footer', 'add_video_modal_script');
 
 // Site-Wide Cookie Management System
 add_action('wp_footer', 'add_sitewide_cookie_banner');

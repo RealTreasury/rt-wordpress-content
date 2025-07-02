@@ -1528,3 +1528,169 @@ nav[class*="post-navigation"],
 [class*="post-navigation"] {
     display: none !important;
 }
+/* Insights Widget in Mega Menu - Add this to your shared.css file */
+
+/* Mega Menu Widget Container */
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .insights-widget {
+    width: 300px !important;
+    max-width: 300px !important;
+    min-width: 280px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    position: relative !important;
+    z-index: 10 !important;
+    box-sizing: border-box !important;
+}
+
+/* Ensure mega menu columns can contain the widget */
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .mega-menu-column {
+    min-width: 320px !important;
+    overflow: visible !important;
+    position: relative !important;
+}
+
+/* Mega menu widget wrapper */
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .widget {
+    overflow: visible !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
+/* Widget content areas */
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .content-area {
+    overflow: hidden !important;
+    height: 160px !important; /* Reduced for mega menu */
+}
+
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .widget-title {
+    font-size: 1rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .insight-card {
+    padding: 14px !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .insight-title {
+    font-size: 0.9rem !important;
+    line-height: 1.2 !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .insight-excerpt {
+    font-size: 0.8rem !important;
+    -webkit-line-clamp: 2 !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .read-more {
+    padding: 6px 14px !important;
+    font-size: 0.7rem !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .navigation {
+    padding: 8px !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .nav-dot {
+    width: 5px !important;
+    height: 5px !important;
+}
+
+/* Loading and error states */
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .loading-state,
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .error-state {
+    height: 160px !important;
+    padding: 12px !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .loading-spinner {
+    width: 20px !important;
+    height: 20px !important;
+    border-width: 2px !important;
+}
+
+/* Ensure mega menu dropdown is wide enough */
+#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-megamenu > ul.mega-sub-menu {
+    min-width: 350px !important;
+    width: auto !important;
+    overflow: visible !important;
+}
+
+/* Override any max-width constraints on mega menu rows */
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .mega-menu-row {
+    min-width: 320px !important;
+    overflow: visible !important;
+}
+
+/* Responsive adjustments for mega menu widget */
+@media (max-width: 768px) {
+    #mega-menu-wrap-max_mega_menu_1 .insights-widget {
+        width: 280px !important;
+        max-width: 280px !important;
+        min-width: 260px !important;
+    }
+    
+    #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu .mega-menu-column {
+        min-width: 300px !important;
+    }
+    
+    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-megamenu > ul.mega-sub-menu {
+        min-width: 320px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #mega-menu-wrap-max_mega_menu_1 .insights-widget {
+        width: 260px !important;
+        max-width: 260px !important;
+        min-width: 240px !important;
+    }
+    
+    #mega-menu-wrap-max_mega_menu_1 .insights-widget .content-area {
+        height: 140px !important;
+    }
+    
+    #mega-menu-wrap-max_mega_menu_1 .insights-widget .loading-state,
+    #mega-menu-wrap-max_mega_menu_1 .insights-widget .error-state {
+        height: 140px !important;
+    }
+}
+
+/* Force visibility and prevent clipping */
+#mega-menu-wrap-max_mega_menu_1 .insights-widget * {
+    box-sizing: border-box !important;
+}
+
+/* Ensure the widget container doesn't get clipped */
+#mega-menu-wrap-max_mega_menu_1 .mega-sub-menu {
+    overflow: visible !important;
+}
+
+/* Alternative: If the widget is in a specific mega menu column, target it directly */
+.mega-menu-column .insights-widget {
+    width: 100% !important;
+    max-width: 300px !important;
+    margin: 0 auto !important;
+}
+
+/* Mega menu specific widget styling to match your site's design */
+#mega-menu-wrap-max_mega_menu_1 .insights-widget {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 248, 248, 0.95)) !important;
+    border: 2px solid rgba(114, 22, 244, 0.15) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(114, 22, 244, 0.12) !important;
+}
+
+#mega-menu-wrap-max_mega_menu_1 .insights-widget .widget-header {
+    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
+    color: white !important;
+    padding: 10px 14px !important;
+}
+
+/* Fix any potential z-index issues */
+#mega-menu-wrap-max_mega_menu_1 .insights-widget,
+#mega-menu-wrap-max_mega_menu_1 .insights-widget * {
+    z-index: inherit !important;
+    position: relative !important;
+}

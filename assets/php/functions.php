@@ -985,7 +985,7 @@ function add_sitewide_cookie_banner() {
                     <div class="banner-buttons">
                         <button class="cookie-btn cookie-btn-accept" onclick="acceptAllCookies()">Accept All</button>
                         <button class="cookie-btn cookie-btn-decline" onclick="declineAllCookies()">Decline All</button>
-                        <a href="/cookie-policy" class="cookie-btn cookie-btn-manage">Learn More</a>
+                        <a href="https://realtreasury.com/cookie-policy/" class="cookie-btn cookie-btn-manage">Learn More</a>
                     </div>
                 </div>
             `;

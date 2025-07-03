@@ -48,6 +48,7 @@
             background: var(--white);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden; /* FIX: Prevents horizontal scrollbars caused by 100vw sections, which can fix height calculation issues. */
         }
 
         /* Layout Containers */

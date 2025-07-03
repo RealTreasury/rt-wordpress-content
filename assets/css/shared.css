@@ -1,68 +1,38 @@
-/* ===============================================================
-   COMPLETE CSS WITH MAX MEGA MENU Z-INDEX FIXES
-   =============================================================== */
-
-/* WordPress Block Image Fixes */
 .wp-block-image img {
     background: none !important;
     background-color: transparent !important;
-    box-shadow: none !important;
-    z-index: 1 !important;
-    position: relative !important;
+    box-shadow: none !important
 }
 
 .wp-block-image.size-large img {
-    background: transparent !important;
+    background: transparent !important
 }
 
 .wp-block-image.size-large img,.wp-block-image,
 .wp-block-image.is-resized {
-    box-shadow: none !important;
+    box-shadow: none !important
 }
 
-/* CSS Variables */
 :root {
     --ast-global-color-2: #333;
     --primary-purple: #7216f4;
     --secondary-purple: #8f47f6;
     --light-purple: #c77dff;
     --dark-text: #281345;
-    --gray-text: #7e7e7e;
+    --gray-text: #7e7e7e
 }
 
 #inspector-text-control-8 {
-    color: #000 !important;
+    color: #000 !important
 }
 
-/* ===============================================================
-   MAX MEGA MENU Z-INDEX SYSTEM - PRIORITY FIXES
-   =============================================================== */
-
-/* Main mega menu wrapper - highest priority for menu system */
-#mega-menu-wrap-max_mega_menu_1,
-#mega-menu-wrap-primary,
-.mega-menu-wrap {
-    z-index: 999999 !important;
-    position: relative !important;
-}
-
-/* Mega menu container */
-#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
-#mega-menu-wrap-primary #mega-menu-primary {
-    z-index: 999999 !important;
-    position: relative !important;
-}
-
-/* Dropdown/Sub-menu containers with frosted glass effect */
 #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1>li.mega-menu-megamenu>ul.mega-sub-menu {
     background: hsla(0, 0%, 100%, .25) !important;
     backdrop-filter: blur(12px) saturate(120%) !important;
     border-radius: 16px !important;
     border: 1px solid hsla(0, 0%, 100%, .2) !important;
     box-shadow: 0 10px 35px rgba(0, 0, 0, .15) !important;
-    padding: 10px !important;
-    z-index: 1000000 !important;
-    position: absolute !important;
+    padding: 10px !important
 }
 
 #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu,
@@ -73,9 +43,7 @@
     background: none !important;
     background-color: transparent !important;
     border: none !important;
-    box-shadow: none !important;
-    z-index: 1000001 !important;
-    position: relative !important;
+    box-shadow: none !important
 }
 
 #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu a.mega-menu-link,
@@ -85,15 +53,13 @@
     text-shadow: none !important;
     transition: all .2s ease !important;
     background: none !important;
-    padding: 10px 15px !important;
-    z-index: 1000002 !important;
-    position: relative !important;
+    padding: 10px 15px !important
 }
 
 #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu a.mega-menu-link:hover {
     color: var(--primary-purple) !important;
     background: hsla(0, 0%, 100%, .25) !important;
-    border-radius: 8px !important;
+    border-radius: 8px !important
 }
 
 #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu a,
@@ -108,36 +74,17 @@
 .services-dropdown a:focus,
 .services-dropdown a:hover,
 .services-dropdown a:visited {
-    text-decoration: none !important;
+    text-decoration: none !important
 }
-
-/* Menu items and links */
-#mega-menu-wrap-max_mega_menu_1 .mega-menu-item,
-#mega-menu-wrap-primary .mega-menu-item,
-#mega-menu-wrap-max_mega_menu_1 .mega-menu-link,
-#mega-menu-wrap-primary .mega-menu-link {
-    z-index: 1000001 !important;
-    position: relative !important;
-}
-
-/* Mobile menu toggle */
-.mega-menu-toggle {
-    z-index: 1000002 !important;
-    position: relative !important;
-}
-
-/* ===============================================================
-   MODAL SYSTEM - STAYS ABOVE MEGA MENU
-   =============================================================== */
 
 body.modal-open {
     overflow: hidden !important;
     width: 100% !important;
-    height: 100% !important;
+    height: 100% !important
 }
 
 body.modal-open,.modal {
-    position: fixed !important;
+    position: fixed !important
 }
 
 .modal {
@@ -155,8 +102,7 @@ body.modal-open,.modal {
     visibility: hidden !important;
     pointer-events: none !important;
     transform: none !important;
-    box-sizing: border-box !important;
-    z-index: 1000003 !important;
+    box-sizing: border-box !important
 }
 
 .modal,
@@ -165,7 +111,7 @@ body.modal-open,.modal {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transition: all .4s cubic-bezier(.4, 0, .2, 1) !important;
+    transition: all .4s cubic-bezier(.4, 0, .2, 1) !important
 }
 
 .modal-content {
@@ -181,8 +127,7 @@ body.modal-open,.modal {
     box-shadow: none !important;
     transform: scale(.9) !important;
     overflow-y: auto !important;
-    overflow-x: hidden !important;
-    z-index: 1000004 !important;
+    overflow-x: hidden !important
 }
 
 .video-access-form {
@@ -199,9 +144,7 @@ body.modal-open,.modal {
     box-shadow: 0 8px 32px rgba(114, 22, 244, .15), 0 0 0 1px hsla(0, 0%, 100%, .5), inset 0 1px 0 hsla(0, 0%, 100%, .8) !important;
     transform: none !important;
     overflow: hidden !important;
-    box-sizing: border-box !important;
-    z-index: 1000005 !important;
-    position: relative !important;
+    box-sizing: border-box !important
 }
 
 .video-access-form:before {
@@ -213,190 +156,15 @@ body.modal-open,.modal {
     height: 4px;
     background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd);
     border-radius: 16px 16px 0 0;
-    z-index: 1;
+    z-index: 1
 }
-
-/* ===============================================================
-   RESPONSIVE MEGA MENU FIXES
-   =============================================================== */
-
-/* Mobile specific adjustments */
-@media (max-width: 768px) {
-    /* Mobile menu container */
-    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
-    #mega-menu-wrap-primary #mega-menu-primary {
-        z-index: 1000000 !important;
-        position: relative !important;
-        margin-top: -60px; /* Existing offset */
-    }
-    
-    /* Mobile dropdowns */
-    #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu,
-    #mega-menu-wrap-primary .mega-sub-menu {
-        z-index: 1000001 !important;
-        position: relative !important;
-    }
-    
-    /* Mobile toggle button */
-    .mega-menu-toggle {
-        z-index: 1000002 !important;
-        position: relative !important;
-    }
-    
-    /* Modal adjustments for mobile */
-    .modal,
-    .modal.show,
-    #videoModal {
-        z-index: 1000003 !important;
-    }
-}
-
-/* Mobile Frosted Glass Menu - Less than 687px */
-@media (max-width: 687px) {
-    /* Main mobile menu container */
-    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
-    #mega-menu-wrap-primary #mega-menu-primary,
-    .mega-menu-toggle + .mega-menu,
-    .mega-menu-mobile {
-        background: hsla(0, 0%, 100%, .25) !important;
-        backdrop-filter: blur(12px) saturate(120%) !important;
-        -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
-        border-radius: 16px !important;
-        border: 1px solid hsla(0, 0%, 100%, .2) !important;
-        box-shadow: 0 10px 35px rgba(0, 0, 0, .15) !important;
-        padding: 10px !important;
-        margin: 10px !important;
-        z-index: 1000000 !important;
-    }
-    
-    /* Mobile submenu items */
-    #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu,
-    #mega-menu-wrap-primary .mega-sub-menu {
-        background: hsla(0, 0%, 100%, .15) !important;
-        backdrop-filter: blur(8px) saturate(110%) !important;
-        -webkit-backdrop-filter: blur(8px) saturate(110%) !important;
-        border-radius: 12px !important;
-        border: 1px solid hsla(0, 0%, 100%, .15) !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, .1) !important;
-        margin: 5px 0 !important;
-        padding: 8px !important;
-        z-index: 1000001 !important;
-    }
-    
-    /* Mobile menu links styling */
-    #mega-menu-wrap-max_mega_menu_1 .mega-menu-link,
-    #mega-menu-wrap-primary .mega-menu-link {
-        background: none !important;
-        border-radius: 8px !important;
-        transition: all .2s ease !important;
-        z-index: 1000002 !important;
-        position: relative !important;
-    }
-    
-    /* Mobile menu links hover effect */
-    #mega-menu-wrap-max_mega_menu_1 .mega-menu-link:hover,
-    #mega-menu-wrap-primary .mega-menu-link:hover {
-        background: hsla(0, 0%, 100%, .3) !important;
-        backdrop-filter: blur(6px) !important;
-        -webkit-backdrop-filter: blur(6px) !important;
-        border-radius: 8px !important;
-    }
-    
-    /* Additional frosted effect for mobile toggle area */
-    .mega-menu-toggle {
-        background: hsla(0, 0%, 100%, .2) !important;
-        backdrop-filter: blur(10px) saturate(115%) !important;
-        -webkit-backdrop-filter: blur(10px) saturate(115%) !important;
-        border-radius: 8px !important;
-        border: 1px solid hsla(0, 0%, 100%, .15) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, .1) !important;
-        z-index: 1000002 !important;
-    }
-}
-
-/* Extra small screens - Enhanced frosted effect */
-@media (max-width: 480px) {
-    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
-    #mega-menu-wrap-primary #mega-menu-primary {
-        background: hsla(0, 0%, 100%, .3) !important;
-        backdrop-filter: blur(15px) saturate(125%) !important;
-        -webkit-backdrop-filter: blur(15px) saturate(125%) !important;
-        border-radius: 12px !important;
-        margin: 5px !important;
-        padding: 8px !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, .2) !important;
-        z-index: 1000000 !important;
-    }
-    
-    .search-input {
-        font-size: 16px !important;
-        -webkit-appearance: none;
-        border-radius: 12px;
-    }
-
-    .side-menu.open {
-        transform: translateX(0);
-        box-shadow: 0 12px 48px rgba(0, 0, 0, .2);
-        opacity: 1;
-        pointer-events: auto;
-        z-index: 999998; /* Below mega menu */
-    }
-}
-
-/* ===============================================================
-   CONTENT HIERARCHY - ENSURE CONTENT STAYS BELOW MENU
-   =============================================================== */
-
-/* Ensure mega menu appears above common WordPress elements */
-.header,
-.site-header,
-#site-header,
-.main-navigation,
-.primary-navigation {
-    z-index: 99998 !important;
-}
-
-/* Sticky elements should be below mega menu */
-.sticky,
-.position-sticky,
-[style*="position: sticky"],
-[style*="position:sticky"] {
-    z-index: 99997 !important;
-}
-
-/* Content areas should be below mega menu */
-.entry-content,
-.site-main,
-#main,
-.content-area,
-.wp-block-columns,
-.wp-block-column {
-    z-index: 1 !important;
-    position: relative !important;
-}
-
-/* WordPress admin bar compatibility */
-.admin-bar #mega-menu-wrap-max_mega_menu_1,
-.admin-bar #mega-menu-wrap-primary {
-    z-index: 999999 !important;
-}
-
-.admin-bar .modal,
-.admin-bar .modal.show {
-    z-index: 1000003 !important;
-}
-
-/* ===============================================================
-   HERO SECTIONS AND MAIN CONTENT
-   =============================================================== */
 
 .insight-hero {
     padding: 80px 20px;
     background: linear-gradient(135deg, #f8f8f8, #fff);
     position: relative;
     overflow: hidden;
-    text-align: center;
-    z-index: 1 !important;
+    text-align: center
 }
 
 .insight-hero:before {
@@ -407,7 +175,7 @@ body.modal-open,.modal {
     right: 0;
     bottom: 0;
     background: radial-gradient(circle at 20% 20%, rgba(114, 22, 244, .1) 0, transparent 50%), radial-gradient(circle at 80% 80%, rgba(143, 71, 246, .1) 0, transparent 50%);
-    pointer-events: none;
+    pointer-events: none
 }
 
 .insight-hero h1 {
@@ -419,217 +187,15 @@ body.modal-open,.modal {
     background: linear-gradient(135deg, #281345, #7216f4);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
+    background-clip: text
 }
 
 .subtitle {
     font-size: 1.25rem;
     color: var(--gray-text);
     margin-bottom: 1.5rem;
-    line-height: 1.6;
+    line-height: 1.6
 }
-
-.hero-section {
-    padding: 40px 0 60px;
-    background: linear-gradient(135deg, #f8f8f8, #fff);
-    position: relative;
-    overflow: hidden;
-    z-index: 1 !important;
-}
-
-.hero-section .wp-block-columns {
-    position: relative;
-    z-index: 2;
-    align-items: center;
-}
-
-.hero-section h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-    color: #281345;
-}
-
-.hero-section p {
-    font-size: 1.25rem;
-    color: #7e7e7e;
-    margin-bottom: 2rem;
-    line-height: 1.7;
-}
-
-.hero-section img {
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(114, 22, 244, .15);
-    border: 2px solid rgba(199, 125, 255, .2);
-    z-index: 1 !important;
-    position: relative !important;
-}
-
-/* ===============================================================
-   SECTIONS AND FEATURES
-   =============================================================== */
-
-.stats-section {
-    padding: 60px 0;
-    background: #fff;
-    text-align: center;
-    z-index: 1 !important;
-    position: relative !important;
-}
-
-.stats-section .wp-block-column {
-    padding: 2rem 1rem;
-}
-
-.stats-section h3 {
-    font-size: 3rem;
-    font-weight: 800;
-    color: #7216f4;
-    margin-bottom: .5rem;
-    line-height: 1;
-}
-
-.stats-section p {
-    color: #7e7e7e;
-    font-weight: 500;
-    margin: 0;
-    font-size: 1rem;
-}
-
-.features-section {
-    padding: 80px 0;
-    background: #f8f8f8;
-    text-align: center;
-    z-index: 1 !important;
-    position: relative !important;
-}
-
-.features-section h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #281345;
-    text-align: center;
-}
-
-.features-section>p {
-    font-size: 1.25rem;
-    color: #7e7e7e;
-    max-width: 600px;
-    margin: 0 auto 4rem;
-    text-align: center;
-}
-
-.features-section .wp-block-column {
-    background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95));
-    backdrop-filter: blur(20px) saturate(130%);
-    -webkit-backdrop-filter: blur(20px) saturate(130%);
-    padding: 2.5rem;
-    border-radius: 16px;
-    margin: 0 15px 30px;
-    box-shadow: 0 8px 32px rgba(114, 22, 244, .12), 0 0 0 1px rgba(199, 125, 255, .2), inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 0 rgba(0, 0, 0, .03);
-    transition: all .4s cubic-bezier(.4, 0, .2, 1);
-    border: 2px solid rgba(199, 125, 255, .2);
-    position: relative;
-    overflow: hidden;
-    z-index: 1 !important;
-}
-
-.features-section .wp-block-column:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd);
-    border-radius: 16px 16px 0 0;
-}
-
-.features-section .wp-block-column:after {
-    content: "";
-    position: absolute;
-    top: 4px;
-    left: 0;
-    right: 0;
-    height: 30%;
-    background: linear-gradient(180deg, hsla(0, 0%, 100%, .4), hsla(0, 0%, 100%, .1) 50%, transparent);
-    pointer-events: none;
-    border-radius: 0 0 50% 50%;
-}
-
-.features-section .wp-block-column:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 16px 48px rgba(114, 22, 244, .2), 0 0 0 1px rgba(199, 125, 255, .4), inset 0 1px 0 hsla(0, 0%, 100%, .9), inset 0 -1px 0 rgba(0, 0, 0, .05);
-    border-color: rgba(199, 125, 255, .4);
-    backdrop-filter: blur(25px) saturate(140%);
-    -webkit-backdrop-filter: blur(25px) saturate(140%);
-}
-
-.about-section {
-    padding: 80px 0;
-    background: #fff;
-    z-index: 1 !important;
-    position: relative !important;
-}
-
-.about-section h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: #281345;
-    line-height: 1.2;
-}
-
-.about-section p {
-    font-size: 1.125rem;
-    color: #7e7e7e;
-    margin-bottom: 1.5rem;
-    line-height: 1.7;
-}
-
-.about-section img {
-    border-radius: 16px;
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    box-shadow: 0 8px 24px rgba(114, 22, 244, .15);
-    border: 2px solid rgba(199, 125, 255, .2);
-    z-index: 1 !important;
-    position: relative !important;
-}
-
-.cta-section {
-    padding: 80px 0;
-    background: linear-gradient(135deg, #7216f4, #8f47f6);
-    color: #fff;
-    text-align: center;
-    position: relative;
-    z-index: 1 !important;
-}
-
-.cta-section h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: #fff;
-    line-height: 1.2;
-}
-
-.cta-section p {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
-    opacity: .9;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.6;
-}
-
-/* ===============================================================
-   BUTTONS AND CTA ELEMENTS
-   =============================================================== */
 
 .cta-button {
     background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
@@ -637,63 +203,27 @@ body.modal-open,.modal {
     padding: 16px 32px !important;
     border: none !important;
     font-size: 1rem !important;
-    transition: all .3s ease !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-    display: inline-block !important;
-    cursor: pointer !important;
-    z-index: 2 !important;
-    position: relative !important;
+    transition: all .3s ease !important
 }
 
 .cta-button:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 24px rgba(114, 22, 244, .3) !important;
     color: #fff !important;
-    text-decoration: none !important;
+    text-decoration: none !important
 }
 
-.wp-block-button__link {
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    padding: 12px 24px !important;
-    transition: all .3s ease !important;
-    text-decoration: none !important;
-    border: none !important;
-    cursor: pointer !important;
-    display: inline-block !important;
-    z-index: 2 !important;
-    position: relative !important;
+@media (max-width:768px) {
+    .insight-hero h1 {
+        font-size: 2.5rem
+    }
 }
 
-.wp-block-button__link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+@media (max-width:480px) {
+    .insight-hero {
+        padding: 40px 15px
+    }
 }
-
-.wp-block-button__link:hover,
-.wp-block-button a,
-.wp-block-button a:focus,
-.wp-block-button a:hover,
-.wp-block-button a:visited {
-    text-decoration: none !important;
-}
-
-.wp-block-button.is-style-fill .wp-block-button__link {
-    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
-    color: #fff !important;
-}
-
-.wp-block-button.is-style-outline .wp-block-button__link {
-    background: #fff !important;
-    color: #7216f4 !important;
-    border: 2px solid #7216f4 !important;
-}
-
-/* ===============================================================
-   FORM STYLING
-   =============================================================== */
 
 .video-access-form h3 {
     text-align: center !important;
@@ -704,35 +234,67 @@ body.modal-open,.modal {
     font-weight: 600 !important;
     line-height: 1.2 !important;
     position: relative !important;
-    z-index: 2 !important;
+    z-index: 2 !important
+}
+
+@media (max-width:600px) {
+    .modal-content {
+        padding: 10px !important;
+        max-width: calc(100vw - 20px) !important;
+        max-height: calc(100vh - 20px) !important
+    }
+
+    .video-access-form {
+        min-width: 280px !important;
+        padding: 24px 20px !important;
+        border-radius: 12px !important
+    }
+
+    .video-access-form h3 {
+        font-size: 1.3rem !important;
+        padding-right: 35px !important
+    }
+
+    .close-btn {
+        top: 8px !important;
+        right: 12px !important;
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 16px !important
+    }
 }
 
 .modal * {
-    box-sizing: border-box !important;
+    box-sizing: border-box !important
+}
+
+.admin-bar .modal,
+.modal {
+    z-index: 7 !important
 }
 
 .form-row,
 .form-row-group {
-    margin-bottom: 16px !important;
+    margin-bottom: 16px !important
 }
 
 .form-row-group {
-    display: flex !important;
+    display: flex !important
 }
 
 .form-row-group .form-row {
     flex: 1 !important;
     margin-bottom: 0 !important;
-    margin-right: 14px !important;
+    margin-right: 14px !important
 }
 
 .form-row-group .form-row:last-child {
-    margin-right: 0 !important;
+    margin-right: 0 !important
 }
 
 .form-row.half {
     flex: 1 !important;
-    margin-bottom: 0 !important;
+    margin-bottom: 0 !important
 }
 
 .form-row label {
@@ -741,24 +303,24 @@ body.modal-open,.modal {
     font-weight: 500 !important;
     color: #333 !important;
     font-size: 16px !important;
-    line-height: 1.2 !important;
+    line-height: 1.2 !important
 }
 
 .video-access-form .wpcf7-form-control-wrap {
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0 !important
 }
 
 .video-access-form .wpcf7-form-control,.video-access-form p {
-    margin: 0 !important;
+    margin: 0 !important
 }
 
 .video-access-form p {
-    padding: 0 !important;
+    padding: 0 !important
 }
 
 .video-access-form br {
-    display: none !important;
+    display: none !important
 }
 
 .form-control,
@@ -771,7 +333,7 @@ body.modal-open,.modal {
     font-size: 16px !important;
     transition: all .3s ease !important;
     box-sizing: border-box !important;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, .05), 0 0 0 0 rgba(139, 92, 246, 0);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, .05), 0 0 0 0 rgba(139, 92, 246, 0)
 }
 
 .form-control:focus,
@@ -780,26 +342,26 @@ body.modal-open,.modal {
     outline: none !important;
     background: hsla(0, 0%, 100%, .98) !important;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, .05), 0 0 0 3px rgba(139, 92, 246, .1), 0 4px 12px rgba(139, 92, 246, .15) !important;
-    transform: translateY(-1px);
+    transform: translateY(-1px)
 }
 
 .form-control:hover,
 .wpcf7-form-control:hover:not(.wpcf7-submit) {
     border-color: #8f47f6 !important;
-    background: hsla(0, 0%, 100%, .95) !important;
+    background: hsla(0, 0%, 100%, .95) !important
 }
 
 .checkbox-row {
     display: flex !important;
     align-items: flex-start !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 16px !important
 }
 
 .checkbox-row input[type=checkbox] {
     width: auto !important;
     margin: 0 8px 0 0 !important;
     margin-top: 2px !important;
-    flex-shrink: 0 !important;
+    flex-shrink: 0 !important
 }
 
 .checkbox-row label {
@@ -807,18 +369,18 @@ body.modal-open,.modal {
     color: #333 !important;
     font-size: 16px !important;
     line-height: 1.3 !important;
-    cursor: pointer !important;
+    cursor: pointer !important
 }
 
 .checkbox-row a {
     color: #8b5cf6 !important;
     text-decoration: underline !important;
-    font-weight: 500 !important;
+    font-weight: 500 !important
 }
 
 .checkbox-row a:hover {
     text-decoration: none !important;
-    color: #7c3aed !important;
+    color: #7c3aed !important
 }
 
 .submit-btn,
@@ -838,7 +400,7 @@ input[type=submit].wpcf7-submit {
     margin-top: 8px !important;
     text-transform: uppercase !important;
     letter-spacing: .5px !important;
-    box-sizing: border-box !important;
+    box-sizing: border-box !important
 }
 
 .submit-btn:hover,
@@ -847,12 +409,8 @@ input[type=submit].wpcf7-submit {
 input[type=submit].wpcf7-submit:hover {
     background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, .3) !important;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, .3) !important
 }
-
-/* ===============================================================
-   FORM VALIDATION AND MESSAGES
-   =============================================================== */
 
 .wpcf7 .wpcf7-validation-errors,
 .wpcf7-validation-errors {
@@ -869,7 +427,7 @@ input[type=submit].wpcf7-submit:hover {
     border-radius: 8px !important;
     margin-top: 16px !important;
     position: relative !important;
-    z-index: 4 !important;
+    z-index: 4 !important
 }
 
 .wpcf7-validation-errors,
@@ -880,7 +438,7 @@ input[type=submit].wpcf7-submit:hover {
     visibility: visible !important;
     display: block !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0 !important
 }
 
 .wpcf7 .wpcf7-response-output,
@@ -891,14 +449,14 @@ input[type=submit].wpcf7-submit:hover {
     font-weight: 500 !important;
     opacity: 1 !important;
     visibility: visible !important;
-    display: block !important;
+    display: block !important
 }
 
 .wpcf7 .wpcf7-mail-sent-ok,
 .wpcf7-mail-sent-ok {
     background: #e8f5e8 !important;
     color: #2d5016 !important;
-    border: 2px solid #4caf50 !important;
+    border: 2px solid #4caf50 !important
 }
 
 .wpcf7-not-valid-tip {
@@ -907,29 +465,23 @@ input[type=submit].wpcf7-submit:hover {
     margin-top: 4px !important;
     opacity: 1 !important;
     visibility: visible !important;
-    display: block !important;
+    display: block !important
 }
 
 .wpcf7-form.invalid .form-control:invalid,
 .wpcf7-form.invalid .wpcf7-form-control:invalid {
     border-color: #ff6b6b !important;
-    box-shadow: 0 0 0 2px hsla(0, 100%, 71%, .1) !important;
+    box-shadow: 0 0 0 2px hsla(0, 100%, 71%, .1) !important
 }
 
 .wpcf7-response-output:empty {
-    display: none !important;
+    display: none !important
 }
-
-/* ===============================================================
-   COOKIE POLICY AND BANNER
-   =============================================================== */
 
 .cookie-policy-container {
     max-width: 1000px;
     margin: 0 auto;
-    padding: 20px;
-    z-index: 1 !important;
-    position: relative !important;
+    padding: 20px
 }
 
 .cookie-policy-content {
@@ -940,8 +492,7 @@ input[type=submit].wpcf7-submit:hover {
     margin-bottom: 40px;
     border: 2px solid rgba(199, 125, 255, .2);
     position: relative;
-    color: #281345;
-    z-index: 1 !important;
+    color: #281345
 }
 
 .cookie-policy-content:before {
@@ -951,7 +502,7 @@ input[type=submit].wpcf7-submit:hover {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd);
+    background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd)
 }
 
 .cookie-policy-content h1 {
@@ -961,21 +512,21 @@ input[type=submit].wpcf7-submit:hover {
     border-bottom: 3px solid #c77dff;
     padding-bottom: 10px;
     font-weight: 600;
-    margin-top: 20px;
+    margin-top: 20px
 }
 
 .cookie-policy-content h2 {
     color: #281345;
     margin: 30px 0 15px;
     font-size: 1.5em;
-    font-weight: 600;
+    font-weight: 600
 }
 
 .cookie-policy-content h3 {
     color: #281345;
     margin: 25px 0 10px;
     font-size: 1.2em;
-    font-weight: 600;
+    font-weight: 600
 }
 
 .cookie-highlight {
@@ -986,7 +537,7 @@ input[type=submit].wpcf7-submit:hover {
     margin: 20px 0;
     border: 1px solid rgba(199, 125, 255, .3);
     color: #281345;
-    font-weight: 500;
+    font-weight: 500
 }
 
 .cookie-table {
@@ -997,14 +548,14 @@ input[type=submit].wpcf7-submit:hover {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(114, 22, 244, .1);
-    border: 2px solid rgba(199, 125, 255, .2);
+    border: 2px solid rgba(199, 125, 255, .2)
 }
 
 .cookie-table td,
 .cookie-table th {
     border: 1px solid rgba(199, 125, 255, .2);
     padding: 15px;
-    text-align: left;
+    text-align: left
 }
 
 .cookie-table th {
@@ -1013,11 +564,11 @@ input[type=submit].wpcf7-submit:hover {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: .5px;
-    font-size: .9rem;
+    font-size: .9rem
 }
 
 .cookie-table tr:nth-child(2n) {
-    background: rgba(199, 125, 255, .05);
+    background: rgba(199, 125, 255, .05)
 }
 
 .cookie-banner {
@@ -1031,11 +582,11 @@ input[type=submit].wpcf7-submit:hover {
     color: #fff;
     padding: 12px 20px;
     display: none;
-    z-index: 99996 !important; /* Below mega menu but above content */
+    z-index: 5;
     border-top: 1px solid hsla(0, 0%, 100%, .2);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, .3), inset 0 1px 0 hsla(0, 0%, 100%, .1);
     position: relative;
-    overflow: hidden;
+    overflow: hidden
 }
 
 .cookie-banner:before {
@@ -1046,27 +597,27 @@ input[type=submit].wpcf7-submit:hover {
     right: 0;
     height: 50%;
     background: linear-gradient(180deg, hsla(0, 0%, 100%, .1), transparent);
-    pointer-events: none;
+    pointer-events: none
 }
 
 .cookie-banner.show {
     display: block;
-    animation: slideUp .6s cubic-bezier(.4, 0, .2, 1);
+    animation: a .6s cubic-bezier(.4, 0, .2, 1)
 }
 
-@keyframes slideUp {
+@keyframes a {
     0% {
         transform: translateY(100%);
         opacity: 0;
         backdrop-filter: blur(0);
-        -webkit-backdrop-filter: blur(0);
+        -webkit-backdrop-filter: blur(0)
     }
 
     to {
         transform: translateY(0);
         opacity: 1;
         backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px)
     }
 }
 
@@ -1076,7 +627,7 @@ input[type=submit].wpcf7-submit:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
+    flex-wrap: wrap
 }
 
 .banner-text {
@@ -1085,12 +636,12 @@ input[type=submit].wpcf7-submit:hover {
     font-weight: 500;
     line-height: 1.3;
     font-size: 14px;
-    margin-right: 20px;
+    margin-right: 20px
 }
 
 .banner-buttons {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap
 }
 
 .cookie-btn {
@@ -1105,52 +656,260 @@ input[type=submit].wpcf7-submit:hover {
     letter-spacing: .3px;
     margin-left: 8px;
     text-decoration: none;
-    display: inline-block;
+    display: inline-block
 }
 
 .cookie-btn-accept {
     background: linear-gradient(135deg, #7216f4, #8f47f6);
-    color: #fff;
+    color: #fff
 }
 
 .cookie-btn-accept:hover {
     background: linear-gradient(135deg, #8f47f6, #9d4edd);
-    color: #fff;
+    color: #fff
 }
 
 .cookie-btn-decline {
     background: #e74c3c;
-    color: #fff;
+    color: #fff
 }
 
 .cookie-btn-decline:hover {
     background: #c0392b;
-    color: #fff;
+    color: #fff
 }
-
-/* ===============================================================
-   CONTENT FLOW FIXES
-   =============================================================== */
 
 .entry-content>* {
     margin-top: 0;
-    margin-bottom: 0;
+    margin-bottom: 0
+}
+
+.hero-section {
+    padding: 40px 0 60px;
+    background: linear-gradient(135deg, #f8f8f8, #fff);
+    position: relative;
+    overflow: hidden
+}
+
+.hero-section .wp-block-columns {
+    position: relative;
+    z-index: 2;
+    align-items: center
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: #281345
+}
+
+.hero-section p {
+    font-size: 1.25rem;
+    color: #7e7e7e;
+    margin-bottom: 2rem;
+    line-height: 1.7
+}
+
+.hero-section img {
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(114, 22, 244, .15);
+    border: 2px solid rgba(199, 125, 255, .2)
+}
+
+.stats-section {
+    padding: 60px 0;
+    background: #fff;
+    text-align: center
+}
+
+.stats-section .wp-block-column {
+    padding: 2rem 1rem
+}
+
+.stats-section h3 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #7216f4;
+    margin-bottom: .5rem;
+    line-height: 1
+}
+
+.stats-section p {
+    color: #7e7e7e;
+    font-weight: 500;
+    margin: 0;
+    font-size: 1rem
+}
+
+.features-section {
+    padding: 80px 0;
+    background: #f8f8f8;
+    text-align: center
+}
+
+.features-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #281345;
+    text-align: center
+}
+
+.features-section>p {
+    font-size: 1.25rem;
+    color: #7e7e7e;
+    max-width: 600px;
+    margin: 0 auto 4rem;
+    text-align: center
+}
+
+.features-section .wp-block-column {
+    background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95));
+    backdrop-filter: blur(20px) saturate(130%);
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin: 0 15px 30px;
+    box-shadow: 0 8px 32px rgba(114, 22, 244, .12), 0 0 0 1px rgba(199, 125, 255, .2), inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 0 rgba(0, 0, 0, .03);
+    transition: all .4s cubic-bezier(.4, 0, .2, 1);
+    border: 2px solid rgba(199, 125, 255, .2);
+    position: relative;
+    overflow: hidden
+}
+
+.features-section .wp-block-column:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd);
+    border-radius: 16px 16px 0 0
+}
+
+.features-section .wp-block-column:after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(180deg, hsla(0, 0%, 100%, .4), hsla(0, 0%, 100%, .1) 50%, transparent);
+    pointer-events: none;
+    border-radius: 0 0 50% 50%
+}
+
+.features-section .wp-block-column:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 16px 48px rgba(114, 22, 244, .2), 0 0 0 1px rgba(199, 125, 255, .4), inset 0 1px 0 hsla(0, 0%, 100%, .9), inset 0 -1px 0 rgba(0, 0, 0, .05);
+    border-color: rgba(199, 125, 255, .4);
+    backdrop-filter: blur(25px) saturate(140%);
+    -webkit-backdrop-filter: blur(25px) saturate(140%)
+}
+
+.about-section {
+    padding: 80px 0;
+    background: #fff
+}
+
+.about-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #281345;
+    line-height: 1.2
+}
+
+.about-section p {
+    font-size: 1.125rem;
+    color: #7e7e7e;
+    margin-bottom: 1.5rem;
+    line-height: 1.7
+}
+
+.about-section img {
+    border-radius: 16px;
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(114, 22, 244, .15);
+    border: 2px solid rgba(199, 125, 255, .2)
+}
+
+.cta-section {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #7216f4, #8f47f6);
+    color: #fff;
+    text-align: center;
+    position: relative
+}
+
+.cta-section h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #fff;
+    line-height: 1.2
+}
+
+.cta-section p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: .9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6
+}
+
+.wp-block-button__link {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    padding: 12px 24px !important;
+    transition: all .3s ease !important;
+    text-decoration: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: inline-block !important
+}
+
+.wp-block-button__link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .2)
+}
+
+.wp-block-button__link:hover,
+.wp-block-button a,
+.wp-block-button a:focus,
+.wp-block-button a:hover,
+.wp-block-button a:visited {
+    text-decoration: none !important
+}
+
+.wp-block-button.is-style-fill .wp-block-button__link {
+    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
+    color: #fff !important
+}
+
+.wp-block-button.is-style-outline .wp-block-button__link {
+    background: #fff !important;
+    color: #7216f4 !important;
+    border: 2px solid #7216f4 !important
 }
 
 .testimonial-card:before {
-    display: none !important;
+    display: none !important
 }
-
-/* ===============================================================
-   GLOBAL BUTTON STYLING
-   =============================================================== */
 
 :root {
     --glass-purple-tint-wp-final: linear-gradient(135deg, rgba(114, 22, 244, .6), rgba(80, 15, 171, .7));
     --glass-purple-tint-hover-wp-final: linear-gradient(135deg, rgba(114, 22, 244, .7), rgba(80, 15, 171, .8));
     --glass-border-purple-wp-final: rgba(199, 125, 255, .4);
     --glass-border-purple-hover-wp-final: rgba(220, 180, 255, .7);
-    --text-color-wp-final: #fff;
+    --text-color-wp-final: #fff
 }
 
 .button-container {
@@ -1161,7 +920,7 @@ input[type=submit].wpcf7-submit:hover {
     padding: 40px 20px;
     box-sizing: border-box;
     position: relative;
-    z-index: 1;
+    z-index: 1
 }
 
 .cta-button {
@@ -1185,79 +944,65 @@ input[type=submit].wpcf7-submit:hover {
     transition: all .35s cubic-bezier(.25, .46, .45, .94) !important;
     cursor: pointer !important;
     user-select: none !important;
-    -webkit-user-select: none !important;
-    z-index: 2 !important;
-    position: relative !important;
+    -webkit-user-select: none !important
 }
 
 .cta-button,
 .cta-button:hover {
-    color: var(--text-color-wp-final) !important;
+    color: var(--text-color-wp-final) !important
 }
 
 .cta-button:hover {
     background: var(--glass-purple-tint-hover-wp-final) !important;
     transform: translateY(-6px) scale(1.05) !important;
     box-shadow: 0 14px 40px rgba(0, 0, 0, .35) !important;
-    border-color: var(--glass-border-purple-hover-wp-final) !important;
+    border-color: var(--glass-border-purple-hover-wp-final) !important
 }
 
 .cta-button:active {
-    transform: translateY(1px) scale(1.02) !important;
+    transform: translateY(1px) scale(1.02) !important
 }
-
-/* ===============================================================
-   IFRAME AND EMBED FIXES
-   =============================================================== */
 
 #treasury-stack-iframe {
     width: 100% !important;
     border: none !important;
     overflow: hidden !important;
     display: block !important;
-    transition: height .3s ease !important;
-    z-index: 1 !important;
-    position: relative !important;
+    transition: height .3s ease !important
 }
 
 .wp-block-custom-html,
 .wp-block-html,
 [id*=treasury-stack-iframe]:parent {
-    overflow: visible !important;
+    overflow: visible !important
 }
 
 .entry-content iframe {
     max-width: 100% !important;
-    overflow: hidden !important;
-    z-index: 1 !important;
-    position: relative !important;
+    overflow: hidden !important
 }
 
 iframe html {
     overflow-y: visible !important;
-    overflow-x: hidden !important;
+    overflow-x: hidden !important
 }
 
 iframe body {
     overflow: visible !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0 !important
 }
 
 body:not(iframe body) {
     overflow-y: auto !important;
-    overflow-x: hidden !important;
+    overflow-x: hidden !important
 }
 
 .wp-block-custom-html:after,
 .wp-block-html:after {
     content: none !important;
-    display: none !important;
+    display: none !important
 }
-
-/* ===============================================================
-   GLOBAL TYPOGRAPHY AND BASE STYLES
-   =============================================================== */
 
 body {
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -1267,7 +1012,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0 !important
 }
 
 .frosted-glass {
@@ -1277,9 +1022,7 @@ body {
     border: 1px solid rgba(199, 125, 255, .2);
     box-shadow: 0 8px 32px rgba(114, 22, 244, .12), inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 0 rgba(0, 0, 0, .03);
     border-radius: 16px;
-    padding: 2rem;
-    z-index: 1 !important;
-    position: relative !important;
+    padding: 2rem
 }
 
 h1,
@@ -1287,26 +1030,26 @@ h2,
 h3 {
     font-weight: 700;
     color: #281345;
-    line-height: 1.2;
+    line-height: 1.2
 }
 
 h1,
 h2,
 h3,
 p {
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif
 }
 
 p {
     font-size: 1.125rem;
     color: #7e7e7e;
-    line-height: 1.6;
+    line-height: 1.6
 }
 
 .wp-block-button__link {
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: .5px;
+    letter-spacing: .5px
 }
 
 .about-section,
@@ -1314,37 +1057,191 @@ p {
 .features-section .wp-block-column,
 .hero-section,
 .wp-block-button__link {
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif
 }
 
-/* ===============================================================
-   LOGO AND SITE BRANDING FIXES
-   =============================================================== */
+@media (max-width:1024px) {
+    .banner-content {
+        flex-direction: column;
+        text-align: center
+    }
+
+    .banner-text {
+        margin-right: 0;
+        margin-bottom: 10px
+    }
+
+    .cookie-btn {
+        margin: 4px
+    }
+}
+
+@media (max-width:480px) {
+    .banner-content {
+        flex-direction: column;
+        text-align: center
+    }
+
+    .banner-text {
+        margin-right: 0;
+        margin-bottom: 10px
+    }
+
+    .cookie-btn {
+        margin: 4px
+    }
+}
+
+@media print {
+
+    .cookie-banner,
+    .modal {
+        display: none !important
+    }
+}
+
+.modal-wrapper .modal,
+.modal .modal,
+.outer-modal {
+    display: none !important
+}
+
+.modal:not(.modal .modal) {
+    display: flex !important
+}
+
+.video-access-form {
+    position: relative !important;
+    z-index: 1 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important
+}
+
+.modal:has(.modal) {
+    display: none !important
+}
+
+.modal .modal-content .modal {
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important
+}
+
+.modal.show .modal-content {
+    position: relative !important;
+    z-index: 2 !important
+}
+
+#access-treasury-modal,
+#modal-outer,
+.modal-content>.modal,
+[class*=treasury] .modal .modal,
+[id*=treasury] .modal .modal {
+    display: none !important
+}
+
+.modal {
+    &:not(.modal .modal) {
+        display: flex !important
+    }
+
+    .modal & {
+        display: none !important
+    }
+}
+
+.modal.show {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 7 !important;
+    background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4)) !important;
+    backdrop-filter: blur(15px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(120%) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important
+}
+
+.modal.show,
+.modal.show .modal-content {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important
+}
+
+.modal.show .modal-content {
+    max-width: calc(100vw - 40px) !important;
+    max-height: calc(100vh - 40px) !important;
+    padding: 20px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: scale(1) !important
+}
+
+.modal.show .video-access-form {
+    width: 100% !important;
+    max-width: 520px !important;
+    min-width: 320px !important;
+    position: relative !important;
+    margin: 0 auto !important;
+    padding: 32px !important;
+    background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95)) !important;
+    backdrop-filter: blur(20px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
+    border: 2px solid rgba(199, 125, 255, .3) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(114, 22, 244, .15), 0 0 0 1px hsla(0, 0%, 100%, .5), inset 0 1px 0 hsla(0, 0%, 100%, .8) !important;
+    transform: none !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    isolation: isolate !important
+}
+
+@media (max-width:768px) {
+    .search-input {
+        font-size: 16px !important;
+        -webkit-appearance: none;
+        border-radius: 12px
+    }
+
+    .side-menu.open {
+        transform: translateX(0);
+        box-shadow: 0 12px 48px rgba(0, 0, 0, .2);
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 6
+    }
+}
 
 .wp-block-site-logo,
 .wp-block-site-logo .custom-logo,
 .wp-block-site-logo img {
     background: none !important;
-    background-color: transparent !important;
-    z-index: 1000003 !important;
-    position: relative !important;
+    background-color: transparent !important
 }
 
 .wp-block-site-logo .custom-logo,
 .wp-block-site-logo img {
-    box-shadow: none !important;
+    box-shadow: none !important
 }
 
 .wp-block-site-logo .custom-logo-link,
 .wp-block-site-logo .custom-logo-link:hover,
 .wp-block-site-logo .custom-logo-link:hover img {
     background: none !important;
-    background-color: transparent !important;
+    background-color: transparent !important
 }
-
-/* ===============================================================
-   GATED DOWNLOAD FORMS
-   =============================================================== */
 
 .gated-download-form {
     background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95)) !important;
@@ -1358,8 +1255,7 @@ p {
     max-width: 600px !important;
     position: relative !important;
     overflow: hidden !important;
-    box-sizing: border-box !important;
-    z-index: 1 !important;
+    box-sizing: border-box !important
 }
 
 .gated-download-form:before {
@@ -1367,14 +1263,14 @@ p {
     height: 4px;
     background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd);
     border-radius: 16px 16px 0 0;
-    z-index: 1;
+    z-index: 1
 }
 
 .gated-download-form:before,.gated-download-form:after {
     content: "";
     position: absolute;
     left: 0;
-    right: 0;
+    right: 0
 }
 
 .gated-download-form:after {
@@ -1383,7 +1279,7 @@ p {
     background: linear-gradient(180deg, hsla(0, 0%, 100%, .4), hsla(0, 0%, 100%, .1) 50%, transparent);
     pointer-events: none;
     border-radius: 0 0 50% 50%;
-    z-index: 2;
+    z-index: 2
 }
 
 .gated-download-form h3 {
@@ -1392,14 +1288,14 @@ p {
     color: var(--dark-text) !important;
     font-size: 2rem !important;
     font-weight: 700 !important;
-    line-height: 1.2 !important;
+    line-height: 1.2 !important
 }
 
 .gated-download-form .subtitle,
 .gated-download-form h3 {
     text-align: center !important;
     position: relative !important;
-    z-index: 3 !important;
+    z-index: 3 !important
 }
 
 .gated-download-form .subtitle {
@@ -1407,24 +1303,24 @@ p {
     color: var(--gray-text) !important;
     font-size: 1.125rem !important;
     font-weight: 400 !important;
-    line-height: 1.5 !important;
+    line-height: 1.5 !important
 }
 
 .gated-download-form .form-row {
     margin-bottom: 20px !important;
     position: relative !important;
-    z-index: 3 !important;
+    z-index: 3 !important
 }
 
 .gated-download-form .form-row-group {
     display: flex !important;
     gap: 16px !important;
-    margin-bottom: 20px !important;
+    margin-bottom: 20px !important
 }
 
 .gated-download-form .form-row-group .form-row {
     flex: 1 !important;
-    margin-bottom: 0 !important;
+    margin-bottom: 0 !important
 }
 
 .gated-download-form .form-row label {
@@ -1433,25 +1329,25 @@ p {
     font-weight: 500 !important;
     color: var(--dark-text) !important;
     font-size: 16px !important;
-    line-height: 1.2 !important;
+    line-height: 1.2 !important
 }
 
 .gated-download-form .wpcf7-form-control-wrap {
     margin: 0 !important;
     padding: 0 !important;
-    position: relative !important;
+    position: relative !important
 }
 
 .gated-download-form .wpcf7-form-control,.gated-download-form p {
-    margin: 0 !important;
+    margin: 0 !important
 }
 
 .gated-download-form p {
-    padding: 0 !important;
+    padding: 0 !important
 }
 
 .gated-download-form br {
-    display: none !important;
+    display: none !important
 }
 
 .gated-download-form .wpcf7-form-control:not(.wpcf7-submit),
@@ -1466,7 +1362,7 @@ p {
     transition: all .3s ease !important;
     box-sizing: border-box !important;
     color: var(--dark-text) !important;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, .05), 0 0 0 0 rgba(139, 92, 246, 0);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, .05), 0 0 0 0 rgba(139, 92, 246, 0)
 }
 
 .gated-download-form .wpcf7-form-control:focus:not(.wpcf7-submit),
@@ -1476,7 +1372,7 @@ p {
     outline: none !important;
     background: hsla(0, 0%, 100%, .98) !important;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, .05), 0 0 0 3px rgba(139, 92, 246, .1), 0 4px 12px rgba(139, 92, 246, .15) !important;
-    transform: translateY(-1px);
+    transform: translateY(-1px)
 }
 
 .gated-download-form .wpcf7-submit,
@@ -1497,14 +1393,14 @@ p {
     box-sizing: border-box !important;
     position: relative !important;
     z-index: 3 !important;
-    box-shadow: 0 4px 16px rgba(114, 22, 244, .3) !important;
+    box-shadow: 0 4px 16px rgba(114, 22, 244, .3) !important
 }
 
 .gated-download-form .wpcf7-submit:hover,
 .gated-download-form input[type=submit]:hover {
     background: linear-gradient(135deg, #7c3aed, #6d28d9) !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 8px 24px rgba(139, 92, 246, .4) !important;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, .4) !important
 }
 
 .gated-download-form .checkbox-row {
@@ -1512,7 +1408,7 @@ p {
     align-items: flex-start !important;
     margin-bottom: 20px !important;
     position: relative !important;
-    z-index: 3 !important;
+    z-index: 3 !important
 }
 
 .gated-download-form .checkbox-row input[type=checkbox] {
@@ -1520,7 +1416,7 @@ p {
     margin: 0 8px 0 0 !important;
     margin-top: 2px !important;
     flex-shrink: 0 !important;
-    accent-color: var(--primary-purple) !important;
+    accent-color: var(--primary-purple) !important
 }
 
 .gated-download-form .checkbox-row label {
@@ -1528,12 +1424,29 @@ p {
     color: var(--dark-text) !important;
     font-size: 16px !important;
     line-height: 1.3 !important;
-    cursor: pointer !important;
+    cursor: pointer !important
 }
 
-/* ===============================================================
-   DOWNLOAD MODAL SYSTEM
-   =============================================================== */
+@media (max-width:768px) {
+    .gated-download-form {
+        padding: 24px 20px !important;
+        border-radius: 12px !important;
+        margin: 20px auto !important
+    }
+
+    .gated-download-form h3 {
+        font-size: 1.6rem !important
+    }
+
+    .gated-download-form .form-row-group {
+        flex-direction: column !important;
+        gap: 0 !important
+    }
+
+    .gated-download-form .form-row-group .form-row {
+        margin-bottom: 20px !important
+    }
+}
 
 .download-modal {
     position: fixed !important;
@@ -1543,7 +1456,7 @@ p {
     bottom: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    z-index: 1000003 !important;
+    z-index: 7 !important;
     background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4)) !important;
     backdrop-filter: blur(15px) saturate(120%) !important;
     -webkit-backdrop-filter: blur(15px) saturate(120%) !important;
@@ -1553,13 +1466,13 @@ p {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
-    transition: all .4s cubic-bezier(.4, 0, .2, 1) !important;
+    transition: all .4s cubic-bezier(.4, 0, .2, 1) !important
 }
 
 .download-modal.show {
     opacity: 1 !important;
     visibility: visible !important;
-    pointer-events: auto !important;
+    pointer-events: auto !important
 }
 
 .download-modal-content {
@@ -1570,12 +1483,11 @@ p {
     align-items: center !important;
     justify-content: center !important;
     transform: scale(.9) !important;
-    transition: all .4s cubic-bezier(.4, 0, .2, 1) !important;
-    z-index: 1000004 !important;
+    transition: all .4s cubic-bezier(.4, 0, .2, 1) !important
 }
 
 .download-modal.show .download-modal-content {
-    transform: scale(1) !important;
+    transform: scale(1) !important
 }
 
 .close-btn {
@@ -1588,7 +1500,7 @@ p {
     font-size: 18px !important;
     color: #7216f4 !important;
     cursor: pointer !important;
-    z-index: 1000005 !important;
+    z-index: 4 !important;
     width: 32px !important;
     height: 32px !important;
     display: flex !important;
@@ -1597,20 +1509,15 @@ p {
     transition: all .3s ease !important;
     padding: 0 !important;
     line-height: 1 !important;
-    font-weight: 700 !important;
+    font-weight: 700 !important
 }
 
 .close-btn:hover {
     background: rgba(114, 22, 244, .1) !important;
     border-color: rgba(199, 125, 255, .5) !important;
     color: #333 !important;
-    transform: scale(1.1) !important;
+    transform: scale(1.1) !important
 }
-
-/* ===============================================================
-   NAVIGATION FIXES
-   =============================================================== */
-
 .navigation.post-navigation,
 .nav-links,
 .post-navigation,
@@ -1622,241 +1529,185 @@ nav[class*="post-navigation"],
     display: none !important;
 }
 
-/* ===============================================================
-   RESPONSIVE BREAKPOINT ADJUSTMENTS
-   =============================================================== */
-
-@media (max-width: 1024px) {
-    .banner-content {
-        flex-direction: column;
-        text-align: center;
+/* Adjust Max Mega Menu position on mobile */
+@media (max-width: 768px) { /* This targets mobile devices */
+    #mega-menu-wrap-primary #mega-menu-primary {
+        margin-top: -60px; /* Adjust this negative value as needed */
     }
+}
 
-    .banner-text {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .cookie-btn {
-        margin: 4px;
+/* Mobile Frosted Glass Menu - Less than 687px */
+@media (max-width: 687px) {
+    /* Main mobile menu container */
+    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
+    #mega-menu-wrap-primary #mega-menu-primary,
+    .mega-menu-toggle + .mega-menu,
+    .mega-menu-mobile {
+        background: hsla(0, 0%, 100%, .25) !important;
+        backdrop-filter: blur(12px) saturate(120%) !important;
+        -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+        border-radius: 16px !important;
+        border: 1px solid hsla(0, 0%, 100%, .2) !important;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, .15) !important;
+        padding: 10px !important;
+        margin: 10px !important;
     }
     
-    #mega-menu-wrap-max_mega_menu_1,
-    #mega-menu-wrap-primary {
-        z-index: 999999 !important;
-    }
-    
+    /* Mobile submenu items */
     #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu,
     #mega-menu-wrap-primary .mega-sub-menu {
-        z-index: 1000000 !important;
+        background: hsla(0, 0%, 100%, .15) !important;
+        backdrop-filter: blur(8px) saturate(110%) !important;
+        -webkit-backdrop-filter: blur(8px) saturate(110%) !important;
+        border-radius: 12px !important;
+        border: 1px solid hsla(0, 0%, 100%, .15) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, .1) !important;
+        margin: 5px 0 !important;
+        padding: 8px !important;
+    }
+    
+    /* Mobile menu links styling */
+    #mega-menu-wrap-max_mega_menu_1 .mega-menu-link,
+    #mega-menu-wrap-primary .mega-menu-link {
+        background: none !important;
+        border-radius: 8px !important;
+        transition: all .2s ease !important;
+    }
+    
+    /* Mobile menu links hover effect */
+    #mega-menu-wrap-max_mega_menu_1 .mega-menu-link:hover,
+    #mega-menu-wrap-primary .mega-menu-link:hover {
+        background: hsla(0, 0%, 100%, .3) !important;
+        backdrop-filter: blur(6px) !important;
+        -webkit-backdrop-filter: blur(6px) !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Additional frosted effect for mobile toggle area */
+    .mega-menu-toggle {
+        background: hsla(0, 0%, 100%, .2) !important;
+        backdrop-filter: blur(10px) saturate(115%) !important;
+        -webkit-backdrop-filter: blur(10px) saturate(115%) !important;
+        border-radius: 8px !important;
+        border: 1px solid hsla(0, 0%, 100%, .15) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, .1) !important;
+    }
+    
+    /* Ensure proper positioning */
+    #mega-menu-wrap-primary #mega-menu-primary {
+        margin-top: -60px;
+        position: relative;
+        z-index: 999;
     }
 }
 
-@media (max-width: 768px) {
-    .modal-content {
-        padding: 10px !important;
-        max-width: calc(100vw - 20px) !important;
-        max-height: calc(100vh - 20px) !important;
-    }
-
-    .video-access-form {
-        min-width: 280px !important;
-        padding: 24px 20px !important;
-        border-radius: 12px !important;
-    }
-
-    .video-access-form h3 {
-        font-size: 1.3rem !important;
-        padding-right: 35px !important;
-    }
-
-    .close-btn {
-        top: 8px !important;
-        right: 12px !important;
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 16px !important;
-    }
-    
-    .insight-hero h1 {
-        font-size: 2.5rem;
-    }
-    
-    .gated-download-form {
-        padding: 24px 20px !important;
-        border-radius: 12px !important;
-        margin: 20px auto !important;
-    }
-
-    .gated-download-form h3 {
-        font-size: 1.6rem !important;
-    }
-
-    .gated-download-form .form-row-group {
-        flex-direction: column !important;
-        gap: 0 !important;
-    }
-
-    .gated-download-form .form-row-group .form-row {
-        margin-bottom: 20px !important;
-    }
-}
-
+/* Extra small screens - Enhanced frosted effect */
 @media (max-width: 480px) {
-    .insight-hero {
-        padding: 40px 15px;
-    }
-    
-    .banner-content {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .banner-text {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .cookie-btn {
-        margin: 4px;
+    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
+    #mega-menu-wrap-primary #mega-menu-primary {
+        background: hsla(0, 0%, 100%, .3) !important;
+        backdrop-filter: blur(15px) saturate(125%) !important;
+        -webkit-backdrop-filter: blur(15px) saturate(125%) !important;
+        border-radius: 12px !important;
+        margin: 5px !important;
+        padding: 8px !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, .2) !important;
     }
 }
-
-/* ===============================================================
-   PRINT MEDIA FIXES
-   =============================================================== */
-
-@media print {
-    .cookie-banner,
-    .modal {
-        display: none !important;
-    }
-}
-
-/* ===============================================================
-   MODAL NESTING PROTECTION
-   =============================================================== */
-
-.modal-wrapper .modal,
-.modal .modal,
-.outer-modal {
-    display: none !important;
-}
-
-.modal:not(.modal .modal) {
-    display: flex !important;
-}
-
-.video-access-form {
-    position: relative !important;
-    z-index: 1 !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.modal:has(.modal) {
-    display: none !important;
-}
-
-.modal .modal-content .modal {
-    position: absolute !important;
-    top: -9999px !important;
-    left: -9999px !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-}
-
-.modal.show .modal-content {
-    position: relative !important;
-    z-index: 2 !important;
-}
-
-#access-treasury-modal,
-#modal-outer,
-.modal-content>.modal,
-[class*=treasury] .modal .modal,
-[id*=treasury] .modal .modal {
-    display: none !important;
-}
-
-.modal.show {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    z-index: 1000003 !important;
-    background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4)) !important;
-    backdrop-filter: blur(15px) saturate(120%) !important;
-    -webkit-backdrop-filter: blur(15px) saturate(120%) !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-}
-
-.modal.show,
-.modal.show .modal-content {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.modal.show .modal-content {
-    max-width: calc(100vw - 40px) !important;
-    max-height: calc(100vh - 40px) !important;
-    padding: 20px !important;
-    background: transparent !important;
-    border: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    transform: scale(1) !important;
-}
-
-.modal.show .video-access-form {
-    width: 100% !important;
-    max-width: 520px !important;
-    min-width: 320px !important;
-    position: relative !important;
-    margin: 0 auto !important;
-    padding: 32px !important;
-    background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95)) !important;
-    backdrop-filter: blur(20px) saturate(130%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
-    border: 2px solid rgba(199, 125, 255, .3) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 8px 32px rgba(114, 22, 244, .15), 0 0 0 1px hsla(0, 0%, 100%, .5), inset 0 1px 0 hsla(0, 0%, 100%, .8) !important;
-    transform: none !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-    isolation: isolate !important;
-}
-
-/* ===============================================================
-   WIDGET AND MISC FIXES
-   =============================================================== */
-
+/* Final CSS for the JavaScript Fix */
 .latest-insights-mega-widget {
+    /* This rule just makes the widget fade smoothly when the script shows/hides it. */
     transition: opacity 0.3s ease !important;
 }
-
 /* ===============================================================
-   FINAL Z-INDEX HIERARCHY SUMMARY
+   MODAL Z-INDEX FIX FOR MAX MEGA MENU COMPATIBILITY
+   Add this CSS to your shared.css file or enqueue it separately
    =============================================================== */
 
-/*
-Z-Index Hierarchy (from lowest to highest):
-1. Content, Images, Videos: z-index: 1
-2. Sticky Elements: z-index: 99997
-3. Headers, Navigation: z-index: 99998
-4. Cookie Banner: z-index: 99996
-5. Max Mega Menu Wrapper: z-index: 999999
-6. Mega Menu Dropdowns: z-index: 1000000
-7. Menu Items/Links: z-index: 1000001-1000002
-8. Modals: z-index: 1000003+
-9. Modal Content: z-index: 1000004+
-10. Close Buttons: z-index: 1000005+
-*/
+/* Ensure modal appears above Max Mega Menu */
+.modal,
+.modal.show,
+#videoModal {
+    z-index: 999999 !important; /* Higher than typical mega menu z-index */
+    position: fixed !important;
+}
+
+/* Ensure modal content stays on top */
+.modal-content,
+.video-access-form {
+    z-index: 1000000 !important;
+    position: relative !important;
+}
+
+/* Specific fixes for Max Mega Menu conflicts */
+#mega-menu-wrap-max_mega_menu_1,
+#mega-menu-wrap-primary,
+.mega-menu-wrap {
+    z-index: 99999 !important; /* Keep mega menu below modal */
+}
+
+/* Ensure modal backdrop covers everything including mega menu */
+.modal::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 999998;
+    pointer-events: none;
+}
+
+/* Force modal to be above admin bar and all menus */
+.admin-bar .modal,
+.admin-bar .modal.show {
+    z-index: 1000001 !important;
+}
+
+/* Prevent body scroll when modal is open and mega menu is expanded */
+body.modal-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Close button stays on top */
+.close-btn {
+    z-index: 1000002 !important;
+    position: absolute !important;
+}
+
+/* Mobile specific fixes */
+@media (max-width: 768px) {
+    .modal,
+    .modal.show,
+    #videoModal {
+        z-index: 1000003 !important;
+    }
+    
+    /* Ensure mobile mega menu stays below modal */
+    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
+    #mega-menu-wrap-primary #mega-menu-primary {
+        z-index: 99998 !important;
+    }
+}
+
+/* Extra safety for any mega menu toggles */
+.mega-menu-toggle {
+    z-index: 99997 !important;
+}
+
+/* Ensure modal overlay covers mega menu dropdowns */
+.modal.show::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999999;
+    pointer-events: none;
+    background: transparent;
+}

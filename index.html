@@ -17,6 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* CSS Variables and Root Styles */
         :root {
             --primary-purple: #7216f4;
             --secondary-purple: #8f47f6;
@@ -33,6 +34,7 @@
             scroll-behavior: smooth;
         }
 
+        /* Global Resets and Base Styles */
         * { 
             margin: 0; 
             padding: 0; 
@@ -46,10 +48,9 @@
             background: var(--white);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            margin: 0;
-            padding: 0;
         }
 
+        /* Layout Containers */
         .container { 
             max-width: 1200px; 
             margin: 0 auto; 
@@ -62,6 +63,50 @@
 
         .section-lg { 
             padding: 80px 0; 
+        }
+        
+        /* Full Width Background Utility */
+        .full-bg-section {
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            width: 100vw;
+        }
+
+        /* Typography */
+        h1, h2, h3 { 
+            font-weight: 800; 
+            line-height: 1.2; 
+            color: var(--dark-text);
+        }
+
+        h1 { 
+            font-size: 4rem; 
+            margin-bottom: 24px;
+        }
+
+        h2 { 
+            font-size: 2.8rem; 
+            margin-bottom: 24px;
+        }
+
+        h3 { 
+            font-size: 1.6rem; 
+            margin-bottom: 16px;
+        }
+
+        p { 
+            font-size: 1.2rem; 
+            color: var(--gray-text); 
+            line-height: 1.7; 
+            margin-bottom: 16px;
+        }
+
+        .lead { 
+            font-size: 1.4rem; 
+            font-weight: 500;
         }
 
         /* Enhanced Frosted Glass Button Styles */
@@ -102,6 +147,24 @@
             pointer-events: none;
             border-radius: 16px 16px 0 0;
         }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
 
         .btn-primary {
             background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%);
@@ -139,57 +202,12 @@
             -webkit-backdrop-filter: blur(25px);
         }
 
-
-        /* Typography */
-        h1, h2, h3 { 
-            font-weight: 800; 
-            line-height: 1.2; 
-            color: var(--dark-text);
-        }
-
-        h1 { 
-            font-size: 4rem; 
-            margin-bottom: 24px;
-        }
-
-        h2 { 
-            font-size: 2.8rem; 
-            margin-bottom: 24px;
-        }
-
-        h3 { 
-            font-size: 1.6rem; 
-            margin-bottom: 16px;
-        }
-
-        p { 
-            font-size: 1.2rem; 
-            color: var(--gray-text); 
-            line-height: 1.7; 
-            margin-bottom: 16px;
-        }
-
-        .lead { 
-            font-size: 1.4rem; 
-            font-weight: 500;
-        }
-
-        /* Full Width Backgrounds */
-        .full-bg-section {
-            position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            width: 100vw;
-        }
-
-        /* Hero Section - Reduced Padding */
+        /* Hero Section */
         .hero {
             background: var(--gradient-light);
             padding: 40px 0 60px;
             position: relative;
-            overflow: visible; /* Changed to visible for floating effect */
+            overflow: visible;
         }
 
         .hero::before {
@@ -234,6 +252,7 @@
 
         .hero-image { 
             position: relative;
+            animation: float 6s ease-in-out infinite;
         }
 
         .hero-image img {
@@ -242,17 +261,18 @@
             box-shadow: 
                 0 24px 48px rgba(114, 22, 244, 0.15),
                 0 0 0 1px rgba(199, 125, 255, 0.2);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
         .hero-image img:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px) scale(1.02);
             box-shadow: 
-                0 32px 64px rgba(114, 22, 244, 0.2),
-                0 0 0 1px rgba(199, 125, 255, 0.3);
+                0 40px 80px rgba(114, 22, 244, 0.25),
+                0 0 0 1px rgba(199, 125, 255, 0.4);
         }
 
-        /* Chart Title Overlay - Two-Line Glassmorphism Style */
+        /* Chart Title Overlay */
         .chart-title-overlay {
             position: absolute;
             top: -20px;
@@ -270,18 +290,18 @@
             width: auto;
             min-width: 320px;
             max-width: 90%;
-            text-align: center; /* Center the stacked text */
-            line-height: 1.3; /* Slightly increased line spacing */
+            text-align: center;
+            line-height: 1.3;
             transition: all 0.3s ease;
         }
 
         .chart-title-overlay h3 {
             color: var(--white);
             font-size: 1.5rem;
-            margin: 0 0 4px 0; /* Reduced spacing */
+            margin: 0 0 4px 0;
             font-weight: 700;
             text-shadow: 0 2px 6px rgba(0,0,0,0.5);
-            white-space: nowrap; /* Keep title on a single line */
+            white-space: nowrap;
         }
 
         .chart-title-overlay p {
@@ -292,8 +312,7 @@
             text-shadow: 0 1px 4px rgba(0,0,0,0.5);
         }
 
-
-        /* Stats Section - Enhanced */
+        /* Stats Section */
         .stats {
             background: var(--white);
             padding: 80px 0;
@@ -311,12 +330,22 @@
         .stat-item {
             padding: 20px;
             border-radius: 20px;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+            animation: slideUp 0.6s ease-out;
         }
+        
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
 
         .stat-item:hover {
-            transform: translateY(-4px);
-            background: rgba(114, 22, 244, 0.02);
+            transform: translateY(-8px) scale(1.05);
+            background: linear-gradient(135deg, 
+                rgba(114, 22, 244, 0.05) 0%, 
+                rgba(143, 71, 246, 0.08) 100%);
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(114, 22, 244, 0.15);
         }
 
         .stat-item h3 {
@@ -331,9 +360,6 @@
             background-clip: text;
         }
 
-            display: block;
-        }
-
         .stat-item p { 
             color: var(--gray-text); 
             font-weight: 600; 
@@ -341,7 +367,7 @@
             margin: 0;
         }
 
-        /* Features Section - Redesigned */
+        /* Features Section */
         .features {
             background: var(--light-bg);
             padding: 80px 0;
@@ -392,9 +418,7 @@
         .feature-card::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 4px;
             background: var(--gradient-primary);
             border-radius: 24px 24px 0 0;
@@ -411,7 +435,6 @@
             -webkit-backdrop-filter: blur(30px) saturate(140%);
         }
 
-        /* Modern Feature Icons */
         .feature-icon {
             width: 80px;
             height: 80px;
@@ -423,19 +446,26 @@
             margin-bottom: 32px;
             position: relative;
             overflow: hidden;
+            transition: all 0.4s ease;
         }
 
         .feature-icon::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 50%;
             background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
         }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.4);
+        }
 
-        /* Custom SVG Icons */
+        .feature-card:hover .feature-icon svg {
+            animation: iconSpin 0.6s ease-in-out;
+        }
+
         .icon-search, .icon-workshop, .icon-phone {
             width: 36px;
             height: 36px;
@@ -463,7 +493,7 @@
             margin-bottom: 8px;
         }
 
-        /* Team Section Styles (from team page) */
+        /* Team Section */
         .team {
             background: var(--white);
             padding: 80px 0;
@@ -473,7 +503,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
             gap: 60px;
-            margin-top: 60px; /* Add space from header */
+            margin-top: 60px;
         }
 
         .team-card {
@@ -498,9 +528,7 @@
         .team-card::before {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 4px;
             background: var(--gradient-primary);
             border-radius: 24px 24px 0 0;
@@ -548,7 +576,6 @@
             background-color: #f8f8f8;
         }
         
-        /* Specific fix for Tracey's PNG image */
         .team-image img[src*="Tracey-Headshot-Website.png"] {
             object-fit: cover;
             object-position: center 20%;
@@ -635,8 +662,7 @@
             border-color: #005885 !important;
         }
 
-
-        /* Testimonials - Frosted Glass Effect */
+        /* Testimonials Section */
         .testimonials {
             background: linear-gradient(135deg, 
                 rgba(114, 22, 244, 0.15) 0%, 
@@ -656,9 +682,7 @@
         .testimonials::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 50%;
             background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
             pointer-events: none;
@@ -681,6 +705,14 @@
             box-shadow: 
                 0 12px 40px rgba(114, 22, 244, 0.15),
                 inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.4s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 20px 50px rgba(114, 22, 244, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
         }
 
         .testimonial-quote {
@@ -705,16 +737,31 @@
             color: var(--gray-text);
         }
 
-        /* CTA Section - Enhanced */
+        /* CTA Section */
         .cta { 
             background: var(--light-bg); 
-            padding: 120px 0; 
+            padding: 80px 0; 
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(114, 22, 244, 0.03) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
         }
 
         .cta-content { 
             max-width: 700px; 
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .cta h2 { 
@@ -724,18 +771,8 @@
         .cta .lead { 
             margin-bottom: 48px;
         }
-
-            background: rgba(114, 22, 244, 0.06);
-            outline: 2px dashed rgba(114, 22, 244, 0.3);
-        }
-
-            background: rgba(114, 22, 244, 0.1);
-            outline: 2px solid rgba(114, 22, 244, 0.6);
-            box-shadow: 0 0 0 4px rgba(114, 22, 244, 0.1);
-        }
-
-
-        /* Enhanced Creative Animations */
+        
+        /* Animations */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
@@ -756,161 +793,15 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-
-        /* Enhanced Hero Section */
-        .hero-image {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .hero-image img {
-            width: 100%;
-            border-radius: 24px;
-            box-shadow: 
-                0 24px 48px rgba(114, 22, 244, 0.15),
-                0 0 0 1px rgba(199, 125, 255, 0.2);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .hero-image img:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 
-                0 40px 80px rgba(114, 22, 244, 0.25),
-                0 0 0 1px rgba(199, 125, 255, 0.4);
-        }
-
-        /* Enhanced Feature Icons with Hover Animation */
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 32px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s ease;
-        }
-
-        .feature-icon::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 50%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.4);
-        }
-
-        .feature-card:hover .feature-icon svg {
-            animation: iconSpin 0.6s ease-in-out;
-        }
-
-        /* Enhanced Stats with Stagger Animation */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 60px;
-            text-align: center;
-        }
-
-        .stat-item {
-            padding: 20px;
-            border-radius: 20px;
-            transition: all 0.4s ease;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        .stat-item:nth-child(1) { animation-delay: 0.1s; }
-        .stat-item:nth-child(2) { animation-delay: 0.2s; }
-        .stat-item:nth-child(3) { animation-delay: 0.3s; }
-        .stat-item:nth-child(4) { animation-delay: 0.4s; }
-
-        .stat-item:hover {
-            transform: translateY(-8px) scale(1.05);
-            background: linear-gradient(135deg, 
-                rgba(114, 22, 244, 0.05) 0%, 
-                rgba(143, 71, 246, 0.08) 100%);
-            border-radius: 20px;
-            box-shadow: 0 12px 30px rgba(114, 22, 244, 0.15);
-        }
-
-        /* Enhanced CTA Section */
-        .cta {
-            background: var(--light-bg);
-            padding: 80px 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(114, 22, 244, 0.03) 0%, transparent 70%);
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Enhanced Button Interactions */
-        .btn {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn:hover::after {
-            width: 300px;
-            height: 300px;
-        }
-
-        /* Testimonial Enhanced Effects */
-        .testimonial-card {
-            transition: all 0.4s ease;
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 
-                0 20px 50px rgba(114, 22, 244, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
-        }
-
-        /* Mobile Optimization */
+        
+        /* Responsive Media Queries */
         @media (max-width: 1024px) {
             .container { 
                 max-width: 95vw; 
                 padding: 0 20px;
             }
             
-            .hero-content, .about-content {
+            .hero-content {
                 grid-template-columns: 1fr;
                 gap: 60px;
             }
@@ -926,20 +817,13 @@
                 padding: 0 16px; 
             }
             
-            h1 { 
-                font-size: 2.8rem; 
-            }
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2.2rem; }
+            .lead { font-size: 1.2rem; }
+            p { font-size: 1.1rem; }
             
-            h2 { 
-                font-size: 2.2rem; 
-            }
-            
-            .lead {
-                font-size: 1.2rem;
-            }
-            
-            p {
-                font-size: 1.1rem;
+            .section, .section-lg {
+                padding: 60px 0;
             }
             
             .hero { 
@@ -978,23 +862,7 @@
                 font-size: 1.4rem; 
             }
             
-                bottom: 20px; 
-                right: 20px; 
-                padding: 14px 18px; 
-                font-size: 0.8rem; 
-            }
-            
-                bottom: 85px; 
-                left: 20px; 
-                padding: 8px 14px; 
-                font-size: 0.75rem; 
-            }
-            
-            .feature-card {
-                padding: 36px 28px;
-            }
-
-            .team-card {
+            .feature-card, .team-card {
                 padding: 36px 28px;
             }
 
@@ -1003,15 +871,7 @@
                 height: 160px;
             }
             
-            .section {
-                padding: 60px 0;
-            }
-            
-            .section-lg {
-                padding: 60px 0;
-            }
-            
-             .chart-title-overlay {
+            .chart-title-overlay {
                 padding: 8px 14px;
                 top: -10px;
                 line-height: 1.3;
@@ -1028,13 +888,8 @@
         }
 
         @media (max-width: 480px) {
-            h1 { 
-                font-size: 2.2rem; 
-            }
-            
-            h2 {
-                font-size: 1.8rem;
-            }
+            h1 { font-size: 2.2rem; }
+            h2 { font-size: 1.8rem; }
             
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -1058,35 +913,14 @@
                 width: 100%;
                 max-width: none;
             }
-            
-                bottom: 15px; 
-                right: 15px; 
-                padding: 12px 16px; 
-                font-size: 0.75rem; 
-                border-radius: 40px; 
-            }
-            
-                display: none; 
-            }
-            
-                font-size: 0.7rem; 
-                padding: 6px 10px;
-                bottom: 80px;
-                left: 15px;
-            }
-            
-                min-height: 44px; 
-                display: flex; 
-                align-items: center; 
-            }
         }
 
         /* Print Styles */
         @media print {
+            .hero, .stats, .features, .team, .testimonials, .cta, .btn {
                 display: none !important;
             }
         }
-
     </style>
 </head>
 <body>
@@ -1109,9 +943,7 @@
                             <h3>The Treasury Tech Marketplace</h3>
                             <p>North American Vendors</p>
                         </div>
-                        <div class="image-editor">
-                            <img loading="lazy" src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/TMS-Marketplace-US-03-2025-no-logo-no-title.png" alt="Preview of the Treasury Tech Market dashboard">
-                        </div>
+                        <img loading="lazy" src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/TMS-Marketplace-US-03-2025-no-logo-no-title.png" alt="Preview of the Treasury Tech Market dashboard">
                     </a>
                 </div>
             </div>
@@ -1159,7 +991,6 @@
                     </div>
                     <div class="feature-subtitle">Demo Library</div>
                     <h3>Treasury Tech Portal</h3>
-
                     <p>Browse our interactive Treasury Tech Portal with powerful filters and 5-minute demo videos. Find your best-fit treasury tech, instantly.</p>
                 </a>
 
@@ -1201,9 +1032,7 @@
                 <!-- Tim's Bio -->
                 <div class="team-card">
                     <div class="team-image">
-                        <div class="image-editor">
-                            <img loading="lazy" src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tim-Schultz-website-headshot_046.jpg" alt="Homepage headshot of Tim Schultz, Co-Founder">
-                        </div>
+                        <img loading="lazy" src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tim-Schultz-website-headshot_046.jpg" alt="Homepage headshot of Tim Schultz, Co-Founder">
                     </div>
                     <div class="team-role">Co-Founder & PRINCIPAL Consultant</div>
                     <h3 class="team-name">Tim</h3>
@@ -1238,9 +1067,7 @@
                 <!-- Tracey's Bio -->
                 <div class="team-card">
                     <div class="team-image">
-                        <div class="image-editor">
-                            <img loading="lazy" src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tracey-Headshot-Website.png" alt="Homepage headshot of Tracey Knight, Co-Founder">
-                        </div>
+                        <img loading="lazy" src="https://aisbee08e5bdvaliantmaker.wpcomstaging.com/wp-content/uploads/2025/06/Tracey-Headshot-Website.png" alt="Homepage headshot of Tracey Knight, Co-Founder">
                     </div>
                     <div class="team-role">Co-Founder & PRINCIPAL CONSULTANT</div>
                     <h3 class="team-name">Tracey</h3>
@@ -1298,37 +1125,47 @@
             </div>
         </div>
     </section>
+
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const modalButtons = document.querySelectorAll("a[href="#openVideoModal"]");
-    modalButtons.forEach(button => {
-        button.addEventListener("click", function(e) {
-            if (window !== window.parent) {
-                try {
-                    window.parent.postMessage({
-                        action: "openVideoModal",
-                        source: "treasury-homepage"
-                    }, "*");
-                    e.preventDefault();
-                } catch (err) {
-                    console.log("Could not post message to parent:", err);
+    // Script to handle modal opening via postMessage for iframe communication
+    document.addEventListener("DOMContentLoaded", function() {
+        // Correctly select all anchor tags with the specific href
+        const modalButtons = document.querySelectorAll('a[href="#openVideoModal"]');
+        
+        modalButtons.forEach(button => {
+            button.addEventListener("click", function(e) {
+                // Check if the window is inside an iframe
+                if (window.self !== window.top) {
+                    try {
+                        // Send a message to the parent window to open the modal
+                        window.parent.postMessage({
+                            action: "openVideoModal",
+                            source: "treasury-homepage"
+                        }, "*");
+                        e.preventDefault(); // Prevent the default anchor behavior
+                    } catch (err) {
+                        console.error("Could not post message to parent window:", err);
+                    }
                 }
-            }
+            });
         });
     });
-});
-</script>
-    <script>
-  if (window !== window.parent) {
-    function sendHeight() {
-      const height = document.documentElement.scrollHeight;
-      window.parent.postMessage({ type: "setHeight", height }, "*");
-    }
 
-    window.addEventListener("DOMContentLoaded", sendHeight);
-    window.addEventListener("resize", sendHeight);
-    window.addEventListener("orientationchange", sendHeight);
-  }
+    // Script to send the document height to the parent window
+    if (window.self !== window.top) {
+        const sendHeight = () => {
+            const height = document.documentElement.scrollHeight;
+            window.parent.postMessage({ type: "setHeight", height: height }, "*");
+        };
+
+        // Send height on load, resize, and orientation change
+        window.addEventListener("DOMContentLoaded", sendHeight);
+        window.addEventListener("resize", sendHeight);
+        window.addEventListener("orientationchange", sendHeight);
+        
+        // Also send height after a short delay to account for image loading
+        setTimeout(sendHeight, 500);
+    }
 </script>
 
 </body>

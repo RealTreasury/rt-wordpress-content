@@ -1737,3 +1737,8 @@ nav[class*="post-navigation"],
 .modern-footer .footer-heading.alt-color {
     color: #c77dff !important;
 }
+
+/* Custom scale utility for Tracey's headshot */
+.scale-120 {
+    transform: scale(1.2) !important;
+}

@@ -1639,12 +1639,15 @@ nav[class*="post-navigation"],
     position: relative !important;
 }
 
-/* Specific fixes for Max Mega Menu conflicts */
+/* Specific fixes for Max Mega Menu conflicts
+   Replaced by updated z-index rules below */
+/*
 #mega-menu-wrap-max_mega_menu_1,
 #mega-menu-wrap-primary,
 .mega-menu-wrap {
-    z-index: 99999 !important; /* Keep mega menu below modal */
+    z-index: 99999 !important; 
 }
+*/
 
 /* Ensure modal backdrop covers everything including mega menu */
 .modal::before {
@@ -1711,3 +1714,129 @@ body.modal-open {
     pointer-events: none;
     background: transparent;
 }
+
+/* ===============================================================
+   MAX MEGA MENU Z-INDEX HIERARCHY FIX
+   This ensures Max Mega Menu appears above all content but below modals/forms
+   =============================================================== */
+
+/* Main Max Mega Menu Containers - High priority but below modals */
+#mega-menu-wrap-max_mega_menu_1,
+#mega-menu-wrap-primary,
+.mega-menu-wrap,
+#mega-menu-max_mega_menu_1,
+#mega-menu-primary {
+    z-index: 10000 !important;
+    position: relative !important;
+}
+
+/* Mega Menu Items */
+#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
+#mega-menu-wrap-primary #mega-menu-primary {
+    z-index: 10001 !important;
+    position: relative !important;
+}
+
+/* Mega Menu Dropdowns and Sub-menus */
+#mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1 > li.mega-menu-megamenu > ul.mega-sub-menu,
+#mega-menu-wrap-primary #mega-menu-primary > li.mega-menu-megamenu > ul.mega-sub-menu,
+.mega-sub-menu {
+    z-index: 10002 !important;
+    position: absolute !important;
+}
+
+/* Mega Menu Toggle (Mobile) */
+.mega-menu-toggle,
+.mega-menu-toggle-block {
+    z-index: 10003 !important;
+    position: relative !important;
+}
+
+/* Mobile Mega Menu Specific */
+@media (max-width: 768px) {
+    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
+    #mega-menu-wrap-primary #mega-menu-primary {
+        z-index: 10004 !important;
+        position: relative !important;
+    }
+    
+    .mega-menu-toggle {
+        z-index: 10005 !important;
+    }
+}
+
+/* Ensure modals/forms stay ABOVE mega menu */
+.modal,
+.modal.show,
+#videoModal,
+.download-modal,
+.video-access-form,
+.gated-download-form {
+    z-index: 999999 !important;
+    position: fixed !important;
+}
+
+.modal-content,
+.download-modal-content {
+    z-index: 1000000 !important;
+    position: relative !important;
+}
+
+.close-btn {
+    z-index: 1000001 !important;
+    position: absolute !important;
+}
+
+/* Cookie banner should be below mega menu but above content */
+.cookie-banner {
+    z-index: 9999 !important;
+}
+
+/* Admin bar compatibility */
+.admin-bar #mega-menu-wrap-max_mega_menu_1,
+.admin-bar #mega-menu-wrap-primary {
+    z-index: 10000 !important;
+}
+
+.admin-bar .modal,
+.admin-bar .modal.show {
+    z-index: 1000002 !important;
+}
+
+/* Ensure regular content stays below mega menu */
+.entry-content,
+.wp-block-columns,
+.hero-section,
+.features-section,
+.about-section,
+.cta-section,
+.stats-section {
+    z-index: auto !important;
+    position: relative !important;
+}
+
+/* Fix for any conflicting z-indexes from theme or other plugins */
+header,
+.site-header,
+.header,
+nav:not([class*="mega-menu"]) {
+    z-index: 100 !important;
+}
+
+/* Ensure dropdowns work properly on all screen sizes */
+@media (max-width: 687px) {
+    #mega-menu-wrap-max_mega_menu_1 .mega-sub-menu,
+    #mega-menu-wrap-primary .mega-sub-menu {
+        z-index: 10006 !important;
+        position: relative !important;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
+    #mega-menu-wrap-primary #mega-menu-primary {
+        z-index: 10007 !important;
+    }
+}
+

@@ -1553,4 +1553,12 @@ function final_mega_menu_widget_fix() {
     wp_add_inline_script('jquery-core', $script);
 }
 add_action('wp_enqueue_scripts', 'final_mega_menu_widget_fix', 99);
+
+// Set global "from" address for all WordPress emails
+add_filter('wp_mail_from', function() {
+    return 'noreply@realtreasury.com';
+});
+add_filter('wp_mail_from_name', function() {
+    return 'Real Treasury';
+});
 ?>

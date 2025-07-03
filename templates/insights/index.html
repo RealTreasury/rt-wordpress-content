@@ -67,7 +67,7 @@
             margin: -4rem auto 0;
             padding: 0 1.5rem 4rem;
             position: relative;
-            z-index: 10;
+            z-index: 1;
         }
         
         .cta-banner {
@@ -383,6 +383,97 @@
                 max-width: none;
             }
             .insights-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===============================================================
+           MEGA MENU Z-INDEX FIXES FOR INSIGHTS PAGE
+           =============================================================== */
+        /* Ensure modal appears above Max Mega Menu */
+        .modal,
+        .modal.show,
+        #videoModal {
+            z-index: 999999 !important; /* Higher than typical mega menu z-index */
+            position: fixed !important;
+        }
+
+        /* Ensure modal content stays on top */
+        .modal-content,
+        .video-access-form {
+            z-index: 1000000 !important;
+            position: relative !important;
+        }
+
+        /* Specific fixes for Max Mega Menu conflicts */
+        #mega-menu-wrap-max_mega_menu_1,
+        #mega-menu-wrap-primary,
+        .mega-menu-wrap {
+            z-index: 99999 !important; /* Keep mega menu below modal */
+        }
+
+        /* Ensure modal backdrop covers everything including mega menu */
+        .modal::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+            z-index: 999998;
+            pointer-events: none;
+        }
+
+        /* Force modal to be above admin bar and all menus */
+        .admin-bar .modal,
+        .admin-bar .modal.show {
+            z-index: 1000001 !important;
+        }
+
+        /* Prevent body scroll when modal is open and mega menu is expanded */
+        body.modal-open {
+            overflow: hidden !important;
+            position: fixed !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Close button stays on top */
+        .close-btn {
+            z-index: 1000002 !important;
+            position: absolute !important;
+        }
+
+        /* Mobile specific fixes */
+        @media (max-width: 768px) {
+            .modal,
+            .modal.show,
+            #videoModal {
+                z-index: 1000003 !important;
+            }
+
+            /* Ensure mobile mega menu stays below modal */
+            #mega-menu-wrap-max_mega_menu_1 #mega-menu-max_mega_menu_1,
+            #mega-menu-wrap-primary #mega-menu-primary {
+                z-index: 99998 !important;
+            }
+        }
+
+        /* Extra safety for any mega menu toggles */
+        .mega-menu-toggle {
+            z-index: 99997 !important;
+        }
+
+        /* Ensure modal overlay covers mega menu dropdowns */
+        .modal.show::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 999999;
+            pointer-events: none;
+            background: transparent;
         }
     </style>
     

@@ -794,7 +794,7 @@ function add_video_modal_script() {
         <div class="modal-content">
             <div class="video-access-form">
                 <button class="close-btn" type="button">&times;</button>
-                <h3>Access Treasury Tech Demos</h3>
+                <h3>Access Treasury Tech Portal</h3>
                 <?php echo do_shortcode('[contact-form-7 id="0779c74" title="Video Access Gate Form"]'); ?>
             </div>
         </div>

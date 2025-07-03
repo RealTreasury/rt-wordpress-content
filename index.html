@@ -350,7 +350,6 @@
 
         .stat-item h3 {
             font-size: 3rem;
-            white-space: normal;
             font-weight: 800;
             color: var(--primary-purple);
             margin-bottom: 12px;
@@ -358,6 +357,16 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            /* New styles for alignment */
+            display: inline-flex;
+            align-items: baseline;
+            gap: 0.25em;
+            white-space: nowrap;
+        }
+
+        .stat-unit {
+            font-size: 1.8rem;
+            font-weight: 700;
         }
 
         .stat-item p { 
@@ -955,7 +964,7 @@
         <div class="container">
             <div class="stats-grid">
                 <div class="stat-item">
-                    <h3>4-6 Weeks</h3>
+                    <h3>4-6<span class="stat-unit">Weeks</span></h3>
                     <p>Average Selection Time</p>
                 </div>
                 <div class="stat-item">

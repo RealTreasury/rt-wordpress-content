@@ -424,10 +424,15 @@
             banner.style.transform = 'translateY(-20px)';
             banner.style.opacity = '0';
             banner.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-            
+
             setTimeout(() => {
                 banner.style.transform = 'translateY(0)';
                 banner.style.opacity = '1';
+
+                // Auto-collapse after a short delay on small screens
+                if (window.innerWidth <= 768) {
+                    setTimeout(closeBanner, 5000); // collapse after 5 seconds
+                }
             }, 100); // Short delay to ensure initial styles are applied before animating
         });
     </script>

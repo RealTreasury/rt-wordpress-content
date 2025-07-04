@@ -47,7 +47,8 @@
                 0 -1px 0 rgba(255, 255, 255, 0.2) inset,
                 0 20px 40px rgba(0, 0, 0, 0.02);
             padding: 16px 40px;
-            position: relative;
+            /* UPDATED: Static positioning to appear at the top of the page layout */
+            position: static;
             /* The banner's own overflow is hidden to contain its decorative elements */
             overflow: hidden;
             display: flex;
@@ -55,6 +56,8 @@
             justify-content: space-between;
             gap: 20px;
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            /* Normal z-index since it's positioned in the document flow */
+            z-index: 1;
         }
 
         .workshop-banner:before {
@@ -429,10 +432,9 @@
                 banner.style.transform = 'translateY(0)';
                 banner.style.opacity = '1';
 
-                // Auto-collapse after a short delay on small screens
-                // Collapse automatically on smaller screens after a brief delay
+                // UPDATED: Auto-collapse after 1 second on mobile (changed from 1.5 seconds)
                 if (window.matchMedia('(max-width: 768px)').matches) {
-                    setTimeout(closeBanner, 1500); // collapse after 1.5 seconds
+                    setTimeout(closeBanner, 1000); // collapse after 1 second
                 }
             }, 100); // Short delay to ensure initial styles are applied before animating
         });

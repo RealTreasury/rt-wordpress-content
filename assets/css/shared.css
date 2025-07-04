@@ -2177,8 +2177,8 @@
     pointer-events: none;
 }
 
-/* --- Show dropdown on hover --- */
-.rt-nav-item:hover > .rt-dropdown {
+/* --- Show dropdown when active (clicked) --- */
+.rt-nav-item.active > .rt-dropdown {
     opacity: 1 !important;
     visibility: visible !important;
     transform: translateY(0) !important;

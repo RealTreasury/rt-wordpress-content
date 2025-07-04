@@ -357,8 +357,8 @@ function add_modal_bridge_script() {
     ?>
     <script>
     window.addEventListener('message', function(event) {
-        if (event.data && event.data.action === 'openVideoModal') {
-            const modalTrigger = document.querySelector('a[href="#openVideoModal"]');
+        if (event.data && event.data.action === 'openPortalModal') {
+            const modalTrigger = document.querySelector('a[href="#openPortalModal"]');
             if (modalTrigger) {
                 modalTrigger.click();
             }

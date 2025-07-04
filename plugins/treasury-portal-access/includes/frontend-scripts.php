@@ -39,6 +39,81 @@ if (empty($form_id)) {
     .gradient-bar {
         background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple) 50%, #9d4edd);
     }
+
+    /* Mobile enhancement styles */
+    .mobile-device .portal-access-form {
+        transition: all 0.3s ease !important;
+    }
+
+    .keyboard-open .portal-access-form {
+        transition: all 0.2s ease !important;
+    }
+
+    .form-progress-bar {
+        width: 100%;
+        height: 3px;
+        background: rgba(199, 125, 255, 0.2);
+        border-radius: 2px;
+        margin: 16px 0 24px 0;
+        overflow: hidden;
+        position: relative;
+        z-index: 3;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #7216f4, #8f47f6);
+        width: 0%;
+        transition: width 0.3s ease;
+        border-radius: 2px;
+    }
+
+    .field-valid {
+        border-color: #22c55e !important;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
+    }
+
+    .field-error {
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+    }
+
+    /* Touch feedback improvements */
+    .close-btn:active,
+    .submit-btn:active,
+    .wpcf7-submit:active {
+        transition: none !important;
+    }
+
+    /* Mobile landscape specific fixes */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .form-progress-bar {
+            margin: 8px 0 16px 0;
+        }
+
+        .portal-access-form h3 {
+            margin-bottom: 4px !important;
+        }
+
+        .portal-access-form .subtitle {
+            margin-bottom: 12px !important;
+        }
+    }
+
+    /* Accessibility improvements */
+    @media (prefers-reduced-motion: reduce) {
+        .modal,
+        .modal-content,
+        .portal-access-form,
+        .progress-fill,
+        .form-control,
+        .wpcf7-form-control,
+        .submit-btn,
+        .close-btn {
+            transition: none !important;
+            animation: none !important;
+        }
+    }
 </style>
 <div id="portalModal" class="tpa-modal fixed inset-0 z-[1000003] flex items-center justify-center p-4 modal-bg transition-opacity duration-300 opacity-0 pointer-events-none" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="portalModalTitle">
     <div class="relative w-full max-w-lg mx-auto">
@@ -48,9 +123,11 @@ if (empty($form_id)) {
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             <div class="p-8 md:p-10">
-                <h3 id="portalModalTitle" class="text-2xl md:text-3xl font-bold text-dark-text text-center mb-4">Portal Access</h3>
-                <p class="text-center text-gray-text mb-8">Please enter your details to continue.</p>
-                <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
+                <div class="portal-access-form">
+                    <h3 id="portalModalTitle" class="text-2xl md:text-3xl font-bold text-dark-text text-center mb-4">Portal Access</h3>
+                    <p class="text-center text-gray-text mb-8">Please enter your details to continue.</p>
+                    <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
+                </div>
             </div>
         </div>
     </div>
@@ -273,7 +350,298 @@ if (empty($form_id)) {
         }
     };
 
-    window.TPA.init();
+window.TPA.init();
+
+})();
+</script>
+
+<script>
+(function() {
+    'use strict';
+
+    const MobileModalEnhancer = {
+        init: function() {
+            this.addViewportMeta();
+            this.enhanceModalForMobile();
+            this.addTouchSupport();
+            this.preventBodyScroll();
+            this.addKeyboardSupport();
+        },
+
+        addViewportMeta: function() {
+            if (!document.querySelector('meta[name="viewport"]')) {
+                const meta = document.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+                document.head.appendChild(meta);
+            }
+        },
+
+        enhanceModalForMobile: function() {
+            const modal = document.getElementById('portalModal');
+            if (!modal) return;
+
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+
+            if (isMobile) {
+                modal.classList.add('mobile-device');
+                modal.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
+                modal.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
+
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => this.adjustModalForOrientation(), 100);
+                });
+
+                this.handleMobileKeyboard();
+            }
+        },
+
+        handleTouchStart: function(e) {
+            this.touchStartY = e.touches[0].clientY;
+        },
+
+        handleTouchMove: function(e) {
+            const modal = document.getElementById('portalModal');
+            const form = modal.querySelector('.portal-access-form');
+            if (!form) return;
+
+            if (!form.contains(e.target)) {
+                e.preventDefault();
+            }
+        },
+
+        adjustModalForOrientation: function() {
+            const modal = document.getElementById('portalModal');
+            const form = modal.querySelector('.portal-access-form');
+            if (!form) return;
+
+            if (window.matchMedia('(orientation: landscape)').matches) {
+                form.style.maxHeight = 'calc(100vh - 20px)';
+                form.style.padding = '16px';
+            } else {
+                form.style.maxHeight = 'calc(100vh - 60px)';
+                form.style.padding = '24px 20px';
+            }
+        },
+
+        handleMobileKeyboard: function() {
+            const modal = document.getElementById('portalModal');
+            const form = modal.querySelector('.portal-access-form');
+            if (!form) return;
+            let initialViewportHeight = window.innerHeight;
+
+            const checkViewport = () => {
+                const currentHeight = window.innerHeight;
+                const heightDifference = initialViewportHeight - currentHeight;
+
+                if (heightDifference > 150) {
+                    modal.classList.add('keyboard-open');
+                    form.style.maxHeight = `${currentHeight - 40}px`;
+                    form.style.transform = 'translateY(-20px)';
+                } else {
+                    modal.classList.remove('keyboard-open');
+                    form.style.maxHeight = 'calc(100vh - 60px)';
+                    form.style.transform = 'translateY(0)';
+                }
+            };
+
+            window.addEventListener('resize', checkViewport);
+
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    setTimeout(checkViewport, 300);
+                    setTimeout(() => {
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                    }, 500);
+                });
+                input.addEventListener('blur', () => setTimeout(checkViewport, 300));
+            });
+        },
+
+        addTouchSupport: function() {
+            const modal = document.getElementById('portalModal');
+            const closeBtn = modal.querySelector('.close-btn');
+
+            [closeBtn].forEach(el => {
+                if (!el) return;
+                el.addEventListener('touchstart', function() { this.style.transform = 'scale(0.95)'; }, { passive: true });
+                el.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1.05)';
+                    setTimeout(() => { this.style.transform = ''; }, 150);
+                }, { passive: true });
+            });
+
+            const submitBtn = modal.querySelector('.wpcf7-submit, .submit-btn');
+            if (submitBtn) {
+                submitBtn.addEventListener('touchstart', function() { this.style.transform = 'translateY(-1px) scale(0.98)'; }, { passive: true });
+                submitBtn.addEventListener('touchend', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    setTimeout(() => { this.style.transform = ''; }, 200);
+                }, { passive: true });
+            }
+        },
+
+        preventBodyScroll: function() {
+            let scrollPosition = 0;
+
+            const openModal = () => {
+                scrollPosition = window.pageYOffset;
+                document.body.style.overflow = 'hidden';
+                document.body.style.position = 'fixed';
+                document.body.style.top = `-${scrollPosition}px`;
+                document.body.style.width = '100%';
+            };
+
+            const closeModal = () => {
+                document.body.style.removeProperty('overflow');
+                document.body.style.removeProperty('position');
+                document.body.style.removeProperty('top');
+                document.body.style.removeProperty('width');
+                window.scrollTo(0, scrollPosition);
+            };
+
+            if (window.TPA) {
+                const originalOpenModal = window.TPA.openModal;
+                const originalCloseModal = window.TPA.closeModal;
+
+                window.TPA.openModal = function() {
+                    openModal();
+                    originalOpenModal.call(this);
+                };
+
+                window.TPA.closeModal = function() {
+                    closeModal();
+                    originalCloseModal.call(this);
+                };
+            }
+        },
+
+        addKeyboardSupport: function() {
+            document.addEventListener('keydown', (e) => {
+                const modal = document.getElementById('portalModal');
+                if (!modal || modal.style.display !== 'flex') return;
+
+                if (e.key === 'Tab') {
+                    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    const first = focusable[0];
+                    const last = focusable[focusable.length - 1];
+
+                    if (e.shiftKey) {
+                        if (document.activeElement === first) {
+                            last.focus();
+                            e.preventDefault();
+                        }
+                    } else {
+                        if (document.activeElement === last) {
+                            first.focus();
+                            e.preventDefault();
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+    const MobileFormEnhancer = {
+        init: function() {
+            this.improveFormValidation();
+            this.addProgressIndicator();
+            this.enhanceInputExperience();
+        },
+
+        improveFormValidation: function() {
+            const modal = document.getElementById('portalModal');
+            if (!modal) return;
+
+            const inputs = modal.querySelectorAll('input[type="email"], input[type="text"], input[required]');
+            inputs.forEach(input => {
+                input.addEventListener('blur', this.validateField);
+                input.addEventListener('input', this.clearFieldError);
+            });
+        },
+
+        validateField: function(e) {
+            const field = e.target;
+            const isValid = field.checkValidity();
+            field.classList.remove('field-error', 'field-valid');
+            if (field.value.trim() !== '') {
+                if (isValid) {
+                    field.classList.add('field-valid');
+                } else {
+                    field.classList.add('field-error');
+                }
+            }
+        },
+
+        clearFieldError: function(e) {
+            e.target.classList.remove('field-error');
+        },
+
+        addProgressIndicator: function() {
+            const form = document.querySelector('#portalModal form');
+            if (!form) return;
+
+            const requiredFields = form.querySelectorAll('input[required], select[required]');
+            let progressBar = document.createElement('div');
+            progressBar.className = 'form-progress-bar';
+            progressBar.innerHTML = '<div class="progress-fill"></div>';
+
+            const title = form.querySelector('h3');
+            if (title) {
+                title.insertAdjacentElement('afterend', progressBar);
+            }
+
+            const updateProgress = () => {
+                const completed = Array.from(requiredFields).filter(field => {
+                    if (field.type === 'checkbox') {
+                        return field.checked;
+                    }
+                    return field.value.trim() !== '' && field.checkValidity();
+                }).length;
+
+                const percentage = (completed / requiredFields.length) * 100;
+                const fill = progressBar.querySelector('.progress-fill');
+                fill.style.width = `${percentage}%`;
+            };
+
+            requiredFields.forEach(field => {
+                field.addEventListener('input', updateProgress);
+                field.addEventListener('change', updateProgress);
+                field.addEventListener('blur', updateProgress);
+            });
+        },
+
+        enhanceInputExperience: function() {
+            const emailInputs = document.querySelectorAll('input[type="email"]');
+            emailInputs.forEach(input => {
+                input.setAttribute('autocomplete', 'email');
+                input.setAttribute('inputmode', 'email');
+            });
+
+            const textInputs = document.querySelectorAll('input[type="text"]');
+            textInputs.forEach(input => {
+                if (input.name && input.name.toLowerCase().includes('name')) {
+                    input.setAttribute('autocomplete', 'name');
+                    input.setAttribute('inputmode', 'text');
+                }
+                if (input.name && input.name.toLowerCase().includes('company')) {
+                    input.setAttribute('autocomplete', 'organization');
+                    input.setAttribute('inputmode', 'text');
+                }
+            });
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            MobileModalEnhancer.init();
+            MobileFormEnhancer.init();
+        });
+    } else {
+        MobileModalEnhancer.init();
+        MobileFormEnhancer.init();
+    }
 
 })();
 </script>

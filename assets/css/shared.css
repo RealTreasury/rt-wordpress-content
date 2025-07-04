@@ -2998,3 +2998,233 @@ body.banner-closed {
         max-width: calc(100% - 28px) !important;
     }
 }
+
+/* =================================================================== */
+/* CRITICAL MOBILE FIXES - Add these to your shared.css file
+/* These will override your existing mobile styles for better display
+/* =================================================================== */
+
+/* Fix mobile modal sizing */
+@media (max-width: 768px) {
+    .modal {
+        padding: 10px !important;
+    }
+    
+    .modal-content {
+        padding: 5px !important;
+        max-width: calc(100vw - 20px) !important;
+        max-height: calc(100vh - 20px) !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    .video-access-form {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: auto !important;
+        padding: 20px 16px !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Fix title sizing */
+    .video-access-form h3 {
+        font-size: 1.3rem !important;
+        line-height: 1.3 !important;
+        padding-right: 40px !important;
+        margin-bottom: 12px !important;
+        text-align: center !important;
+    }
+    
+    /* Improve close button positioning */
+    .close-btn {
+        top: 8px !important;
+        right: 8px !important;
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 18px !important;
+        z-index: 1000006 !important;
+    }
+    
+    /* Fix form field groups */
+    .form-row-group {
+        flex-direction: column !important;
+        gap: 0 !important;
+        margin-bottom: 16px !important;
+    }
+    
+    .form-row-group .form-row {
+        flex: none !important;
+        margin-bottom: 16px !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+    
+    .form-row-group .form-row:last-child {
+        margin-bottom: 0 !important;
+    }
+    
+    /* Better form input styling */
+    .form-control, 
+    .wpcf7-form-control:not(.wpcf7-submit) {
+        width: 100% !important;
+        padding: 14px 12px !important;
+        font-size: 16px !important;
+        border-radius: 8px !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+    }
+    
+    /* Fix label spacing */
+    .form-row label {
+        display: block !important;
+        margin-bottom: 6px !important;
+        font-weight: 500 !important;
+        color: #333 !important;
+        font-size: 15px !important;
+    }
+    
+    /* Critical: Fix checkbox layout */
+    .checkbox-row {
+        display: flex !important;
+        align-items: flex-start !important;
+        margin-bottom: 16px !important;
+        padding: 12px !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(199, 125, 255, 0.3) !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+    }
+    
+    .checkbox-row input[type=checkbox] {
+        width: 18px !important;
+        height: 18px !important;
+        margin: 2px 12px 0 0 !important;
+        flex-shrink: 0 !important;
+        accent-color: var(--primary-purple) !important;
+    }
+    
+    .checkbox-row label {
+        margin-bottom: 0 !important;
+        color: #333 !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        flex: 1 !important;
+        width: calc(100% - 30px) !important;
+    }
+    
+    /* Submit button optimization */
+    .submit-btn, 
+    .wpcf7-form input[type=submit], 
+    .wpcf7-submit {
+        width: 100% !important;
+        padding: 16px 20px !important;
+        font-size: 16px !important;
+        margin-top: 16px !important;
+        border-radius: 8px !important;
+        box-sizing: border-box !important;
+    }
+    
+    /* Contact Form 7 wrapper fixes */
+    .video-access-form .wpcf7 {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .video-access-form .wpcf7-form {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .video-access-form .wpcf7-form p {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    
+    .video-access-form .wpcf7-form-control-wrap {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Hide any extra breaks */
+    .video-access-form br {
+        display: none !important;
+    }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+    .modal {
+        padding: 5px !important;
+    }
+    
+    .modal-content {
+        padding: 2px !important;
+        max-width: calc(100vw - 10px) !important;
+    }
+    
+    .video-access-form {
+        padding: 16px 12px !important;
+        border-radius: 8px !important;
+    }
+    
+    .video-access-form h3 {
+        font-size: 1.1rem !important;
+        padding-right: 35px !important;
+    }
+    
+    .close-btn {
+        top: 6px !important;
+        right: 6px !important;
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 16px !important;
+    }
+    
+    .checkbox-row {
+        padding: 10px !important;
+    }
+    
+    .checkbox-row label {
+        font-size: 13px !important;
+    }
+}
+
+/* Landscape orientation fix */
+@media (max-width: 768px) and (orientation: landscape) {
+    .video-access-form {
+        max-height: calc(100vh - 40px) !important;
+        overflow-y: auto !important;
+    }
+    
+    .modal-content {
+        align-items: flex-start !important;
+        padding-top: 10px !important;
+    }
+}
+
+/* Prevent any overflow issues */
+@media (max-width: 768px) {
+    body.modal-open {
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    .modal {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .video-access-form * {
+        box-sizing: border-box !important;
+    }
+}

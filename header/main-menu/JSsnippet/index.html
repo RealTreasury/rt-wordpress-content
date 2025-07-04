@@ -1,0 +1,98 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile hamburger toggle functionality
+    const mobileToggle = document.querySelector('.rt-mobile-toggle');
+    const navMenu = document.querySelector('.rt-nav');
+    
+    if (mobileToggle && navMenu) {
+        mobileToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Toggle mobile menu
+            const isMenuActive = navMenu.classList.contains('active');
+            
+            if (isMenuActive) {
+                // Close menu
+                navMenu.classList.remove('active');
+                mobileToggle.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            } else {
+                // Open menu
+                navMenu.classList.add('active');
+                mobileToggle.classList.add('active');
+                document.body.classList.add('menu-open');
+                
+                // Close any open dropdowns when opening mobile menu
+                document.querySelectorAll('.rt-nav-item.active').forEach(item => {
+                    item.classList.remove('active');
+                });
+            }
+        });
+    }
+    
+    // Dropdown functionality (existing code with improvements)
+    const dropdownLinks = document.querySelectorAll('.rt-nav-link.has-dropdown');
+    
+    dropdownLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const navItem = this.closest('.rt-nav-item');
+            const isActive = navItem.classList.contains('active');
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.rt-nav-item.active').forEach(item => {
+                if (item !== navItem) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Toggle current dropdown
+            if (!isActive) {
+                navItem.classList.add('active');
+            } else {
+                navItem.classList.remove('active');
+            }
+        });
+    });
+    
+    // Close dropdowns and mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+        // Don't close if clicking inside nav area
+        if (!e.target.closest('.rt-nav-container')) {
+            // Close all dropdowns
+            document.querySelectorAll('.rt-nav-item.active').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Close mobile menu on mobile
+            if (window.innerWidth <= 992) {
+                if (navMenu) navMenu.classList.remove('active');
+                if (mobileToggle) mobileToggle.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            }
+        }
+    });
+    
+    // Handle window resize - close mobile menu if resizing to desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 992) {
+            if (navMenu) navMenu.classList.remove('active');
+            if (mobileToggle) mobileToggle.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            
+            // Close all dropdowns on resize
+            document.querySelectorAll('.rt-nav-item.active').forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+    });
+    
+    // Prevent menu from closing when clicking inside dropdown content
+    document.querySelectorAll('.rt-dropdown').forEach(dropdown => {
+        dropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    });
+});

@@ -236,9 +236,35 @@ body.modal-open { overflow: hidden !important; }
 .portal-access-form:before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd); border-radius: 16px 16px 0 0; }
 .close-btn { position: absolute !important; top: 12px !important; right: 16px !important; background: hsla(0, 0%, 100%, .9) !important; border: 1px solid rgba(199, 125, 255, .3) !important; border-radius: 50% !important; font-size: 18px !important; color: #7216f4 !important; cursor: pointer !important; width: 32px !important; height: 32px !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all .3s ease !important; }
 .close-btn:hover { background: rgba(114, 22, 244, .1) !important; transform: scale(1.1) !important; }
-#tpa-message { position: fixed; top: 20px; right: 20px; z-index: 100001; padding: 15px 20px; border-radius: 8px; font-weight: 500; background: #333; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.3s ease, opacity 0.3s ease; transform: translateX(120%); opacity: 0; }
+#tpa-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100001;
+    padding: 15px 20px;
+    border-radius: 12px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateX(120%);
+    opacity: 0;
+}
 #tpa-message.show { transform: translateX(0); opacity: 1; }
-#tpa-message.tpa-message-success { background: linear-gradient(135deg, #4CAF50, #45a049); }
-#tpa-message.tpa-message-error { background: linear-gradient(135deg, #f44336, #d32f2f); }
-#tpa-message.tpa-message-info { background: linear-gradient(135deg, #7216f4, #8f47f6); }
+#tpa-message.tpa-message-success {
+    background: rgba(76, 175, 80, 0.35);
+    border-color: rgba(76, 175, 80, 0.45);
+}
+#tpa-message.tpa-message-error {
+    background: rgba(244, 67, 54, 0.35);
+    border-color: rgba(244, 67, 54, 0.45);
+}
+#tpa-message.tpa-message-info {
+    background: rgba(114, 22, 244, 0.35);
+    border-color: rgba(114, 22, 244, 0.45);
+}
 </style>

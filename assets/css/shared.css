@@ -1872,11 +1872,21 @@
 }
 
 /* THIS IS THE KEY CHANGE: Show dropdown on hover */
+/*
 .rt-nav-item:hover > .rt-dropdown {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
     pointer-events: auto; /* Allow interaction when visible */
+}
+*/
+
+/* ADD THIS INSTEAD */
+.rt-nav-item.active .rt-dropdown {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
 }
 
 .rt-dropdown-inner {

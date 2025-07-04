@@ -15,11 +15,12 @@ if (empty($form_id)) {
 }
 ?>
 <!-- Portal Modal HTML -->
-<div id="portalModal" class="tpa-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="portalModalTitle">
-    <div class="tpa-modal-content">
-        <div class="portal-access-form">
-            <button class="close-btn" type="button" aria-label="Close dialog">&times;</button>
-            <h3 id="portalModalTitle">Access Treasury Tech Portal</h3>
+<div id="portalModal" class="tpa-modal fixed inset-0 z-[1000003] flex items-center justify-center p-4 bg-gradient-to-br from-black/40 via-[#281345]/30 to-black/40 backdrop-blur-lg transition-opacity duration-300 opacity-0 pointer-events-none" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="portalModalTitle">
+    <div class="tpa-modal-content transform transition-all duration-300 max-w-full max-h-full">
+        <div class="portal-access-form relative w-full max-w-lg mx-auto p-8 rounded-2xl shadow-2xl border border-purple-300/30 bg-white/70 backdrop-blur-xl backdrop-saturate-150 space-y-6">
+            <div class="absolute top-0 left-0 w-full h-1 rounded-t-2xl bg-gradient-to-r from-[#7216f4] via-[#8f47f6] to-[#9d4edd]"></div>
+            <button class="close-btn absolute top-3 right-4 w-8 h-8 flex items-center justify-center text-[#7216f4] bg-white/90 border border-purple-200 rounded-full hover:bg-purple-50 transition" type="button" aria-label="Close dialog">&times;</button>
+            <h3 id="portalModalTitle" class="text-center text-xl font-semibold text-[#281345]">Access Treasury Tech Portal</h3>
             <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
         </div>
     </div>
@@ -54,6 +55,7 @@ if (empty($form_id)) {
             document.addEventListener('DOMContentLoaded', () => {
                 this.checkAccessPersistence();
                 this.addEventListeners();
+                this.styleForm();
             });
         },
 
@@ -144,16 +146,37 @@ if (empty($form_id)) {
             .catch(error => console.error('❌ TPA: Sync to local storage failed:', error));
         },
 
+        styleForm: function() {
+            const form = this.modal.querySelector('form');
+            if (!form) return;
+            form.classList.add('space-y-4');
+            form.querySelectorAll('input:not([type=submit]):not([type=checkbox]), textarea, select').forEach(el => {
+                el.classList.add('w-full', 'p-3', 'rounded-md', 'border', 'border-purple-300', 'bg-white/75', 'placeholder-[#9d4edd]', 'focus:outline-none', 'focus:ring-2', 'focus:ring-[#8f47f6]');
+            });
+            form.querySelectorAll('input[type=checkbox]').forEach(cb => {
+                cb.classList.add('mr-2', 'rounded', 'text-[#7216f4]', 'focus:ring-2', 'focus:ring-[#8f47f6]');
+                const parent = cb.closest('label') || cb.parentElement;
+                if (parent) parent.classList.add('flex', 'items-start');
+            });
+            form.querySelectorAll('input[type=submit], button[type=submit]').forEach(btn => {
+                btn.classList.add('w-full', 'bg-[#7216f4]', 'hover:bg-[#8f47f6]', 'text-white', 'font-semibold', 'py-3', 'px-6', 'rounded-md', 'shadow', 'transition-colors', 'cursor-pointer');
+            });
+        },
+
         showMessage: function(message, type = 'info') {
             document.getElementById('tpa-message')?.remove();
             const messageDiv = document.createElement('div');
             messageDiv.id = 'tpa-message';
-            messageDiv.className = `tpa-message tpa-message-${type}`;
+            const base = 'fixed top-5 right-5 z-[100001] px-4 py-3 rounded-lg font-medium text-white shadow-lg transform transition-all duration-300 translate-x-full opacity-0';
+            let color = 'bg-[#7216f4]';
+            if (type === 'success') color = 'bg-green-600';
+            if (type === 'error') color = 'bg-red-600';
+            messageDiv.className = `${base} ${color}`;
             messageDiv.textContent = message;
             this.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.classList.add('show'), 10);
+            setTimeout(() => messageDiv.classList.remove('translate-x-full', 'opacity-0'), 10);
             setTimeout(() => {
-                messageDiv.classList.remove('show');
+                messageDiv.classList.add('translate-x-full', 'opacity-0');
                 setTimeout(() => messageDiv.remove(), 300);
             }, 4000);
         },
@@ -164,12 +187,12 @@ if (empty($form_id)) {
 
         openModal: function() {
             this.modal.style.display = 'flex';
-            setTimeout(() => this.modal.classList.add('show'), 10);
+            setTimeout(() => this.modal.classList.remove('opacity-0', 'pointer-events-none'), 10);
             this.body.classList.add('modal-open');
         },
 
         closeModal: function() {
-            this.modal.classList.remove('show');
+            this.modal.classList.add('opacity-0', 'pointer-events-none');
             setTimeout(() => {
                 this.modal.style.display = 'none';
                 this.body.classList.remove('modal-open');
@@ -197,7 +220,7 @@ if (empty($form_id)) {
             });
 
             document.addEventListener('keydown', e => {
-                if (e.key === 'Escape' && this.modal.classList.contains('show')) {
+                if (e.key === 'Escape' && this.modal.style.display === 'flex') {
                     this.closeModal();
                 }
             });
@@ -225,46 +248,3 @@ if (empty($form_id)) {
 })();
 </script>
 
-<style>
-/* Styles are unchanged, but included for completeness */
-body.modal-open { overflow: hidden !important; }
-.tpa-modal { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 1000003 !important; background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4)) !important; backdrop-filter: blur(15px) saturate(120%) !important; -webkit-backdrop-filter: blur(15px) saturate(120%) !important; display: flex !important; align-items: center !important; justify-content: center !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transition: all .4s cubic-bezier(.4, 0, .2, 1) !important; }
-.tpa-modal.show { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
-.tpa-modal-content { max-width: calc(100vw - 40px) !important; max-height: calc(100vh - 40px) !important; padding: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important; transform: scale(.9) !important; transition: all .4s cubic-bezier(.4, 0, .2, 1) !important; }
-.tpa-modal.show .tpa-modal-content { transform: scale(1) !important; }
-.portal-access-form { width: 100% !important; max-width: 520px !important; min-width: 320px !important; margin: 0 auto !important; padding: 32px !important; background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95)) !important; backdrop-filter: blur(20px) saturate(130%) !important; -webkit-backdrop-filter: blur(20px) saturate(130%) !important; border: 2px solid rgba(199, 125, 255, .3) !important; border-radius: 16px !important; box-shadow: 0 8px 32px rgba(114, 22, 244, .15) !important; position: relative !important; overflow: hidden !important; }
-.portal-access-form:before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd); border-radius: 16px 16px 0 0; }
-.close-btn { position: absolute !important; top: 12px !important; right: 16px !important; background: hsla(0, 0%, 100%, .9) !important; border: 1px solid rgba(199, 125, 255, .3) !important; border-radius: 50% !important; font-size: 18px !important; color: #7216f4 !important; cursor: pointer !important; width: 32px !important; height: 32px !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all .3s ease !important; }
-.close-btn:hover { background: rgba(114, 22, 244, .1) !important; transform: scale(1.1) !important; }
-#tpa-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 100001;
-    padding: 15px 20px;
-    border-radius: 12px;
-    font-weight: 500;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    transform: translateX(120%);
-    opacity: 0;
-}
-#tpa-message.show { transform: translateX(0); opacity: 1; }
-#tpa-message.tpa-message-success {
-    background: rgba(76, 175, 80, 0.35);
-    border-color: rgba(76, 175, 80, 0.45);
-}
-#tpa-message.tpa-message-error {
-    background: rgba(244, 67, 54, 0.35);
-    border-color: rgba(244, 67, 54, 0.45);
-}
-#tpa-message.tpa-message-info {
-    background: rgba(114, 22, 244, 0.35);
-    border-color: rgba(114, 22, 244, 0.45);
-}
-</style>

@@ -1749,3 +1749,96 @@ footer h3.footer-heading {
 .scale-120 {
     transform: scale(1.2) !important;
 }
+
+/* Fix Max Mega Menu mobile toggle issues */
+.mega-menu-toggle {
+    position: relative !important;
+    z-index: 999 !important;
+}
+
+/* Remove all problematic pseudo-elements */
+.mega-menu-toggle::after,
+.mega-menu-toggle::before,
+.mega-toggle-block::after,
+.mega-toggle-block::before {
+    display: none !important;
+    content: none !important;
+}
+
+/* Ensure clean hover states */
+.mega-menu-toggle:hover::after,
+.mega-menu-toggle:hover::before {
+    display: none !important;
+}
+
+/* Fix mobile menu container */
+@media (max-width: 768px) {
+    .mega-menu-wrap {
+        clear: both !important;
+        position: relative !important;
+        z-index: 998 !important;
+    }
+}
+
+/* Fix mobile menu positioning issues */
+@media (max-width: 768px) {
+    /* Ensure toggle is always visible */
+    .mega-menu-toggle {
+        position: fixed !important;
+        top: 15px !important;
+        right: 15px !important;
+        z-index: 999999 !important;
+        background: white !important;
+        border-radius: 4px !important;
+        padding: 8px !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+    }
+    
+    /* Fix menu content positioning */
+    .mega-menu-open .mega-menu-wrap {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 999998 !important;
+        overflow-y: auto !important;
+        background: white !important;
+        padding-top: 60px !important; /* Space for close button */
+    }
+    
+    /* Ensure close button shows when menu is open */
+    .mega-menu-open .mega-menu-toggle {
+        background: rgba(255, 255, 255, 0.95) !important;
+    }
+}
+
+/* Ensure toggle button is always on top of everything */
+.mega-menu-toggle {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    z-index: 9999999 !important; /* Higher than menu content */
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 2px solid #ddd !important;
+    border-radius: 6px !important;
+    padding: 10px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+/* Menu content should be below the toggle */
+.mega-menu-wrap,
+.mega-menu-wrap .mega-menu,
+.mega-sub-menu,
+.mega-menu-row,
+.mega-menu-column {
+    z-index: 999998 !important; /* Lower than toggle button */
+}
+
+/* Ensure all menu widgets/content are below toggle */
+.latest-insights-mega-widget,
+.mega-menu-item,
+.mega-menu-link {
+    z-index: 999997 !important;
+}

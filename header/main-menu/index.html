@@ -3,862 +3,432 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Treasury Navigation</title>
+    <title>Treasury4 Workshop Banner</title>
     <style>
-        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-purple: #7216f4;
-            --secondary-purple: #8f47f6;
-            --light-purple: #c77dff;
-            --dark-text: #281345;
-            --gray-text: #6b7280;
-        }
-
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: #f5f5f5;
-            /* Add some content to scroll behind the nav */
-            min-height: 200vh; 
+            background: linear-gradient(135deg, #f8f8f8, #fff);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            /* FIX: overflow-x: hidden prevents a horizontal scrollbar from appearing
+               when an element (like the banner using 100vw) is slightly wider than the viewport.
+               This stops the page content from "jumping" or resizing when the banner is closed. */
+            overflow-x: hidden;
         }
 
-        /* Navigation Container - Updated with a more dramatic gradient */
-        .rt-nav-container {
-            width: 100%;
-            /* Bolder, more opaque gradient for better contrast */
-            background: linear-gradient(135deg, rgba(80, 15, 171, 0.9), rgba(40, 19, 69, 0.95));
-            backdrop-filter: blur(20px) saturate(150%);
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-            position: fixed; /* Changed to fixed for sticky header */
+        .workshop-banner {
+            /* FIX: Using 100vw makes the banner truly full-width, edge-to-edge.
+               Combined with `overflow-x: hidden` on the body, this provides the desired
+               visuals without causing a layout shift on close. */
+            width: 100vw;
+            margin: 0;
+            margin-top: 0 !important;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.25), 
+                rgba(255, 255, 255, 0.15) 25%, 
+                rgba(114, 22, 244, 0.08) 50%, 
+                rgba(255, 255, 255, 0.15) 75%, 
+                rgba(255, 255, 255, 0.25));
+            backdrop-filter: blur(25px) saturate(140%);
+            -webkit-backdrop-filter: blur(25px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-top: none;
+            border-bottom: 1px solid rgba(199, 125, 255, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(114, 22, 244, 0.12),
+                0 1px 0 rgba(255, 255, 255, 0.4) inset,
+                0 -1px 0 rgba(255, 255, 255, 0.2) inset,
+                0 20px 40px rgba(0, 0, 0, 0.02);
+            padding: 16px 40px;
+            position: relative;
+            /* The banner's own overflow is hidden to contain its decorative elements */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .workshop-banner:before {
+            content: "";
+            position: absolute;
             top: 0;
             left: 0;
-            z-index: 999999;
-        }
-
-        .rt-nav-wrapper {
-            max-width: 100%;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            height: 80px;
-        }
-
-        /* Logo */
-        .rt-logo img {
-            height: 48px; /* Adjusted for better alignment */
-            width: auto;
-            background: none !important;
-            box-shadow: none !important;
-        }
-
-        /* Main Navigation */
-        .rt-nav {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem; /* Adjusted gap */
-            height: 100%;
-        }
-
-        .rt-nav-item {
-            position: static; /* Critical for full-width dropdown */
-            height: 100%;
-            display: flex;
-            align-items: center;
-        }
-
-        .rt-nav-link {
-            color: #ffffff; /* Text color updated to white */
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.05rem; /* INCREASED FONT SIZE */
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-
-        .rt-nav-link:hover, .rt-nav-item.active .rt-nav-link {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
-        /* Dropdown Arrow */
-        .rt-nav-link.has-dropdown::after {
-            content: '';
-            width: 0;
-            height: 0;
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            border-top: 4px solid currentColor;
-            transition: transform 0.3s ease;
-            margin-left: 0.5rem;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                #7216f4 20%, 
+                #8f47f6 50%, 
+                #c77dff 80%, 
+                transparent);
             opacity: 0.8;
+            z-index: 1;
         }
 
-        .rt-nav-item.active .rt-nav-link.has-dropdown::after {
-            transform: rotate(180deg);
-        }
-
-        /* Full-Width Frosted Glass Dropdown - More transparent and frosted */
-        .rt-dropdown {
-            position: fixed;
-            top: 80px; /* Height of navbar */
+        .workshop-banner:after {
+            content: "";
+            position: absolute;
+            top: 0;
             left: 0;
             right: 0;
-            width: 100vw;
-            background: rgba(255, 255, 255, 0.15); 
-            backdrop-filter: blur(20px) saturate(120%);
-            -webkit-backdrop-filter: blur(20px) saturate(120%);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
-            border-radius: 0 0 16px 16px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.35s ease;
-            z-index: 1000000;
-            overflow: hidden;
-        }
-        
-        .rt-nav-item.active .rt-dropdown {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(114, 22, 244, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.03) 0%, transparent 50%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 30%);
+            pointer-events: none;
+            z-index: 0;
         }
 
-        .rt-dropdown-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2.5rem 2rem;
+        .workshop-banner:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.35), 
+                rgba(255, 255, 255, 0.25) 25%, 
+                rgba(114, 22, 244, 0.12) 50%, 
+                rgba(255, 255, 255, 0.25) 75%, 
+                rgba(255, 255, 255, 0.35));
+            backdrop-filter: blur(30px) saturate(150%);
+            -webkit-backdrop-filter: blur(30px) saturate(150%);
+            box-shadow: 
+                0 12px 48px rgba(114, 22, 244, 0.18),
+                0 1px 0 rgba(255, 255, 255, 0.6) inset,
+                0 -1px 0 rgba(255, 255, 255, 0.3) inset,
+                0 25px 50px rgba(0, 0, 0, 0.03);
+            transform: translateY(-1px);
         }
 
-        /* Mega Menu Grid - Updated */
-        .rt-mega-menu {
-            display: grid;
-            grid-template-columns: 1fr 1fr 350px; /* Adjusted for 3 columns */
-            gap: 3rem;
-            align-items: start;
-        }
-
-        .rt-mega-column h3 {
-            color: var(--dark-text) !important;
-            font-size: 1.1rem; /* Increased font size */
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
-
-        .rt-mega-links {
+        .banner-content {
+            flex: 1;
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .rt-mega-link {
-            color: var(--dark-text) !important;
-            text-decoration: none !important;
-            padding: 10px 15px !important;
-            transition: all 0.2s ease !important;
-            font-size: 1.05rem; /* Matched font size */
-            font-weight: 500 !important;
-            background: none !important;
-            border-radius: 8px;
-            display: block;
-        }
-
-        .rt-mega-link:hover {
-            color: var(--primary-purple) !important;
-            background: rgba(255, 255, 255, 0.5) !important;
-            transform: translateX(5px);
-        }
-
-        /* === Latest Insights Widget - Replicated from realtreasury.com === */
-        .rt-insights-widget {
-            width: 100%;
-            max-width: 340px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(248, 248, 248, 0.4));
-            backdrop-filter: blur(20px) saturate(130%);
-            -webkit-backdrop-filter: blur(20px) saturate(130%);
-            border: 1px solid rgba(114, 22, 244, 0.2);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-            overflow: hidden; /* Changed to hidden for track */
-        }
-
-        .rt-insights-header {
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.15), rgba(143, 71, 246, 0.2));
-            color: var(--dark-text);
-            padding: 14px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(114, 22, 244, 0.2);
-        }
-        
-        .rt-insights-header h3 {
-             color: var(--dark-text) !important;
-             opacity: 1;
-             text-transform: none;
-             letter-spacing: normal;
-             margin-bottom: 0;
-             font-size: 1.1rem;
-        }
-
-        .rt-insights-content-area {
-            height: 280px;
-            overflow: hidden;
+            align-items: center;
+            gap: 20px;
             position: relative;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 248, 248, 0.6));
+            z-index: 2;
         }
 
-        .rt-insights-track {
+        .banner-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, 
+                rgba(114, 22, 244, 0.15), 
+                rgba(143, 71, 246, 0.25) 50%, 
+                rgba(157, 78, 221, 0.15));
+            backdrop-filter: blur(15px) saturate(120%);
+            -webkit-backdrop-filter: blur(15px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
             display: flex;
-            height: 100%;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .rt-insight-card {
-            flex: 0 0 100%;
-            padding: 16px 20px;
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            box-sizing: border-box;
-            height: 100%;
-        }
-
-        .rt-insight-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1f2937;
-            line-height: 1.3;
-            margin-bottom: 12px;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .rt-insight-excerpt {
-            font-size: 0.9rem;
-            color: #6b7280;
-            line-height: 1.5;
-            flex-grow: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .rt-insight-footer {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-top: auto;
-            padding-top: 1rem;
-        }
-
-        .rt-insight-date {
-            font-size: 0.75rem;
-            color: #8b5cf6;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .rt-insight-link {
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.2), rgba(143, 71, 246, 0.25));
-            color: var(--dark-text);
-            border: 1px solid rgba(114, 22, 244, 0.3);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .rt-insight-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.25);
-        }
-
-        .rt-insights-navigation {
-            display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 14px;
-            gap: 8px;
-            background: linear-gradient(135deg, rgba(248, 248, 248, 0.6), rgba(255, 255, 255, 0.4));
-            border-top: 1px solid rgba(114, 22, 244, 0.1);
+            color: #7216f4;
+            font-size: 22px;
+            font-weight: bold;
+            box-shadow: 
+                0 8px 24px rgba(114, 22, 244, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.4) inset,
+                0 -1px 0 rgba(114, 22, 244, 0.1) inset;
+            flex-shrink: 0;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .rt-nav-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(114, 22, 244, 0.2);
-            border: 1px solid rgba(114, 22, 244, 0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .rt-nav-dot.active {
-            background: var(--primary-purple);
-            transform: scale(1.1);
-        }
-
-        /* Services Dropdown */
-        .rt-services-menu {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .rt-services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .rt-service-item {
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 12px;
-            border: 1px solid rgba(114, 22, 244, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .rt-service-item:hover {
-            background: rgba(255, 255, 255, 0.6);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(114, 22, 244, 0.15);
-            border-color: rgba(114, 22, 244, 0.3);
-        }
-        
-        .rt-service-title {
-            color: var(--dark-text);
-            font-size: 1.2rem; /* Increased font size */
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .rt-service-desc {
-            color: var(--gray-text);
-            font-size: 1rem; /* Increased font size */
-            line-height: 1.4;
-            margin-bottom: 1rem;
-        }
-        
-        .rt-service-cta {
-            color: var(--primary-purple);
-            font-size: 0.9rem; /* Increased font size */
-            font-weight: 500;
-            text-decoration: none;
-        }
-
-        /* About Dropdown */
-        .rt-about-menu {
-            max-width: 300px;
-            margin: 0 5% 0 auto; /* Aligned to the right */
-            background: rgba(255, 255, 255, 0.2);
-            padding: 2rem;
+        .banner-icon:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 40%);
+            pointer-events: none;
             border-radius: 16px;
         }
 
-        /* Specific rule for larger "About" links */
-        .rt-about-menu .rt-mega-link {
-            font-size: 1.5rem !important;
-            font-weight: 600 !important;
-            text-align: center;
-            padding: 1rem !important;
+        .banner-text {
+            flex: 1;
         }
 
-        /* CTA Button - Updated */
-        .rt-cta-button {
-            background: linear-gradient(135deg, #8f47f6, #7216f4) !important;
-            color: white !important;
-            text-decoration: none !important;
-            padding: 12px 24px !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-            font-size: 1.05rem !important; /* INCREASED FONT SIZE */
-            transition: all 0.3s ease !important;
-            box-shadow: 0 4px 15px rgba(114, 22, 244, 0.3) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        .banner-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #281345;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .banner-subtitle {
+            font-size: 0.95rem;
+            color: #7e7e7e;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .banner-highlight {
+            color: #7216f4;
+            font-weight: 600;
+        }
+
+        .banner-cta {
+            background: linear-gradient(135deg, 
+                rgba(114, 22, 244, 0.9), 
+                rgba(143, 71, 246, 0.95) 50%, 
+                rgba(157, 78, 221, 0.9));
+            backdrop-filter: blur(15px) saturate(120%);
+            -webkit-backdrop-filter: blur(15px) saturate(120%);
+            color: white;
+            padding: 12px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            position: relative;
+            z-index: 2;
+            flex-shrink: 0;
+            box-shadow: 
+                0 8px 24px rgba(114, 22, 244, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.3) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+            overflow: hidden;
         }
 
-        .rt-cta-button:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.4) !important;
+        .banner-cta:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent 50%);
+            pointer-events: none;
+            border-radius: 12px;
+            transition: all 0.4s ease;
         }
 
-        /* Book Meeting Button - Updated */
-        .rt-book-meeting {
-            display: block;
-            background: linear-gradient(135deg, #8f47f6, #7216f4);
+        .banner-cta:hover {
+            background: linear-gradient(135deg, 
+                rgba(143, 71, 246, 0.95), 
+                rgba(157, 78, 221, 1) 50%, 
+                rgba(186, 85, 211, 0.95));
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 
+                0 12px 32px rgba(114, 22, 244, 0.35),
+                0 1px 0 rgba(255, 255, 255, 0.4) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.15) inset;
             color: white;
             text-decoration: none;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1.2rem; /* Increased font size */
-            text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 1.5rem;
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .rt-book-meeting:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4);
+        .banner-cta:hover:before {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), transparent 60%);
         }
 
-        /* Mobile Menu Toggle */
-        .rt-mobile-toggle {
-            display: none;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
+        .banner-cta:active {
+            transform: translateY(0px);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.3), 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(10px) saturate(120%);
+            -webkit-backdrop-filter: blur(10px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #7216f4;
             cursor: pointer;
-            padding: 10px;
-            z-index: 1000002;
+            z-index: 3;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            font-weight: 700;
+            line-height: 1;
+            box-shadow: 
+                0 4px 12px rgba(114, 22, 244, 0.1),
+                0 1px 0 rgba(255, 255, 255, 0.4) inset;
         }
 
-        .rt-mobile-toggle span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: #ffffff;
-            margin: 5px 0;
-            transition: all 0.3s ease;
-        }
-        
-        .rt-mobile-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        .rt-mobile-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-        .rt-mobile-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
+        .close-btn:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.4), 
+                rgba(255, 255, 255, 0.3) 50%, 
+                rgba(255, 255, 255, 0.2));
+            border-color: rgba(199, 125, 255, 0.4);
+            transform: scale(1.1);
+            box-shadow: 
+                0 6px 16px rgba(114, 22, 244, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.5) inset;
         }
 
-        /* Mobile Styles */
-        @media (max-width: 992px) {
-            .rt-nav {
-                display: none; /* Hide desktop nav initially */
-                position: fixed;
-                top: 70px;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(255, 255, 255, 0.25);
-                backdrop-filter: blur(12px) saturate(120%);
-                -webkit-backdrop-filter: blur(12px) saturate(120%);
+        /* Fresh animations */
+        @keyframes glassShimmer {
+            0% { opacity: 0.3; transform: translateX(-100%); }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.3; transform: translateX(100%); }
+        }
+
+        .workshop-banner::before {
+            animation: glassShimmer 8s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .banner-icon:hover {
+            animation: iconPulse 2s ease-in-out infinite;
+            background: linear-gradient(135deg, 
+                rgba(114, 22, 244, 0.25), 
+                rgba(143, 71, 246, 0.35) 50%, 
+                rgba(157, 78, 221, 0.25));
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .workshop-banner {
                 flex-direction: column;
-                padding: 2rem 1rem;
-                gap: 1rem;
-                height: calc(100vh - 70px);
-                overflow-y: auto;
-                align-items: stretch;
-                z-index: 999998;
-            }
-            
-            .rt-nav.active {
-                display: flex; /* Show when active */
-            }
-
-            .rt-mobile-toggle {
-                display: block;
-            }
-            
-            .rt-nav-wrapper {
-                height: 70px;
-                padding: 0 1rem;
-            }
-
-            .rt-nav-item {
-                width: 100%;
-                height: auto;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .rt-nav-link {
-                width: 100%;
-                padding: 1rem;
-                background: rgba(255, 255, 255, 0.15);
-                border-radius: 12px;
-                justify-content: space-between;
-                color: var(--dark-text);
-                text-shadow: none;
-            }
-             .rt-nav-link.has-dropdown::after {
-                border-top-color: var(--dark-text);
-            }
-            
-            .rt-dropdown {
-                position: static;
-                width: 100%;
-                box-shadow: none;
-                border-radius: 12px;
-                background: rgba(255, 255, 255, 0.15) !important;
-                backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important;
-                border: 1px solid rgba(255, 255, 255, 0.15) !important;
-                opacity: 1;
-                visibility: visible;
-                transform: none;
-                display: none; /* Hide mobile dropdowns by default */
-                margin-top: 0.5rem;
-                padding: 0;
-            }
-            
-            .rt-nav-item.active .rt-dropdown {
-                display: block; /* Show on active */
-            }
-
-            .rt-dropdown-inner {
-                padding: 1rem;
-            }
-            
-            .rt-mega-menu {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .rt-insights-widget {
-                display: none; /* Hide complex widget on mobile for simplicity */
-            }
-            
-            .rt-mega-column:last-child {
-                display: none; /* Hide widget column on mobile */
-            }
-
-            .rt-services-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .rt-nav .rt-nav-item:last-child {
-                margin-top: 1rem;
-                padding: 1rem;
-                background: linear-gradient(135deg, #8f47f6, #7216f4);
-                border-radius: 8px;
-            }
-            .rt-nav .rt-cta-button {
-                width: 100%;
                 text-align: center;
-                padding: 1rem !important;
-                box-shadow: none !important;
-                background: none !important;
-                border: none !important;
-                color: white !important;
+                padding: 16px 32px;
+                gap: 16px;
+            }
+
+            .banner-content {
+                flex-direction: column;
+                gap: 18px;
+                text-align: center;
+            }
+
+            .banner-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+            }
+
+            .banner-title {
+                font-size: 1.1rem;
+            }
+
+            .banner-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .banner-cta {
+                width: 100%;
+                justify-content: center;
+                padding: 14px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .workshop-banner {
+                padding: 14px 24px;
+            }
+
+            .banner-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+
+            .banner-title {
+                font-size: 1rem;
+            }
+
+            .banner-subtitle {
+                font-size: 0.85rem;
+            }
+
+            .close-btn {
+                width: 22px;
+                height: 22px;
+                font-size: 13px;
+                top: 8px;
+                right: 10px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="rt-nav-container">
-        <div class="rt-nav-wrapper">
-            <!-- Logo -->
-            <div class="rt-logo">
-                <a href="https://realtreasury.com/">
-                    <img src="https://realtreasury.com/wp-content/uploads/2025/06/White-logo-no-background.png" 
-                         alt="Real Treasury" />
-                </a>
-            </div>
-
-            <!-- Mobile Toggle -->
-            <button class="rt-mobile-toggle" onclick="toggleMobileMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
-            <!-- Navigation Menu -->
-            <div class="rt-nav" id="mainNav">
-                <!-- Insights -->
-                <div class="rt-nav-item">
-                    <a href="#" class="rt-nav-link has-dropdown" onclick="toggleDropdown(event)">
-                        INSIGHTS
-                    </a>
-                    <div class="rt-dropdown">
-                        <div class="rt-dropdown-inner">
-                            <div class="rt-mega-menu">
-                                <div class="rt-mega-column">
-                                    <h3>Explore</h3>
-                                    <a href="https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q" 
-                                       target="_blank" 
-                                       class="rt-book-meeting">
-                                        Save My Seat<br>for the Live Session
-                                    </a>
-                                </div>
-                                <div class="rt-mega-column">
-                                     <h3>Topics</h3>
-                                    <div class="rt-mega-links">
-                                        <a href="#openVideoModal" class="rt-mega-link">Treasury Tech Stack</a>
-                                        <a href="https://realtreasury.com/errnot/" class="rt-mega-link">ERR NOT Method</a>
-                                        <a href="https://realtreasury.com/treasury-tech-market/" class="rt-mega-link">Treasury Tech Market</a>
-                                        <a href="https://realtreasury.com/posts/" class="rt-mega-link">All Insights</a>
-                                    </div>
-                                </div>
-                                <div class="rt-mega-column">
-                                    <div class="rt-insights-widget" id="latestInsightsWidget">
-                                        <div class="rt-insights-header">
-                                            <h3>Latest Insights</h3>
-                                        </div>
-                                        <div class="rt-insights-content-area">
-                                            <div class="rt-insights-track">
-                                                <!-- Insight cards will be loaded here by JS -->
-                                            </div>
-                                        </div>
-                                        <div class="rt-insights-navigation">
-                                            <!-- Nav dots will be loaded here by JS -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="workshop-banner" id="workshopBanner">
+        <button class="close-btn" onclick="closeBanner()" aria-label="Close banner">&times;</button>
+        
+        <div class="banner-content">
+            <a href="https://realtreasury.com/tech-selection-workshop/" target="_blank" rel="noopener noreferrer">
+                <div class="banner-icon">🔍</div>
+            </a>
+            
+            <div class="banner-text">
+                <div class="banner-title">
+                    <span class="banner-highlight">Tech Selection</span> Workshop
                 </div>
-
-                <!-- Services -->
-                <div class="rt-nav-item">
-                    <a href="#" class="rt-nav-link has-dropdown" onclick="toggleDropdown(event)">
-                        SERVICES
-                    </a>
-                    <div class="rt-dropdown">
-                        <div class="rt-dropdown-inner">
-                            <div class="rt-services-menu">
-                                <div class="rt-services-grid">
-                                    <div class="rt-service-item" onclick="handleServiceClick('#openVideoModal')">
-                                        <div class="rt-service-title">Vendor Demo Library</div>
-                                        <div class="rt-service-desc">Access curated treasury tech stack demos and solution overviews.</div>
-                                        <a href="#openVideoModal" class="rt-service-cta">Request Access</a>
-                                    </div>
-                                    <div class="rt-service-item" onclick="window.open('https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration', '_blank')">
-                                        <div class="rt-service-title">Treasury Insights Workshop</div>
-                                        <div class="rt-service-desc">25-minute deep dive sharing real-world insights.</div>
-                                        <a href="https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration" target="_blank" class="rt-service-cta">Join Workshop</a>
-                                    </div>
-                                    <div class="rt-service-item" onclick="window.open('https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled', '_blank')">
-                                        <div class="rt-service-title">Technology Selection</div>
-                                        <div class="rt-service-desc">Expert-guided evaluation to find your ideal treasury platform.</div>
-                                        <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="rt-service-cta">Start Assessment</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- About -->
-                <div class="rt-nav-item">
-                    <a href="#" class="rt-nav-link has-dropdown" onclick="toggleDropdown(event)">
-                        ABOUT
-                    </a>
-                    <div class="rt-dropdown">
-                        <div class="rt-dropdown-inner">
-                            <div class="rt-about-menu">
-                                <div class="rt-mega-links">
-                                    <a href="https://realtreasury.com/about/" class="rt-mega-link">About Us</a>
-                                    <a href="https://realtreasury.com/team/" class="rt-mega-link">Team</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- View Portal -->
-                <div class="rt-nav-item">
-                    <a href="#openVideoModal" class="rt-cta-button">VIEW PORTAL</a>
+                <div class="banner-subtitle">
+                    6 Steps to Treasury Tech Without Regret | Tue Jul 15 | 12:00 PM ET / 9:00 AM PT
                 </div>
             </div>
         </div>
-    </nav>
+
+        <a href="#register" class="banner-cta" onclick="registerWorkshop()">
+            Register Now
+            <span>→</span>
+        </a>
+    </div>
 
     <script>
-        // --- CORE NAVIGATION SCRIPT ---
-
-        function toggleMobileMenu() {
-            const nav = document.getElementById('mainNav');
-            const toggle = document.querySelector('.rt-mobile-toggle');
-            nav.classList.toggle('active');
-            toggle.classList.toggle('active');
-            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+        function closeBanner() {
+            const banner = document.getElementById('workshopBanner');
+            banner.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+            banner.style.transform = 'translateY(-100%)';
+            banner.style.opacity = '0';
+            
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 400); // Matches the transition duration
         }
 
-        function toggleDropdown(event) {
-            event.preventDefault();
-            const navItem = event.target.closest('.rt-nav-item');
-            const wasActive = navItem.classList.contains('active');
-            
-            // Close all items
-            document.querySelectorAll('.rt-nav-item').forEach(item => item.classList.remove('active'));
-            
-            // If it wasn't active before, open it
-            if (!wasActive) {
-                navItem.classList.add('active');
-            }
+        function registerWorkshop() {
+            // Redirect to the actual workshop registration
+            window.open('https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration', '_blank');
         }
 
-        function handleServiceClick(link) {
-            if (link === '#openVideoModal') {
-                console.log('Open video modal triggered');
-                // Assuming you have a global modal opening function
-                if (typeof openModal === 'function') {
-                    openModal();
-                }
-            } else {
-                window.open(link, '_blank');
-            }
-        }
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.rt-nav-container')) {
-                document.querySelectorAll('.rt-nav-item.active').forEach(item => {
-                    item.classList.remove('active');
-                });
-            }
-        });
-
-        // Reset mobile menu on resize
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                document.getElementById('mainNav').classList.remove('active');
-                document.querySelector('.rt-mobile-toggle').classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        });
-
-        // --- LATEST INSIGHTS WIDGET SCRIPT ---
-        
-        function initInsightsWidget() {
-            const widget = document.getElementById('latestInsightsWidget');
-            if (!widget) return;
-
-            const track = widget.querySelector('.rt-insights-track');
-            const navigation = widget.querySelector('.rt-insights-navigation');
-            let currentIndex = 0;
-            let insights = [];
-            let autoAdvanceInterval;
-
-            const demoInsights = [
-                {
-                    title: 'December 2024 Bank CRE Report',
-                    excerpt: 'US Banking Commercial Real Estate (CRE) Concentration Report. An in-depth look at the trends and risks.',
-                    date: '2025-02-17T12:00:00Z',
-                    link: 'https://realtreasury.com/bank-cre-exposure-12-2024/'
-                },
-                {
-                    title: 'Treasury Management System Selection Guide',
-                    excerpt: 'Expert Treasury Consulting Insights for TMS Selection. Make the right choice for your organization.',
-                    date: '2025-01-05T12:00:00Z',
-                    link: 'https://realtreasury.com/2024-tms-selection-guide/'
-                },
-                {
-                    title: 'Payment Networks Explained',
-                    excerpt: 'A comprehensive guide to understanding the various payment networks available today.',
-                    date: '2024-12-27T12:00:00Z',
-                    link: 'https://realtreasury.com/payment-networks-explained/'
-                }
-            ];
+        // Optional: Auto-show animation on page load
+        window.addEventListener('load', function() {
+            const banner = document.getElementById('workshopBanner');
+            // Set initial state for animation
+            banner.style.transform = 'translateY(-20px)';
+            banner.style.opacity = '0';
+            banner.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             
-            function render() {
-                insights = demoInsights; // Using demo data for this example
-
-                track.innerHTML = insights.map(insight => `
-                    <div class="rt-insight-card" data-link="${insight.link}">
-                        <div class="rt-insight-title">${insight.title}</div>
-                        <div class="rt-insight-excerpt">${insight.excerpt}</div>
-                        <div class="rt-insight-footer">
-                            <span class="rt-insight-date">${formatDate(insight.date)}</span>
-                            <a href="${insight.link}" class="rt-insight-link" target="_blank">Read More</a>
-                        </div>
-                    </div>
-                `).join('');
-                
-                if (insights.length > 1) {
-                    navigation.innerHTML = insights.map((_, index) => 
-                        `<div class="rt-nav-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`
-                    ).join('');
-                }
-                
-                bindEvents();
-                startAutoAdvance();
-            }
-
-            function formatDate(dateString) {
-                const date = new Date(dateString);
-                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            }
-
-            function goToSlide(index) {
-                currentIndex = index;
-                const offset = -currentIndex * 100;
-                track.style.transform = `translateX(${offset}%)`;
-
-                navigation.querySelectorAll('.rt-nav-dot').forEach((dot, i) => {
-                    dot.classList.toggle('active', i === currentIndex);
-                });
-                
-                resetAutoAdvance();
-            }
-            
-            function startAutoAdvance() {
-                if (insights.length <= 1) return;
-                autoAdvanceInterval = setInterval(() => {
-                    const nextIndex = (currentIndex + 1) % insights.length;
-                    goToSlide(nextIndex);
-                }, 8000); // 8-second interval
-            }
-            
-            function resetAutoAdvance() {
-                clearInterval(autoAdvanceInterval);
-                startAutoAdvance();
-            }
-
-            function bindEvents() {
-                navigation.addEventListener('click', e => {
-                    if (e.target.matches('.rt-nav-dot')) {
-                        goToSlide(parseInt(e.target.dataset.index));
-                    }
-                });
-
-                track.addEventListener('click', e => {
-                    const card = e.target.closest('.rt-insight-card');
-                    if (card && !e.target.matches('.rt-insight-link')) {
-                        window.open(card.dataset.link, '_blank');
-                    }
-                });
-            }
-
-            render();
-        }
-
-        // Initialize all scripts on DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', function() {
-            initInsightsWidget();
+            setTimeout(() => {
+                banner.style.transform = 'translateY(0)';
+                banner.style.opacity = '1';
+            }, 100); // Short delay to ensure initial styles are applied before animating
         });
     </script>
 </body>

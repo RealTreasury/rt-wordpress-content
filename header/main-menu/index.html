@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Treasury Navigation</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* Navigation Container - Full Width */
+        .rt-nav-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 999999;
+        }
+
+        .rt-nav-wrapper {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            height: 80px;
+        }
+
+        /* Logo */
+        .rt-logo {
+            flex-shrink: 0;
+            z-index: 1000002;
+            position: relative;
+        }
+
+        .rt-logo img {
+            height: 54px;
+            width: auto;
+            background: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Main Navigation */
+        .rt-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            height: 100%;
+            z-index: 1000001;
+        }
+
+        .rt-nav-item {
+            position: static; /* Changed from relative for full-width dropdowns */
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .rt-nav-link {
+            color: var(--dark-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            z-index: 1000001;
+        }
+
+        .rt-nav-link:hover {
+            background: rgba(114, 22, 244, 0.08);
+            color: var(--primary-purple);
+        }
+
+        /* Dropdown Arrow */
+        .rt-nav-link.has-dropdown::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .rt-nav-item.active .rt-nav-link.has-dropdown::after {
+            transform: rotate(180deg);
+        }
+
+        /* Full-Width Frosted Glass Dropdown */
+        .rt-dropdown {
+            position: fixed;
+            top: 80px; /* Height of navbar */
+            left: 0;
+            right: 0;
+            width: 100vw;
+            background: rgba(255, 255, 255, 0.25) !important;
+            backdrop-filter: blur(12px) saturate(120%) !important;
+            -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+            border-radius: 0 0 16px 16px !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15) !important;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000000 !important;
+            overflow: hidden;
+        }
+
+        .rt-dropdown-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .rt-nav-item.active .rt-dropdown {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Mega Menu Grid */
+        .rt-mega-menu {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 3rem;
+        }
+
+        .rt-mega-column {
+            background: none !important;
+            z-index: 1000000 !important;
+        }
+
+        .rt-mega-column h3 {
+            color: var(--dark-text) !important;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            text-shadow: none !important;
+        }
+
+        .rt-mega-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .rt-mega-link {
+            color: var(--dark-text) !important;
+            text-decoration: none !important;
+            padding: 10px 15px !important;
+            transition: all 0.2s ease !important;
+            font-size: 0.95rem;
+            font-weight: 500 !important;
+            background: none !important;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .rt-mega-link:hover {
+            color: var(--primary-purple) !important;
+            background: rgba(255, 255, 255, 0.25) !important;
+            transform: translateX(4px);
+        }
+
+        /* Latest Insights Widget - Matching Your Existing Style */
+        .rt-insights-widget {
+            width: 320px !important;
+            max-width: 320px !important;
+            min-width: 300px !important;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(248, 248, 248, 0.4));
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 1px solid rgba(114, 22, 244, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            overflow: visible;
+            position: relative;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+        }
+
+        .rt-insights-header {
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.15), rgba(143, 71, 246, 0.2));
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            color: var(--dark-text);
+            padding: 14px 20px;
+            text-align: center;
+            position: relative;
+            border-radius: 16px 16px 0 0;
+            border: 1px solid rgba(114, 22, 244, 0.2);
+            border-bottom: none;
+        }
+
+        .rt-insights-content {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 248, 248, 0.6));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .rt-insight-card {
+            padding: 1rem;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .rt-insight-card:hover {
+            background: rgba(114, 22, 244, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        .rt-insight-title {
+            color: #1f2937;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .rt-insight-excerpt {
+            color: #6b7280;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .rt-insight-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rt-insight-date {
+            color: #8b5cf6;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rt-insight-link {
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.2), rgba(143, 71, 246, 0.25));
+            backdrop-filter: blur(15px) saturate(130%);
+            -webkit-backdrop-filter: blur(15px) saturate(130%);
+            color: var(--dark-text);
+            border: 1px solid rgba(114, 22, 244, 0.3);
+            padding: 0.25rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 12px rgba(114, 22, 244, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .rt-insight-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.3), rgba(143, 71, 246, 0.35));
+            border-color: rgba(114, 22, 244, 0.4);
+        }
+
+        /* Services Dropdown */
+        .rt-services-menu {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .rt-services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .rt-service-item {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px) saturate(110%);
+            -webkit-backdrop-filter: blur(10px) saturate(110%);
+            border-radius: 12px;
+            border: 1px solid rgba(114, 22, 244, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .rt-service-item:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(114, 22, 244, 0.15);
+            border-color: rgba(114, 22, 244, 0.3);
+        }
+
+        .rt-service-title {
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .rt-service-desc {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+
+        .rt-service-cta {
+            color: var(--primary-purple);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .rt-service-badge {
+            display: inline-block;
+            background: rgba(114, 22, 244, 0.1);
+            color: var(--primary-purple);
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+
+        /* About Dropdown */
+        .rt-about-menu {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* CTA Button - Matching Your Style */
+        .rt-cta-button {
+            background: linear-gradient(135deg, rgba(143, 71, 246, 0.8), rgba(114, 22, 244, 0.9)) !important;
+            color: white !important;
+            text-decoration: none !important;
+            padding: 16px 28px !important;
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            font-size: 1rem !important;
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid rgba(199, 125, 255, 0.4) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .rt-cta-button:hover {
+            background: linear-gradient(135deg, rgba(143, 71, 246, 0.9), rgba(114, 22, 244, 1)) !important;
+            transform: translateY(-3px) !important;
+            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4) !important;
+            border-color: rgba(220, 180, 255, 0.7) !important;
+        }
+
+        /* Book Meeting Button */
+        .rt-book-meeting {
+            background: linear-gradient(135deg, rgba(143, 71, 246, 0.8), rgba(114, 22, 244, 0.9));
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            line-height: 1.4;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .rt-book-meeting:hover {
+            background: linear-gradient(135deg, rgba(143, 71, 246, 0.9), rgba(114, 22, 244, 1));
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4);
+            color: white;
+        }
+
+        /* Mobile Menu Toggle */
+        .rt-mobile-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(114, 22, 244, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000002;
+        }
+
+        .rt-mobile-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--dark-text);
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Styles with Frosted Glass */
+        @media (max-width: 768px) {
+            .rt-nav-wrapper {
+                padding: 0 1rem;
+                height: 70px;
+            }
+
+            .rt-logo img {
+                height: 40px;
+            }
+
+            .rt-mobile-toggle {
+                display: block;
+                position: fixed;
+                top: 15px;
+                right: 15px;
+                z-index: 9999999;
+            }
+
+            .rt-nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(255, 255, 255, 0.25) !important;
+                backdrop-filter: blur(12px) saturate(120%) !important;
+                -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+                flex-direction: column;
+                padding: 80px 20px 20px;
+                gap: 1rem;
+                height: 100vh;
+                overflow-y: auto;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                align-items: flex-start;
+                z-index: 999998;
+            }
+
+            .rt-nav.active {
+                transform: translateX(0);
+            }
+
+            .rt-nav-item {
+                width: 100%;
+                height: auto;
+            }
+
+            .rt-nav-link {
+                width: 100%;
+                padding: 1rem;
+                background: rgba(255, 255, 255, 0.15);
+                margin-bottom: 0.5rem;
+                border-radius: 12px;
+            }
+
+            .rt-dropdown {
+                position: static;
+                transform: none;
+                margin-top: 0.5rem;
+                width: 100%;
+                box-shadow: none;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.15) !important;
+                backdrop-filter: blur(8px) saturate(110%) !important;
+                -webkit-backdrop-filter: blur(8px) saturate(110%) !important;
+                border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            }
+
+            .rt-dropdown-inner {
+                padding: 1rem;
+            }
+
+            .rt-mega-menu {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .rt-insights-widget {
+                display: none;
+            }
+
+            .rt-services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Extra small screens - Enhanced frosted effect */
+        @media (max-width: 480px) {
+            .rt-nav {
+                background: rgba(255, 255, 255, 0.3) !important;
+                backdrop-filter: blur(15px) saturate(125%) !important;
+                -webkit-backdrop-filter: blur(15px) saturate(125%) !important;
+                padding: 70px 15px 15px;
+            }
+
+            .rt-nav-link {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+        }
+
+        /* Loading State */
+        .rt-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--gray-text);
+        }
+
+        /* Override any conflicts */
+        .rt-nav-container *,
+        .rt-nav-container *::before,
+        .rt-nav-container *::after {
+            box-sizing: border-box;
+        }
+
+        /* Ensure dropdowns appear above content */
+        .entry-content,
+        .site-main,
+        #main,
+        .content-area,
+        .wp-block-columns,
+        .wp-block-column {
+            z-index: 1 !important;
+            position: relative !important;
+        }
+
+        /* Admin bar compatibility */
+        .admin-bar .rt-nav-container {
+            margin-top: 32px;
+        }
+
+        @media (max-width: 782px) {
+            .admin-bar .rt-nav-container {
+                margin-top: 46px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="rt-nav-container">
+        <div class="rt-nav-wrapper">
+            <!-- Logo -->
+            <div class="rt-logo">
+                <a href="https://realtreasury.com/">
+                    <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2025/06/Color-logo-black-text-no-background.png?resize=276%2C54&amp;ssl=1" 
+                         alt="Real Treasury" />
+                </a>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <button class="rt-mobile-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Navigation Menu -->
+            <div class="rt-nav" id="mainNav">
+                <!-- Insights -->
+                <div class="rt-nav-item">
+                    <a href="#" class="rt-nav-link has-dropdown" onclick="toggleDropdown(event, 'insights')">
+                        INSIGHTS
+                    </a>
+                    <div class="rt-dropdown">
+                        <div class="rt-dropdown-inner">
+                            <div class="rt-mega-menu">
+                                <div class="rt-mega-column">
+                                    <a href="https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q" 
+                                       target="_blank" 
+                                       class="rt-book-meeting">
+                                        Save My Seat<br>for the Live Session
+                                    </a>
+                                    
+                                    <div class="rt-mega-links">
+                                        <a href="#openVideoModal" class="rt-mega-link">Treasury Tech Stack</a>
+                                        <a href="https://realtreasury.com/errnot/" class="rt-mega-link">ERR NOT Method</a>
+                                        <a href="https://realtreasury.com/treasury-tech-market/" class="rt-mega-link">Treasury Tech Market</a>
+                                        <a href="https://realtreasury.com/posts/" class="rt-mega-link">All Insights</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="rt-mega-column">
+                                    <div class="rt-insights-widget" id="latestInsights">
+                                        <div class="rt-insights-header">
+                                            <h3>Latest Insights</h3>
+                                        </div>
+                                        <div class="rt-insights-content">
+                                            <div class="rt-loading">Loading insights...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services -->
+                <div class="rt-nav-item">
+                    <a href="#" class="rt-nav-link has-dropdown" onclick="toggleDropdown(event, 'services')">
+                        SERVICES
+                    </a>
+                    <div class="rt-dropdown">
+                        <div class="rt-dropdown-inner">
+                            <div class="rt-services-menu">
+                                <div style="text-align: center; margin-bottom: 2rem;">
+                                    <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" 
+                                       target="_blank" 
+                                       class="rt-book-meeting">
+                                        Book a 15 Minute<br>Treasury Strategy Session
+                                    </a>
+                                </div>
+                                
+                                <div class="rt-services-grid">
+                                    <div class="rt-service-item" onclick="handleServiceClick('#openVideoModal')">
+                                        <div class="rt-service-title">Vendor Demo Library</div>
+                                        <div class="rt-service-desc">Access curated treasury tech stack demos and solution overviews</div>
+                                        <a href="#openVideoModal" class="rt-service-cta">Request Access</a>
+                                        <span class="rt-service-badge">Instant access</span>
+                                    </div>
+                                    
+                                    <div class="rt-service-item" onclick="window.open('https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration', '_blank')">
+                                        <div class="rt-service-title">Treasury Insights Workshop</div>
+                                        <div class="rt-service-desc">25-minute deep dive sharing real-world insights</div>
+                                        <a href="https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration" target="_blank" class="rt-service-cta">Join Workshop</a>
+                                        <span class="rt-service-badge">25-min session</span>
+                                    </div>
+                                    
+                                    <div class="rt-service-item" onclick="window.open('https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled', '_blank')">
+                                        <div class="rt-service-title">Technology Selection</div>
+                                        <div class="rt-service-desc">Expert-guided evaluation to find your ideal treasury platform</div>
+                                        <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="rt-service-cta">Start Assessment</a>
+                                        <span class="rt-service-badge">15-min call</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="rt-nav-item">
+                    <a href="#" class="rt-nav-link has-dropdown" onclick="toggleDropdown(event, 'about')">
+                        ABOUT
+                    </a>
+                    <div class="rt-dropdown">
+                        <div class="rt-dropdown-inner">
+                            <div class="rt-about-menu">
+                                <div class="rt-mega-links">
+                                    <a href="https://realtreasury.com/about/" class="rt-mega-link">About Us</a>
+                                    <a href="https://realtreasury.com/team/" class="rt-mega-link">Team</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View Portal -->
+                <div class="rt-nav-item">
+                    <a href="#openVideoModal" class="rt-cta-button">VIEW PORTAL</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Toggle Mobile Menu
+        function toggleMobileMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+            
+            // Prevent body scroll when menu is open
+            if (nav.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Toggle Dropdown
+        function toggleDropdown(event, dropdown) {
+            event.preventDefault();
+            const navItem = event.target.closest('.rt-nav-item');
+            const allItems = document.querySelectorAll('.rt-nav-item');
+            
+            // Close all other dropdowns
+            allItems.forEach(item => {
+                if (item !== navItem) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Toggle current dropdown
+            navItem.classList.toggle('active');
+        }
+
+        // Handle Service Click
+        function handleServiceClick(link) {
+            if (link === '#openVideoModal') {
+                // Trigger your modal opening logic here
+                const event = new CustomEvent('click');
+                event.preventDefault = () => {};
+                const modalLink = { href: '#openVideoModal', getAttribute: () => '#openVideoModal' };
+                
+                // Dispatch event to open modal
+                if (typeof openModal === 'function') {
+                    openModal();
+                } else {
+                    // Try to find and click the modal trigger
+                    const modalTriggers = document.querySelectorAll('a[href="#openVideoModal"]');
+                    if (modalTriggers.length > 0) {
+                        modalTriggers[0].click();
+                    }
+                }
+            } else {
+                window.open(link, '_blank');
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.rt-nav-item') && !event.target.closest('.rt-mobile-toggle')) {
+                document.querySelectorAll('.rt-nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('mainNav').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Load Latest Insights
+        function loadLatestInsights() {
+            const container = document.getElementById('latestInsights').querySelector('.rt-insights-content');
+            
+            // Demo data - replace with your WordPress API call
+            const demoInsights = [
+                {
+                    title: 'December 2024 Bank CRE Report',
+                    excerpt: 'US Banking Commercial Real Estate (CRE) Concentration Report',
+                    date: 'Feb 17',
+                    link: 'https://realtreasury.com/bank-cre-exposure-12-2024/'
+                },
+                {
+                    title: 'Treasury Management System Selection Guide',
+                    excerpt: 'Expert Treasury Consulting Insights for TMS Selection',
+                    date: 'Jan 5',
+                    link: 'https://realtreasury.com/2024-tms-selection-guide/'
+                }
+            ];
+
+            // Render insights
+            container.innerHTML = demoInsights.map(insight => `
+                <div class="rt-insight-card">
+                    <div class="rt-insight-title">${insight.title}</div>
+                    <div class="rt-insight-excerpt">${insight.excerpt}</div>
+                    <div class="rt-insight-meta">
+                        <span class="rt-insight-date">${insight.date}</span>
+                        <a href="${insight.link}" class="rt-insight-link" target="_blank">Read More</a>
+                    </div>
+                </div>
+            `).join('');
+
+            // Try to fetch from WordPress API
+            if (typeof fetch !== 'undefined') {
+                fetch('/wp-json/wp/v2/posts?per_page=2&orderby=date&_fields=id,title,excerpt,date,link')
+                    .then(response => response.json())
+                    .then(posts => {
+                        if (posts && posts.length > 0) {
+                            container.innerHTML = posts.map(post => {
+                                const date = new Date(post.date);
+                                const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                                const excerpt = post.excerpt.rendered.replace(/<[^>]*>/g, '').substring(0, 100) + '...';
+                                
+                                return `
+                                    <div class="rt-insight-card">
+                                        <div class="rt-insight-title">${post.title.rendered}</div>
+                                        <div class="rt-insight-excerpt">${excerpt}</div>
+                                        <div class="rt-insight-meta">
+                                            <span class="rt-insight-date">${formattedDate}</span>
+                                            <a href="${post.link}" class="rt-insight-link" target="_blank">Read More</a>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('');
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Using demo data:', error);
+                    });
+            }
+        }
+
+        // Ensure insights widget is always visible when dropdown is open
+        function syncInsightsWidget() {
+            const widgets = document.querySelectorAll('.rt-insights-widget');
+            widgets.forEach(widget => {
+                const dropdown = widget.closest('.rt-dropdown');
+                if (dropdown && dropdown.parentElement.classList.contains('active')) {
+                    widget.style.opacity = '1';
+                    widget.style.visibility = 'visible';
+                    widget.style.pointerEvents = 'auto';
+                }
+            });
+        }
+
+        // Run sync check periodically
+        setInterval(syncInsightsWidget, 100);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLatestInsights();
+            
+            // Handle modal triggers
+            document.addEventListener('click', function(e) {
+                if (e.target.getAttribute('href') === '#openVideoModal' || 
+                    e.target.closest('a[href="#openVideoModal"]')) {
+                    e.preventDefault();
+                    // Your modal opening logic here
+                    console.log('Open video modal');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -2458,33 +2458,448 @@ body.menu-open {
     width: 100% !important;
 }
 
-/* Mobile checkbox layout fix */
-@media (max-width: 600px) {
-    .checkbox-row {
-        display: flex !important;
-        align-items: flex-start !important;
-        margin-bottom: 16px !important;
-        padding: 12px !important;
-        background: rgba(255, 255, 255, 0.7) !important;
-        border-radius: 8px !important;
-        border: 1px solid rgba(199, 125, 255, 0.2) !important;
-        box-sizing: border-box !important;
-    }
+/* Modern Footer Styling */
+.modern-footer {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    color: #ffffff;
+    padding: 60px 0 0;
+    position: relative;
+    overflow: hidden;
+}
 
-    .checkbox-row label {
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        hyphens: auto !important;
-        flex: 1 !important;
-        max-width: calc(100% - 28px) !important;
+.modern-footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd);
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-main {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.company-section {
+    padding-right: 20px;
+}
+
+.company-logo {
+    margin-bottom: 20px;
+}
+
+.footer-logo {
+    height: 60px;
+    width: auto;
+    filter: brightness(1.1);
+}
+
+.company-tagline {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #d1d5db;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+.footer-cta {
+    margin-top: auto;
+}
+
+.footer-cta-button {
+    background: linear-gradient(135deg, #7216f4, #8f47f6);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: center;
+    display: inline-block;
+    max-width: 240px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.footer-cta-button:hover {
+    background: linear-gradient(135deg, #8f47f6, #9d4edd);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.footer-heading {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin-bottom: 20px;
+    color: #ffffff !important; /* FIXED: Added !important to override theme styles */
+    position: relative;
+}
+
+.footer-heading::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(90deg, #7216f4, #8f47f6);
+    border-radius: 2px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #d1d5db;
+    text-decoration: none;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+}
+
+.footer-links a:hover {
+    color: #c77dff;
+    transform: translateX(5px);
+}
+
+.contact-info {
+    margin-bottom: 25px;
+}
+
+.contact-email a {
+    color: #c77dff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.contact-email a:hover {
+    color: #8f47f6;
+}
+
+.contact-location {
+    color: #9ca3af;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #d1d5db;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.social-link:hover {
+    background: linear-gradient(135deg, #7216f4, #8f47f6);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(114, 22, 244, 0.3);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-copyright p {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.footer-legal {
+    display: flex;
+    gap: 25px;
+}
+
+.footer-legal a {
+    color: #9ca3af;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.footer-legal a:hover {
+    color: #c77dff;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .footer-main {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+    
+    .company-section {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+    
+    .footer-cta-button {
+        margin: 0 auto;
+        max-width: 280px;
     }
 }
 
-
-/* Mobile modal height fix */
-@media (max-width: 600px) {
-    .modal {
-        height: calc(var(--vh, 1vh) * 100) !important;
+@media (max-width: 768px) {
+    .modern-footer {
+        padding: 40px 0 0;
+    }
+    
+    .footer-main {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: center;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .footer-legal {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .social-links {
+        justify-content: center;
     }
 }
 
+@media (max-width: 480px) {
+    .footer-container {
+        padding: 0 15px;
+    }
+    
+    .footer-cta-button {
+        font-size: 13px;
+        padding: 14px 20px;
+    }
+    
+    .footer-legal {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* =================================================================== */
+/* Homepage Button Fixes - Add these styles to improve button behavior */
+/* =================================================================== */
+
+/* Fix 1: Ensure hover animation covers full button */
+.cta-button {
+    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
+    color: #ffffff !important; /* Force white text */
+    padding: 16px 28px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    text-align: center !important;
+    display: inline-block !important;
+    box-sizing: border-box !important;
+    width: 250px !important;
+    min-height: 56px !important; /* Ensure consistent height */
+    line-height: 1.4 !important;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important; /* Darker text shadow for readability */
+    box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3) !important;
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    z-index: 2 !important;
+    position: relative !important;
+    overflow: hidden !important; /* Prevent animation overflow */
+}
+
+/* Fix 2: Improve hover state for better coverage and contrast */
+.cta-button:hover {
+    background: linear-gradient(135deg, #8f47f6, #9d4edd) !important; /* Lighter purple for better contrast */
+    color: #ffffff !important; /* Ensure white text on hover */
+    transform: translateY(-6px) scale(1.05) !important;
+    box-shadow: 0 14px 40px rgba(114, 22, 244, 0.4) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important; /* Stronger text shadow on hover */
+}
+
+/* Fix 3: Active state for better feedback */
+.cta-button:active {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 8px 24px rgba(114, 22, 244, 0.3) !important;
+}
+
+/* Fix 4: Focus state for accessibility */
+.cta-button:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5) !important;
+    outline-offset: 2px !important;
+    color: #ffffff !important;
+}
+
+/* Fix 5: Alternative button style with better contrast */
+.cta-button-alt {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
+    color: #7216f4 !important; /* Purple text on white background */
+    border: 2px solid #7216f4 !important;
+    padding: 16px 28px !important;
+    border-radius: 12px !important;
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    text-align: center !important;
+    display: inline-block !important;
+    box-sizing: border-box !important;
+    width: 250px !important;
+    min-height: 56px !important;
+    line-height: 1.4 !important;
+    text-shadow: none !important;
+    box-shadow: 0 8px 32px rgba(114, 22, 244, 0.15) !important;
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    z-index: 2 !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.cta-button-alt:hover {
+    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+    transform: translateY(-6px) scale(1.05) !important;
+    box-shadow: 0 14px 40px rgba(114, 22, 244, 0.4) !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Fix 6: WordPress button compatibility */
+.wp-block-button__link.cta-button,
+.wp-block-button .wp-block-button__link {
+    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+    overflow: hidden !important;
+}
+
+.wp-block-button__link.cta-button:hover,
+.wp-block-button .wp-block-button__link:hover {
+    background: linear-gradient(135deg, #8f47f6, #9d4edd) !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    transform: translateY(-4px) scale(1.03) !important;
+    box-shadow: 0 12px 32px rgba(114, 22, 244, 0.35) !important;
+}
+
+/* Fix 7: Ensure no conflicting text colors */
+.cta-button,
+.cta-button:visited,
+.cta-button:link,
+.cta-button:active,
+.cta-button:hover,
+.cta-button:focus {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Fix 8: Mobile responsiveness improvements */
+@media (max-width: 768px) {
+    .cta-button {
+        width: 100% !important;
+        max-width: 280px !important;
+        font-size: 1.2rem !important;
+        padding: 14px 24px !important;
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-4px) scale(1.02) !important; /* Reduced transform for mobile */
+    }
+}
+
+/* Fix 9: High contrast mode support */
+@media (prefers-contrast: high) {
+    .cta-button {
+        background: #7216f4 !important;
+        border: 2px solid #ffffff !important;
+        color: #ffffff !important;
+        text-shadow: none !important;
+    }
+    
+    .cta-button:hover {
+        background: #ffffff !important;
+        color: #7216f4 !important;
+        border-color: #7216f4 !important;
+    }
+}
+
+/* Fix 10: Smooth transform origin for better animation */
+.cta-button {
+    transform-origin: center center !important;
+    backface-visibility: hidden !important; /* Prevent animation flicker */
+    -webkit-backface-visibility: hidden !important;
+}
+
+/* Fix 11: Button container improvements */
+.button-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    overflow: visible !important; /* Allow button hover effects to show */
+}

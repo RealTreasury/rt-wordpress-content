@@ -210,8 +210,8 @@ function handle_video_access_form_submission($contact_form) {
                 'newsletter' => 'no',
                 'terms_agreement' => isset($posted_data['terms-agreement']) ? 'yes' : 'no',
                 'access_granted' => current_time('mysql'),
-                'ip_address' => sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? ''),
-                'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? '')
+                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
             );
             
             // Only proceed if we have essential data
@@ -236,15 +236,7 @@ function handle_video_access_form_submission($contact_form) {
 }
 
 // 2. Create database table for video access users
-add_action('init', 'create_video_access_table_once');
-function create_video_access_table_once() {
-    // Only run once using option flag
-    if (get_option('video_access_table_created') !== 'yes') {
-        create_video_access_table();
-        update_option('video_access_table_created', 'yes');
-    }
-}
-
+add_action('after_setup_theme', 'create_video_access_table');
 function create_video_access_table() {
     global $wpdb;
     
@@ -1553,7 +1545,7 @@ function final_mega_menu_widget_fix() {
             }
 
             // Run this check 10 times per second to keep everything in sync.
-            setInterval(syncWidgetState, 1000);
+            setInterval(syncWidgetState, 100);
         }
     });
     ";
@@ -1561,12 +1553,4 @@ function final_mega_menu_widget_fix() {
     wp_add_inline_script('jquery-core', $script);
 }
 add_action('wp_enqueue_scripts', 'final_mega_menu_widget_fix', 99);
-
-// Set global "from" address for all WordPress emails
-add_filter('wp_mail_from', function() {
-    return 'noreply@realtreasury.com';
-});
-add_filter('wp_mail_from_name', function() {
-    return 'Real Treasury';
-});
 ?>

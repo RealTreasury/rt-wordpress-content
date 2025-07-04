@@ -1,4 +1,11 @@
 <?php
+// Fix jQuery loading issue
+add_action('wp_enqueue_scripts', 'ensure_jquery_loaded');
+function ensure_jquery_loaded() {
+    if (!wp_script_is('jquery', 'enqueued')) {
+        wp_enqueue_script('jquery');
+    }
+}
 /**
  * Astra functions and definitions
  *
@@ -334,23 +341,42 @@ function add_sitewide_cookie_banner() {
     <?php
 }
 
-// Contact Form 7 Redirect - Faster Version
-add_action('wp_footer', function() {
-?>
-<script>
-document.addEventListener('wpcf7mailsent', function(event) {
-    console.log('Form submitted successfully!');
-    
-    // Close modal immediately
-    var modal = document.querySelector('.modal');
-    if (modal) modal.classList.remove('show');
-    
-    // Redirect immediately (no delay)
-    window.location.href = 'https://realtreasury.com/treasury-tech-portal/';
-});
-</script>
-<?php
-});
+// Fixed Contact Form 7 Redirect (jQuery-free version)
+add_action('wp_footer', 'add_reliable_cf7_redirect');
+function add_reliable_cf7_redirect() {
+    $redirect_url = get_option('tpa_redirect_url', 'https://google.com');
+    ?>
+    <script>
+    // Wait for DOM to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('\uD83D\uDD27 CF7 Redirect script loaded');
+
+        // Listen for Contact Form 7 success events (multiple event types)
+        document.addEventListener('wpcf7mailsent', function(event) {
+            console.log('\u2705 Contact Form 7 submission detected!');
+            console.log('Form ID:', event.detail.contactFormId);
+            console.log('Redirecting to:', '<?php echo esc_js($redirect_url); ?>');
+
+            // Show success message briefly, then redirect
+            setTimeout(function() {
+                console.log('\uD83D\uDE80 Redirecting now...');
+                window.location.href = '<?php echo esc_js($redirect_url); ?>';
+            }, 1500);
+        });
+
+        // Backup redirect method
+        document.addEventListener('wpcf7submit', function(event) {
+            if (event.detail.apiResponse && event.detail.apiResponse.status === 'mail_sent') {
+                console.log('\u2705 Backup redirect triggered');
+                setTimeout(function() {
+                    window.location.href = '<?php echo esc_js($redirect_url); ?>';
+                }, 1500);
+            }
+        });
+    });
+    </script>
+    <?php
+}
 
 // Add modal bridge script globally
 function add_modal_bridge_script() {

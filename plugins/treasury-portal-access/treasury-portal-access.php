@@ -3,7 +3,7 @@
  * Plugin Name: Treasury Portal Access
  * Plugin URI: https://realtreasury.com
  * Description: Complete portal access control system with Contact Form 7 integration, 6-month persistence, and localStorage backup.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Real Treasury
  * Author URI: https://realtreasury.com
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('TPA_VERSION', '1.0.0');
+define('TPA_VERSION', '1.0.1');
 define('TPA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('TPA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('TPA_PLUGIN_FILE', __FILE__);
@@ -67,6 +67,7 @@ class Treasury_Portal_Access {
         // Admin hooks
         if (is_admin()) {
             add_action('admin_menu', array($this, 'add_admin_menu'));
+            add_action('admin_init', array($this, 'register_settings'));
             add_action('admin_notices', array($this, 'admin_notices'));
         }
         
@@ -165,9 +166,9 @@ class Treasury_Portal_Access {
      */
     private function set_default_options() {
         $defaults = array(
-            'form_id' => '0779c74',
+            'form_id' => '',
             'access_duration' => 180, // days
-            'redirect_url' => 'https://realtreasury.com/treasury-tech-portal/',
+            'redirect_url' => home_url('/treasury-tech-portal/'),
             'enable_localStorage' => true,
             'enable_email_notifications' => true
         );
@@ -178,15 +179,26 @@ class Treasury_Portal_Access {
             }
         }
     }
+
+    /**
+     * Register settings using the Settings API
+     */
+    public function register_settings() {
+        register_setting('tpa_settings_group', 'tpa_form_id', 'sanitize_text_field');
+        register_setting('tpa_settings_group', 'tpa_access_duration', 'intval');
+        register_setting('tpa_settings_group', 'tpa_redirect_url', 'esc_url_raw');
+        register_setting('tpa_settings_group', 'tpa_enable_localStorage', 'intval');
+        register_setting('tpa_settings_group', 'tpa_enable_email_notifications', 'intval');
+    }
     
     /**
      * Handle Contact Form 7 submission
      */
     public function handle_form_submission($contact_form) {
-        $form_id = get_option('tpa_form_id', '0779c74');
+        $form_id = get_option('tpa_form_id');
         
-        // Check if this is our target form
-        if ($contact_form->id() != $form_id && $contact_form->title() != "Video Access Gate Form") {
+        // Check if this is our target form by its ID
+        if ($contact_form->id() != $form_id) {
             return;
         }
         
@@ -224,14 +236,14 @@ class Treasury_Portal_Access {
      * Grant portal access to user
      */
     private function grant_portal_access($user_data) {
-        // Store in database
-        $this->store_user_data($user_data);
-        
         // Generate access token
         $access_token = $this->generate_access_token($user_data['email']);
         
+        // Store in database
+        $this->store_user_data($user_data, $access_token);
+        
         // Set cookies
-        $duration = get_option('tpa_access_duration', 180) * 24 * 60 * 60; // Convert days to seconds
+        $duration = get_option('tpa_access_duration', 180) * DAY_IN_SECONDS;
         $this->set_access_cookies($access_token, $user_data['email'], $duration);
         
         // Send welcome email if enabled
@@ -248,19 +260,28 @@ class Treasury_Portal_Access {
     /**
      * Store user data in database
      */
-    private function store_user_data($user_data) {
+    private function store_user_data($user_data, $access_token) {
         global $wpdb;
         
-        $access_token = $this->generate_access_token($user_data['email']);
-        
-        $result = $wpdb->replace(
-            $this->table_name,
-            array_merge($user_data, array(
-                'access_token' => $access_token,
-                'access_granted' => current_time('mysql')
-            )),
-            array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
-        );
+        $data_to_store = array_merge($user_data, array(
+            'access_token' => $access_token,
+            'access_granted' => current_time('mysql')
+        ));
+
+        // Check if user exists by email
+        $existing_user_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE email = %s", $user_data['email']));
+
+        if ($existing_user_id) {
+            // Update existing user
+            $result = $wpdb->update(
+                $this->table_name,
+                $data_to_store,
+                array('id' => $existing_user_id)
+            );
+        } else {
+            // Insert new user
+            $result = $wpdb->insert($this->table_name, $data_to_store);
+        }
         
         if ($result === false) {
             error_log('❌ TPA: Failed to store user data: ' . $wpdb->last_error);
@@ -285,10 +306,11 @@ class Treasury_Portal_Access {
     private function set_access_cookies($access_token, $email, $duration) {
         $secure = is_ssl();
         $timestamp = time();
+        $expiry = $timestamp + $duration;
         
-        setcookie('portal_access_token', $access_token, $timestamp + $duration, '/', '', $secure, true);
-        setcookie('user_identifier', base64_encode($email), $timestamp + $duration, '/', '', $secure, true);
-        setcookie('access_granted_time', $timestamp, $timestamp + $duration, '/', '', $secure, true);
+        setcookie('portal_access_token', $access_token, $expiry, COOKIEPATH, COOKIE_DOMAIN, $secure, true);
+        setcookie('user_identifier', base64_encode($email), $expiry, COOKIEPATH, COOKIE_DOMAIN, $secure, true);
+        setcookie('access_granted_time', $timestamp, $expiry, COOKIEPATH, COOKIE_DOMAIN, $secure, true);
     }
     
     /**
@@ -301,13 +323,17 @@ class Treasury_Portal_Access {
         
         add_action('wp_footer', function() use ($access_token, $user_data) {
             echo '<script>
-                localStorage.setItem("portal_access_token", "' . esc_js($access_token) . '");
-                localStorage.setItem("user_email", "' . esc_js($user_data['email']) . '");
-                localStorage.setItem("user_name", "' . esc_js($user_data['full_name']) . '");
-                localStorage.setItem("access_granted", "' . time() . '");
-                console.log("✅ TPA: Portal access data stored in localStorage");
+                try {
+                    localStorage.setItem("portal_access_token", "' . esc_js($access_token) . '");
+                    localStorage.setItem("user_email", "' . esc_js($user_data['email']) . '");
+                    localStorage.setItem("user_name", "' . esc_js($user_data['full_name']) . '");
+                    localStorage.setItem("access_granted", "' . time() . '");
+                    console.log("✅ TPA: Portal access data stored in localStorage");
+                } catch (e) {
+                    console.error("TPA: Could not write to localStorage.", e);
+                }
             </script>';
-        });
+        }, 999); // High priority to run late
     }
     
     /**
@@ -325,12 +351,13 @@ class Treasury_Portal_Access {
         if (isset($_COOKIE['user_identifier']) && isset($_COOKIE['access_granted_time'])) {
             $email = base64_decode($_COOKIE['user_identifier']);
             $access_time = intval($_COOKIE['access_granted_time']);
-            $duration = get_option('tpa_access_duration', 180) * 24 * 60 * 60;
+            $duration = get_option('tpa_access_duration', 180) * DAY_IN_SECONDS;
             
             if ((time() - $access_time) < $duration && $this->user_exists($email)) {
                 // Regenerate access token
                 $new_token = $this->generate_access_token($email);
                 $this->set_access_cookies($new_token, $email, $duration);
+                $this->update_user_token($email, $new_token);
                 return true;
             }
         }
@@ -358,12 +385,12 @@ class Treasury_Portal_Access {
     private function user_exists($email) {
         global $wpdb;
         
-        $user = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->table_name} WHERE email = %s",
+        $user_id = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$this->table_name} WHERE email = %s",
             $email
         ));
         
-        return $user !== null;
+        return $user_id !== null;
     }
     
     /**
@@ -386,45 +413,45 @@ class Treasury_Portal_Access {
      * AJAX: Restore portal access
      */
     public function restore_access_ajax() {
+        check_ajax_referer('tpa_frontend_nonce', 'nonce');
         $email = sanitize_email($_POST['email'] ?? '');
         
-        if (empty($email)) {
-            echo 'invalid_email';
-            wp_die();
+        if (empty($email) || !is_email($email)) {
+            wp_send_json_error('invalid_email');
         }
         
         if ($this->user_exists($email)) {
             $access_token = $this->generate_access_token($email);
-            $duration = get_option('tpa_access_duration', 180) * 24 * 60 * 60;
+            $duration = get_option('tpa_access_duration', 180) * DAY_IN_SECONDS;
             
             $this->set_access_cookies($access_token, $email, $duration);
             $this->update_user_token($email, $access_token);
             
             error_log("✅ TPA: Portal access restored for {$email}");
-            echo 'success';
+            wp_send_json_success('success');
         } else {
             error_log("❌ TPA: Restoration failed - user not found: {$email}");
-            echo 'user_not_found';
+            wp_send_json_error('user_not_found');
         }
-        wp_die();
     }
     
     /**
      * AJAX: Revoke portal access
      */
     public function revoke_access_ajax() {
+        check_ajax_referer('tpa_frontend_nonce', 'nonce');
         $this->clear_access_cookies();
         error_log('🔐 TPA: Portal access revoked for session');
-        wp_die('Access revoked');
+        wp_send_json_success('Access revoked');
     }
     
     /**
      * AJAX: Get current user access data
      */
     public function get_user_access_ajax() {
+        check_ajax_referer('tpa_frontend_nonce', 'nonce');
         if (!isset($_COOKIE['portal_access_token'])) {
             wp_send_json_error('No access token found');
-            return;
         }
         
         $token = sanitize_text_field($_COOKIE['portal_access_token']);
@@ -462,9 +489,10 @@ class Treasury_Portal_Access {
      */
     private function clear_access_cookies() {
         $secure = is_ssl();
-        setcookie('portal_access_token', '', time() - 3600, '/', '', $secure, true);
-        setcookie('user_identifier', '', time() - 3600, '/', '', $secure, true);
-        setcookie('access_granted_time', '', time() - 3600, '/', '', $secure, true);
+        $past_time = time() - YEAR_IN_SECONDS;
+        setcookie('portal_access_token', '', $past_time, COOKIEPATH, COOKIE_DOMAIN, $secure, true);
+        setcookie('user_identifier', '', $past_time, COOKIEPATH, COOKIE_DOMAIN, $secure, true);
+        setcookie('access_granted_time', '', $past_time, COOKIEPATH, COOKIE_DOMAIN, $secure, true);
     }
     
     /**
@@ -500,7 +528,7 @@ class Treasury_Portal_Access {
         }
         
         $access_time = intval($_COOKIE['access_granted_time']);
-        $duration = get_option('tpa_access_duration', 180) * 24 * 60 * 60;
+        $duration = get_option('tpa_access_duration', 180) * DAY_IN_SECONDS;
         $expiry_time = $access_time + $duration;
         $remaining = $expiry_time - time();
         
@@ -508,20 +536,13 @@ class Treasury_Portal_Access {
             return 'Expired';
         }
         
-        $days = floor($remaining / (24 * 60 * 60));
-        
-        if ($days > 30) {
-            $months = floor($days / 30);
-            return $months . ' month' . ($months != 1 ? 's' : '');
-        } else {
-            return $days . ' day' . ($days != 1 ? 's' : '');
-        }
+        return human_time_diff($expiry_time, time());
     }
     
     /**
      * Protected Content Shortcode
      */
-    public function protected_content_shortcode($atts) {
+    public function protected_content_shortcode($atts, $content = null) {
         $atts = shortcode_atts(array(
             'video_ids' => '',
             'content_ids' => '',
@@ -532,7 +553,7 @@ class Treasury_Portal_Access {
         }
         
         $content_ids = !empty($atts['content_ids']) ? $atts['content_ids'] : $atts['video_ids'];
-        return $this->render_protected_content($content_ids);
+        return $this->render_protected_content($content_ids, $content);
     }
     
     /**
@@ -552,41 +573,13 @@ class Treasury_Portal_Access {
         </div>
         
         <style>
-        .tpa-access-required {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
-            border: 2px solid #c77dff;
-            border-radius: 16px;
-            margin: 2rem auto;
-            max-width: 500px;
-            box-shadow: 0 8px 32px rgba(199, 125, 255, 0.1);
-        }
+        .tpa-access-required { text-align: center; padding: 3rem 2rem; background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%); border: 2px solid #c77dff; border-radius: 16px; margin: 2rem auto; max-width: 500px; box-shadow: 0 8px 32px rgba(199, 125, 255, 0.1); }
         .tpa-access-icon { font-size: 3rem; margin-bottom: 1rem; }
         .tpa-access-required h3 { color: #281345; margin-bottom: 1rem; font-size: 1.5rem; }
         .tpa-access-required p { color: #7e7e7e; margin-bottom: 1.5rem; font-size: 1.1rem; }
         .tpa-returning-user { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e0e0e0; }
-        .tpa-btn {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.3);
-        }
-        .tpa-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(114, 22, 244, 0.4);
-            background: linear-gradient(135deg, #8f47f6 0%, #9d4edd 100%);
-            color: white;
-            text-decoration: none;
-        }
+        .tpa-btn { display: inline-block; padding: 1rem 2rem; background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%); color: white !important; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 1rem; transition: all 0.3s ease; border: none; cursor: pointer; box-shadow: 0 4px 16px rgba(114, 22, 244, 0.3); }
+        .tpa-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(114, 22, 244, 0.4); background: linear-gradient(135deg, #8f47f6 0%, #9d4edd 100%); color: white !important; text-decoration: none; }
         </style>
         <?php
         return ob_get_clean();
@@ -595,7 +588,7 @@ class Treasury_Portal_Access {
     /**
      * Render protected content
      */
-    private function render_protected_content($content_ids) {
+    private function render_protected_content($content_ids, $enclosed_content) {
         $user_info = $this->get_current_user_info();
         $user_name = $user_info ? $user_info->first_name : 'User';
         
@@ -608,10 +601,11 @@ class Treasury_Portal_Access {
                     <span class="tpa-access-duration"><?php echo get_option('tpa_access_duration', 180); ?>-day portal access active</span>
                 </div>
                 <div class="tpa-controls">
-                    <a href="javascript:void(0)" onclick="revokePortalAccess()" class="tpa-revoke">Sign Out</a>
+                    <a href="javascript:void(0)" onclick="window.TPA.revoke()" class="tpa-revoke">Sign Out</a>
                 </div>
             </div>
             
+            <?php if (!empty($content_ids)): ?>
             <div class="tpa-content-grid">
                 <?php
                 $content_items = explode(',', $content_ids);
@@ -629,6 +623,13 @@ class Treasury_Portal_Access {
                 }
                 ?>
             </div>
+            <?php endif; ?>
+
+            <?php if (!empty($enclosed_content)): ?>
+            <div class="tpa-enclosed-content">
+                <?php echo do_shortcode($enclosed_content); ?>
+            </div>
+            <?php endif; ?>
             
             <div class="tpa-access-info">
                 <p><small>Your portal access expires in <?php echo $this->get_access_time_remaining(); ?>. Need help? <a href="mailto:hello@realtreasury.com">Contact us</a>.</small></p>
@@ -641,14 +642,15 @@ class Treasury_Portal_Access {
         .tpa-welcome { display: flex; flex-direction: column; gap: 0.25rem; }
         .tpa-access-granted { font-weight: 600; font-size: 1.1rem; }
         .tpa-access-duration { font-size: 0.85rem; opacity: 0.9; font-style: italic; }
-        .tpa-revoke { color: rgba(255, 255, 255, 0.9); text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; transition: all 0.3s ease; }
-        .tpa-revoke:hover { background: rgba(255, 255, 255, 0.1); color: white; transform: translateY(-1px); }
+        .tpa-revoke { color: rgba(255, 255, 255, 0.9) !important; text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 8px; transition: all 0.3s ease; }
+        .tpa-revoke:hover { background: rgba(255, 255, 255, 0.1); color: white !important; transform: translateY(-1px); }
         .tpa-content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
         .tpa-content-item { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 20px rgba(114, 22, 244, 0.08); transition: all 0.3s ease; position: relative; overflow: hidden; }
         .tpa-content-item::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%); }
         .tpa-content-item:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(114, 22, 244, 0.15); }
         .tpa-access-info { text-align: center; padding: 1rem; background: rgba(114, 22, 244, 0.05); border-radius: 8px; border: 1px solid rgba(114, 22, 244, 0.1); }
-        .tpa-access-info a { color: #7216f4; text-decoration: none; font-weight: 500; }
+        .tpa-access-info a { color: #7216f4 !important; text-decoration: none; font-weight: 500; }
+        .tpa-enclosed-content { margin-bottom: 1.5rem; }
         @media (max-width: 768px) {
             .tpa-content-container { margin: 1rem; padding: 1rem; }
             .tpa-content-status { flex-direction: column; gap: 1rem; text-align: center; }
@@ -665,7 +667,7 @@ class Treasury_Portal_Access {
     public function portal_button_shortcode($atts) {
         $atts = shortcode_atts(array(
             'text' => 'Access Portal',
-            'class' => 'open-portal-modal',
+            'class' => 'tpa-btn tpa-btn-primary open-portal-modal',
             'style' => 'button'
         ), $atts);
         
@@ -676,7 +678,10 @@ class Treasury_Portal_Access {
      * Add frontend scripts
      */
     public function add_frontend_scripts() {
-        include TPA_PLUGIN_DIR . 'includes/frontend-scripts.php';
+        // Only add scripts if the shortcode is present or we need to check localStorage
+        if (get_option('tpa_enable_localStorage', true) || (is_singular() && has_shortcode(get_post()->post_content, 'protected_content'))) {
+            include TPA_PLUGIN_DIR . 'includes/frontend-scripts.php';
+        }
     }
     
     /**
@@ -721,19 +726,18 @@ class Treasury_Portal_Access {
      * Admin notices
      */
     public function admin_notices() {
-        echo '<div class="notice notice-success"><p>✅ Treasury Portal Access Plugin is active and running!</p></div>';
+        if (get_current_screen()->id === 'toplevel_page_treasury-portal-access' || get_current_screen()->id === 'portal-access_page_treasury-portal-access-settings') {
+            echo '<div class="notice notice-success is-dismissible"><p>✅ Treasury Portal Access Plugin is active and running!</p></div>';
+        }
     }
     
     /**
      * Contact Form 7 missing notice
      */
     public function cf7_missing_notice() {
-        echo '<div class="notice notice-warning"><p>⚠️ Treasury Portal Access requires Contact Form 7 to be installed and activated.</p></div>';
+        echo '<div class="notice notice-warning"><p>⚠️ <strong>Treasury Portal Access:</strong> Contact Form 7 is not active. This plugin requires Contact Form 7 to function.</p></div>';
     }
 }
 
 // Initialize the plugin
 Treasury_Portal_Access::get_instance();
-
-// End of main plugin file
-?>

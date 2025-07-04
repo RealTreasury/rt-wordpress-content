@@ -825,7 +825,10 @@
         </div>
     </section>
     <script>
+        window.tawkOpenedByUser = false;
+
         window.openTawkChat = function() {
+            window.tawkOpenedByUser = true;
             if (typeof Tawk_API !== "undefined" && Tawk_API.maximize) {
                 Tawk_API.maximize();
             } else {

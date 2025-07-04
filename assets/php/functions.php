@@ -368,8 +368,12 @@ function add_tawk_to_chat_widget() {
         s0.parentNode.insertBefore(s1,s0);
     })();
     
+    // Track if the user explicitly opened the chat
+    window.tawkOpenedByUser = false;
+
     // Custom function to open chat from buttons
     window.openTawkChat = function() {
+        window.tawkOpenedByUser = true;
         if (typeof Tawk_API !== 'undefined' && Tawk_API.maximize) {
             Tawk_API.maximize();
             console.log('Tawk chat opened');
@@ -383,7 +387,7 @@ function add_tawk_to_chat_widget() {
     // Customize chat widget behavior
     Tawk_API.onLoad = function(){
         console.log('Tawk.to chat loaded successfully');
-        
+
         // Keep the widget visible but customize its position and size
         Tawk_API.customStyle = {
             visibility: {
@@ -398,6 +402,22 @@ function add_tawk_to_chat_widget() {
                     yOffset: 10
                 }
             }
+        };
+
+        // Prevent automatic expansion of the widget
+        if (Tawk_API.minimize) {
+            Tawk_API.minimize();
+        }
+
+        // Keep the widget minimized unless the user explicitly opened it
+        Tawk_API.onChatMaximized = function(){
+            if (!window.tawkOpenedByUser && Tawk_API.minimize) {
+                Tawk_API.minimize();
+            }
+        };
+
+        Tawk_API.onChatMinimized = function(){
+            window.tawkOpenedByUser = false;
         };
     };
     

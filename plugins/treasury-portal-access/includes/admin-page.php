@@ -8,9 +8,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Get plugin instance
-$tpa = Treasury_Portal_Access::get_instance();
-
 // Get users from database
 global $wpdb;
 $table_name = $wpdb->prefix . 'portal_access_users';
@@ -19,25 +16,27 @@ $total_users = count($users);
 
 // Handle export
 if (isset($_GET['action']) && $_GET['action'] === 'export' && current_user_can('manage_options')) {
-    header('Content-Type: text/csv');
-    header('Content-Disposition: attachment; filename="portal-access-users-' . date('Y-m-d') . '.csv"');
-    
-    $output = fopen('php://output', 'w');
-    fputcsv($output, array('Name', 'Email', 'Company', 'Terms Agreed', 'Access Date', 'IP Address'));
-    
-    foreach ($users as $user) {
-        fputcsv($output, array(
-            $user->full_name,
-            $user->email,
-            $user->company,
-            $user->terms_agreement === 'yes' ? 'Yes' : 'No',
-            $user->access_granted,
-            $user->ip_address
-        ));
+    if (isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'tpa_export_nonce')) {
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="portal-access-users-' . date('Y-m-d') . '.csv"');
+        
+        $output = fopen('php://output', 'w');
+        fputcsv($output, array('Name', 'Email', 'Company', 'Terms Agreed', 'Access Date', 'IP Address'));
+        
+        foreach ($users as $user) {
+            fputcsv($output, array(
+                $user->full_name,
+                $user->email,
+                $user->company,
+                $user->terms_agreement === 'yes' ? 'Yes' : 'No',
+                $user->access_granted,
+                $user->ip_address
+            ));
+        }
+        
+        fclose($output);
+        exit;
     }
-    
-    fclose($output);
-    exit;
 }
 ?>
 
@@ -73,7 +72,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'export' && current_user_can('
         </div>
         
         <div style="background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);">
-            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo get_option('tva_access_duration', 180); ?></h3>
+            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo get_option('tpa_access_duration', 180); ?></h3>
             <p style="margin: 0; opacity: 0.9;">Days Access</p>
         </div>
     </div>
@@ -84,64 +83,28 @@ if (isset($_GET['action']) && $_GET['action'] === 'export' && current_user_can('
     <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #7216f4;">
         <h3 style="margin-top: 0; color: #7216f4;">Quick Actions</h3>
         <p style="margin-bottom: 15px;">Export your user data or access plugin settings.</p>
-        <a href="<?php echo admin_url('admin.php?page=treasury-portal-access&action=export'); ?>" class="button button-primary">📊 Export to CSV</a>
+        <?php $export_url = wp_nonce_url(admin_url('admin.php?page=treasury-portal-access&action=export'), 'tpa_export_nonce'); ?>
+        <a href="<?php echo esc_url($export_url); ?>" class="button button-primary">📊 Export to CSV</a>
         <a href="<?php echo admin_url('admin.php?page=treasury-portal-access-settings'); ?>" class="button">⚙️ Plugin Settings</a>
         <a href="<?php echo admin_url('admin.php?page=wpcf7'); ?>" class="button">📝 Contact Forms</a>
     </div>
 
     <!-- Users Table -->
     <style>
-    .tva-table {
-        border: 2px solid #c77dff;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(114, 22, 244, 0.1);
-        background: white;
-    }
-    
-    .tva-table thead {
-        background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
-    }
-    
-    .tva-table thead th {
-        color: white !important;
-        font-weight: 600 !important;
-        padding: 15px 12px !important;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        border-bottom: none !important;
-        font-size: 14px;
-    }
-    
-    .tva-table tbody tr:hover {
-        background-color: #f8f9ff;
-    }
-    
-    .tva-table tbody td {
-        padding: 12px !important;
-        vertical-align: middle;
-        border-left: none !important;
-    }
-    
+    .tpa-table { border: 2px solid #c77dff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(114, 22, 244, 0.1); background: white; }
+    .tpa-table thead { background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%); }
+    .tpa-table thead th { color: white !important; font-weight: 600 !important; padding: 15px 12px !important; text-shadow: 0 1px 2px rgba(0,0,0,0.2); border-bottom: none !important; font-size: 14px; }
+    .tpa-table tbody tr:hover { background-color: #f8f9ff; }
+    .tpa-table tbody td { padding: 12px !important; vertical-align: middle; border-left: none !important; }
     .user-name { font-weight: 600; color: #333; }
     .user-email { color: #666; font-size: 13px; }
     .company-name { color: #555; }
-    
-    .terms-yes {
-        background: #d4edda; color: #155724;
-        padding: 4px 8px; border-radius: 6px;
-        font-size: 12px; font-weight: 600;
-    }
-    
-    .terms-no {
-        background: #f8d7da; color: #721c24;
-        padding: 4px 8px; border-radius: 6px;
-        font-size: 12px; font-weight: 600;
-    }
-    
+    .terms-yes { background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+    .terms-no { background: #f8d7da; color: #721c24; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
     .access-date { color: #666; font-size: 13px; }
     </style>
 
-    <table class="wp-list-table widefat fixed striped tva-table">
+    <table class="wp-list-table widefat fixed striped tpa-table">
         <thead>
             <tr>
                 <th style="width: 20%;">Name</th>
@@ -186,60 +149,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'export' && current_user_can('
     <div style="text-align: center; padding: 3rem 2rem; background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%); border: 2px solid #c77dff; border-radius: 16px; margin-top: 2rem; box-shadow: 0 4px 20px rgba(114, 22, 244, 0.1);">
         <div style="font-size: 48px; margin-bottom: 1rem;">🏛️</div>
         <h3 style="color: #281345; margin-bottom: 1rem; font-size: 1.5rem;">No users have requested portal access yet</h3>
-        <p style="color: #7e7e7e; margin-bottom: 1.5rem; font-size: 1.1rem;">When users complete your Portal Access Gate Form, they'll appear here with their details.</p>
-        
-        <div style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin: 1rem 0; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto;">
-            <strong>Current Configuration:</strong><br>
-            <strong>Form ID:</strong> <?php echo get_option('tpa_form_id', '0779c74'); ?><br>
-            <strong>Access Duration:</strong> <?php echo get_option('tpa_access_duration', 180); ?> days<br>
-            <strong>Redirect URL:</strong> <?php echo get_option('tpa_redirect_url', 'Not set'); ?>
-        </div>
-        
-        <div style="margin-top: 20px;">
-            <a href="<?php echo admin_url('admin.php?page=treasury-portal-access-settings'); ?>" class="button button-primary">⚙️ Configure Settings</a>
-            <a href="<?php echo admin_url('admin.php?page=wpcf7'); ?>" class="button" style="margin-left: 10px;">📝 Edit Contact Form</a>
-        </div>
+        <p style="color: #7e7e7e; margin-bottom: 1.5rem; font-size: 1.1rem;">When users complete your Portal Access Gate Form, they'll appear here.</p>
+        <a href="<?php echo admin_url('admin.php?page=treasury-portal-access-settings'); ?>" class="button button-primary">⚙️ Configure Settings</a>
     </div>
 
     <?php endif; ?>
-
-    <!-- Plugin Information -->
-    <div style="margin-top: 30px; padding: 20px; background: white; border: 1px solid #ddd; border-radius: 8px;">
-        <h3 style="color: #7216f4; margin-top: 0;">About Treasury Portal Access</h3>
-        <p><strong>Version:</strong> <?php echo TPA_VERSION; ?></p>
-        <p><strong>Database Table:</strong> <?php echo $table_name; ?></p>
-        <p><strong>Plugin Directory:</strong> <code><?php echo TPA_PLUGIN_DIR; ?></code></p>
-        
-        <h4>Shortcodes Available:</h4>
-        <ul>
-            <li><code>[protected_content content_ids="item1,item2"]</code> - Display protected portal content</li>
-            <li><code>[portal_button text="Access Portal"]</code> - Display modal trigger button</li>
-            <li><em>Backward compatibility:</em> <code>[protected_videos]</code> and <code>[video_button]</code> still work</li>
-        </ul>
-        
-        <h4>How it Works:</h4>
-        <ol>
-            <li>Users complete the Contact Form 7 form (ID: <?php echo get_option('tpa_form_id', '0779c74'); ?>)</li>
-            <li>System grants <?php echo get_option('tpa_access_duration', 180); ?>-day portal access via secure cookies and localStorage</li>
-            <li>Users can access protected content without re-authentication</li>
-            <li>Automatic restoration if cookies are cleared but localStorage persists</li>
-        </ol>
-    </div>
 </div>
-
-<script>
-// Add some admin interactivity
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Treasury Portal Access Admin loaded');
-    
-    // Add export confirmation
-    const exportBtn = document.querySelector('a[href*="action=export"]');
-    if (exportBtn) {
-        exportBtn.addEventListener('click', function(e) {
-            if (!confirm('Export all portal access user data to CSV?')) {
-                e.preventDefault();
-            }
-        });
-    }
-});
-</script>

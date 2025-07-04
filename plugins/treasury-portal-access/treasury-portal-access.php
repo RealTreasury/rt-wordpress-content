@@ -3,7 +3,7 @@
  * Plugin Name: Treasury Portal Access
  * Plugin URI: https://realtreasury.com
  * Description: Complete portal access control system with Contact Form 7 integration, 6-month persistence, and localStorage backup.
- * Version: 1.0.1
+ * Version: 1.0.3
  * Author: Real Treasury
  * Author URI: https://realtreasury.com
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('TPA_VERSION', '1.0.1');
+define('TPA_VERSION', '1.0.3');
 define('TPA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('TPA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('TPA_PLUGIN_FILE', __FILE__);
@@ -166,7 +166,7 @@ class Treasury_Portal_Access {
      */
     private function set_default_options() {
         $defaults = array(
-            'form_id' => '',
+            'form_id' => '0779c74', // Set the default form ID as requested
             'access_duration' => 180, // days
             'redirect_url' => home_url('/treasury-tech-portal/'),
             'enable_localStorage' => true,
@@ -251,9 +251,6 @@ class Treasury_Portal_Access {
             $this->send_welcome_email($user_data);
         }
         
-        // Add localStorage script
-        $this->add_localStorage_script($access_token, $user_data);
-        
         error_log("✅ TPA: Portal access granted to {$user_data['email']} ({$user_data['full_name']}) for " . get_option('tpa_access_duration', 180) . " days");
     }
     
@@ -311,29 +308,6 @@ class Treasury_Portal_Access {
         setcookie('portal_access_token', $access_token, $expiry, COOKIEPATH, COOKIE_DOMAIN, $secure, true);
         setcookie('user_identifier', base64_encode($email), $expiry, COOKIEPATH, COOKIE_DOMAIN, $secure, true);
         setcookie('access_granted_time', $timestamp, $expiry, COOKIEPATH, COOKIE_DOMAIN, $secure, true);
-    }
-    
-    /**
-     * Add localStorage backup script
-     */
-    private function add_localStorage_script($access_token, $user_data) {
-        if (!get_option('tpa_enable_localStorage', true)) {
-            return;
-        }
-        
-        add_action('wp_footer', function() use ($access_token, $user_data) {
-            echo '<script>
-                try {
-                    localStorage.setItem("portal_access_token", "' . esc_js($access_token) . '");
-                    localStorage.setItem("user_email", "' . esc_js($user_data['email']) . '");
-                    localStorage.setItem("user_name", "' . esc_js($user_data['full_name']) . '");
-                    localStorage.setItem("access_granted", "' . time() . '");
-                    console.log("✅ TPA: Portal access data stored in localStorage");
-                } catch (e) {
-                    console.error("TPA: Could not write to localStorage.", e);
-                }
-            </script>';
-        }, 999); // High priority to run late
     }
     
     /**

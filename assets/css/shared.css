@@ -1363,9 +1363,9 @@
             width: 100vw;
             background: rgba(255, 255, 255, 0.15);
             /* UPDATED: Increased blur from 20px to 40px for a more pronounced effect */
-            backdrop-filter: blur(40px) saturate(120%);
-            -webkit-backdrop-filter: blur(40px) saturate(120%);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(60px) saturate(120%);
+            -webkit-backdrop-filter: blur(60px) saturate(120%);
+            border-top: 1px solid rgba(255, 255, 255, 0.25);
             box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
             border-radius: 0 0 16px 16px;
             opacity: 0;
@@ -2075,4 +2075,135 @@
         border: none !important;
         color: white !important;
     }
+}
+
+.rt-dropdown {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    /* Updated with !important */
+    background: rgba(255, 255, 255, 0.25) !important; 
+    backdrop-filter: blur(50px) saturate(120%) !important;
+    -webkit-backdrop-filter: blur(50px) saturate(120%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 16px 16px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.35s ease;
+    z-index: 1000000;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* =================================================================== */
+/* Custom Header - Frosted Glass Dropdown (Final Version)
+/* =================================================================== */
+
+/* --- Main Header Bar --- */
+.rt-nav-container {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(80, 15, 171, 0.9), rgba(40, 19, 69, 0.95));
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+}
+.rt-nav-wrapper {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 80px;
+}
+.rt-logo img {
+    height: 48px;
+    width: auto;
+}
+.rt-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 100%;
+}
+.rt-nav-item {
+    position: relative; /* Changed for hover positioning */
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.rt-nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.05rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* --- Dropdown Menu with YOUR Frosted Glass Style --- */
+.rt-dropdown {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    width: 100vw;
+
+    /* These are the styles you found in .frosted-glass */
+    background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9)) !important;
+    backdrop-filter: blur(20px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
+    border: 1px solid rgba(199, 125, 255, .2) !important;
+    box-shadow: 0 8px 32px rgba(114, 22, 244, .12), inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 0 rgba(0, 0, 0, .03) !important;
+    
+    border-radius: 0 0 16px 16px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px); /* Increased for a nicer animation */
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000000;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* --- Show dropdown on hover --- */
+.rt-nav-item:hover > .rt-dropdown {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+}
+
+/* --- Dropdown Content Styling --- */
+.rt-dropdown-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+}
+.rt-main-menu-link {
+    color: var(--dark-text) !important;
+}
+.rt-main-menu-link:hover {
+    color: var(--primary-purple) !important;
+    background: hsla(0, 0%, 100%, .5) !important;
+}
+
+/* --- Mobile Menu --- */
+@media (max-width: 992px) {
+    /* (Mobile styles remain the same) */
+    .rt-mobile-toggle { display: block; }
+    .rt-nav { display: none; }
+    .rt-nav.active { display: flex; }
+    /* ... other mobile styles ... */
 }

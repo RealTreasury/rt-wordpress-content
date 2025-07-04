@@ -2435,3 +2435,22 @@ body.menu-open {
         border-color: rgba(199, 125, 255, 0.4) !important;
     }
 }
+/* Fix hamburger button hover/active states */
+.rt-mobile-toggle:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.rt-mobile-toggle:active,
+.rt-mobile-toggle:focus {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    outline: none;
+}
+
+/* Prevent body scroll when mobile menu is open */
+body.menu-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+}

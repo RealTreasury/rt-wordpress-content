@@ -950,6 +950,19 @@ function add_video_modal_script() {
         }
         updateModalVh();
         window.addEventListener('resize', updateModalVh);
+
+        // Additional mobile optimization for checkbox layout
+        function mobileCheckboxAdjust() {
+            if (window.matchMedia('(max-width: 600px)').matches) {
+                const checkRows = modal.querySelectorAll('.checkbox-row');
+                checkRows.forEach(function(row) {
+                    row.style.display = 'flex';
+                    row.style.alignItems = 'flex-start';
+                });
+            }
+        }
+        mobileCheckboxAdjust();
+        window.addEventListener('resize', mobileCheckboxAdjust);
     });
     </script>
     <?php

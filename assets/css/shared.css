@@ -2977,3 +2977,24 @@ body.banner-closed {
         top: 50px !important;
     }
 }
+/* Add this to fix the checkbox text wrapping issue */
+@media (max-width: 600px) {
+    .checkbox-row {
+        display: flex !important;
+        align-items: flex-start !important;
+        margin-bottom: 16px !important;
+        padding: 12px !important;
+        background: rgba(255, 255, 255, 0.7) !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(199, 125, 255, 0.2) !important;
+        box-sizing: border-box !important;
+    }
+
+    .checkbox-row label {
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        hyphens: auto !important;
+        flex: 1 !important;
+        max-width: calc(100% - 28px) !important;
+    }
+}

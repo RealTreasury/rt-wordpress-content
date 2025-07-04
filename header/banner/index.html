@@ -430,8 +430,9 @@
                 banner.style.opacity = '1';
 
                 // Auto-collapse after a short delay on small screens
-                if (window.innerWidth <= 768) {
-                    setTimeout(closeBanner, 5000); // collapse after 5 seconds
+                // Collapse automatically on smaller screens after a brief delay
+                if (window.matchMedia('(max-width: 768px)').matches) {
+                    setTimeout(closeBanner, 4000); // collapse after 4 seconds
                 }
             }, 100); // Short delay to ensure initial styles are applied before animating
         });

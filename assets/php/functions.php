@@ -1125,8 +1125,7 @@ function add_modal_bridge_script() {
     <script>
     window.addEventListener('message', function(event) {
         if (event.data && event.data.action === 'openVideoModal') {
-            const modalTrigger = document.querySelector('a[href="#openVideoModal"]') || 
-                               document.querySelector('.mega-menu-link[href="#openVideoModal"]');
+            const modalTrigger = document.querySelector('a[href="#openVideoModal"]');
             if (modalTrigger) {
                 modalTrigger.click();
             }
@@ -1514,43 +1513,4 @@ add_action('admin_footer', function() {
         echo '<script>console.log("REST API Status:", ' . json_encode($status) . ');</script>';
     }
 });
-function final_mega_menu_widget_fix() {
-    $script = "
-    jQuery(document).ready(function($) {
-        var insightWidget = $('.latest-insights-mega-widget');
-        var subMenu = insightWidget.closest('.mega-sub-menu');
-
-        // Only run if the widget and its parent menu exist.
-        if (subMenu.length && insightWidget.length) {
-
-            // This function checks if the menu is visible and fixes the widget's style.
-            function syncWidgetState() {
-                var isSubMenuVisible = subMenu.css('visibility') === 'visible';
-
-                if (isSubMenuVisible) {
-                    // If the parent menu is visible, make the widget visible and clickable.
-                    insightWidget.css({
-                        'opacity': '1',
-                        'visibility': 'visible',
-                        'pointer-events': 'auto'
-                    });
-                } else {
-                    // If the parent menu is hidden, make the widget hidden and NOT clickable.
-                    insightWidget.css({
-                        'opacity': '0',
-                        'visibility': 'hidden',
-                        'pointer-events': 'none'
-                    });
-                }
-            }
-
-            // Run this check 10 times per second to keep everything in sync.
-            setInterval(syncWidgetState, 100);
-        }
-    });
-    ";
-    
-    wp_add_inline_script('jquery-core', $script);
-}
-add_action('wp_enqueue_scripts', 'final_mega_menu_widget_fix', 99);
 ?>

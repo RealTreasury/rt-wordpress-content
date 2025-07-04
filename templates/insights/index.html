@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO & AI Optimized Meta Tags -->
-    <title>Expert Insights on AI, Tech & Business Strategy | Your Company Name</title>
-    <meta name="description" content="Explore cutting-edge articles and analysis from [Your Company Name]'s experts. Drive your business forward with insights on AI, technology, and market strategy.">
-    <link rel="canonical" href="https://realtreasury.com/your-insights-page-url">
+    <title>Expert Insights on AI, Tech & Business Strategy | RealTreasury</title>
+    <meta name="description" content="Explore cutting-edge articles and analysis from RealTreasury's experts. Drive your business forward with insights on AI, technology, and market strategy.">
+    <link rel="canonical" href="https://realtreasury.com/posts/">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://realtreasury.com/your-insights-page-url">
-    <meta property="og:title" content="Expert Insights on AI, Tech & Business Strategy | Your Company Name">
+    <meta property="og:url" content="https://realtreasury.com/posts/">
+    <meta property="og:title" content="Expert Insights on AI, Tech & Business Strategy | RealTreasury">
     <meta property="og:description" content="Explore cutting-edge articles on AI, technology, and market strategy to drive your business forward.">
-    <meta property="og:image" content="https://placehold.co/1200x630/7216f4/FFFFFF?text=Expert+Insights">
+    <meta property="og:image" content="https://realtreasury.com/images/treasury-tech-real-estate-og.jpg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://realtreasury.com/your-insights-page-url">
-    <meta property="twitter:title" content="Expert Insights on AI, Tech & Business Strategy | Your Company Name">
+    <meta property="twitter:url" content="https://realtreasury.com/posts/">
+    <meta property="twitter:title" content="Expert Insights on AI, Tech & Business Strategy | RealTreasury">
     <meta property="twitter:description" content="Explore cutting-edge articles on AI, technology, and market strategy to drive your business forward.">
-    <meta property="twitter:image" content="https://placehold.co/1200x630/7216f4/FFFFFF?text=Expert+Insights">
+    <meta property="twitter:image" content="https://realtreasury.com/images/treasury-tech-real-estate-og.jpg">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -484,22 +484,22 @@
       "@graph": [
         {
           "@type": "Organization",
-          "name": "Your Company Name",
+          "name": "RealTreasury",
           "url": "https://realtreasury.com",
-          "logo": "https://placehold.co/200x60/281345/FFFFFF?text=Your+Logo",
+          "logo": "https://realtreasury.com/wp-content/uploads/2025/06/White-logo-no-background.png",
           "sameAs": [
-            "https://twitter.com/yourprofile",
-            "https://www.linkedin.com/company/yourprofile"
+            "https://twitter.com/RealTreasury",
+            "https://www.linkedin.com/company/realtreasury/"
           ]
         },
         {
           "@type": "WebPage",
-          "url": "https://realtreasury.com/your-insights-page-url",
+          "url": "https://realtreasury.com/posts/",
           "name": "Expert Insights on AI, Tech & Business Strategy",
-          "description": "Explore cutting-edge articles and analysis from [Your Company Name]'s experts. Drive your business forward with insights on AI, technology, and market strategy.",
+          "description": "Explore cutting-edge articles and analysis from RealTreasury's experts. Drive your business forward with insights on AI, technology, and market strategy.",
           "publisher": {
             "@type": "Organization",
-            "name": "Your Company Name"
+            "name": "RealTreasury"
           }
         },
         {
@@ -513,7 +513,7 @@
             "@type": "ListItem",
             "position": 2,
             "name": "Insights",
-            "item": "https://realtreasury.com/your-insights-page-url"
+            "item": "https://realtreasury.com/posts/"
           }]
         }
       ]
@@ -637,7 +637,7 @@
 
                 posts.forEach((post, index) => {
                     const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
-                    const imageUrl = featuredMedia?.source_url || `https://placehold.co/600x400/7216f4/FFFFFF?text=${post.title.rendered.split(' ')[0]}`;
+                    const imageUrl = featuredMedia?.source_url || `https://realtreasury.com/images/treasury-tech-real-estate-og.jpg`;
                     const sizes = featuredMedia?.media_details?.sizes;
                     const srcset = sizes ? Object.values(sizes).map(size => `${size.source_url} ${size.width}w`).join(', ') : '';
                     const width = featuredMedia?.media_details?.width || 600;
@@ -684,10 +684,10 @@
                         },
                         "publisher": {
                             "@type": "Organization",
-                            "name": "Your Company Name",
+                            "name": "RealTreasury",
                             "logo": {
                                 "@type": "ImageObject",
-                                "url": "https://placehold.co/200x60/281345/FFFFFF?text=Your+Logo"
+                                "url": "https://realtreasury.com/wp-content/uploads/2025/06/White-logo-no-background.png"
                             }
                         },
                         "description": excerpt

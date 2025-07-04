@@ -204,30 +204,10 @@
             margin-bottom: 24px;
         }
         
-        .chart-placeholder {
-            height: 120px;
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.1) 0%, rgba(199, 125, 255, 0.05) 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            color: #7216f4;
-            font-weight: 600;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .chart-placeholder::before {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
+        .mockup-charts img {
             width: 100%;
-            height: 40%;
-            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
-            opacity: 0.8;
-            border-radius: 0 0 12px 12px;
+            height: auto;
+            border-radius: 12px;
         }
         
         .mockup-metrics {
@@ -715,8 +695,8 @@
                         <div class="mockup-title">Treasury Dashboard</div>
                     </div>
                     <div class="mockup-charts">
-                        <div class="chart-placeholder">Cash Flow Forecast</div>
-                        <div class="chart-placeholder">Risk Analytics</div>
+                        <img loading="lazy" src="https://realtreasury.com/images/cash-flow-forecast-example.png" alt="Cash Flow Forecast chart">
+                        <img loading="lazy" src="https://realtreasury.com/images/risk-analytics-example.png" alt="Risk Analytics chart">
                     </div>
                     <div class="mockup-metrics">
                         <div class="metric-item">

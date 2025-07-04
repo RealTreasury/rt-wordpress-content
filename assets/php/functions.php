@@ -236,7 +236,15 @@ function handle_video_access_form_submission($contact_form) {
 }
 
 // 2. Create database table for video access users
-add_action('after_setup_theme', 'create_video_access_table');
+add_action('init', 'create_video_access_table_once');
+function create_video_access_table_once() {
+    // Only run once using option flag
+    if (get_option('video_access_table_created') !== 'yes') {
+        create_video_access_table();
+        update_option('video_access_table_created', 'yes');
+    }
+}
+
 function create_video_access_table() {
     global $wpdb;
     

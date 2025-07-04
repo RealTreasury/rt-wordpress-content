@@ -1718,6 +1718,13 @@ nav[class*="post-navigation"],
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* Ensure footer headings stay white even without the modern-footer wrapper */
+footer .footer-heading,
+footer h3.footer-heading {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
 /* Additional specificity in case needed */
 .modern-footer .footer-section .footer-heading,
 .modern-footer h3.footer-heading {

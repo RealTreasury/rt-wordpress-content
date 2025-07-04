@@ -937,6 +937,19 @@ function add_video_modal_script() {
             modal.setAttribute('role', 'dialog');
             modal.setAttribute('aria-modal', 'true');
         }
+
+        // Mobile optimization - update modal height for viewport changes
+        function updateModalVh() {
+            if (!modal) return;
+            if (window.matchMedia('(max-width: 600px)').matches) {
+                const vh = window.innerHeight * 0.01;
+                modal.style.setProperty('--vh', `${vh}px`);
+            } else {
+                modal.style.removeProperty('--vh');
+            }
+        }
+        updateModalVh();
+        window.addEventListener('resize', updateModalVh);
     });
     </script>
     <?php

@@ -612,13 +612,13 @@
                     // Try to trigger the WordPress modal system
                     if (window.parent && window.parent !== window) {
                         // We're in an iframe, send message to parent
-                        window.parent.postMessage({ 
-                            action: 'openVideoModal',
+                        window.parent.postMessage({
+                            action: 'openPortalModal',
                             source: 'err-not-page'
                         }, '*');
                     } else {
                         // We're in main window, look for modal
-                        const modalTrigger = document.querySelector('a[href="#openVideoModal"]');
+                        const modalTrigger = document.querySelector('a[href="#openPortalModal"]');
                         if (modalTrigger) {
                             modalTrigger.click();
                         } else {

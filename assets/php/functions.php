@@ -860,8 +860,8 @@ function add_video_modal_script() {
         // Enhanced button click handlers
         document.addEventListener('click', function(e) {
             // Open modal buttons
-            if (e.target.matches('a[href="#openVideoModal"]') ||
-                e.target.closest('a[href="#openVideoModal"]') ||
+            if (e.target.matches('a[href="#openPortalModal"]') ||
+                e.target.closest('a[href="#openPortalModal"]') ||
                 e.target.matches('.open-video-modal') ||
                 e.target.closest('.open-video-modal')) {
                 e.preventDefault();
@@ -886,10 +886,10 @@ function add_video_modal_script() {
             }
         });
 
-        // Handle menu clicks (#openVideoModal)
+        // Handle menu clicks (#openPortalModal)
         document.addEventListener('click', function(e) {
-            if (e.target.getAttribute('href') === '#openVideoModal' ||
-                e.target.closest('a[href="#openVideoModal"]')) {
+            if (e.target.getAttribute('href') === '#openPortalModal' ||
+                e.target.closest('a[href="#openPortalModal"]')) {
                 e.preventDefault();
                 openModal();
             }
@@ -1150,8 +1150,8 @@ function add_modal_bridge_script() {
     ?>
     <script>
     window.addEventListener('message', function(event) {
-        if (event.data && event.data.action === 'openVideoModal') {
-            const modalTrigger = document.querySelector('a[href="#openVideoModal"]');
+        if (event.data && event.data.action === 'openPortalModal') {
+            const modalTrigger = document.querySelector('a[href="#openPortalModal"]');
             if (modalTrigger) {
                 modalTrigger.click();
             }

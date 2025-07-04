@@ -2903,3 +2903,77 @@ body.menu-open {
     z-index: 1;
     overflow: visible !important; /* Allow button hover effects to show */
 }
+/* =================================================================== */
+/* BANNER ABOVE HEADER - Add this to the END of your shared.css file */
+/* =================================================================== */
+
+/* 1. Banner positioning - make it appear above header */
+.workshop-banner {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 100000 !important; /* Higher than header's 99999 */
+    min-height: 80px !important;
+    width: 100vw !important;
+}
+
+/* 2. Header menu positioning - move below banner */
+.rt-nav-container {
+    top: 80px !important; /* Height of the banner */
+}
+
+/* 3. Body padding to account for both banner and header */
+body {
+    padding-top: 160px !important; /* Banner (80px) + Header (80px) */
+    transition: padding-top 0.4s ease !important;
+}
+
+/* 4. When banner is closed, move header back to top */
+body.banner-closed .rt-nav-container {
+    top: 0 !important;
+    transition: top 0.4s ease !important;
+}
+
+body.banner-closed {
+    padding-top: 80px !important; /* Only header height when banner is closed */
+    transition: padding-top 0.4s ease !important;
+}
+
+/* 5. Mobile adjustments */
+@media (max-width: 768px) {
+    body {
+        padding-top: 140px !important; /* Banner (60px) + Header (70px) for mobile */
+    }
+
+    .workshop-banner {
+        min-height: 60px !important;
+    }
+
+    .rt-nav-container {
+        top: 60px !important;
+        height: 70px !important;
+    }
+
+    body.banner-closed {
+        padding-top: 70px !important;
+    }
+
+    body.banner-closed .rt-nav-container {
+        top: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .workshop-banner {
+        min-height: 50px !important;
+    }
+
+    body {
+        padding-top: 120px !important; /* Banner (50px) + Header (70px) */
+    }
+
+    .rt-nav-container {
+        top: 50px !important;
+    }
+}

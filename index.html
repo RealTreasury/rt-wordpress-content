@@ -948,7 +948,7 @@
                     <h1>Real Treasury,<br>Real Results</h1>
                     <p class="lead">Helping companies select and connect to the right treasury technology – fast, unbiased, and vendor-smart.</p>
                     <div class="hero-buttons">
-                        <a href="#openVideoModal" class="btn btn-primary">Explore the Treasury Tech Portal</a>
+                        <a href="#openPortalModal" class="btn btn-primary">Access Portal</a>
                         <a href="#meet-the-team" class="btn btn-outline">Meet Our Team</a>
                     </div>
                 </div>
@@ -998,7 +998,7 @@
             </div>
             <div class="features-grid">
                 <!-- Treasury Tech Portal -->
-                <a href="#openVideoModal" class="feature-card" tabindex="0">
+                <a href="#openPortalModal" class="feature-card" tabindex="0">
                     <div class="feature-icon">
                         <svg class="icon-search" viewBox="0 0 24 24">
                             <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -1136,7 +1136,7 @@
             <div class="cta-content">
                 <h2>Ready to Transform Your Treasury Tech Search?</h2>
                 <p class="lead">Access our FREE Treasury Tech Portal and start narrowing your shortlist in minutes, not months.</p>
-                <a href="#openVideoModal" class="btn btn-primary">Get Instant Access</a>
+                <a href="#openPortalModal" class="btn btn-primary">Access Portal</a>
             </div>
         </div>
     </section>
@@ -1145,7 +1145,7 @@
     // Script to handle modal opening via postMessage for iframe communication
     document.addEventListener("DOMContentLoaded", function() {
         // Correctly select all anchor tags with the specific href
-        const modalButtons = document.querySelectorAll('a[href="#openVideoModal"]');
+        const modalButtons = document.querySelectorAll('a[href="#openPortalModal"]');
         
         modalButtons.forEach(button => {
             button.addEventListener("click", function(e) {
@@ -1154,7 +1154,7 @@
                     try {
                         // Send a message to the parent window to open the modal
                         window.parent.postMessage({
-                            action: "openVideoModal",
+                            action: "openPortalModal",
                             source: "treasury-homepage"
                         }, "*");
                         e.preventDefault(); // Prevent the default anchor behavior

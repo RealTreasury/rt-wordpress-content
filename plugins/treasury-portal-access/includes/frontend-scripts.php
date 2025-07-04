@@ -15,13 +15,43 @@ if (empty($form_id)) {
 }
 ?>
 <!-- Portal Modal HTML -->
-<div id="portalModal" class="tpa-modal fixed inset-0 z-[1000003] flex items-center justify-center p-4 bg-gradient-to-br from-black/40 via-[#281345]/30 to-black/40 backdrop-blur-lg transition-opacity duration-300 opacity-0 pointer-events-none" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="portalModalTitle">
-    <div class="tpa-modal-content transform transition-all duration-300 max-w-full max-h-full">
-        <div class="portal-access-form relative w-full max-w-lg mx-auto p-8 rounded-2xl shadow-2xl border border-purple-300/30 bg-white/70 backdrop-blur-xl backdrop-saturate-150 space-y-6">
-            <div class="absolute top-0 left-0 w-full h-1 rounded-t-2xl bg-gradient-to-r from-[#7216f4] via-[#8f47f6] to-[#9d4edd]"></div>
-            <button class="close-btn absolute top-3 right-4 w-8 h-8 flex items-center justify-center text-[#7216f4] bg-white/90 border border-purple-200 rounded-full hover:bg-purple-50 transition" type="button" aria-label="Close dialog">&times;</button>
-            <h3 id="portalModalTitle" class="text-center text-xl font-semibold text-[#281345]">Access Treasury Tech Portal</h3>
-            <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
+<style>
+    :root {
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --light-purple: #c77dff;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+    }
+    .modal-bg {
+        background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4));
+        backdrop-filter: blur(15px) saturate(120%);
+        -webkit-backdrop-filter: blur(15px) saturate(120%);
+    }
+    .form-container-bg {
+        background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95));
+        backdrop-filter: blur(20px) saturate(130%);
+        -webkit-backdrop-filter: blur(20px) saturate(130%);
+    }
+    .border-light-purple {
+        border-color: var(--light-purple);
+    }
+    .gradient-bar {
+        background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple) 50%, #9d4edd);
+    }
+</style>
+<div id="portalModal" class="tpa-modal fixed inset-0 z-[1000003] flex items-center justify-center p-4 modal-bg transition-opacity duration-300 opacity-0 pointer-events-none" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="portalModalTitle">
+    <div class="relative w-full max-w-lg mx-auto">
+        <div class="relative form-container-bg rounded-2xl shadow-2xl border-2 border-light-purple overflow-hidden">
+            <div class="absolute top-0 left-0 right-0 h-1.5 gradient-bar"></div>
+            <button class="close-btn absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors" type="button" aria-label="Close dialog">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="p-8 md:p-10">
+                <h3 id="portalModalTitle" class="text-2xl md:text-3xl font-bold text-dark-text text-center mb-4">Portal Access</h3>
+                <p class="text-center text-gray-text mb-8">Please enter your details to continue.</p>
+                <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
+            </div>
         </div>
     </div>
 </div>

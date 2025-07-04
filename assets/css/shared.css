@@ -1493,9 +1493,9 @@
             text-transform: uppercase;
         }
         .rt-insight-link {
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.2), rgba(143, 71, 246, 0.25));
-            color: var(--dark-text);
-            border: 1px solid rgba(114, 22, 244, 0.3);
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.9), rgba(143, 71, 246, 0.95));
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 8px 16px;
             border-radius: 8px;
             font-size: 0.8rem;
@@ -1504,6 +1504,8 @@
             transition: all 0.3s ease;
         }
         .rt-insight-link:hover {
+            background: linear-gradient(135deg, rgba(143, 71, 246, 0.95), rgba(157, 78, 221, 1));
+            color: #ffffff !important;
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(114, 22, 244, 0.25);
         }

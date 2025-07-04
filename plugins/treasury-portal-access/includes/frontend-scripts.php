@@ -2,15 +2,18 @@
 /**
  * Frontend Scripts for Treasury Portal Access
  */
+if (!defined('ABSPATH')) exit;
 
-// Prevent direct access
-if (!defined('ABSPATH')) {
-    exit;
-}
 $form_id = get_option('tpa_form_id');
-if (empty($form_id)) return; // Don't output modal if no form is selected
+// Critical: Don't output anything if no form is selected in settings.
+if (empty($form_id)) {
+    // Log an error for the admin to see if they are logged in.
+    if (current_user_can('manage_options')) {
+        error_log('TPA Notice: Modal not loaded because no form is selected in Portal Access settings.');
+    }
+    return;
+}
 ?>
-
 <!-- Portal Modal HTML -->
 <div id="portalModal" class="tpa-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="portalModalTitle">
     <div class="tpa-modal-content">
@@ -23,193 +26,167 @@ if (empty($form_id)) return; // Don't output modal if no form is selected
 </div>
 
 <script>
-// Treasury Portal Access Frontend Script
+// Treasury Portal Access Frontend Script v1.0.8
 (function() {
     'use strict';
 
-    // Encapsulate all logic in a single object
+    // Prevent script from running twice
+    if (window.TPA) {
+        return;
+    }
+
     window.TPA = {
         modal: null,
-        body: null,
+        body: document.body,
         nonce: '<?php echo wp_create_nonce('tpa_frontend_nonce'); ?>',
         ajaxUrl: '<?php echo admin_url('admin-ajax.php'); ?>',
-        accessDuration: <?php echo get_option('tpa_access_duration', 180) * 86400; ?>, // in seconds
+        accessDuration: <?php echo (int) get_option('tpa_access_duration', 180) * 86400; ?>, // seconds
         redirectUrl: '<?php echo esc_js(get_option('tpa_redirect_url', home_url('/treasury-tech-portal/'))); ?>',
         
         init: function() {
             this.modal = document.getElementById('portalModal');
-            this.body = document.body;
+            if (!this.modal) {
+                console.error('TPA Error: Modal element #portalModal not found.');
+                return;
+            }
 
-            if (!this.modal) return;
-
+            // Defer event listener setup until DOM is fully loaded
             document.addEventListener('DOMContentLoaded', () => {
-                this.checkAndRestoreAccess();
+                this.checkAccessPersistence();
                 this.addEventListeners();
             });
         },
 
-        checkAndRestoreAccess: function() {
-            const hasCookie = document.cookie.includes('portal_access_token');
-            const hasLocalStorage = !!localStorage.getItem('portal_access_token');
+        checkAccessPersistence: function() {
+            const hasCookie = document.cookie.includes('portal_access_token=');
+            const localStorageEnabled = <?php echo get_option('tpa_enable_localStorage', true) ? 'true' : 'false'; ?>;
+            if (!localStorageEnabled) return;
 
-            if (!hasCookie && hasLocalStorage) {
-                const email = localStorage.getItem('user_email');
-                const accessTime = localStorage.getItem('access_granted');
-                const userName = localStorage.getItem('user_name');
-                
-                console.log('🔄 TPA: Attempting to restore portal access for:', email);
-                
-                if (email && accessTime && (Date.now()/1000 - accessTime) < this.accessDuration) {
-                    this.restore(email, userName);
+            const localData = localStorage.getItem('tpa_access_token');
+            const hasLocalStorage = !!localData;
+
+            if (hasCookie && !hasLocalStorage) {
+                this.syncToLocal();
+            } else if (!hasCookie && hasLocalStorage) {
+                const storedData = JSON.parse(localData);
+                if (storedData && storedData.email && (Date.now()/1000 - storedData.timestamp) < this.accessDuration) {
+                    this.restoreFromLocal(storedData.email, storedData.name);
                 } else {
-                    console.log('❌ TPA: Stored access has expired');
                     this.clearLocal();
                 }
-            } else if (hasCookie && !hasLocalStorage) {
-                console.log('🔄 TPA: Syncing portal access to localStorage...');
-                this.syncToLocal();
             }
         },
 
-        restore: function(email, userName) {
+        restoreFromLocal: function(email, userName) {
             this.showMessage('Restoring your portal access...', 'info');
+            const formData = new URLSearchParams({ action: 'restore_portal_access', email: email, nonce: this.nonce });
             
-            const formData = new URLSearchParams();
-            formData.append('action', 'restore_portal_access');
-            formData.append('email', email);
-            formData.append('nonce', this.nonce);
-
-            fetch(this.ajaxUrl, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
+            fetch(this.ajaxUrl, { method: 'POST', body: formData })
+            .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    console.log('✅ TPA: Portal access restored for:', email);
-                    this.showMessage('Welcome back, ' + (userName || email) + '! Portal access restored.', 'success');
-                    setTimeout(() => location.reload(), 1500);
+                    this.showMessage(`Welcome back, ${userName || email}! Access restored.`, 'success');
+                    this.updateUIAfterRestore();
                 } else {
-                    console.log('❌ TPA: Portal access restoration failed', data);
-                    this.showMessage('Please complete the form to access portal content.', 'error');
-                    this.clearLocal();
+                    throw new Error(data.data?.message || 'Restoration failed.');
                 }
             })
             .catch(error => {
-                console.error('❌ TPA: Restoration error:', error);
-                this.showMessage('An error occurred. Please complete the form again.', 'error');
+                console.error('❌ TPA: Restoration failed:', error);
+                this.showMessage('Could not restore your session. Please use the form.', 'error');
+                this.clearLocal();
             });
+        },
+        
+        /**
+         * Replaces "Access" buttons with "View Portal" links after a successful login.
+         */
+        updateUIAfterRestore: function() {
+            document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"]').forEach(el => {
+                const newLink = document.createElement('a');
+                newLink.href = this.redirectUrl;
+                
+                // Copy classes from the original button for consistent styling.
+                newLink.className = el.className;
+                newLink.classList.remove('open-portal-modal');
+                newLink.textContent = 'View Portal';
+
+                // Try to replace the parent button block if it exists, otherwise replace the element itself.
+                const parentWrapper = el.closest('.wp-block-button');
+                if (parentWrapper) {
+                    parentWrapper.innerHTML = ''; // Clear the old button
+                    parentWrapper.appendChild(newLink);
+                } else {
+                    el.parentNode.replaceChild(newLink, el);
+                }
+            });
+            
+            // If a protected content block was showing an access message, reload the page to show the actual content.
+            if(document.querySelector('.tpa-access-required')) {
+                location.reload();
+            }
         },
 
         syncToLocal: function() {
-            const formData = new URLSearchParams();
-            formData.append('action', 'get_current_user_access');
-            formData.append('nonce', this.nonce);
-
-            fetch(this.ajaxUrl, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
+            const formData = new URLSearchParams({ action: 'get_current_user_access', nonce: this.nonce });
+            fetch(this.ajaxUrl, { method: 'POST', body: formData })
+            .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    localStorage.setItem('portal_access_token', data.data.token);
-                    localStorage.setItem('user_email', data.data.email);
-                    localStorage.setItem('user_name', data.data.name);
-                    localStorage.setItem('access_granted', data.data.access_time);
-                    console.log('✅ TPA: Portal access synced to localStorage');
+                    localStorage.setItem('tpa_access_token', JSON.stringify({
+                        token: data.data.token,
+                        email: data.data.email,
+                        name: data.data.name,
+                        timestamp: data.data.access_time
+                    }));
                 }
             })
-            .catch(error => console.log('TPA: Sync failed:', error));
+            .catch(error => console.error('❌ TPA: Sync to local storage failed:', error));
         },
 
         showMessage: function(message, type = 'info') {
-            const existingMessage = document.getElementById('tpa-message');
-            if (existingMessage) existingMessage.remove();
-            
+            document.getElementById('tpa-message')?.remove();
             const messageDiv = document.createElement('div');
             messageDiv.id = 'tpa-message';
-            messageDiv.style.cssText = `position: fixed; top: 20px; right: 20px; z-index: 100001; padding: 15px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.3s ease; transform: translateX(120%); opacity: 0;`;
-            
-            const colors = {
-                success: 'linear-gradient(135deg, #4CAF50, #45a049)',
-                error: 'linear-gradient(135deg, #f44336, #d32f2f)',
-                info: 'linear-gradient(135deg, #7216f4, #8f47f6)'
-            };
-            messageDiv.style.background = colors[type] || colors.info;
-            messageDiv.style.color = 'white';
-            
+            messageDiv.className = `tpa-message tpa-message-${type}`;
             messageDiv.textContent = message;
-            document.body.appendChild(messageDiv);
-            
+            this.body.appendChild(messageDiv);
+            setTimeout(() => messageDiv.classList.add('show'), 10);
             setTimeout(() => {
-                messageDiv.style.transform = 'translateX(0)';
-                messageDiv.style.opacity = '1';
-            }, 100);
-            
-            setTimeout(() => {
-                messageDiv.style.transform = 'translateX(120%)';
-                messageDiv.style.opacity = '0';
+                messageDiv.classList.remove('show');
                 setTimeout(() => messageDiv.remove(), 300);
-            }, type === 'success' ? 3000 : 5000);
+            }, 4000);
         },
 
         clearLocal: function() {
-            localStorage.removeItem('portal_access_token');
-            localStorage.removeItem('user_email');
-            localStorage.removeItem('user_name');
-            localStorage.removeItem('access_granted');
-            console.log('🧹 TPA: Cleared expired portal access data from localStorage');
-        },
-
-        clearCookies: function() {
-            const cookieNames = ['portal_access_token', 'user_identifier', 'access_granted_time'];
-            cookieNames.forEach(name => {
-                document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
-            });
-            console.log('🧹 TPA: Cleared portal access cookies');
+            localStorage.removeItem('tpa_access_token');
         },
 
         openModal: function() {
-            const scrollY = window.scrollY;
-            this.body.style.position = 'fixed';
-            this.body.style.top = `-${scrollY}px`;
-            this.body.style.width = '100%';
-            this.body.classList.add('modal-open');
             this.modal.style.display = 'flex';
             setTimeout(() => this.modal.classList.add('show'), 10);
+            this.body.classList.add('modal-open');
         },
 
         closeModal: function() {
-            const scrollY = this.body.style.top;
             this.modal.classList.remove('show');
             setTimeout(() => {
                 this.modal.style.display = 'none';
                 this.body.classList.remove('modal-open');
-                this.body.style.position = '';
-                this.body.style.top = '';
-                this.body.style.width = '';
-                window.scrollTo(0, parseInt(scrollY || '0') * -1);
             }, 300);
         },
 
         revoke: function() {
             if (confirm('Are you sure you want to sign out of the portal?')) {
                 this.clearLocal();
-                this.clearCookies();
-                
-                const formData = new URLSearchParams();
-                formData.append('action', 'revoke_portal_access');
-                formData.append('nonce', this.nonce);
-
-                fetch(this.ajaxUrl, { method: 'POST', body: formData })
-                    .then(() => location.reload());
+                const formData = new URLSearchParams({ action: 'revoke_portal_access', nonce: this.nonce });
+                fetch(this.ajaxUrl, { method: 'POST', body: formData }).then(() => location.reload());
             }
         },
 
         addEventListeners: function() {
             document.addEventListener('click', e => {
-                if (e.target.closest('a[href="#openPortalModal"], .open-portal-modal, a[href="#openVideoModal"], .open-video-modal')) {
+                if (e.target.closest('.open-portal-modal, a[href="#openPortalModal"]')) {
                     e.preventDefault();
                     this.openModal();
                 }
@@ -225,25 +202,32 @@ if (empty($form_id)) return; // Don't output modal if no form is selected
                 }
             });
 
-            document.addEventListener('wpcf7mailsent', () => {
-                console.log('✅ TPA: Portal access form submitted successfully');
+            document.addEventListener('wpcf7mailsent', (event) => {
+                const formId = '<?php echo esc_js($form_id); ?>';
+                if (event.detail.contactFormId.toString() !== formId) return;
+
                 this.showMessage('Access granted! Redirecting...', 'success');
+                this.syncToLocal();
+                
                 setTimeout(() => {
-                    this.closeModal();
-                    window.location.href = this.redirectUrl;
+                    if (this.redirectUrl) {
+                        window.location.href = this.redirectUrl;
+                    } else {
+                        location.reload();
+                    }
                 }, 1500);
-            });
+            }, false);
         }
     };
 
-    // Let's go!
     window.TPA.init();
 
 })();
 </script>
 
 <style>
-/* Portal Modal Styles */
+/* Styles are unchanged, but included for completeness */
+body.modal-open { overflow: hidden !important; }
 .tpa-modal { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 1000003 !important; background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4)) !important; backdrop-filter: blur(15px) saturate(120%) !important; -webkit-backdrop-filter: blur(15px) saturate(120%) !important; display: flex !important; align-items: center !important; justify-content: center !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transition: all .4s cubic-bezier(.4, 0, .2, 1) !important; }
 .tpa-modal.show { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
 .tpa-modal-content { max-width: calc(100vw - 40px) !important; max-height: calc(100vh - 40px) !important; padding: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important; transform: scale(.9) !important; transition: all .4s cubic-bezier(.4, 0, .2, 1) !important; }
@@ -252,10 +236,9 @@ if (empty($form_id)) return; // Don't output modal if no form is selected
 .portal-access-form:before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd); border-radius: 16px 16px 0 0; }
 .close-btn { position: absolute !important; top: 12px !important; right: 16px !important; background: hsla(0, 0%, 100%, .9) !important; border: 1px solid rgba(199, 125, 255, .3) !important; border-radius: 50% !important; font-size: 18px !important; color: #7216f4 !important; cursor: pointer !important; width: 32px !important; height: 32px !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all .3s ease !important; }
 .close-btn:hover { background: rgba(114, 22, 244, .1) !important; transform: scale(1.1) !important; }
-body.modal-open { overflow: hidden !important; }
-@media (max-width: 768px) {
-    .tpa-modal-content { padding: 10px !important; }
-    .portal-access-form { padding: 24px 20px !important; min-width: 280px !important; }
-    .close-btn { top: 8px !important; right: 12px !important; width: 28px !important; height: 28px !important; }
-}
+#tpa-message { position: fixed; top: 20px; right: 20px; z-index: 100001; padding: 15px 20px; border-radius: 8px; font-weight: 500; background: #333; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.3s ease, opacity 0.3s ease; transform: translateX(120%); opacity: 0; }
+#tpa-message.show { transform: translateX(0); opacity: 1; }
+#tpa-message.tpa-message-success { background: linear-gradient(135deg, #4CAF50, #45a049); }
+#tpa-message.tpa-message-error { background: linear-gradient(135deg, #f44336, #d32f2f); }
+#tpa-message.tpa-message-info { background: linear-gradient(135deg, #7216f4, #8f47f6); }
 </style>

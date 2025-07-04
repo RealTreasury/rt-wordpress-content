@@ -1545,7 +1545,7 @@ function final_mega_menu_widget_fix() {
             }
 
             // Run this check 10 times per second to keep everything in sync.
-            setInterval(syncWidgetState, 100);
+            setInterval(syncWidgetState, 1000);
         }
     });
     ";

@@ -334,23 +334,6 @@ function add_sitewide_cookie_banner() {
     <?php
 }
 
-// Contact Form 7 Redirect - Faster Version
-add_action('wp_footer', function() {
-?>
-<script>
-document.addEventListener('wpcf7mailsent', function(event) {
-    console.log('Form submitted successfully!');
-    
-    // Close modal immediately
-    var modal = document.querySelector('.modal');
-    if (modal) modal.classList.remove('show');
-    
-    // Redirect immediately (no delay)
-    window.location.href = 'https://realtreasury.com/treasury-tech-portal/';
-});
-</script>
-<?php
-});
 
 // Add modal bridge script globally
 function add_modal_bridge_script() {

@@ -277,4 +277,32 @@ if (empty($form_id)) {
 
 })();
 </script>
+<script>
+// Mobile modal and form enhancements
+// TODO: Replace placeholder implementations with the correct enhancement code.
+const MobileModalEnhancer = {
+    init: function() {
+        if (window.innerWidth <= 768) {
+            const modal = document.getElementById('portalModal');
+            if (modal) modal.classList.add('mobile-enhanced');
+        }
+    }
+};
+
+const MobileFormEnhancer = {
+    init: function() {
+        if (window.innerWidth <= 768) {
+            const form = document.querySelector('#portalModal form');
+            if (form) form.setAttribute('autocomplete', 'on');
+        }
+    }
+};
+
+window.addEventListener('load', () => {
+    if (window.TPA && typeof window.TPA.init === 'function') {
+        MobileModalEnhancer.init();
+        MobileFormEnhancer.init();
+    }
+});
+</script>
 

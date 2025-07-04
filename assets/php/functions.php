@@ -210,8 +210,8 @@ function handle_video_access_form_submission($contact_form) {
                 'newsletter' => 'no',
                 'terms_agreement' => isset($posted_data['terms-agreement']) ? 'yes' : 'no',
                 'access_granted' => current_time('mysql'),
-                'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
+                'ip_address' => sanitize_text_field($_SERVER['REMOTE_ADDR'] ?? ''),
+                'user_agent' => sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? '')
             );
             
             // Only proceed if we have essential data

@@ -65,7 +65,7 @@
         .insights-container {
             max-width: 960px;
             margin: -4rem auto 0;
-            padding: 0 3rem 4rem;
+            padding: 0 1.5rem 4rem;
             position: relative;
             z-index: 1;
         }
@@ -615,6 +615,21 @@
                     displayedCount = POSTS_PER_PAGE;
                     displayPosts(currentPosts.slice(0, displayedCount));
                     populateFilters(allPosts);
+
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const urlCategory = urlParams.get('category');
+                    if (urlCategory) {
+                        const button = filterButtonsContainer.querySelector(`button[data-category="${urlCategory}"]`);
+                        if (button) {
+                            document.querySelector('.filter-buttons button.active').classList.remove('active');
+                            button.classList.add('active');
+                            currentPosts = allPosts.filter(post =>
+                                post._embedded?.['wp:term']?.[0]?.some(cat => cat.name === urlCategory)
+                            );
+                            displayedCount = POSTS_PER_PAGE;
+                            displayPosts(currentPosts.slice(0, displayedCount));
+                        }
+                    }
                 } catch (error) {
                     insightsGrid.innerHTML = `<p class="text-center text-red-500 col-span-full">Could not load insights. Please try again later.</p>`;
                     console.error('Error fetching posts:', error);

@@ -20,8 +20,32 @@ class Treasury_Tech_Portal {
 
     public function enqueue_assets() {
         $plugin_url = TTP_PLUGIN_URL;
-        wp_enqueue_style('treasury-portal-css', $plugin_url . 'assets/css/treasury-portal.css', array(), '1.0');
-        wp_enqueue_script('treasury-portal-js', $plugin_url . 'assets/js/treasury-portal.js', array(), '1.0', true);
+        $css_path   = TTP_PLUGIN_DIR . 'assets/css/treasury-portal.css';
+        $js_path    = TTP_PLUGIN_DIR . 'assets/js/treasury-portal.js';
+
+        wp_enqueue_style(
+            'treasury-portal-css',
+            $plugin_url . 'assets/css/treasury-portal.css',
+            array(),
+            filemtime( $css_path )
+        );
+
+        wp_enqueue_script(
+            'treasury-portal-js',
+            $plugin_url . 'assets/js/treasury-portal.js',
+            array(),
+            filemtime( $js_path ),
+            true
+        );
+
+        wp_localize_script(
+            'treasury-portal-js',
+            'treasuryPortalData',
+            array(
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'nonce'    => wp_create_nonce( 'treasury_portal_nonce' ),
+            )
+        );
     }
 
     public function shortcode_handler($atts = array(), $content = null) {

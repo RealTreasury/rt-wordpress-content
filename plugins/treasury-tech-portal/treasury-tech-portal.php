@@ -16,6 +16,7 @@ if (!defined('ABSPATH')) {
 
 define("TTP_PLUGIN_URL", plugin_dir_url(__FILE__));
 define("TTP_PLUGIN_DIR", plugin_dir_path(__FILE__));
+define("TTP_PLUGIN_VERSION", '1.0.0');
 require_once plugin_dir_path(__FILE__) . 'includes/class-treasury-portal.php';
 
 Treasury_Tech_Portal::instance();

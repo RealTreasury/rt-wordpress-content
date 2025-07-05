@@ -1,4 +1,6 @@
 const EMBED_ORIGIN = 'https://realtreasury.com';
+// Data passed from WordPress via wp_localize_script
+const TTP_DATA = typeof treasuryPortalData !== 'undefined' ? treasuryPortalData : {};
 let treasuryTechPortal;
 
 function postHeight() {

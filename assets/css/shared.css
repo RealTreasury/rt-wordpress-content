@@ -3228,3 +3228,116 @@ body.banner-closed {
         box-sizing: border-box !important;
     }
 }
+/* =================================================================== */
+/* BANNER ABOVE HEADER - FIXED VERSION
+/* Add this to the END of your shared.css file to override any conflicts
+/* =================================================================== */
+
+/* 1. Banner positioning - appears above everything */
+.workshop-banner {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 100000 !important; /* Higher than header's 99999 */
+    width: 100vw !important;
+    min-height: 80px !important;
+    margin: 0 !important;
+    transition: transform 0.4s ease, opacity 0.4s ease !important;
+}
+
+/* 2. Header positioning - initially below banner */
+.rt-nav-container {
+    position: fixed !important;
+    top: 80px !important; /* Banner height */
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 99999 !important;
+    transition: top 0.4s ease !important;
+}
+
+/* 3. Body padding to account for both banner and header */
+body {
+    padding-top: 160px !important; /* Banner (80px) + Header (80px) */
+    transition: padding-top 0.4s ease !important;
+}
+
+/* 4. CRITICAL: When banner is closed, move header to top */
+body.banner-closed .rt-nav-container {
+    top: 0 !important;
+}
+
+body.banner-closed {
+    padding-top: 80px !important; /* Only header height */
+}
+
+/* 5. Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .workshop-banner {
+        min-height: 60px !important;
+    }
+    
+    .rt-nav-container {
+        top: 60px !important;
+        height: 70px !important;
+    }
+    
+    body {
+        padding-top: 130px !important; /* Banner (60px) + Header (70px) */
+    }
+    
+    body.banner-closed .rt-nav-container {
+        top: 0 !important;
+    }
+    
+    body.banner-closed {
+        padding-top: 70px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .workshop-banner {
+        min-height: 50px !important;
+    }
+    
+    .rt-nav-container {
+        top: 50px !important;
+    }
+    
+    body {
+        padding-top: 120px !important; /* Banner (50px) + Header (70px) */
+    }
+    
+    body.banner-closed {
+        padding-top: 70px !important;
+    }
+}
+
+/* 6. Ensure smooth transitions for all states */
+.rt-nav-container,
+body,
+.workshop-banner {
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* 7. Override any theme conflicts */
+.rt-nav-container {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* 8. Ensure banner stays above everything */
+.workshop-banner {
+    box-sizing: border-box !important;
+}
+
+/* 9. Fix any potential layout shifts */
+html {
+    scroll-behavior: smooth;
+}
+
+body.banner-closed .workshop-banner {
+    transform: translateY(-100%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}

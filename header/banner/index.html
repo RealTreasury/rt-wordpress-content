@@ -432,10 +432,8 @@
                 banner.style.transform = 'translateY(0)';
                 banner.style.opacity = '1';
 
-                // UPDATED: Auto-collapse after 1 second on mobile (changed from 1.5 seconds)
-                if (window.matchMedia('(max-width: 768px)').matches) {
-                    setTimeout(closeBanner, 1000); // collapse after 1 second
-                }
+                // Auto-collapse after 1 second on all devices
+                setTimeout(closeBanner, 1000);
             }, 100); // Short delay to ensure initial styles are applied before animating
         });
     </script>

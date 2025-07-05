@@ -57,7 +57,7 @@ new MutationObserver(() => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    treasuryTechPortal = new TreasuryTechPortal();
+    treasuryTechPortal = new TreasuryTechPortal(typeof TTP_DATA !== 'undefined' ? TTP_DATA.tools : undefined);
     
     // Ensure iframe height is set after content loads
     setTimeout(() => {
@@ -88,8 +88,8 @@ setTimeout(() => {
     });
 });
 class TreasuryTechPortal {
-    constructor() {
-        this.TREASURY_TOOLS = [
+    constructor(data) {
+        this.TREASURY_TOOLS = data || [
             // TRMS
             {
                 "name": "Kyriba",

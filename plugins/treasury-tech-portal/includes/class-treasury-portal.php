@@ -15,6 +15,13 @@ class Treasury_Tech_Portal {
     }
 
     private function __construct() {
+        require_once dirname(__FILE__) . '/class-ttp-data.php';
+        require_once dirname(__FILE__) . '/class-ttp-rest.php';
+        require_once dirname(__FILE__) . '/class-ttp-admin.php';
+
+        add_action('init', ['TTP_Rest', 'init']);
+        add_action('init', ['TTP_Admin', 'init']);
+
         add_shortcode('treasury_portal', array($this, 'shortcode_handler'));
     }
 
@@ -22,6 +29,9 @@ class Treasury_Tech_Portal {
         $plugin_url = TTP_PLUGIN_URL;
         wp_enqueue_style('treasury-portal-css', $plugin_url . 'assets/css/treasury-portal.css', array(), '1.0');
         wp_enqueue_script('treasury-portal-js', $plugin_url . 'assets/js/treasury-portal.js', array(), '1.0', true);
+
+        $tools = TTP_Data::get_all_tools();
+        wp_localize_script('treasury-portal-js', 'TTP_DATA', ['tools' => $tools]);
     }
 
     public function shortcode_handler($atts = array(), $content = null) {

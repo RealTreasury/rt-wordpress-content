@@ -655,104 +655,301 @@ function display_related_posts() {
 }
 
 // ===============================================================
-// WordPress REST API Fixes for Insights Page
+// WordPress REST API Fixes for Insights Page - ENHANCED VERSION
 // ===============================================================
 
-// Force enable REST API (in case it's disabled)
+// 1. Force enable REST API
 add_filter('rest_enabled', '__return_true');
 add_filter('rest_jsonp_enabled', '__return_true');
 
-// Add CORS headers for REST API requests
+// 2. Ensure REST API is accessible to all users
+add_filter('rest_authentication_errors', function($result) {
+    // If a previous check has already determined access, respect it
+    if (true === $result || is_wp_error($result)) {
+        return $result;
+    }
+
+    // Allow all requests to proceed without authentication for public content
+    return true;
+});
+
+// 3. Enhanced CORS headers for REST API requests
 add_action('rest_api_init', function() {
     remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
     add_filter('rest_pre_serve_request', function($value) {
-        $allowed_origin = getenv('RT_ALLOWED_ORIGIN') ?: 'https://realtreasury.com';
-        header('Access-Control-Allow-Origin: ' . $allowed_origin);
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-        header('Access-Control-Allow-Headers: Authorization, Content-Type');
+        $origin = get_http_origin();
+        $allowed_origins = [
+            home_url(),
+            site_url(),
+            'https://realtreasury.com',
+            'http://localhost:3000', // For development
+        ];
+
+        if (in_array($origin, $allowed_origins) || !$origin) {
+            $origin = $origin ?: '*';
+        }
+
+        header('Access-Control-Allow-Origin: ' . $origin);
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
+        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
         header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages');
+
         return $value;
     });
 });
 
-// Alternative REST API rewrite rules (backup routes)
+// 4. Enhanced rewrite rules for custom API endpoints
 add_action('init', function() {
-    add_rewrite_rule('^api/posts/?', 'index.php?rest_route=/wp/v2/posts', 'top');
-    add_rewrite_rule('^api/categories/?', 'index.php?rest_route=/wp/v2/categories', 'top');
-    
-    // Flush rewrite rules if needed (only runs once)
-    if (get_option('custom_api_rules_flushed') != '1') {
+    // Add multiple rewrite patterns for better compatibility
+    add_rewrite_rule('^api/posts/?$', 'index.php?rest_route=/wp/v2/posts', 'top');
+    add_rewrite_rule('^api/posts/([0-9]+)/?$', 'index.php?rest_route=/wp/v2/posts/$matches[1]', 'top');
+    add_rewrite_rule('^api/categories/?$', 'index.php?rest_route=/wp/v2/categories', 'top');
+
+    // Alternative endpoints
+    add_rewrite_rule('^wp-api/posts/?$', 'index.php?rest_route=/wp/v2/posts', 'top');
+    add_rewrite_rule('^rest/posts/?$', 'index.php?rest_route=/wp/v2/posts', 'top');
+
+    // Check if rewrite rules need to be flushed
+    $rules_version = get_option('rt_api_rules_version', '1.0');
+    if (version_compare($rules_version, '1.1', '<')) {
         flush_rewrite_rules();
-        update_option('custom_api_rules_flushed', '1');
+        update_option('rt_api_rules_version', '1.1');
     }
 });
 
-// Add debug endpoint to test API functionality
+// 5. Custom REST API endpoint with better error handling and multiple formats
 add_action('rest_api_init', function() {
-    register_rest_route('custom/v1', '/test', array(
+    // Test endpoint
+    register_rest_route('rt/v1', '/test', array(
         'methods' => 'GET',
         'callback' => function() {
             return array(
                 'status' => 'success',
-                'message' => 'Custom REST API is working!',
+                'message' => 'Real Treasury REST API is working!',
                 'timestamp' => current_time('mysql'),
-                'posts_count' => wp_count_posts()->publish
+                'posts_count' => wp_count_posts()->publish,
+                'rest_url' => rest_url(),
+                'home_url' => home_url(),
+                'site_url' => site_url()
             );
         },
         'permission_callback' => '__return_true'
     ));
-});
 
-// Custom posts endpoint with better error handling
-add_action('rest_api_init', function() {
-    register_rest_route('custom/v1', '/posts', array(
+    // Enhanced posts endpoint
+    register_rest_route('rt/v1', '/posts', array(
         'methods' => 'GET',
         'callback' => function($request) {
-            $per_page = $request->get_param('per_page') ?: 12;
-            $posts = get_posts(array(
-                'numberposts' => $per_page,
+            $per_page = max(1, min(100, intval($request->get_param('per_page') ?: 12)));
+            $page = max(1, intval($request->get_param('page') ?: 1));
+            $search = sanitize_text_field($request->get_param('search') ?: '');
+            $category = sanitize_text_field($request->get_param('category') ?: '');
+
+            $args = array(
+                'posts_per_page' => $per_page,
+                'paged' => $page,
                 'post_status' => 'publish',
-                'post_type' => 'post'
-            ));
-            
+                'post_type' => 'post',
+                'meta_query' => array(
+                    array(
+                        'key' => '_thumbnail_id',
+                        'compare' => 'EXISTS'
+                    )
+                )
+            );
+
+            if (!empty($search)) {
+                $args['s'] = $search;
+            }
+
+            if (!empty($category)) {
+                $args['category_name'] = $category;
+            }
+
+            $posts_query = new WP_Query($args);
+            $posts = $posts_query->posts;
+
             $formatted_posts = array();
             foreach ($posts as $post) {
-                $formatted_posts[] = array(
+                $categories = get_the_category($post->ID);
+                $featured_image_id = get_post_thumbnail_id($post->ID);
+                $featured_image = wp_get_attachment_image_src($featured_image_id, 'large');
+
+                $formatted_post = array(
                     'id' => $post->ID,
                     'title' => array('rendered' => $post->post_title),
-                    'excerpt' => array('rendered' => wp_trim_words($post->post_content, 30)),
+                    'excerpt' => array('rendered' => get_the_excerpt($post)),
+                    'content' => array('rendered' => apply_filters('the_content', $post->post_content)),
                     'link' => get_permalink($post->ID),
                     'date' => $post->post_date,
-                    'featured_media' => get_post_thumbnail_id($post->ID)
+                    'date_gmt' => $post->post_date_gmt,
+                    'modified' => $post->post_modified,
+                    'modified_gmt' => $post->post_modified_gmt,
+                    'slug' => $post->post_name,
+                    'status' => $post->post_status,
+                    'featured_media' => $featured_image_id,
+                    'featured_image_url' => $featured_image ? $featured_image[0] : null,
+                    'categories' => array_map(function($cat) {
+                        return array(
+                            'id' => $cat->term_id,
+                            'name' => $cat->name,
+                            'slug' => $cat->slug
+                        );
+                    }, $categories),
+                    '_embedded' => array(
+                        'wp:featuredmedia' => $featured_image_id ? array(array(
+                            'id' => $featured_image_id,
+                            'source_url' => $featured_image ? $featured_image[0] : null,
+                            'media_details' => array(
+                                'width' => $featured_image ? $featured_image[1] : null,
+                                'height' => $featured_image ? $featured_image[2] : null,
+                            )
+                        )) : array(),
+                        'wp:term' => array($categories ? array_map(function($cat) {
+                            return array(
+                                'id' => $cat->term_id,
+                                'name' => $cat->name,
+                                'slug' => $cat->slug,
+                                'taxonomy' => 'category'
+                            );
+                        }, $categories) : array()),
+                        'author' => array(array(
+                            'id' => $post->post_author,
+                            'name' => get_the_author_meta('display_name', $post->post_author)
+                        ))
+                    )
                 );
+
+                $formatted_posts[] = $formatted_post;
             }
-            
-            return $formatted_posts;
+
+            // Set pagination headers
+            $total_posts = $posts_query->found_posts;
+            $total_pages = $posts_query->max_num_pages;
+
+            return new WP_REST_Response($formatted_posts, 200, array(
+                'X-WP-Total' => $total_posts,
+                'X-WP-TotalPages' => $total_pages
+            ));
+        },
+        'permission_callback' => '__return_true'
+    ));
+
+    // Categories endpoint
+    register_rest_route('rt/v1', '/categories', array(
+        'methods' => 'GET',
+        'callback' => function($request) {
+            $categories = get_categories(array(
+                'hide_empty' => true,
+                'exclude' => array(1) // Exclude "Uncategorized"
+            ));
+
+            $formatted_categories = array_map(function($cat) {
+                return array(
+                    'id' => $cat->term_id,
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
+                    'count' => $cat->count
+                );
+            }, $categories);
+
+            return $formatted_categories;
         },
         'permission_callback' => '__return_true'
     ));
 });
 
-// Debug function to check REST API status (fixed version)
-function debug_rest_api_status() {
-    $status = array(
-        'rest_url' => rest_url(),
-        'posts_count' => wp_count_posts()->publish,
-        'current_user_can' => current_user_can('read'),
-        'permalink_structure' => get_option('permalink_structure'),
-        'wp_version' => get_bloginfo('version')
-    );
-    
-    error_log('REST API Debug: ' . print_r($status, true));
-    return $status;
-}
+// 6. Ensure WordPress default REST API endpoints work
+add_action('init', function() {
+    // Verify that WordPress REST API is enabled
+    if (!function_exists('rest_get_url_prefix')) {
+        return;
+    }
 
-// Add debug info to admin footer (only for admins)
-add_action('admin_footer', function() {
+    // Ensure posts endpoint includes featured media by default
+    add_filter('rest_post_query', function($args, $request) {
+        // Only add thumbnail requirement if not specifically requesting all posts
+        if (!$request->get_param('include_no_featured')) {
+            $args['meta_query'] = array(
+                array(
+                    'key' => '_thumbnail_id',
+                    'compare' => 'EXISTS'
+                )
+            );
+        }
+        return $args;
+    }, 10, 2);
+});
+
+// 7. Add REST API status to admin dashboard
+add_action('wp_dashboard_setup', function() {
     if (current_user_can('manage_options')) {
-        $status = debug_rest_api_status();
-        echo '<script>console.log("REST API Status:", ' . json_encode($status) . ');</script>';
+        wp_add_dashboard_widget('rt_api_status', 'REST API Status', function() {
+            $rest_url = rest_url('wp/v2/posts');
+            $custom_rest_url = rest_url('rt/v1/test');
+
+            echo '<div style="padding: 10px;">';
+            echo '<h4>API Endpoints Status:</h4>';
+            echo '<p><strong>Standard API:</strong> <a href="' . esc_url($rest_url) . '" target="_blank">' . esc_html($rest_url) . '</a></p>';
+            echo '<p><strong>Custom API:</strong> <a href="' . esc_url($custom_rest_url) . '" target="_blank">' . esc_html($custom_rest_url) . '</a></p>';
+            echo '<p><strong>Posts Count:</strong> ' . wp_count_posts()->publish . '</p>';
+
+            // Test if REST API is accessible
+            $response = wp_remote_get($custom_rest_url);
+            if (is_wp_error($response)) {
+                echo '<p style="color: red;"><strong>Status:</strong> Error - ' . $response->get_error_message() . '</p>';
+            } else {
+                $code = wp_remote_retrieve_response_code($response);
+                $color = $code === 200 ? 'green' : 'orange';
+                echo '<p style="color: ' . $color . ';"><strong>Status:</strong> HTTP ' . $code . '</p>';
+            }
+            echo '</div>';
+        });
     }
 });
+
+// 8. Debug function (only for admins)
+if (current_user_can('manage_options') && isset($_GET['debug_api'])) {
+    add_action('wp_footer', function() {
+        $debug_info = array(
+            'rest_enabled' => rest_get_url_prefix() ? true : false,
+            'rest_url' => rest_url(),
+            'wp_rest_url' => rest_url('wp/v2/posts'),
+            'custom_rest_url' => rest_url('rt/v1/posts'),
+            'permalink_structure' => get_option('permalink_structure'),
+            'posts_count' => wp_count_posts()->publish,
+            'rewrite_rules' => get_option('rewrite_rules') ? 'exists' : 'missing'
+        );
+
+        echo '<script>console.log("REST API Debug Info:", ' . json_encode($debug_info) . ');</script>';
+    });
+}
+
+// 9. Handle OPTIONS requests for CORS preflight
+add_action('init', function() {
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization');
+        exit(0);
+    }
+});
+
+// 10. Troubleshooting function - add ?fix_api=1 to any page URL as admin
+if (current_user_can('manage_options') && isset($_GET['fix_api'])) {
+    add_action('init', function() {
+        // Force flush rewrite rules
+        flush_rewrite_rules();
+
+        // Update options
+        update_option('rt_api_rules_version', '1.2');
+
+        // Show success message
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-success"><p>REST API rewrite rules have been flushed and updated!</p></div>';
+        });
+    });
+}
 
 ?>

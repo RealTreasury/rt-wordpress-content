@@ -952,4 +952,250 @@ if (current_user_can('manage_options') && isset($_GET['fix_api'])) {
     });
 }
 
+// Enhanced custom posts endpoint optimized for carousel
+add_action('rest_api_init', function() {
+    register_rest_route('rt/v1', '/posts/recent', array(
+        'methods' => 'GET',
+        'callback' => function($request) {
+            $per_page = max(1, min(20, intval($request->get_param('per_page') ?: 8)));
+            $exclude = $request->get_param('exclude');
+            $category = sanitize_text_field($request->get_param('category') ?: '');
+
+            $args = array(
+                'posts_per_page' => $per_page,
+                'post_status'    => 'publish',
+                'post_type'      => 'post',
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+                'meta_query'     => array(
+                    array(
+                        'key'     => '_thumbnail_id',
+                        'compare' => 'EXISTS'
+                    )
+                )
+            );
+
+            if ($exclude) {
+                $args['post__not_in'] = array_map('intval', explode(',', $exclude));
+            }
+
+            if (!empty($category)) {
+                $args['category_name'] = $category;
+            }
+
+            $posts_query = new WP_Query($args);
+            $posts = $posts_query->posts;
+
+            $formatted_posts = array();
+            foreach ($posts as $post) {
+                $categories = get_the_category($post->ID);
+                $featured_image_id = get_post_thumbnail_id($post->ID);
+                $image_data = wp_get_attachment_image_src($featured_image_id, 'medium');
+                $image_url_large = wp_get_attachment_image_src($featured_image_id, 'large');
+
+                $excerpt = get_the_excerpt($post);
+                if (empty($excerpt)) {
+                    $excerpt = wp_trim_words(strip_tags($post->post_content), 25, '...');
+                }
+
+                $formatted_posts[] = array(
+                    'id'                   => $post->ID,
+                    'title'                => array('rendered' => $post->post_title),
+                    'excerpt'              => array('rendered' => $excerpt),
+                    'link'                 => get_permalink($post->ID),
+                    'date'                 => $post->post_date,
+                    'date_gmt'             => $post->post_date_gmt,
+                    'featured_media'       => $featured_image_id,
+                    'featured_image_url'   => $image_data ? $image_data[0] : null,
+                    'featured_image_large' => $image_url_large ? $image_url_large[0] : null,
+                    'categories'           => array_map(function($cat) {
+                        return array(
+                            'id'   => $cat->term_id,
+                            'name' => $cat->name,
+                            'slug' => $cat->slug
+                        );
+                    }, $categories),
+                    'reading_time' => rt_calculate_reading_time($post->post_content),
+                    'author' => array(
+                        'id'   => $post->post_author,
+                        'name' => get_the_author_meta('display_name', $post->post_author)
+                    )
+                );
+            }
+
+            return new WP_REST_Response($formatted_posts, 200, array(
+                'X-RT-Cache-Time'  => time(),
+                'X-RT-Posts-Found' => count($formatted_posts)
+            ));
+        },
+        'permission_callback' => '__return_true'
+    ));
+});
+
+function rt_calculate_reading_time($content) {
+    $word_count   = str_word_count(strip_tags($content));
+    $reading_time = ceil($word_count / 200);
+    return max(1, $reading_time);
+}
+
+// Optimized media endpoint with WebP support if available
+add_action('rest_api_init', function() {
+    register_rest_route('rt/v1', '/media/(?P<id>\d+)/optimized', array(
+        'methods' => 'GET',
+        'callback' => function($request) {
+            $media_id = $request['id'];
+            $size     = $request->get_param('size') ?: 'medium';
+
+            $image_data = wp_get_attachment_image_src($media_id, $size);
+            $image_meta = wp_get_attachment_metadata($media_id);
+
+            if (!$image_data) {
+                return new WP_Error('no_image', 'Image not found', array('status' => 404));
+            }
+
+            $response = array(
+                'id'    => $media_id,
+                'url'   => $image_data[0],
+                'width' => $image_data[1],
+                'height'=> $image_data[2],
+                'alt'   => get_post_meta($media_id, '_wp_attachment_image_alt', true),
+                'sizes' => array()
+            );
+
+            if ($image_meta && isset($image_meta['sizes'])) {
+                foreach ($image_meta['sizes'] as $size_name => $size_data) {
+                    $size_url = wp_get_attachment_image_src($media_id, $size_name);
+                    if ($size_url) {
+                        $response['sizes'][$size_name] = array(
+                            'url'    => $size_url[0],
+                            'width'  => $size_url[1],
+                            'height' => $size_url[2]
+                        );
+                    }
+                }
+            }
+
+            $webp_url = str_replace(array('.jpg', '.jpeg', '.png'), '.webp', $image_data[0]);
+            if (file_exists(str_replace(site_url(), ABSPATH, $webp_url))) {
+                $response['webp_url'] = $webp_url;
+            }
+
+            return $response;
+        },
+        'permission_callback' => '__return_true'
+    ));
+});
+
+add_filter('rest_pre_serve_request', function($served, $result, $request, $server) {
+    if (strpos($request->get_route(), '/rt/v1/') === 0) {
+        header('Cache-Control: public, max-age=300');
+        header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 300) . ' GMT');
+        header('X-RT-API: 1.0');
+    }
+    return $served;
+}, 10, 4);
+
+add_action('rest_api_init', function() {
+    register_rest_route('rt/v1', '/performance', array(
+        'methods' => 'GET',
+        'callback' => function() {
+            $start_time = microtime(true);
+            $query_start = microtime(true);
+            $posts = get_posts(array('numberposts' => 1));
+            $query_time = microtime(true) - $query_start;
+            $image_start = microtime(true);
+            $attachments = get_posts(array(
+                'post_type' => 'attachment',
+                'post_mime_type' => 'image',
+                'numberposts' => 1
+            ));
+            $image_time = microtime(true) - $image_start;
+            $total_time = microtime(true) - $start_time;
+
+            return array(
+                'response_time_ms'  => round($total_time * 1000, 2),
+                'database_query_ms' => round($query_time * 1000, 2),
+                'image_query_ms'    => round($image_time * 1000, 2),
+                'memory_usage_mb'   => round(memory_get_usage() / 1024 / 1024, 2),
+                'posts_count'       => wp_count_posts()->publish,
+                'timestamp'         => current_time('mysql'),
+                'status'            => 'healthy'
+            );
+        },
+        'permission_callback' => '__return_true'
+    ));
+});
+
+add_action('rest_api_init', function() {
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        header('Access-Control-Max-Age: 86400');
+        status_header(200);
+        exit;
+    }
+});
+
+add_action('rest_api_init', function() {
+    add_filter('rest_request_before_callbacks', function($response, $handler, $request) {
+        if (strpos($request->get_route(), '/rt/v1/') === 0) {
+            $request->set_param('_rt_start_time', microtime(true));
+        }
+        return $response;
+    }, 10, 3);
+
+    add_filter('rest_request_after_callbacks', function($response, $handler, $request) {
+        if (strpos($request->get_route(), '/rt/v1/') === 0 && $request->get_param('_rt_start_time')) {
+            $execution_time = microtime(true) - $request->get_param('_rt_start_time');
+            if ($execution_time > 1.0) {
+                error_log('RT API Slow Request: ' . $request->get_route() . ' took ' . $execution_time . 's');
+            }
+            if (is_a($response, 'WP_REST_Response')) {
+                $response->header('X-RT-Execution-Time', round($execution_time * 1000, 2) . 'ms');
+            }
+        }
+        return $response;
+    }, 10, 3);
+});
+
+add_action('rest_api_init', function() {
+    register_rest_route('rt/v1', '/connectivity', array(
+        'methods' => 'GET',
+        'callback' => function() {
+            $tests = array(
+                'wordpress_api' => false,
+                'custom_api'    => true,
+                'database'      => false,
+                'uploads'       => false
+            );
+            try {
+                $wp_posts = get_posts(array('numberposts' => 1));
+                $tests['wordpress_api'] = !empty($wp_posts);
+            } catch (Exception $e) {
+                $tests['wordpress_api'] = false;
+            }
+            global $wpdb;
+            try {
+                $result = $wpdb->get_var('SELECT 1');
+                $tests['database'] = ($result == 1);
+            } catch (Exception $e) {
+                $tests['database'] = false;
+            }
+            $upload_dir = wp_upload_dir();
+            $tests['uploads'] = is_writable($upload_dir['path']);
+            $all_passed = !in_array(false, $tests, true);
+
+            return array(
+                'status'    => $all_passed ? 'healthy' : 'degraded',
+                'tests'     => $tests,
+                'timestamp' => current_time('c'),
+                'site_url'  => site_url(),
+                'rest_url'  => rest_url()
+            );
+        },
+        'permission_callback' => '__return_true'
+    ));
+});
+
 ?>

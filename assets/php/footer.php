@@ -32,11 +32,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	astra_body_bottom();
 	wp_footer();
 ?>
-<!-- Video Access Modal -->
-<div id="videoModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        [contact-form-7 id="0779c74" title="Video Access Form"]
-    </div>
-</div>
 	</body>
 </html>

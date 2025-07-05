@@ -3380,13 +3380,13 @@ body.banner-closed .workshop-banner {
     transform: rotate(180deg);
 }
 
-/* Override any default anchor tag styles */
-.rt-nav a,
-.rt-nav a:link,
-.rt-nav a:visited,
-.rt-nav a:hover,
-.rt-nav a:active,
-.rt-nav a:focus {
+/* Override default styles for top-level navigation links only */
+.rt-nav > .rt-nav-item > .rt-nav-link,
+.rt-nav > .rt-nav-item > .rt-nav-link:link,
+.rt-nav > .rt-nav-item > .rt-nav-link:visited,
+.rt-nav > .rt-nav-item > .rt-nav-link:hover,
+.rt-nav > .rt-nav-item > .rt-nav-link:active,
+.rt-nav > .rt-nav-item > .rt-nav-link:focus {
     color: #ffffff !important;
     text-decoration: none !important;
 }
@@ -3399,12 +3399,6 @@ body.banner-closed .workshop-banner {
 }
 
 /* Fix for any potential WordPress theme overrides */
-.rt-nav-container a,
-.rt-nav-container a:link,
-.rt-nav-container a:visited,
-.rt-nav-container a:hover,
-.rt-nav-container a:active,
-.rt-nav-container a:focus,
 .rt-nav-container .rt-nav-link,
 .rt-nav-container .rt-nav-link:link,
 .rt-nav-container .rt-nav-link:visited,

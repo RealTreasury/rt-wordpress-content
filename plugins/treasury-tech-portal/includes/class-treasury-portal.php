@@ -27,11 +27,34 @@ class Treasury_Tech_Portal {
 
     public function enqueue_assets() {
         $plugin_url = TTP_PLUGIN_URL;
-        wp_enqueue_style('treasury-portal-css', $plugin_url . 'assets/css/treasury-portal.css', array(), '1.0');
-        wp_enqueue_script('treasury-portal-js', $plugin_url . 'assets/js/treasury-portal.js', array(), '1.0', true);
 
-        $tools = TTP_Data::get_all_tools();
-        wp_localize_script('treasury-portal-js', 'TTP_DATA', ['tools' => $tools]);
+        $css_file = TTP_PLUGIN_DIR . 'assets/css/treasury-portal.css';
+        $css_ver  = file_exists($css_file) ? filemtime($css_file) : '1.0';
+        wp_enqueue_style(
+            'treasury-portal-css',
+            $plugin_url . 'assets/css/treasury-portal.css',
+            array(),
+            $css_ver
+        );
+
+        $js_filename = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? 'treasury-portal.js' : 'treasury-portal.min.js';
+        $js_file = TTP_PLUGIN_DIR . 'assets/js/' . $js_filename;
+        $js_ver  = file_exists($js_file) ? filemtime($js_file) : '1.0';
+        wp_enqueue_script(
+            'treasury-portal-js',
+            $plugin_url . 'assets/js/' . $js_filename,
+            array(),
+            $js_ver,
+            true
+        );
+
+        wp_localize_script(
+            'treasury-portal-js',
+            'TTP_DATA',
+            [
+                'rest_url' => esc_url_raw(rest_url('ttp/v1/tools'))
+            ]
+        );
     }
 
     public function shortcode_handler($atts = array(), $content = null) {

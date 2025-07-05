@@ -83,6 +83,12 @@ class TTP_Data {
             });
         }
 
-        return array_values($tools);
+        $page     = max(1, intval($args['page'] ?? 1));
+        $per_page = max(1, intval($args['per_page'] ?? count($tools)));
+        $offset   = ($page - 1) * $per_page;
+
+        $tools = array_slice(array_values($tools), $offset, $per_page);
+
+        return $tools;
     }
 }

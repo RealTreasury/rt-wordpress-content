@@ -22,8 +22,11 @@ class TTP_Rest {
             'category'  => sanitize_text_field($request->get_param('category')),
             'search'    => sanitize_text_field($request->get_param('search')),
             'has_video' => $request->get_param('has_video') ? true : false,
+            'per_page'  => absint($request->get_param('per_page')),
+            'page'      => absint($request->get_param('page')),
         ];
         $tools = TTP_Data::get_tools($args);
+
         return rest_ensure_response($tools);
     }
 }

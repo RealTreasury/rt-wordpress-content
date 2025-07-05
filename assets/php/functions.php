@@ -864,5 +864,118 @@ function remove_admin_body_classes($classes) {
     }
     return $classes;
 }
+// =================================================================
+// ADD THIS TO YOUR functions.php FILE TO DISABLE ASTRA HEADERS
+// =================================================================
+
+// 1. REMOVE ASTRA HEADER ACTIONS
+add_action('init', 'remove_astra_header_elements');
+function remove_astra_header_elements() {
+    // Remove primary header
+    remove_action('astra_header', 'astra_header_markup');
+    remove_action('astra_masthead', 'astra_masthead_primary_header_markup', 10);
+    
+    // Remove above header
+    remove_action('astra_above_header', 'astra_above_header_markup');
+    
+    // Remove below header  
+    remove_action('astra_below_header', 'astra_below_header_markup');
+    
+    // Remove mobile header
+    remove_action('astra_masthead', 'astra_masthead_mobile_header_markup', 15);
+    
+    // Remove header builder elements
+    remove_action('astra_render_header', 'Astra_Builder_Header::header_builder_markup');
+}
+
+// 2. DISABLE ASTRA HEADER BUILDER
+add_filter('astra_header_builder_enable', '__return_false');
+
+// 3. REMOVE ASTRA HEADER CSS
+add_action('wp_enqueue_scripts', 'remove_astra_header_styles', 20);
+function remove_astra_header_styles() {
+    wp_dequeue_style('astra-theme-css');
+    wp_dequeue_style('astra-menu-animation');
+    wp_dequeue_style('astra-header-builder');
+}
+
+// 4. DISABLE ASTRA MOBILE MENU
+add_filter('astra_mobile_menu_enable', '__return_false');
+
+// 5. REMOVE ASTRA HEADER FROM CUSTOMIZER
+add_action('customize_register', 'remove_astra_header_customizer', 20);
+function remove_astra_header_customizer($wp_customize) {
+    $wp_customize->remove_section('section-header-builder-layout');
+    $wp_customize->remove_panel('panel-header-builder-group');
+}
+
+// 6. FORCE DISABLE ALL ASTRA HEADER RELATED FUNCTIONALITY
+add_action('wp_head', 'force_hide_astra_headers');
+function force_hide_astra_headers() {
+    echo '<style>
+    /* Force hide any remaining Astra elements */
+    #masthead,
+    .site-header,
+    .main-header-bar,
+    .ast-primary-header-bar,
+    .ast-above-header-bar,
+    .ast-below-header-bar,
+    .ast-masthead-custom-menu-items,
+    .ast-main-header-wrap,
+    .ast-header-wrap,
+    .ast-builder-grid-row,
+    .ast-builder-layout-element,
+    .ast-desktop-header-content,
+    .ast-mobile-header-content,
+    .ast-mobile-header-wrap,
+    [data-section*="header"],
+    [class*="ast-header"],
+    [class*="ast-builder"] {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+    }
+    
+    /* Ensure our custom header is visible */
+    .rt-nav-container {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 100000 !important;
+    }
+    </style>';
+}
+
+// 7. CLEAN BODY CLASSES (Remove Astra header related classes)
+add_filter('body_class', 'remove_astra_header_body_classes');
+function remove_astra_header_body_classes($classes) {
+    $remove_classes = array(
+        'ast-hfb-header',
+        'ast-desktop',
+        'ast-header-break-point',
+        'ast-full-width-primary-header'
+    );
+    
+    return array_diff($classes, $remove_classes);
+}
+
+// 8. DISABLE ASTRA THEME HEADERS COMPLETELY
+add_action('after_setup_theme', 'disable_astra_theme_headers', 11);
+function disable_astra_theme_headers() {
+    // Remove theme support for custom header
+    remove_theme_support('custom-header');
+    
+    // Remove Astra header actions
+    if (class_exists('Astra_Theme_Options')) {
+        remove_all_actions('astra_header');
+        remove_all_actions('astra_masthead');
+        remove_all_actions('astra_above_header');
+        remove_all_actions('astra_below_header');
+    }
+}
+
 
 ?>

@@ -49,6 +49,13 @@ if (empty($form_id)) {
         transition: all 0.2s ease !important;
     }
 
+    /* Ensure the modal width fits smaller screens */
+    @media (max-width: 480px) {
+        #portalModal .max-w-lg {
+            max-width: calc(100vw - 2rem);
+        }
+    }
+
     .form-progress-bar {
         width: 100%;
         height: 3px;

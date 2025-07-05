@@ -3341,3 +3341,124 @@ body.banner-closed .workshop-banner {
     opacity: 0 !important;
     pointer-events: none !important;
 }
+/* =================================================================== */
+/* NAVIGATION LINK COLOR FIXES - Add these to your shared.css file
+/* These styles ensure navigation links stay white in all states
+/* =================================================================== */
+
+/* Force all navigation link states to remain white */
+.rt-nav-link,
+.rt-nav-link:link,
+.rt-nav-link:visited,
+.rt-nav-link:hover,
+.rt-nav-link:active,
+.rt-nav-link:focus {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Ensure active dropdown navigation items stay white */
+.rt-nav-item.active .rt-nav-link,
+.rt-nav-item.active .rt-nav-link:link,
+.rt-nav-item.active .rt-nav-link:visited,
+.rt-nav-item.active .rt-nav-link:hover,
+.rt-nav-item.active .rt-nav-link:active,
+.rt-nav-item.active .rt-nav-link:focus {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Fix dropdown arrow color to stay white */
+.rt-nav-link.has-dropdown::after {
+    border-top-color: #ffffff !important;
+    opacity: 0.8;
+}
+
+.rt-nav-item.active .rt-nav-link.has-dropdown::after {
+    border-top-color: #ffffff !important;
+    transform: rotate(180deg);
+}
+
+/* Override any default anchor tag styles */
+.rt-nav a,
+.rt-nav a:link,
+.rt-nav a:visited,
+.rt-nav a:hover,
+.rt-nav a:active,
+.rt-nav a:focus {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Ensure hover effects keep white text */
+.rt-nav-link:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    transform: none !important; /* Prevent any transforms that might affect color */
+}
+
+/* Fix for any potential WordPress theme overrides */
+.rt-nav-container a,
+.rt-nav-container a:link,
+.rt-nav-container a:visited,
+.rt-nav-container a:hover,
+.rt-nav-container a:active,
+.rt-nav-container a:focus,
+.rt-nav-container .rt-nav-link,
+.rt-nav-container .rt-nav-link:link,
+.rt-nav-container .rt-nav-link:visited,
+.rt-nav-container .rt-nav-link:hover,
+.rt-nav-container .rt-nav-link:active,
+.rt-nav-container .rt-nav-link:focus {
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+
+/* Fix focus outlines to be white instead of default purple */
+.rt-nav-link:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5) !important;
+    outline-offset: 2px !important;
+}
+
+/* Ensure VIEW PORTAL button stays properly styled */
+.rt-cta-button,
+.rt-cta-button:link,
+.rt-cta-button:visited,
+.rt-cta-button:hover,
+.rt-cta-button:active,
+.rt-cta-button:focus {
+    background: linear-gradient(135deg, #8f47f6, #7216f4) !important;
+    color: white !important;
+    text-decoration: none !important;
+}
+
+/* Additional specificity for stubborn themes */
+.rt-nav-container .rt-nav .rt-nav-item .rt-nav-link {
+    color: #ffffff !important;
+}
+
+.rt-nav-container .rt-nav .rt-nav-item.active .rt-nav-link {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Mobile navigation fixes */
+@media (max-width: 992px) {
+    .rt-nav-link,
+    .rt-nav-link:link,
+    .rt-nav-link:visited,
+    .rt-nav-link:hover,
+    .rt-nav-link:active,
+    .rt-nav-link:focus {
+        color: var(--dark-text) !important; /* Dark text on mobile light background */
+    }
+    
+    .rt-nav-link.has-dropdown::after {
+        border-top-color: var(--dark-text) !important;
+    }
+    
+    .rt-nav-item.active .rt-nav-link.has-dropdown::after {
+        border-top-color: var(--dark-text) !important;
+    }
+}

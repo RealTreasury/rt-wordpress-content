@@ -15,127 +15,12 @@ if (empty($form_id)) {
 }
 ?>
 <!-- Portal Modal HTML -->
-<style>
-    :root {
-        --primary-purple: #7216f4;
-        --secondary-purple: #8f47f6;
-        --light-purple: #c77dff;
-        --dark-text: #281345;
-        --gray-text: #7e7e7e;
-    }
-    .modal-bg {
-        background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4));
-        backdrop-filter: blur(15px) saturate(120%);
-        -webkit-backdrop-filter: blur(15px) saturate(120%);
-    }
-    .form-container-bg {
-        background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95));
-        backdrop-filter: blur(20px) saturate(130%);
-        -webkit-backdrop-filter: blur(20px) saturate(130%);
-    }
-    .border-light-purple {
-        border-color: var(--light-purple);
-    }
-    .gradient-bar {
-        background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple) 50%, #9d4edd);
-    }
-
-    /* Mobile enhancement styles */
-    .mobile-device .portal-access-form {
-        transition: all 0.3s ease !important;
-    }
-
-    .keyboard-open .portal-access-form {
-        transition: all 0.2s ease !important;
-    }
-
-    /* Ensure the modal width fits smaller screens */
-    @media (max-width: 480px) {
-        #portalModal .max-w-lg {
-            max-width: calc(100vw - 2rem);
-        }
-    }
-
-    .form-progress-bar {
-        width: 100%;
-        height: 3px;
-        background: rgba(199, 125, 255, 0.2);
-        border-radius: 2px;
-        margin: 16px 0 24px 0;
-        overflow: hidden;
-        position: relative;
-        z-index: 3;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #7216f4, #8f47f6);
-        width: 0%;
-        transition: width 0.3s ease;
-        border-radius: 2px;
-    }
-
-    .field-valid {
-        border-color: #22c55e !important;
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
-    }
-
-    .field-error {
-        border-color: #ef4444 !important;
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
-    }
-
-    /* Touch feedback improvements */
-    .close-btn:active,
-    .submit-btn:active,
-    .wpcf7-submit:active {
-        transition: none !important;
-    }
-
-    /* Mobile landscape specific fixes */
-    @media (max-width: 768px) and (orientation: landscape) {
-        .form-progress-bar {
-            margin: 8px 0 16px 0;
-        }
-
-        .portal-access-form h3 {
-            margin-bottom: 4px !important;
-        }
-
-        .portal-access-form .subtitle {
-            margin-bottom: 12px !important;
-        }
-    }
-
-    /* Accessibility improvements */
-    @media (prefers-reduced-motion: reduce) {
-        .modal,
-        .modal-content,
-        .portal-access-form,
-        .progress-fill,
-        .form-control,
-        .wpcf7-form-control,
-        .submit-btn,
-        .close-btn {
-            transition: none !important;
-            animation: none !important;
-        }
-    }
-</style>
-<div id="portalModal" class="tpa-modal fixed inset-0 z-[1000003] flex items-center justify-center p-4 modal-bg transition-opacity duration-300 opacity-0 pointer-events-none" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="portalModalTitle">
-    <div class="relative w-full max-w-lg mx-auto">
-        <div class="relative form-container-bg rounded-2xl shadow-2xl border-2 border-light-purple overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1.5 gradient-bar"></div>
-            <button class="close-btn absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors" type="button" aria-label="Close dialog">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            <div class="p-8 md:p-10">
-                <div class="portal-access-form">
-                    <h3 id="portalModalTitle" class="text-2xl md:text-3xl font-bold text-dark-text text-center mb-4">Portal Access</h3>
-                    <p class="text-center text-gray-text mb-8">Please enter your details to continue.</p>
-                    <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
-                </div>
-            </div>
+<div id="portalModal" class="tpa-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="portalModalTitle">
+    <div class="tpa-modal-content">
+        <div class="portal-access-form">
+            <button class="close-btn" type="button" aria-label="Close dialog">&times;</button>
+            <h3 id="portalModalTitle">Access Treasury Tech Portal</h3>
+            <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
         </div>
     </div>
 </div>
@@ -169,7 +54,6 @@ if (empty($form_id)) {
             document.addEventListener('DOMContentLoaded', () => {
                 this.checkAccessPersistence();
                 this.addEventListeners();
-                this.styleForm();
             });
         },
 
@@ -260,37 +144,16 @@ if (empty($form_id)) {
             .catch(error => console.error('❌ TPA: Sync to local storage failed:', error));
         },
 
-        styleForm: function() {
-            const form = this.modal.querySelector('form');
-            if (!form) return;
-            form.classList.add('space-y-4');
-            form.querySelectorAll('input:not([type=submit]):not([type=checkbox]), textarea, select').forEach(el => {
-                el.classList.add('w-full', 'p-3', 'rounded-md', 'border', 'border-purple-300', 'bg-white/75', 'placeholder-[#9d4edd]', 'focus:outline-none', 'focus:ring-2', 'focus:ring-[#8f47f6]');
-            });
-            form.querySelectorAll('input[type=checkbox]').forEach(cb => {
-                cb.classList.add('mr-2', 'rounded', 'text-[#7216f4]', 'focus:ring-2', 'focus:ring-[#8f47f6]');
-                const parent = cb.closest('label') || cb.parentElement;
-                if (parent) parent.classList.add('flex', 'items-start');
-            });
-            form.querySelectorAll('input[type=submit], button[type=submit]').forEach(btn => {
-                btn.classList.add('w-full', 'bg-[#7216f4]', 'hover:bg-[#8f47f6]', 'text-white', 'font-semibold', 'py-3', 'px-6', 'rounded-md', 'shadow', 'transition-colors', 'cursor-pointer');
-            });
-        },
-
         showMessage: function(message, type = 'info') {
             document.getElementById('tpa-message')?.remove();
             const messageDiv = document.createElement('div');
             messageDiv.id = 'tpa-message';
-            const base = 'fixed top-5 right-5 z-[100001] px-4 py-3 rounded-lg font-medium text-white shadow-lg transform transition-all duration-300 translate-x-full opacity-0';
-            let color = 'bg-[#7216f4]';
-            if (type === 'success') color = 'bg-green-600';
-            if (type === 'error') color = 'bg-red-600';
-            messageDiv.className = `${base} ${color}`;
+            messageDiv.className = `tpa-message tpa-message-${type}`;
             messageDiv.textContent = message;
             this.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.classList.remove('translate-x-full', 'opacity-0'), 10);
+            setTimeout(() => messageDiv.classList.add('show'), 10);
             setTimeout(() => {
-                messageDiv.classList.add('translate-x-full', 'opacity-0');
+                messageDiv.classList.remove('show');
                 setTimeout(() => messageDiv.remove(), 300);
             }, 4000);
         },
@@ -301,12 +164,12 @@ if (empty($form_id)) {
 
         openModal: function() {
             this.modal.style.display = 'flex';
-            setTimeout(() => this.modal.classList.remove('opacity-0', 'pointer-events-none'), 10);
+            setTimeout(() => this.modal.classList.add('show'), 10);
             this.body.classList.add('modal-open');
         },
 
         closeModal: function() {
-            this.modal.classList.add('opacity-0', 'pointer-events-none');
+            this.modal.classList.remove('show');
             setTimeout(() => {
                 this.modal.style.display = 'none';
                 this.body.classList.remove('modal-open');
@@ -334,7 +197,7 @@ if (empty($form_id)) {
             });
 
             document.addEventListener('keydown', e => {
-                if (e.key === 'Escape' && this.modal.style.display === 'flex') {
+                if (e.key === 'Escape' && this.modal.classList.contains('show')) {
                     this.closeModal();
                 }
             });
@@ -357,327 +220,51 @@ if (empty($form_id)) {
         }
     };
 
-window.TPA.init();
+    window.TPA.init();
 
 })();
 </script>
 
-<script>
-(function() {
-    'use strict';
-
-    const MobileModalEnhancer = {
-        init: function() {
-            this.addViewportMeta();
-            this.enhanceModalForMobile();
-            this.addTouchSupport();
-            this.preventBodyScroll();
-            this.addKeyboardSupport();
-        },
-
-        addViewportMeta: function() {
-            if (!document.querySelector('meta[name="viewport"]')) {
-                const meta = document.createElement('meta');
-                meta.name = 'viewport';
-                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-                document.head.appendChild(meta);
-            }
-        },
-
-        enhanceModalForMobile: function() {
-            const modal = document.getElementById('portalModal');
-            if (!modal) return;
-
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-
-            if (isMobile) {
-                modal.classList.add('mobile-device');
-                modal.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: false });
-                modal.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-
-                window.addEventListener('orientationchange', () => {
-                    setTimeout(() => this.adjustModalForOrientation(), 100);
-                });
-
-                this.handleMobileKeyboard();
-            }
-        },
-
-        handleTouchStart: function(e) {
-            this.touchStartY = e.touches[0].clientY;
-        },
-
-        handleTouchMove: function(e) {
-            const modal = document.getElementById('portalModal');
-            const form = modal.querySelector('.portal-access-form');
-            if (!form) return;
-
-            if (!form.contains(e.target)) {
-                e.preventDefault();
-            }
-        },
-
-        adjustModalForOrientation: function() {
-            const modal = document.getElementById('portalModal');
-            const form = modal.querySelector('.portal-access-form');
-            if (!form) return;
-
-            if (window.matchMedia('(orientation: landscape)').matches) {
-                form.style.maxHeight = 'calc(100vh - 20px)';
-                form.style.padding = '16px';
-            } else {
-                form.style.maxHeight = 'calc(100vh - 60px)';
-                form.style.padding = '24px 20px';
-            }
-        },
-
-        handleMobileKeyboard: function() {
-            const modal = document.getElementById('portalModal');
-            const form = modal.querySelector('.portal-access-form');
-            if (!form) return;
-            let initialViewportHeight = window.innerHeight;
-
-            const checkViewport = () => {
-                const currentHeight = window.innerHeight;
-                const heightDifference = initialViewportHeight - currentHeight;
-
-                if (heightDifference > 150) {
-                    modal.classList.add('keyboard-open');
-                    form.style.maxHeight = `${currentHeight - 40}px`;
-                    form.style.transform = 'translateY(-20px)';
-                } else {
-                    modal.classList.remove('keyboard-open');
-                    form.style.maxHeight = 'calc(100vh - 60px)';
-                    form.style.transform = 'translateY(0)';
-                }
-            };
-
-            window.addEventListener('resize', checkViewport);
-
-            const inputs = form.querySelectorAll('input, textarea, select');
-            inputs.forEach(input => {
-                input.addEventListener('focus', () => {
-                    setTimeout(checkViewport, 300);
-                    setTimeout(() => {
-                        input.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-                    }, 500);
-                });
-                input.addEventListener('blur', () => setTimeout(checkViewport, 300));
-            });
-        },
-
-        addTouchSupport: function() {
-            const modal = document.getElementById('portalModal');
-            const closeBtn = modal.querySelector('.close-btn');
-
-            [closeBtn].forEach(el => {
-                if (!el) return;
-                el.addEventListener('touchstart', function() { this.style.transform = 'scale(0.95)'; }, { passive: true });
-                el.addEventListener('touchend', function() {
-                    this.style.transform = 'scale(1.05)';
-                    setTimeout(() => { this.style.transform = ''; }, 150);
-                }, { passive: true });
-            });
-
-            const submitBtn = modal.querySelector('.wpcf7-submit, .submit-btn');
-            if (submitBtn) {
-                submitBtn.addEventListener('touchstart', function() { this.style.transform = 'translateY(-1px) scale(0.98)'; }, { passive: true });
-                submitBtn.addEventListener('touchend', function() {
-                    this.style.transform = 'translateY(-2px)';
-                    setTimeout(() => { this.style.transform = ''; }, 200);
-                }, { passive: true });
-            }
-        },
-
-        preventBodyScroll: function() {
-            let scrollPosition = 0;
-
-            const openModal = () => {
-                scrollPosition = window.pageYOffset;
-                document.body.style.overflow = 'hidden';
-                document.body.style.position = 'fixed';
-                document.body.style.top = `-${scrollPosition}px`;
-                document.body.style.width = '100%';
-            };
-
-            const closeModal = () => {
-                document.body.style.removeProperty('overflow');
-                document.body.style.removeProperty('position');
-                document.body.style.removeProperty('top');
-                document.body.style.removeProperty('width');
-                window.scrollTo(0, scrollPosition);
-            };
-
-            if (window.TPA) {
-                const originalOpenModal = window.TPA.openModal;
-                const originalCloseModal = window.TPA.closeModal;
-
-                window.TPA.openModal = function() {
-                    openModal();
-                    originalOpenModal.call(this);
-                };
-
-                window.TPA.closeModal = function() {
-                    closeModal();
-                    originalCloseModal.call(this);
-                };
-            }
-        },
-
-        addKeyboardSupport: function() {
-            document.addEventListener('keydown', (e) => {
-                const modal = document.getElementById('portalModal');
-                if (!modal || modal.style.display !== 'flex') return;
-
-                if (e.key === 'Tab') {
-                    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-                    const first = focusable[0];
-                    const last = focusable[focusable.length - 1];
-
-                    if (e.shiftKey) {
-                        if (document.activeElement === first) {
-                            last.focus();
-                            e.preventDefault();
-                        }
-                    } else {
-                        if (document.activeElement === last) {
-                            first.focus();
-                            e.preventDefault();
-                        }
-                    }
-                }
-            });
-        }
-    };
-
-    const MobileFormEnhancer = {
-        init: function() {
-            this.improveFormValidation();
-            this.addProgressIndicator();
-            this.enhanceInputExperience();
-        },
-
-        improveFormValidation: function() {
-            const modal = document.getElementById('portalModal');
-            if (!modal) return;
-
-            const inputs = modal.querySelectorAll('input[type="email"], input[type="text"], input[required]');
-            inputs.forEach(input => {
-                input.addEventListener('blur', this.validateField);
-                input.addEventListener('input', this.clearFieldError);
-            });
-        },
-
-        validateField: function(e) {
-            const field = e.target;
-            const isValid = field.checkValidity();
-            field.classList.remove('field-error', 'field-valid');
-            if (field.value.trim() !== '') {
-                if (isValid) {
-                    field.classList.add('field-valid');
-                } else {
-                    field.classList.add('field-error');
-                }
-            }
-        },
-
-        clearFieldError: function(e) {
-            e.target.classList.remove('field-error');
-        },
-
-        addProgressIndicator: function() {
-            const form = document.querySelector('#portalModal form');
-            if (!form) return;
-
-            const requiredFields = form.querySelectorAll('input[required], select[required]');
-            let progressBar = document.createElement('div');
-            progressBar.className = 'form-progress-bar';
-            progressBar.innerHTML = '<div class="progress-fill"></div>';
-
-            const title = form.querySelector('h3');
-            if (title) {
-                title.insertAdjacentElement('afterend', progressBar);
-            }
-
-            const updateProgress = () => {
-                const completed = Array.from(requiredFields).filter(field => {
-                    if (field.type === 'checkbox') {
-                        return field.checked;
-                    }
-                    return field.value.trim() !== '' && field.checkValidity();
-                }).length;
-
-                const percentage = (completed / requiredFields.length) * 100;
-                const fill = progressBar.querySelector('.progress-fill');
-                fill.style.width = `${percentage}%`;
-            };
-
-            requiredFields.forEach(field => {
-                field.addEventListener('input', updateProgress);
-                field.addEventListener('change', updateProgress);
-                field.addEventListener('blur', updateProgress);
-            });
-        },
-
-        enhanceInputExperience: function() {
-            const emailInputs = document.querySelectorAll('input[type="email"]');
-            emailInputs.forEach(input => {
-                input.setAttribute('autocomplete', 'email');
-                input.setAttribute('inputmode', 'email');
-            });
-
-            const textInputs = document.querySelectorAll('input[type="text"]');
-            textInputs.forEach(input => {
-                if (input.name && input.name.toLowerCase().includes('name')) {
-                    input.setAttribute('autocomplete', 'name');
-                    input.setAttribute('inputmode', 'text');
-                }
-                if (input.name && input.name.toLowerCase().includes('company')) {
-                    input.setAttribute('autocomplete', 'organization');
-                    input.setAttribute('inputmode', 'text');
-                }
-            });
-        }
-    };
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            MobileModalEnhancer.init();
-            MobileFormEnhancer.init();
-        });
-    } else {
-        MobileModalEnhancer.init();
-        MobileFormEnhancer.init();
-    }
-
-})();
-</script>
-<script>
-// Mobile modal and form enhancements
-// TODO: Replace placeholder implementations with the correct enhancement code.
-const MobileModalEnhancer = {
-    init: function() {
-        if (window.innerWidth <= 768) {
-            const modal = document.getElementById('portalModal');
-            if (modal) modal.classList.add('mobile-enhanced');
-        }
-    }
-};
-
-const MobileFormEnhancer = {
-    init: function() {
-        if (window.innerWidth <= 768) {
-            const form = document.querySelector('#portalModal form');
-            if (form) form.setAttribute('autocomplete', 'on');
-        }
-    }
-};
-
-window.addEventListener('load', () => {
-    if (window.TPA && typeof window.TPA.init === 'function') {
-        MobileModalEnhancer.init();
-        MobileFormEnhancer.init();
-    }
-});
-</script>
-
+<style>
+/* Styles are unchanged, but included for completeness */
+body.modal-open { overflow: hidden !important; }
+.tpa-modal { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 1000003 !important; background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4)) !important; backdrop-filter: blur(15px) saturate(120%) !important; -webkit-backdrop-filter: blur(15px) saturate(120%) !important; display: flex !important; align-items: center !important; justify-content: center !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transition: all .4s cubic-bezier(.4, 0, .2, 1) !important; }
+.tpa-modal.show { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+.tpa-modal-content { max-width: calc(100vw - 40px) !important; max-height: calc(100vh - 40px) !important; padding: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important; transform: scale(.9) !important; transition: all .4s cubic-bezier(.4, 0, .2, 1) !important; }
+.tpa-modal.show .tpa-modal-content { transform: scale(1) !important; }
+.portal-access-form { width: 100% !important; max-width: 520px !important; min-width: 320px !important; margin: 0 auto !important; padding: 32px !important; background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95)) !important; backdrop-filter: blur(20px) saturate(130%) !important; -webkit-backdrop-filter: blur(20px) saturate(130%) !important; border: 2px solid rgba(199, 125, 255, .3) !important; border-radius: 16px !important; box-shadow: 0 8px 32px rgba(114, 22, 244, .15) !important; position: relative !important; overflow: hidden !important; }
+.portal-access-form:before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd); border-radius: 16px 16px 0 0; }
+.close-btn { position: absolute !important; top: 12px !important; right: 16px !important; background: hsla(0, 0%, 100%, .9) !important; border: 1px solid rgba(199, 125, 255, .3) !important; border-radius: 50% !important; font-size: 18px !important; color: #7216f4 !important; cursor: pointer !important; width: 32px !important; height: 32px !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all .3s ease !important; }
+.close-btn:hover { background: rgba(114, 22, 244, .1) !important; transform: scale(1.1) !important; }
+#tpa-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100001;
+    padding: 15px 20px;
+    border-radius: 12px;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateX(120%);
+    opacity: 0;
+}
+#tpa-message.show { transform: translateX(0); opacity: 1; }
+#tpa-message.tpa-message-success {
+    background: rgba(76, 175, 80, 0.35);
+    border-color: rgba(76, 175, 80, 0.45);
+}
+#tpa-message.tpa-message-error {
+    background: rgba(244, 67, 54, 0.35);
+    border-color: rgba(244, 67, 54, 0.45);
+}
+#tpa-message.tpa-message-info {
+    background: rgba(114, 22, 244, 0.35);
+    border-color: rgba(114, 22, 244, 0.45);
+}
+</style>

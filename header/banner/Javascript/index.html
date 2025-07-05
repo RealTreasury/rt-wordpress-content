@@ -1,14 +1,16 @@
-// REPLACE your existing closeBanner() function with this:
+// JavaScript snippet to auto-close the banner
 function closeBanner() {
     const banner = document.getElementById('workshopBanner');
     banner.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
     banner.style.transform = 'translateY(-100%)';
     banner.style.opacity = '0';
-    
-    // NEW: Add class to body to trigger header repositioning
-    document.body.classList.add('banner-closed');
-    
+
     setTimeout(() => {
         banner.style.display = 'none';
     }, 400); // Matches the transition duration
 }
+
+// Auto-collapse banner after page load
+window.addEventListener('load', () => {
+    setTimeout(closeBanner, 1000);
+});

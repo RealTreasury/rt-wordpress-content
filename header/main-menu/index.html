@@ -428,6 +428,9 @@
             setTimeout(() => {
                 banner.style.transform = 'translateY(0)';
                 banner.style.opacity = '1';
+
+                // Auto-collapse after 1 second
+                setTimeout(closeBanner, 1000);
             }, 100); // Short delay to ensure initial styles are applied before animating
         });
     </script>

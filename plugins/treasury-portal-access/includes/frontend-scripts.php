@@ -78,14 +78,15 @@ if (empty($form_id)) {
         },
 
         restoreFromLocal: function(email, userName) {
-            this.showMessage('Restoring your portal access...', 'info');
             const formData = new URLSearchParams({ action: 'restore_portal_access', email: email, nonce: this.nonce });
-            
+
             fetch(this.ajaxUrl, { method: 'POST', body: formData })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    this.showMessage(`Welcome back, ${userName || email}! Access restored.`, 'success');
+                    if (this.isPortalPage()) {
+                        this.showMessage(`Welcome back, ${userName || email}!`, 'success');
+                    }
                     this.updateUIAfterRestore();
                 } else {
                     throw new Error(data.data?.message || 'Restoration failed.');
@@ -93,9 +94,16 @@ if (empty($form_id)) {
             })
             .catch(error => {
                 console.error('❌ TPA: Restoration failed:', error);
-                this.showMessage('Could not restore your session. Please use the form.', 'error');
+                if (this.isPortalPage()) {
+                    this.showMessage('Could not restore your session. Please use the form.', 'error');
+                }
                 this.clearLocal();
             });
+        },
+
+        isPortalPage: function() {
+            return window.location.pathname.includes('treasury-tech-portal') ||
+                   window.location.href.includes('treasury-tech-portal');
         },
         
         /**
@@ -145,17 +153,45 @@ if (empty($form_id)) {
         },
 
         showMessage: function(message, type = 'info') {
+            if (!this.isPortalPage()) {
+                return;
+            }
+
             document.getElementById('tpa-message')?.remove();
             const messageDiv = document.createElement('div');
             messageDiv.id = 'tpa-message';
             messageDiv.className = `tpa-message tpa-message-${type}`;
             messageDiv.textContent = message;
-            this.body.appendChild(messageDiv);
-            setTimeout(() => messageDiv.classList.add('show'), 10);
+
+            this.insertMessageAfterHeader(messageDiv);
+
+            requestAnimationFrame(() => {
+                messageDiv.classList.add('show');
+            });
+
             setTimeout(() => {
                 messageDiv.classList.remove('show');
-                setTimeout(() => messageDiv.remove(), 300);
-            }, 4000);
+                setTimeout(() => messageDiv.remove(), 250);
+            }, 3000);
+        },
+
+        insertMessageAfterHeader: function(messageDiv) {
+            const header = document.querySelector('.rt-nav-container') || document.querySelector('header');
+            let container = document.getElementById('tpa-message-container');
+
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'tpa-message-container';
+                container.className = 'tpa-message-container';
+
+                if (header && header.nextSibling) {
+                    header.parentNode.insertBefore(container, header.nextSibling);
+                } else {
+                    document.body.appendChild(container);
+                }
+            }
+
+            container.appendChild(messageDiv);
         },
 
         clearLocal: function() {
@@ -236,35 +272,85 @@ body.modal-open { overflow: hidden !important; }
 .portal-access-form:before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd); border-radius: 16px 16px 0 0; }
 .close-btn { position: absolute !important; top: 12px !important; right: 16px !important; background: hsla(0, 0%, 100%, .9) !important; border: 1px solid rgba(199, 125, 255, .3) !important; border-radius: 50% !important; font-size: 18px !important; color: #7216f4 !important; cursor: pointer !important; width: 32px !important; height: 32px !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all .3s ease !important; }
 .close-btn:hover { background: rgba(114, 22, 244, .1) !important; transform: scale(1.1) !important; }
-#tpa-message {
+.tpa-message-container {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 100001;
-    padding: 15px 20px;
-    border-radius: 12px;
+    top: 80px;
+    left: 0;
+    right: 0;
+    z-index: 99998;
+    pointer-events: none;
+    padding: 0 20px;
+}
+
+#tpa-message {
+    position: relative;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    z-index: 1;
+    padding: 12px 20px;
+    border-radius: 8px;
     font-weight: 500;
+    font-size: 14px;
     color: #fff;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px) saturate(160%);
-    -webkit-backdrop-filter: blur(10px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    transform: translateX(120%);
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.25s ease, opacity 0.25s ease;
     opacity: 0;
+    pointer-events: auto;
+    max-width: 400px;
+    text-align: center;
+    margin: 10px auto 0;
+    will-change: transform, opacity;
 }
-#tpa-message.show { transform: translateX(0); opacity: 1; }
+
+#tpa-message.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
 #tpa-message.tpa-message-success {
-    background: rgba(76, 175, 80, 0.35);
-    border-color: rgba(76, 175, 80, 0.45);
+    background: rgba(34, 197, 94, 0.9);
+    border-color: rgba(34, 197, 94, 0.3);
 }
+
 #tpa-message.tpa-message-error {
-    background: rgba(244, 67, 54, 0.35);
-    border-color: rgba(244, 67, 54, 0.45);
+    background: rgba(239, 68, 68, 0.9);
+    border-color: rgba(239, 68, 68, 0.3);
 }
+
 #tpa-message.tpa-message-info {
-    background: rgba(114, 22, 244, 0.35);
-    border-color: rgba(114, 22, 244, 0.45);
+    background: rgba(59, 130, 246, 0.9);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+@media (max-width: 768px) {
+    .tpa-message-container {
+        top: 70px;
+        padding: 0 15px;
+    }
+
+    #tpa-message {
+        padding: 10px 16px;
+        font-size: 13px;
+        max-width: calc(100vw - 30px);
+        margin: 8px auto 0;
+        border-radius: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tpa-message-container {
+        top: 60px;
+        padding: 0 10px;
+    }
+
+    #tpa-message {
+        padding: 8px 12px;
+        font-size: 12px;
+        max-width: calc(100vw - 20px);
+        margin: 5px auto 0;
+    }
 }
 </style>

@@ -289,3 +289,4 @@ if (!defined("ABSPATH")) exit;
         <button id="bottomSearch"><span class="icon">🔍</span> Search</button>
         <button id="bottomShortlist"><span class="icon">📝</span> Shortlist</button>
     </div>
+

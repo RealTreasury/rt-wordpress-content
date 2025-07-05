@@ -576,223 +576,336 @@
         </div>
     </div>
 
+
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const insightsGrid = document.getElementById('insightsGrid');
-            const searchInput = document.getElementById('searchInput');
-            const filterButtonsContainer = document.getElementById('filterButtons');
-            const showMoreBtn = document.getElementById('showMoreBtn');
-            const modal = document.getElementById('leadModal');
-            const openModalBtn = document.getElementById('openModalBtn');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const leadForm = document.getElementById('leadForm');
+document.addEventListener('DOMContentLoaded', function() {
+    const insightsGrid = document.getElementById('insightsGrid');
+    const searchInput = document.getElementById('searchInput');
+    const filterButtonsContainer = document.getElementById('filterButtons');
+    const showMoreBtn = document.getElementById('showMoreBtn');
+    const modal = document.getElementById('leadModal');
+    const openModalBtn = document.getElementById('openModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const leadForm = document.getElementById('leadForm');
 
-            const apiUrl = '/api/posts?_embed&per_page=100';
+    // Multiple API endpoints to try (in order of preference)
+    const apiEndpoints = [
+        '/wp-json/wp/v2/posts?_embed&per_page=100',  // Standard WordPress REST API
+        '/api/posts?_embed&per_page=100',            // Custom rewrite rule
+        '/custom/v1/posts?per_page=100',             // Custom endpoint from your PHP
+        '/?rest_route=/wp/v2/posts&_embed=1&per_page=100' // Fallback query parameter method
+    ];
 
-            let allPosts = [];
-            let currentPosts = [];
-            const POSTS_PER_PAGE = 6;
-            let displayedCount = POSTS_PER_PAGE;
+    let allPosts = [];
+    let currentPosts = [];
+    const POSTS_PER_PAGE = 6;
+    let displayedCount = POSTS_PER_PAGE;
 
-            // Function to create and append schema
-            function appendSchema(schema) {
-                const script = document.createElement('script');
-                script.type = 'application/ld+json';
-                script.text = JSON.stringify(schema);
-                document.head.appendChild(script);
-            }
-
-            async function fetchPosts() {
-                try {
-                    const response = await fetch(apiUrl);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const posts = await response.json();
-                    allPosts = posts.filter(post => {
-                        const cats = post._embedded?.['wp:term']?.[0] || [];
-                        return cats.some(cat => cat.name !== 'Uncategorized');
-                    });
-                    currentPosts = allPosts;
-                    displayedCount = POSTS_PER_PAGE;
-                    displayPosts(currentPosts.slice(0, displayedCount));
-                    populateFilters(allPosts);
-                } catch (error) {
-                    insightsGrid.innerHTML = `<p class="text-center text-red-500 col-span-full">Could not load insights. Please try again later.</p>`;
-                    console.error('Error fetching posts:', error);
+    // Enhanced fetch function that tries multiple endpoints
+    async function fetchPosts() {
+        console.log('🔍 Starting to fetch posts...');
+        
+        for (let i = 0; i < apiEndpoints.length; i++) {
+            const endpoint = apiEndpoints[i];
+            console.log(`📡 Trying endpoint ${i + 1}/${apiEndpoints.length}: ${endpoint}`);
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin' // Include cookies for authentication
+                });
+                
+                console.log(`📊 Response status: ${response.status} ${response.statusText}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
                 }
-            }
-
-            function displayPosts(posts) {
-                insightsGrid.innerHTML = '';
-                if (posts.length === 0) {
-                    insightsGrid.innerHTML = `<p class="text-center col-span-full">No insights found.</p>`;
-                    showMoreBtn.style.display = 'none';
+                
+                const posts = await response.json();
+                console.log(`✅ Successfully fetched ${posts.length} posts from: ${endpoint}`);
+                
+                // Filter out uncategorized posts
+                allPosts = posts.filter(post => {
+                    // Handle both standard and custom API response formats
+                    const categories = post._embedded?.['wp:term']?.[0] || 
+                                     post.categories || 
+                                     [];
+                    
+                    if (Array.isArray(categories)) {
+                        return categories.some(cat => 
+                            (cat.name && cat.name !== 'Uncategorized') ||
+                            (cat.slug && cat.slug !== 'uncategorized')
+                        );
+                    }
+                    return true; // Include if no category info available
+                });
+                
+                console.log(`🎯 Filtered to ${allPosts.length} categorized posts`);
+                
+                currentPosts = allPosts;
+                displayedCount = POSTS_PER_PAGE;
+                displayPosts(currentPosts.slice(0, displayedCount));
+                populateFilters(allPosts);
+                return; // Success! Exit the loop
+                
+            } catch (error) {
+                console.error(`❌ Failed to fetch from ${endpoint}:`, error);
+                
+                // If this is the last endpoint, show error
+                if (i === apiEndpoints.length - 1) {
+                    console.error('🚨 All API endpoints failed');
+                    showErrorMessage();
                     return;
                 }
                 
-                const articleListSchema = {
-                    "@context": "https://schema.org",
-                    "@type": "ItemList",
-                    "itemListElement": []
-                };
-
-                posts.forEach((post, index) => {
-                    const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
-                    const imageUrl = featuredMedia?.source_url || `https://placehold.co/600x400/7216f4/FFFFFF?text=${post.title.rendered.split(' ')[0]}`;
-                    const sizes = featuredMedia?.media_details?.sizes;
-                    const srcset = sizes ? Object.values(sizes).map(size => `${size.source_url} ${size.width}w`).join(', ') : '';
-                    const width = featuredMedia?.media_details?.width || 600;
-                    const height = featuredMedia?.media_details?.height || 400;
-                    const categoryNames = post._embedded?.['wp:term']?.[0]?.map(cat => cat.name).filter(name => name !== 'Uncategorized') || [];
-                    const category = categoryNames.length > 0 ? categoryNames[0] : '';
-                    const excerpt = post.excerpt.rendered.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
-
-                    const card = document.createElement('article');
-                    card.className = 'insight-card';
-                    card.style.animationDelay = `${index * 100}ms`;
-                    const categorySpan = category ? `<span class="card-category">${category}</span>` : '';
-                    card.innerHTML = `
-                        <img loading="lazy" src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" alt="${post.title.rendered}" class="card-image">
-                        <div class="card-content">
-                            ${categorySpan}
-                            <h2 class="card-title">${post.title.rendered}</h2>
-                            <p class="card-excerpt">${excerpt}</p>
-                            <a href="${post.link}" target="_blank" class="card-read-more">Read More &rarr;</a>
-                        </div>
-                    `;
-                    card.addEventListener('click', (e) => {
-                        if (!e.target.closest('a')) {
-                            window.open(post.link, '_blank');
-                        }
-                    });
-                    insightsGrid.appendChild(card);
-
-                    // DYNAMICALLY ADD SCHEMA FOR EACH ARTICLE
-                    const articleSchema = {
-                        "@context": "https://schema.org",
-                        "@type": "BlogPosting",
-                        "mainEntityOfPage": {
-                            "@type": "WebPage",
-                            "@id": post.link
-                        },
-                        "headline": post.title.rendered,
-                        "image": imageUrl,
-                        "datePublished": post.date_gmt,
-                        "dateModified": post.modified_gmt,
-                        "author": {
-                            "@type": "Person",
-                            "name": post._embedded.author[0].name
-                        },
-                        "publisher": {
-                            "@type": "Organization",
-                            "name": "Your Company Name",
-                            "logo": {
-                                "@type": "ImageObject",
-                                "url": "https://placehold.co/200x60/281345/FFFFFF?text=Your+Logo"
-                            }
-                        },
-                        "description": excerpt
-                    };
-                    appendSchema(articleSchema);
-                    
-                    // Add to ItemList for main page schema
-                    articleListSchema.itemListElement.push({
-                        "@type": "ListItem",
-                        "position": index + 1,
-                        "url": post.link
-                    });
-                });
-                
-                // Add the complete ItemList schema
-                appendSchema(articleListSchema);
-                showMoreBtn.style.display = displayedCount < currentPosts.length ? 'block' : 'none';
+                // Otherwise, continue to next endpoint
+                console.log('🔄 Trying next endpoint...');
             }
+        }
+    }
 
-            function populateFilters(posts) {
-                const categories = new Set();
-                posts.forEach(post => {
-                    const postCategories = post._embedded?.['wp:term']?.[0];
-                    if (postCategories) {
-                        postCategories.forEach(cat => {
-                            if (cat.name !== 'Uncategorized') {
-                                categories.add(cat.name);
-                            }
-                        });
+    // Enhanced error display
+    function showErrorMessage() {
+        insightsGrid.innerHTML = `
+            <div class="error-message" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                <h3 style="color: #e74c3c; margin-bottom: 1rem;">Unable to Load Insights</h3>
+                <p style="color: #7e7e7e; margin-bottom: 1.5rem;">We're having trouble connecting to our content server.</p>
+                <button onclick="location.reload()" style="
+                    background: linear-gradient(135deg, #7216f4, #8f47f6);
+                    color: white;
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                ">
+                    Try Again
+                </button>
+                <div style="margin-top: 2rem; font-size: 0.9rem; color: #999;">
+                    <p>Alternative options:</p>
+                    <a href="/blog" style="color: #7216f4; margin: 0 10px;">Visit Blog</a> |
+                    <a href="/contact" style="color: #7216f4; margin: 0 10px;">Contact Support</a>
+                </div>
+            </div>
+        `;
+        showMoreBtn.style.display = 'none';
+    }
+
+    // Enhanced post display function
+    function displayPosts(posts) {
+        insightsGrid.innerHTML = '';
+        
+        if (posts.length === 0) {
+            insightsGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                    <h3 style="color: #7e7e7e;">No insights found</h3>
+                    <p style="color: #999;">Try adjusting your search or filter criteria.</p>
+                </div>
+            `;
+            showMoreBtn.style.display = 'none';
+            return;
+        }
+        
+        const articleListSchema = {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": []
+        };
+
+        posts.forEach((post, index) => {
+            // Handle different API response formats
+            const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0] || null;
+            const imageUrl = featuredMedia?.source_url || 
+                           post.featured_image_url ||
+                           `https://placehold.co/600x400/7216f4/FFFFFF?text=${encodeURIComponent(post.title.rendered?.split(' ')[0] || 'Insight')}`;
+            
+            const sizes = featuredMedia?.media_details?.sizes;
+            const srcset = sizes ? Object.values(sizes).map(size => `${size.source_url} ${size.width}w`).join(', ') : '';
+            const width = featuredMedia?.media_details?.width || 600;
+            const height = featuredMedia?.media_details?.height || 400;
+            
+            // Handle categories from different API formats
+            const categories = post._embedded?.['wp:term']?.[0] || post.categories || [];
+            const categoryNames = Array.isArray(categories) 
+                ? categories.map(cat => cat.name || cat.slug || '').filter(name => name && name !== 'Uncategorized')
+                : [];
+            const category = categoryNames.length > 0 ? categoryNames[0] : '';
+            
+            // Handle excerpts
+            const excerpt = (post.excerpt?.rendered || post.excerpt || '')
+                .replace(/<[^>]+>/g, '')
+                .substring(0, 120) + '...';
+            
+            // Handle titles and links
+            const title = post.title?.rendered || post.title || 'Untitled';
+            const link = post.link || post.url || '#';
+
+            const card = document.createElement('article');
+            card.className = 'insight-card';
+            card.style.animationDelay = `${index * 100}ms`;
+            
+            const categorySpan = category ? `<span class="card-category">${category}</span>` : '';
+            
+            card.innerHTML = `
+                <img loading="lazy" src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" alt="${title}" class="card-image" onerror="this.src='https://placehold.co/600x400/7216f4/FFFFFF?text=Insight'">
+                <div class="card-content">
+                    ${categorySpan}
+                    <h2 class="card-title">${title}</h2>
+                    <p class="card-excerpt">${excerpt}</p>
+                    <a href="${link}" target="_blank" class="card-read-more" rel="noopener">Read More &rarr;</a>
+                </div>
+            `;
+            
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('a')) {
+                    window.open(link, '_blank', 'noopener');
+                }
+            });
+            
+            insightsGrid.appendChild(card);
+
+            // Add to schema
+            articleListSchema.itemListElement.push({
+                "@type": "ListItem",
+                "position": index + 1,
+                "url": link
+            });
+        });
+        
+        // Add schema to page
+        appendSchema(articleListSchema);
+        showMoreBtn.style.display = displayedCount < currentPosts.length ? 'block' : 'none';
+    }
+
+    // Enhanced filter population
+    function populateFilters(posts) {
+        const categories = new Set();
+        
+        posts.forEach(post => {
+            // Handle different API response formats
+            const postCategories = post._embedded?.['wp:term']?.[0] || post.categories || [];
+            
+            if (Array.isArray(postCategories)) {
+                postCategories.forEach(cat => {
+                    const catName = cat.name || cat.slug || '';
+                    if (catName && catName !== 'Uncategorized' && catName !== 'uncategorized') {
+                        categories.add(catName);
                     }
                 });
-                filterButtonsContainer.innerHTML = '<button class="active" data-category="all">All</button>';
-                categories.forEach(category => {
-                    const button = document.createElement('button');
-                    button.textContent = category;
-                    button.dataset.category = category;
-                    filterButtonsContainer.appendChild(button);
-                });
             }
+        });
+        
+        filterButtonsContainer.innerHTML = '<button class="active" data-category="all">All</button>';
+        
+        Array.from(categories).sort().forEach(category => {
+            const button = document.createElement('button');
+            button.textContent = category;
+            button.dataset.category = category;
+            filterButtonsContainer.appendChild(button);
+        });
+    }
+
+    // Enhanced filter functionality
+    filterButtonsContainer.addEventListener('click', function(e) {
+        if(e.target.tagName === 'BUTTON') {
+            document.querySelector('.filter-buttons button.active').classList.remove('active');
+            e.target.classList.add('active');
             
-            filterButtonsContainer.addEventListener('click', function(e) {
-                if(e.target.tagName === 'BUTTON') {
-                    document.querySelector('.filter-buttons button.active').classList.remove('active');
-                    e.target.classList.add('active');
-                    
-                    const category = e.target.dataset.category;
-                    if (category === 'all') {
-                        currentPosts = allPosts;
-                    } else {
-                        currentPosts = allPosts.filter(post =>
-                            post._embedded?.['wp:term']?.[0]?.some(cat => cat.name === category)
+            const category = e.target.dataset.category;
+            if (category === 'all') {
+                currentPosts = allPosts;
+            } else {
+                currentPosts = allPosts.filter(post => {
+                    const postCategories = post._embedded?.['wp:term']?.[0] || post.categories || [];
+                    if (Array.isArray(postCategories)) {
+                        return postCategories.some(cat => 
+                            (cat.name && cat.name === category) ||
+                            (cat.slug && cat.slug === category)
                         );
                     }
-                    displayedCount = POSTS_PER_PAGE;
-                    displayPosts(currentPosts.slice(0, displayedCount));
-                }
-            });
-
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                currentPosts = allPosts.filter(post =>
-                    post.title.rendered.toLowerCase().includes(searchTerm) ||
-                    post.excerpt.rendered.toLowerCase().includes(searchTerm)
-                );
-                displayedCount = POSTS_PER_PAGE;
-                displayPosts(currentPosts.slice(0, displayedCount));
-            });
-            
-            // Modal logic
-            openModalBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                modal.classList.add('show');
-                document.body.classList.add('modal-open');
-            });
-            
-            closeModalBtn.addEventListener('click', () => {
-                modal.classList.remove('show');
-                document.body.classList.remove('modal-open');
-            });
-            
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('show');
-                    document.body.classList.remove('modal-open');
-                }
-            });
-
-            leadForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                console.log('Form submitted with:', {
-                    name: e.target.name.value,
-                    email: e.target.email.value
+                    return false;
                 });
-                leadForm.innerHTML = `<p class="text-center text-lg">Thank you! We'll be in touch.</p>`;
-            });
+            }
+            displayedCount = POSTS_PER_PAGE;
+            displayPosts(currentPosts.slice(0, displayedCount));
+        }
+    });
 
-            showMoreBtn.addEventListener('click', () => {
-                displayedCount += POSTS_PER_PAGE;
-                displayPosts(currentPosts.slice(0, displayedCount));
-            });
-
-            fetchPosts();
+    // Enhanced search functionality
+    searchInput.addEventListener('input', debounce((e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        currentPosts = allPosts.filter(post => {
+            const title = (post.title?.rendered || post.title || '').toLowerCase();
+            const excerpt = (post.excerpt?.rendered || post.excerpt || '').toLowerCase();
+            return title.includes(searchTerm) || excerpt.includes(searchTerm);
         });
+        displayedCount = POSTS_PER_PAGE;
+        displayPosts(currentPosts.slice(0, displayedCount));
+    }, 300));
+
+    // Utility functions
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    function appendSchema(schema) {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.text = JSON.stringify(schema);
+        document.head.appendChild(script);
+    }
+
+    // Modal logic (unchanged)
+    openModalBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        modal.classList.add('show');
+        document.body.classList.add('modal-open');
+    });
+    
+    closeModalBtn.addEventListener('click', () => {
+        modal.classList.remove('show');
+        document.body.classList.remove('modal-open');
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('show');
+            document.body.classList.remove('modal-open');
+        }
+    });
+
+    leadForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        console.log('Form submitted with:', {
+            name: e.target.name.value,
+            email: e.target.email.value
+        });
+        leadForm.innerHTML = `<p class="text-center text-lg">Thank you! We'll be in touch.</p>`;
+    });
+
+    showMoreBtn.addEventListener('click', () => {
+        displayedCount += POSTS_PER_PAGE;
+        displayPosts(currentPosts.slice(0, displayedCount));
+    });
+
+    // Start the application
+    console.log('🚀 Insights page initialized');
+    fetchPosts();
+});
     </script>
-
-
 </body>
 </html>

@@ -240,20 +240,21 @@ if (!defined("ABSPATH")) exit;
         <div class="modal" id="toolModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
             <div class="modal-content" tabindex="-1">
                 <div class="modal-header">
+                    <img id="modalToolLogo" class="modal-tool-logo" alt="">
                     <h3 class="modal-title" id="modalTitle"></h3>
                     <div class="modal-header-actions">
-                        <a id="modalWebsiteLink" href="#" target="_blank" rel="noopener noreferrer" class="website-link--modal" style="display: none;">
-                            Visit Website →
-                        </a>
+                        <a id="modalWebsiteLink" href="#" target="_blank" rel="noopener noreferrer" class="website-link--modal" style="display: none;">Website</a>
                         <button class="modal-close" id="modalClose">×</button>
                     </div>
                 </div>
                 <div class="modal-body">
-                    <img loading="lazy" id="modalToolLogo" class="modal-tool-logo" alt="Selected tool logo">
-                    <!-- The Overview is now static in the HTML structure -->
                     <div class="feature-section">
                         <h4>🎯 Overview</h4>
                         <p id="modalDescription"></p>
+                    </div>
+                    <div class="feature-section">
+                        <h4>🏷️ Tags</h4>
+                        <div id="modalTags" class="tool-tags"></div>
                     </div>
                 </div>
             </div>

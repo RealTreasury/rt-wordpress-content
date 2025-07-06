@@ -429,7 +429,7 @@ final class Treasury_Portal_Access {
     
     public function portal_button_shortcode($atts) {
         $atts = shortcode_atts(['text' => 'Access Portal', 'class' => ''], $atts, 'portal_button');
-        $classes = 'tpa-btn tpa-btn-primary open-portal-modal ' . esc_attr($atts['class']);
+        $classes = 'tpa-btn tpa-btn-primary open-portal-modal tpa-btn-loading ' . esc_attr($atts['class']);
         return '<button class="' . trim($classes) . '">' . esc_html($atts['text']) . '</button>';
     }
     

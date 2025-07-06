@@ -2734,6 +2734,18 @@ body.menu-open {
     }
 }
 
+/* Initially hide portal access links until JS determines state */
+a[href="#openPortalModal"] {
+    opacity: 0.3 !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease !important;
+}
+
+a[href="#openPortalModal"].tpa-btn-ready {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
 /* =================================================================== */
 /* Homepage Button Fixes - Add these styles to improve button behavior */
 /* =================================================================== */

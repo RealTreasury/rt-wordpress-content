@@ -32,14 +32,11 @@ function add_my_custom_header_html() {
                             <div class="rt-main-menu">
                                 <div class="rt-main-menu-column">
                                     <h3>Explore</h3>
-                                    <img class="rt-explore-image"
-                                         src="https://realtreasury.com/wp-content/uploads/2025/07/treasury-tech-market-clean-06-2025.png"
-                                         alt="Treasury Tech Market"
-                                         loading="lazy">
-                                    <a href="https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q"
-                                       target="_blank"
-                                       class="rt-book-meeting">
-                                        Save My Seat<br>for the Live Session
+                                    <a href="https://realtreasury.com/treasury-tech-market/">
+                                        <img class="rt-explore-image"
+                                             src="https://realtreasury.com/wp-content/uploads/2025/07/treasury-tech-market-clean-06-2025.png"
+                                             alt="Treasury Tech Market"
+                                             loading="lazy">
                                     </a>
                                 </div>
                                 <div class="rt-main-menu-column rt-topics-column">

@@ -3439,20 +3439,23 @@ body.banner-closed .workshop-banner {
 
 /* Mobile navigation fixes */
 @media (max-width: 992px) {
-    .rt-nav-link,
-    .rt-nav-link:link,
-    .rt-nav-link:visited,
-    .rt-nav-link:hover,
-    .rt-nav-link:active,
-    .rt-nav-link:focus {
+    /* Override highly specific desktop rule */
+    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link,
+    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:link,
+    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:visited,
+    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:hover,
+    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:active,
+    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:focus {
         color: var(--dark-text) !important; /* Dark text on mobile light background */
     }
-    
-    .rt-nav-link.has-dropdown::after {
-        border-top-color: var(--dark-text) !important;
+
+    .rt-nav-container .rt-nav .rt-nav-item.active .rt-nav-link {
+        color: var(--dark-text) !important;
+        background: rgba(255, 255, 255, 0.1) !important;
     }
-    
-    .rt-nav-item.active .rt-nav-link.has-dropdown::after {
+
+    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link.has-dropdown::after,
+    .rt-nav-container .rt-nav .rt-nav-item.active .rt-nav-link.has-dropdown::after {
         border-top-color: var(--dark-text) !important;
     }
 }

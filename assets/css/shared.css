@@ -1441,7 +1441,7 @@
     background: none !important;
     border-radius: 8px;
     display: block;
-    font-size: 36px !important;
+    font-size: 1.5rem !important;
 }
 
 .rt-main-menu-link:hover {
@@ -1511,7 +1511,7 @@
 }
 
 .rt-about-menu .rt-main-menu-link {
-    font-size: 1.2rem !important;
+    font-size: 1.5rem !important;
     text-align: center;
     padding: 1rem !important;
 }
@@ -1893,7 +1893,7 @@
         display: block !important;
         margin-bottom: 0.5rem !important;
         border: 1px solid rgba(199, 125, 255, 0.2) !important;
-        font-size: 36px !important;
+        font-size: 1.5rem !important;
     }
     
     .rt-main-menu-link:hover {

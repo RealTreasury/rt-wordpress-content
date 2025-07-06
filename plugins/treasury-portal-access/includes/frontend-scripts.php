@@ -50,10 +50,63 @@ if (empty($form_id)) {
                 return;
             }
 
-            // Defer event listener setup until DOM is fully loaded
+            // IMMEDIATE access check (before DOMContentLoaded)
+            this.quickAccessCheck();
+
+            // Full initialization on DOM ready
             document.addEventListener('DOMContentLoaded', () => {
                 this.checkAccessPersistence();
                 this.addEventListeners();
+                this.showButtons(); // Make buttons visible after state is determined
+            });
+        },
+
+        quickAccessCheck: function() {
+            // Check localStorage immediately for faster response
+            const localStorageEnabled = <?php echo get_option('tpa_enable_localStorage', true) ? 'true' : 'false'; ?>;
+            if (!localStorageEnabled) return;
+
+            const localData = localStorage.getItem('tpa_access_token');
+            if (localData) {
+                try {
+                    const storedData = JSON.parse(localData);
+                    if (storedData && storedData.email && (Date.now()/1000 - storedData.timestamp) < this.accessDuration) {
+                        // User likely has valid access - pre-update buttons
+                        this.preUpdateButtons();
+                    }
+                } catch (e) {
+                    console.log('TPA: Error parsing stored access data');
+                }
+            }
+        },
+
+        preUpdateButtons: function() {
+            // Quick update before full verification
+            setTimeout(() => {
+                document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"]').forEach(el => {
+                    if (el.textContent.trim() === 'Access Portal') {
+                        el.textContent = 'View Portal';
+                        if (el.tagName.toLowerCase() === 'a') {
+                            el.href = this.redirectUrl;
+                        }
+                    }
+                });
+            }, 50);
+        },
+
+        showButtons: function() {
+            // Remove loading state from all portal buttons
+            document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"], .tpa-btn').forEach(el => {
+                el.classList.remove('tpa-btn-loading');
+                el.classList.add('tpa-btn-ready');
+            });
+        },
+
+        hideButtons: function() {
+            // Add loading state to portal buttons
+            document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"], .tpa-btn').forEach(el => {
+                el.classList.add('tpa-btn-loading');
+                el.classList.remove('tpa-btn-ready');
             });
         },
 
@@ -122,8 +175,12 @@ if (empty($form_id)) {
                 if (el.textContent.trim() === 'Access Portal') {
                     el.textContent = 'View Portal';
                 }
+
+                // Ensure button is visible and ready
+                el.classList.remove('tpa-btn-loading');
+                el.classList.add('tpa-btn-ready');
             });
-            
+
             // If a protected content block was showing an access message, reload the page to show the actual content.
             if(document.querySelector('.tpa-access-required')) {
                 location.reload();
@@ -258,6 +315,16 @@ if (empty($form_id)) {
 
 <style>
 /* Styles are unchanged, but included for completeness */
+.tpa-btn-loading {
+    opacity: 0.3 !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease !important;
+}
+
+.tpa-btn-ready {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
 body.modal-open { overflow: hidden !important; }
 .tpa-modal { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 1000003 !important; background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4)) !important; backdrop-filter: blur(15px) saturate(120%) !important; -webkit-backdrop-filter: blur(15px) saturate(120%) !important; display: flex !important; align-items: center !important; justify-content: center !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transition: all .4s cubic-bezier(.4, 0, .2, 1) !important; }
 .tpa-modal.show { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }

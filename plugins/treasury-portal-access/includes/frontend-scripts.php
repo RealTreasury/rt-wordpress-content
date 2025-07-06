@@ -111,21 +111,16 @@ if (empty($form_id)) {
          */
         updateUIAfterRestore: function() {
             document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"]').forEach(el => {
-                const newLink = document.createElement('a');
-                newLink.href = this.redirectUrl;
-                
-                // Copy classes from the original button for consistent styling.
-                newLink.className = el.className;
-                newLink.classList.remove('open-portal-modal');
-                newLink.textContent = 'View Portal';
-
-                // Try to replace the parent button block if it exists, otherwise replace the element itself.
-                const parentWrapper = el.closest('.wp-block-button');
-                if (parentWrapper) {
-                    parentWrapper.innerHTML = ''; // Clear the old button
-                    parentWrapper.appendChild(newLink);
+                if (el.tagName.toLowerCase() === 'a') {
+                    el.href = this.redirectUrl;
                 } else {
-                    el.parentNode.replaceChild(newLink, el);
+                    el.setAttribute('data-href', this.redirectUrl);
+                }
+
+                el.classList.remove('open-portal-modal');
+
+                if (el.textContent.trim() === 'Access Portal') {
+                    el.textContent = 'View Portal';
                 }
             });
             

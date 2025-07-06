@@ -40,7 +40,7 @@
             padding: 0 20px;
         }
 
-        /* Simplified Hero Section */
+        /* Hero Section */
         .hero {
             background: linear-gradient(135deg, #ffffff, #f8f8f8);
             padding: 60px 0 80px;
@@ -51,8 +51,7 @@
         }
 
         .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
             text-align: center;
             position: relative;
             z-index: 2;
@@ -71,7 +70,8 @@
             content: '';
             position: absolute;
             bottom: -10px;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100px;
             height: 4px;
             background: var(--primary-purple);
@@ -89,18 +89,6 @@
             margin-right: auto;
         }
 
-        .personal-connection {
-            background: var(--light-gray);
-            border-left: 4px solid var(--primary-purple);
-            padding: 25px;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            font-style: italic;
-            color: var(--dark-text);
-            font-size: 1rem;
-            font-weight: 400;
-        }
-
         .urgency-banner {
             background: var(--solid-danger);
             color: white;
@@ -110,6 +98,10 @@
             text-align: center;
             font-weight: 600;
             font-size: 1rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 2rem;
         }
 
         .workshop-details {
@@ -117,11 +109,9 @@
             border: 2px solid var(--primary-purple);
             border-radius: 12px;
             padding: 30px;
-            margin-bottom: 2.5rem;
+            margin: 2rem auto;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .workshop-details h3 {
@@ -140,60 +130,14 @@
             margin: 0;
         }
 
-        .workshop-cta-text {
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.1), rgba(143, 71, 246, 0.1));
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .workshop-cta-text p {
-            font-size: 1.1rem;
-            color: var(--dark-text);
-            font-weight: 500;
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        .cta-button {
-            background: var(--primary-purple);
-            color: white;
-            padding: 18px 36px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 1rem;
-        }
-
-        .cta-button:hover {
-            background: var(--secondary-purple);
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        .hero-visual {
-            position: relative;
-        }
-
         .pain-points-list {
             background: white;
             border: 2px solid #e5e5e5;
             border-radius: 12px;
             padding: 30px;
-            margin-bottom: 2.5rem;
+            margin: 2rem auto;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 700px;
             text-align: left;
         }
 
@@ -229,19 +173,62 @@
             font-weight: bold;
         }
 
+        .pain-points-list p {
+            text-align: center;
+            color: var(--primary-purple);
+            font-style: italic;
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
         .hook-question {
             text-align: center;
             font-size: 1.2rem;
             color: var(--dark-text);
             font-weight: 600;
-            margin-bottom: 20px;
+            margin: 2rem auto;
+            max-width: 700px;
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.1), rgba(143, 71, 246, 0.1));
+            padding: 25px;
+            border-radius: 12px;
         }
 
-        /* Problem Section */
-        .problem-section {
+        .cta-button {
+            background: var(--primary-purple);
+            color: white;
+            padding: 18px 36px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 1rem;
+        }
+
+        .cta-button:hover {
+            background: var(--secondary-purple);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        /* Section Styling */
+        .section {
             padding: 80px 0;
-            background: white;
             position: relative;
+        }
+
+        .section.white-bg {
+            background: white;
+        }
+
+        .section.light-bg {
+            background: var(--light-bg);
         }
 
         .section-header {
@@ -265,14 +252,27 @@
             font-weight: 400;
         }
 
-        .problems-grid {
+        /* Content Grids */
+        .content-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             margin-top: 50px;
         }
 
-        .problem-card {
+        .content-grid.two-col {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+
+        .content-grid.three-col {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .content-grid.auto-fit {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        /* Card Styling */
+        .card {
             background: white;
             border: 2px solid #f0f0f0;
             border-radius: 12px;
@@ -281,13 +281,13 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .problem-card:hover {
+        .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             border-color: var(--primary-purple);
         }
 
-        .problem-number {
+        .card-number {
             background: var(--primary-purple);
             color: white;
             width: 40px;
@@ -301,42 +301,42 @@
             margin-bottom: 20px;
         }
 
-        .problem-card h3 {
+        .card-letter {
+            background: var(--primary-purple);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
             color: var(--dark-text);
             margin-bottom: 15px;
             font-size: 1.2rem;
             font-weight: 600;
         }
 
-        .problem-card p {
+        .card h4 {
+            color: var(--dark-text);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .card p {
             color: var(--gray-text);
             font-size: 1rem;
             line-height: 1.6;
             font-weight: 400;
         }
 
-        /* Clean Testimonials Section */
-        .testimonials-section {
-            padding: 80px 0;
-            background: var(--light-bg);
-            position: relative;
-        }
-
-        .testimonials-section .section-header h2 {
-            color: var(--dark-text);
-        }
-
-        .testimonials-section .section-header p {
-            color: var(--gray-text);
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            position: relative;
-        }
-
+        /* Testimonial Cards */
         .testimonial-card {
             background: white;
             border: 2px solid #f0f0f0;
@@ -386,18 +386,7 @@
             font-weight: 400;
         }
 
-        /* Solution Section */
-        .solution-section {
-            padding: 70px 0;
-            background: white;
-            position: relative;
-        }
-
-        .solution-section .section-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
+        /* Solution Intro */
         .solution-intro {
             text-align: left;
             max-width: 700px;
@@ -408,100 +397,6 @@
             font-size: 1.1rem;
             color: var(--dark-text);
             font-weight: 500;
-        }
-
-        .method-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-
-        .method-step {
-            background: white;
-            border: 2px solid #f0f0f0;
-            border-radius: 12px;
-            padding: 30px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .method-step:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border-color: var(--primary-purple);
-        }
-
-        .step-letter {
-            background: var(--primary-purple);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-        }
-
-        .method-step h3 {
-            color: var(--dark-text);
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .method-step p {
-            color: var(--gray-text);
-            font-size: 1rem;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-
-        /* What You'll Learn */
-        .learn-section {
-            padding: 80px 0;
-            background: var(--light-bg);
-            color: var(--dark-text);
-            position: relative;
-        }
-
-        .learn-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-
-        .learn-item {
-            background: white;
-            border: 2px solid #f0f0f0;
-            border-radius: 12px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .learn-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            border-color: var(--primary-purple);
-        }
-
-        .learn-item h4 {
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            color: var(--dark-text);
-            font-weight: 600;
-        }
-        
-        .learn-item p {
-            color: var(--gray-text);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            font-weight: 400;
         }
 
         /* Final CTA */
@@ -584,9 +479,8 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero-content {
-                max-width: 100%;
-                padding: 0 10px;
+            .container {
+                padding: 0 15px;
             }
 
             .hero-text h1 {
@@ -600,27 +494,25 @@
             }
 
             .workshop-details,
-            .pain-points-list,
-            .workshop-cta-text p {
-                font-size: 1rem;
+            .pain-points-list {
+                margin: 1.5rem auto;
+                padding: 20px;
             }
 
             .section-header h2 {
                 font-size: 2.2rem;
             }
 
-            .problems-grid,
-            .method-grid,
-            .learn-grid {
+            .content-grid.two-col {
                 grid-template-columns: 1fr;
             }
 
-            .testimonials-grid {
+            .content-grid.three-col {
                 grid-template-columns: 1fr;
             }
 
-            .container {
-                padding: 0 15px;
+            .content-grid.auto-fit {
+                grid-template-columns: 1fr;
             }
 
             .button-group {
@@ -681,13 +573,9 @@
                             <li>Overwhelmed by the massive undertaking in front of you</li>
                             <li>Concerned about having appropriate resources</li>
                         </ul>
-                        <p style="text-align: center; color: var(--primary-purple); font-style: italic; margin-top: 15px; font-weight: 600; font-size: 1.1rem;">We've got a fresh approach that will put an end to this misery.</p>
+                        <p>We've got a fresh approach that will put an end to this misery.</p>
                     </div>
                     
-                    <a href="https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration" class="cta-button">🚀 END THE MISERY - JOIN NOW</a>
-                </div>
-                
-                <div class="hero-visual">
                     <div class="hook-question">
                         Know you need a treasury system, but not sure where to start?<br>
                         Do all the demos look the same?<br>
@@ -699,47 +587,47 @@
                         <p>Tuesday, July 15 | 12:00 PM ET / 9:00 AM PT</p>
                     </div>
                     
-
+                    <a href="https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration" class="cta-button">🚀 END THE MISERY - JOIN NOW</a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Problem Section -->
-    <section class="problem-section">
+    <section class="section white-bg">
         <div class="container">
             <div class="section-header">
                 <h2>The Treasury Selection NIGHTMARE</h2>
                 <p>These painful realities are crushing treasury teams everywhere - but there's a way out</p>
             </div>
             
-            <div class="problems-grid">
-                <div class="problem-card">
-                    <div class="problem-number">1</div>
+            <div class="content-grid three-col">
+                <div class="card">
+                    <div class="card-number">1</div>
                     <h3>💤 Endless Demo Fatigue</h3>
                     <p>Sitting through demo after demo, watching the same recycled presentations while your valuable time disappears into the void.</p>
                 </div>
                 
-                <div class="problem-card">
-                    <div class="problem-number">2</div>
+                <div class="card">
+                    <div class="card-number">2</div>
                     <h3>🔄 The Never-Ending Process</h3>
                     <p>Months drag on with no clear end in sight. The selection process becomes a full-time job on top of your full-time job.</p>
                 </div>
                 
-                <div class="problem-card">
-                    <div class="problem-number">3</div>
+                <div class="card">
+                    <div class="card-number">3</div>
                     <h3>😰 Overwhelming Pressure</h3>
                     <p>The weight of making the "right" decision while lacking the resources, support, and framework to evaluate options properly.</p>
                 </div>
                 
-                <div class="problem-card">
-                    <div class="problem-number">4</div>
+                <div class="card">
+                    <div class="card-number">4</div>
                     <h3>🎯 Buying on Looks, Not Logic</h3>
                     <p>Falling for flashy dashboards and smooth sales pitches instead of evaluating actual functional capabilities that matter.</p>
                 </div>
                 
-                <div class="problem-card">
-                    <div class="problem-number">5</div>
+                <div class="card">
+                    <div class="card-number">5</div>
                     <h3>💸 Costly Mistakes</h3>
                     <p>Selecting based on price, familiarity, or what worked elsewhere - only to discover it doesn't meet YOUR specific needs.</p>
                 </div>
@@ -747,15 +635,15 @@
         </div>
     </section>
 
-    <!-- Clean Testimonials -->
-    <section class="testimonials-section">
+    <!-- Testimonials -->
+    <section class="section light-bg">
         <div class="container">
             <div class="section-header">
                 <h2>What Treasury Leaders Are Saying</h2>
                 <p>Real results from real treasury professionals who escaped the selection nightmare</p>
             </div>
             
-            <div class="testimonials-grid">
+            <div class="content-grid two-col">
                 <div class="testimonial-card">
                     <div class="testimonial-text">
                         A thoughtful, structured process for selecting the cornerstone of my treasury tech stack offered by Tracey Knight and Tim Schultz.
@@ -776,7 +664,7 @@
     </section>
 
     <!-- Solution Section -->
-    <section class="solution-section">
+    <section class="section white-bg">
         <div class="container">
             <div class="section-header">
                 <h2>The ERR NOT™ Method</h2>
@@ -791,39 +679,39 @@
                 ✅ <strong>Be able to clearly communicate the value to stakeholders</strong>
             </div>
             
-            <div class="method-grid">
-                <div class="method-step">
-                    <div class="step-letter">E</div>
+            <div class="content-grid auto-fit">
+                <div class="card">
+                    <div class="card-letter">E</div>
                     <h3>✅ Education</h3>
                     <p>Gain COMPREHENSIVE understanding of vendor and product options currently available in the market. Knowledge is POWER!</p>
                 </div>
                 
-                <div class="method-step">
-                    <div class="step-letter">R</div>
+                <div class="card">
+                    <div class="card-letter">R</div>
                     <h3>✅ Requirements</h3>
                     <p>Determine and prioritize your ACTUAL requirements based on business needs, not wants. No more wishful thinking!</p>
                 </div>
                 
-                <div class="method-step">
-                    <div class="step-letter">R</div>
+                <div class="card">
+                    <div class="card-letter">R</div>
                     <h3>✅ RFI/RFP</h3>
                     <p>Create BESPOKE RFI/RFP documents designed to effectively shortlist the RIGHT vendors for YOUR needs.</p>
                 </div>
                 
-                <div class="method-step">
-                    <div class="step-letter">N</div>
+                <div class="card">
+                    <div class="card-letter">N</div>
                     <h3>✅ uNique</h3>
                     <p>Create CUSTOM demo scripts that highlight strengths and weaknesses of each vendor against your high-priority requirements.</p>
                 </div>
                 
-                <div class="method-step">
-                    <div class="step-letter">O</div>
+                <div class="card">
+                    <div class="card-letter">O</div>
                     <h3>✅ Obvious Winner</h3>
                     <p>Run a post-demo process to rank vendors OBJECTIVELY and make the winner (and backup) crystal clear.</p>
                 </div>
                 
-                <div class="method-step">
-                    <div class="step-letter">T</div>
+                <div class="card">
+                    <div class="card-letter">T</div>
                     <h3>✅ Transformation</h3>
                     <p>Implement better practices and processes to ensure MARKED improvement in your future state over current state.</p>
                 </div>
@@ -832,40 +720,40 @@
     </section>
 
     <!-- What You'll Learn -->
-    <section class="learn-section">
+    <section class="section light-bg">
         <div class="container">
             <div class="section-header">
                 <h2>💎 Transform Your Selection Process</h2>
                 <p>Walk away with the confidence and framework to make the RIGHT decision the FIRST time</p>
             </div>
             
-            <div class="learn-grid">
-                <div class="learn-item">
+            <div class="content-grid three-col">
+                <div class="card">
                     <h4>🎯 End Demo Fatigue Forever</h4>
                     <p>Learn how to create meaningful demos that actually reveal what you need to know - no more time-wasting presentations.</p>
                 </div>
                 
-                <div class="learn-item">
+                <div class="card">
                     <h4>⚡ Structured Selection Framework</h4>
                     <p>Get the EXACT step-by-step process that eliminates guesswork and ensures objective decision-making.</p>
                 </div>
                 
-                <div class="learn-item">
+                <div class="card">
                     <h4>🔍 Requirements That Actually Work</h4>
                     <p>Discover how to identify and prioritize requirements that drive the RIGHT outcomes for YOUR organization.</p>
                 </div>
                 
-                <div class="learn-item">
+                <div class="card">
                     <h4>💼 Stakeholder Communication</h4>
                     <p>Master the art of clearly communicating value and building buy-in from leadership and team members.</p>
                 </div>
                 
-                <div class="learn-item">
+                <div class="card">
                     <h4>🏆 Confident Decision Making</h4>
                     <p>Gain the confidence to make technology decisions without second-guessing or regret.</p>
                 </div>
                 
-                <div class="learn-item">
+                <div class="card">
                     <h4>🚀 Implementation Success</h4>
                     <p>Learn how to ensure your selected technology delivers on its promises and transforms your operations.</p>
                 </div>
@@ -918,7 +806,7 @@
         }, observerOptions);
 
         // Observe all cards and sections
-        document.querySelectorAll('.problem-card, .method-step, .learn-item, .testimonial-card').forEach(el => {
+        document.querySelectorAll('.card, .testimonial-card').forEach(el => {
             observer.observe(el);
         });
 

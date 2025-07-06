@@ -2092,6 +2092,21 @@
     }
 }
 
+/* Hide workshop banner on small screens */
+@media (max-width: 768px) {
+    .workshop-banner {
+        display: none !important;
+    }
+
+    .rt-nav-container {
+        top: 0 !important;
+    }
+
+    body {
+        padding-top: 80px !important;
+    }
+}
+
 .rt-dropdown {
     position: fixed;
     top: 80px;

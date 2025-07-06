@@ -310,67 +310,10 @@
                 rgba(157, 78, 221, 0.25));
         }
 
-        /* Responsive Design */
+        /* Hide banner entirely on mobile */
         @media (max-width: 768px) {
             .workshop-banner {
-                flex-direction: column;
-                text-align: center;
-                padding: 16px 32px;
-                gap: 16px;
-            }
-
-            .banner-content {
-                flex-direction: column;
-                gap: 18px;
-                text-align: center;
-            }
-
-            .banner-icon {
-                width: 42px;
-                height: 42px;
-                font-size: 20px;
-            }
-
-            .banner-title {
-                font-size: 1.1rem;
-            }
-
-            .banner-subtitle {
-                font-size: 0.9rem;
-            }
-
-            .banner-cta {
-                width: 100%;
-                justify-content: center;
-                padding: 14px 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .workshop-banner {
-                padding: 14px 24px;
-            }
-
-            .banner-icon {
-                width: 38px;
-                height: 38px;
-                font-size: 18px;
-            }
-
-            .banner-title {
-                font-size: 1rem;
-            }
-
-            .banner-subtitle {
-                font-size: 0.85rem;
-            }
-
-            .close-btn {
-                width: 22px;
-                height: 22px;
-                font-size: 13px;
-                top: 8px;
-                right: 10px;
+                display: none !important;
             }
         }
     </style>
@@ -417,21 +360,46 @@
             window.open('https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration', '_blank');
         }
 
-        // Optional: Auto-show animation on page load
+        function isMobileDevice() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            return window.innerWidth <= 768 || /android|iphone|ipad|ipod|iemobile|blackberry|bada/i.test(ua.toLowerCase());
+        }
+
         window.addEventListener('load', function() {
             const banner = document.getElementById('workshopBanner');
+            if (!banner) return;
+            if (isMobileDevice()) {
+                banner.style.display = 'none';
+                document.body.classList.add('banner-closed');
+                return;
+            }
+
             // Set initial state for animation
             banner.style.transform = 'translateY(-20px)';
             banner.style.opacity = '0';
             banner.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-            
+
             setTimeout(() => {
                 banner.style.transform = 'translateY(0)';
                 banner.style.opacity = '1';
 
                 // Auto-collapse after 1 second
                 setTimeout(closeBanner, 1000);
-            }, 100); // Short delay to ensure initial styles are applied before animating
+            }, 100);
+        });
+
+        window.addEventListener('resize', function() {
+            const banner = document.getElementById('workshopBanner');
+            if (!banner) return;
+            if (isMobileDevice()) {
+                banner.style.display = 'none';
+                document.body.classList.add('banner-closed');
+            } else {
+                if (banner.style.display === 'none') {
+                    banner.style.display = '';
+                    document.body.classList.remove('banner-closed');
+                }
+            }
         });
     </script>
 </body>

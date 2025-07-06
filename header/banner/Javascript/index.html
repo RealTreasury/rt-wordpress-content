@@ -1,16 +1,39 @@
-// JavaScript snippet to auto-close the banner
+// JavaScript snippet to handle banner visibility
 function closeBanner() {
     const banner = document.getElementById('workshopBanner');
+    if (!banner) return;
     banner.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
     banner.style.transform = 'translateY(-100%)';
     banner.style.opacity = '0';
-
     setTimeout(() => {
         banner.style.display = 'none';
-    }, 400); // Matches the transition duration
+    }, 400);
 }
 
-// Auto-collapse banner after page load
+function isMobileDevice() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    return window.innerWidth <= 768 || /android|iphone|ipad|ipod|iemobile|blackberry|bada/i.test(ua.toLowerCase());
+}
+
 window.addEventListener('load', () => {
+    const banner = document.getElementById('workshopBanner');
+    if (!banner) return;
+    if (isMobileDevice()) {
+        banner.style.display = 'none';
+        document.body.classList.add('banner-closed');
+        return;
+    }
     setTimeout(closeBanner, 1000);
+});
+
+window.addEventListener('resize', () => {
+    const banner = document.getElementById('workshopBanner');
+    if (!banner) return;
+    if (isMobileDevice()) {
+        banner.style.display = 'none';
+        document.body.classList.add('banner-closed');
+    } else if (banner.style.display === 'none') {
+        banner.style.display = '';
+        document.body.classList.remove('banner-closed');
+    }
 });

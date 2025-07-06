@@ -1441,6 +1441,7 @@
     background: none !important;
     border-radius: 8px;
     display: block;
+    font-size: 36px !important;
 }
 
 .rt-main-menu-link:hover {
@@ -1881,6 +1882,7 @@
         display: block !important;
         margin-bottom: 0.5rem !important;
         border: 1px solid rgba(199, 125, 255, 0.2) !important;
+        font-size: 36px !important;
     }
     
     .rt-main-menu-link:hover {

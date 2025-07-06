@@ -41,7 +41,7 @@ function add_my_custom_header_html() {
                                 <div class="rt-main-menu-column rt-topics-column">
                                     <h3>Topics</h3>
                                     <div class="rt-main-menu-links">
-                                        <a href="#openPortalModal" class="rt-main-menu-link">Treasury Tech Stack</a>
+                                        <a href="#openPortalModal" class="rt-main-menu-link">Treasury Tech Portal</a>
                                         <a href="https://realtreasury.com/errnot/" class="rt-main-menu-link">ERR NOT Method</a>
                                         <a href="https://realtreasury.com/treasury-tech-market/" class="rt-main-menu-link">Treasury Tech Market</a>
                                         <a href="https://realtreasury.com/posts/" class="rt-main-menu-link">All Insights</a>

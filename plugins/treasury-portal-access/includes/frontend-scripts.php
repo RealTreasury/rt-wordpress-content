@@ -325,34 +325,6 @@ if (empty($form_id)) {
     opacity: 1 !important;
     pointer-events: auto !important;
 }
-body.modal-open { overflow: hidden !important; }
-.tpa-modal { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; height: 100vh !important; z-index: 1000003 !important; background: linear-gradient(135deg, rgba(0, 0, 0, .4), rgba(40, 19, 69, .3) 50%, rgba(0, 0, 0, .4)) !important; backdrop-filter: blur(15px) saturate(120%) !important; -webkit-backdrop-filter: blur(15px) saturate(120%) !important; display: flex !important; align-items: center !important; justify-content: center !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transition: all .4s cubic-bezier(.4, 0, .2, 1) !important; }
-.tpa-modal.show { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
-.tpa-modal-content { max-width: calc(100vw - 40px) !important; max-height: calc(100vh - 40px) !important; padding: 20px !important; display: flex !important; align-items: center !important; justify-content: center !important; transform: scale(.9) !important; transition: all .4s cubic-bezier(.4, 0, .2, 1) !important; }
-.tpa-modal.show .tpa-modal-content { transform: scale(1) !important; }
-.portal-access-form { width: 100% !important; max-width: 520px !important; margin: 0 auto !important; padding: 32px !important; background: linear-gradient(135deg, hsla(0, 0%, 100%, .95), hsla(0, 0%, 97%, .98) 50%, hsla(0, 0%, 100%, .95)) !important; backdrop-filter: blur(20px) saturate(130%) !important; -webkit-backdrop-filter: blur(20px) saturate(130%) !important; border: 2px solid rgba(199, 125, 255, .3) !important; border-radius: 16px !important; box-shadow: 0 8px 32px rgba(114, 22, 244, .15) !important; position: relative !important; overflow: hidden !important; }
-.portal-access-form:before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd); border-radius: 16px 16px 0 0; }
-.close-btn { position: absolute !important; top: 12px !important; right: 16px !important; background: hsla(0, 0%, 100%, .9) !important; border: 1px solid rgba(199, 125, 255, .3) !important; border-radius: 50% !important; font-size: 18px !important; color: #7216f4 !important; cursor: pointer !important; width: 32px !important; height: 32px !important; display: flex !important; align-items: center !important; justify-content: center !important; transition: all .3s ease !important; }
-.close-btn:hover { background: rgba(114, 22, 244, .1) !important; transform: scale(1.1) !important; }
-
-@media (max-width: 768px) {
-    .tpa-modal-content { max-width: calc(100vw - 20px) !important; padding: 15px !important; }
-    .portal-access-form { padding: 24px !important; }
-}
-
-@media (max-width: 480px) {
-    .portal-access-form {
-        max-width: 100% !important;
-        padding: 20px !important;
-        border-radius: 12px !important;
-    }
-    .close-btn {
-        top: 8px !important;
-        right: 8px !important;
-        width: 28px !important;
-        height: 28px !important;
-    }
-}
 .tpa-message-container {
     position: fixed;
     top: 80px;

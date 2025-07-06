@@ -77,7 +77,7 @@
 }
 
 /* Portal access form container */
-.video-access-form, .portal-access-form {
+.portal-access-form {
     width: 100% !important;
     max-width: none !important;
     min-width: auto !important;
@@ -94,7 +94,7 @@
 }
 
 /* Purple top bar */
-.video-access-form:before, .portal-access-form:before {
+.portal-access-form:before {
     content: "";
     position: absolute;
     top: 0;
@@ -107,7 +107,7 @@
 }
 
 /* Form title */
-.video-access-form h3, .portal-access-form h3 {
+.portal-access-form h3 {
     margin: 0 !important;
     padding: 24px 32px 16px 32px !important;
     color: #281345 !important;
@@ -150,7 +150,7 @@
 }
 
 /* Form content area */
-.video-access-form .wpcf7, .portal-access-form .wpcf7 {
+.portal-access-form .wpcf7 {
     padding: 24px 32px 32px 32px !important;
     margin: 0 !important;
 }
@@ -183,7 +183,6 @@
 }
 
 /* Form control wrappers */
-.video-access-form .wpcf7-form-control-wrap,
 .portal-access-form .wpcf7-form-control-wrap {
     margin: 0 !important;
     padding: 0 !important;
@@ -191,19 +190,15 @@
     position: relative !important;
 }
 
-.video-access-form .wpcf7-form-control,
-.video-access-form p,
 .portal-access-form .wpcf7-form-control,
 .portal-access-form p {
     margin: 0 !important;
 }
 
-.video-access-form p,
 .portal-access-form p {
     padding: 0 !important;
 }
 
-.video-access-form br,
 .portal-access-form br {
     display: none !important;
 }
@@ -386,16 +381,16 @@ input[type=submit].wpcf7-submit:hover {
         max-height: 95vh !important;
     }
     
-    .video-access-form, .portal-access-form {
+    .portal-access-form {
         border-radius: 12px !important;
     }
     
-    .video-access-form h3, .portal-access-form h3 {
+    .portal-access-form h3 {
         font-size: 20px !important;
         padding: 20px 24px 16px 24px !important;
     }
     
-    .video-access-form .wpcf7, .portal-access-form .wpcf7 {
+    .portal-access-form .wpcf7 {
         padding: 20px 24px 28px 24px !important;
     }
     
@@ -426,12 +421,12 @@ input[type=submit].wpcf7-submit:hover {
         padding: 10px !important;
     }
     
-    .video-access-form h3, .portal-access-form h3 {
+    .portal-access-form h3 {
         font-size: 18px !important;
         padding: 16px 20px 12px 20px !important;
     }
     
-    .video-access-form .wpcf7, .portal-access-form .wpcf7 {
+    .portal-access-form .wpcf7 {
         padding: 16px 20px 24px 20px !important;
     }
     

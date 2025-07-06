@@ -1296,12 +1296,12 @@
 }
 
 .rt-nav-wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
+    /* Full width header */
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 1rem 0 0.5rem;
+    padding: 0 2rem 0 1rem;
     height: 80px;
 }
 
@@ -1325,7 +1325,7 @@
     gap: 1.5rem;
     height: 100%;
     margin-left: auto;
-    margin-right: 1rem;
+    margin-right: 2rem;
 }
 
 .rt-nav-item {
@@ -1767,7 +1767,7 @@
     
     .rt-nav-wrapper {
         height: 70px;
-        padding: 0 0.5rem 0 0.25rem;
+        padding: 0 1rem 0 0.5rem;
     }
 
     .rt-logo {

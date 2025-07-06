@@ -1564,6 +1564,17 @@
     text-decoration: none;
 }
 
+/* Explore Dropdown Image */
+.rt-explore-image {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    margin: 1rem auto;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(114, 22, 244, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(114, 22, 244, 0.2);
+}
+
 /* Insights Widget */
 .rt-insights-widget {
     width: 100%;

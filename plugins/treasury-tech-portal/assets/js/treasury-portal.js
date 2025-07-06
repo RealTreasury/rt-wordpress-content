@@ -228,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Advanced cash forecasting platform with sophisticated scenario planning, variance analysis, and performance tracking for precise liquidity management.",
                         "features": ["Advanced forecasting", "Scenario planning", "Variance analysis", "Performance tracking", "Budget integration", "Precision modeling"],
                         "target": "Companies requiring sophisticated cash forecasting and scenario analysis",
+                        "videoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/Nilus-06-2025.mp4",
                         "websiteUrl": "https://www.nilus.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Nilus.png"
                     }, {
@@ -326,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Next-generation treasury platform with modern UI/UX, cloud-native architecture, and intuitive workflows designed for the modern finance professional.",
                         "features": ["Modern UI/UX", "Cloud-native", "Intuitive workflows", "API-first design", "Mobile responsive", "Quick deployment"],
                         "target": "Modern finance teams seeking next-generation treasury technology",
-                        "videoUrl": "https://youtu.be/dYBPUYNZ_nE?si=BHMRUFAYJlvs1a6P",
+                        "videoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/Treasury4-06-2025.mp4",
                         "websiteUrl": "https://www.treasury4.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Treasury4Logo-GraphiteGreen.png"
                     }
@@ -695,6 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const modalWebsiteLink = document.getElementById('modalWebsiteLink');
                 const modalBody = modal?.querySelector('.modal-body');
                 const modalLogo = document.getElementById('modalToolLogo');
+                const modalTags = document.getElementById('modalTags');
 
                 if (!modal || !modalBody) return;
 
@@ -721,6 +723,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
+                if (modalTags) {
+                    const tags = tool.tags || [];
+                    modalTags.innerHTML = tags.map(t => `<span class="tool-tag">${t}</span>`).join('');
+                }
+
                 // 2. Remove any video section from a previous click
                 const existingVideoSection = modalBody.querySelector('.video-demo-section');
                 if (existingVideoSection) {
@@ -730,27 +737,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 3. Add a new video section if the current tool has one
                 if (tool.videoUrl) {
                     const videoSection = document.createElement('div');
-                    // Add a specific class to make it easy to find and remove later
                     videoSection.className = 'feature-section video-demo-section';
 
-                    let embedUrl = tool.videoUrl;
-                    if (tool.videoUrl.includes('youtu.be/')) {
-                        const videoId = tool.videoUrl.split('youtu.be/')[1].split('?')[0];
-                        embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                    } else if (tool.videoUrl.includes('youtube.com/watch')) {
-                        const videoId = new URL(tool.videoUrl).searchParams.get('v');
-                        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                    if (tool.videoUrl.includes('.mp4')) {
+                        videoSection.innerHTML = `
+                            <h4>🎥 Product Differentiator</h4>
+                            <div class="video-container">
+                                <video src="${tool.videoUrl}" controls playsinline></video>
+                            </div>
+                        `;
+                    } else {
+                        videoSection.innerHTML = `
+                            <h4>🎥 Product Differentiator</h4>
+                            <div class="video-container">
+                                <iframe src="${tool.videoUrl}" frameborder="0" allowfullscreen loading="lazy" playsinline></iframe>
+                            </div>
+                        `;
                     }
-                    embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'enablejsapi=1&playsinline=1';
 
-                    videoSection.innerHTML = `
-                        <h4>🎥 Demo Video</h4>
-                        <div class="video-container">
-                            <iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" playsinline></iframe>
-                        </div>
-                    `;
-                    // Insert the new video section at the top of the modal body
-                    modalBody.insertBefore(videoSection, modalBody.firstChild);
+                    const tagSection = modalTags ? modalTags.parentElement : null;
+                    if (tagSection) {
+                        modalBody.insertBefore(videoSection, tagSection);
+                    } else {
+                        modalBody.insertBefore(videoSection, modalBody.firstChild);
+                    }
                 }
 
                 // 4. Show the modal
@@ -959,14 +969,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="tool-header">
                             <div class="tool-info">
                                 <div class="tool-name">
-                                    ${tool.name}
+                                    <span class="tool-name-title">${tool.name}</span>
                                     ${tool.videoUrl ? '<span class="video-indicator">🎥</span>' : ''}
+                                    ${tool.logoUrl ? `<img class="tool-logo-inline${tool.videoUrl ? '' : ' no-video'}" src="${tool.logoUrl}" alt="${tool.name} logo">` : ''}
+                                    <div class="tool-actions">
+                                        ${tool.websiteUrl ? `<a class="tool-website-link" href="${tool.websiteUrl}" target="_blank" rel="noopener noreferrer">Website</a>` : ''}
+                                        <div class="tool-icon">${iconMap[tool.category]}</div>
+                                    </div>
                                 </div>
                                 <div class="tool-type">${tool.category === 'CASH' ? 'Cash Tools' : tool.category === 'LITE' ? 'TMS-Lite' : tool.category}</div>
-                            </div>
-                            <div class="tool-meta">
-                                ${tool.logoUrl ? `<img loading="lazy" class="tool-logo" src="${tool.logoUrl}" alt="${tool.name} logo">` : ""}
-                                <div class="tool-icon">${iconMap[tool.category]}</div>
                             </div>
                         </div>
                         <div class="tool-description">${tool.desc}</div>

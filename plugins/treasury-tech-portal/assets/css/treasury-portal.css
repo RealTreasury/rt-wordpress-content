@@ -40,8 +40,8 @@
 
         .container {
             position: relative;
-            margin-left: 80px;
-            margin-right: 80px;
+            margin-left: 60px;
+            margin-right: 60px;
             transition:
                 margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
                 margin-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -554,6 +554,24 @@
             object-fit: contain;
             display: block;
             margin: 0 auto 20px;
+        }
+
+        .tool-logo-inline {
+            width: 75px;
+            height: 75px;
+            object-fit: contain;
+            margin-top: 0;
+        }
+
+        .tool-logo-inline.no-video {
+            margin-left: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .tool-logo-inline {
+                width: 50px;
+                height: 50px;
+            }
         }
 
         .video-indicator {
@@ -1274,7 +1292,7 @@
             color: #7216f4;
             transition: background 0.3s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            z-index: 1003;
+            z-index: 1002;
         }
         @media (max-width: 768px) {
             .external-menu-toggle {
@@ -1339,7 +1357,7 @@
             color: #7216f4;
             transition: background 0.3s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            z-index: 1003;
+            z-index: 1002;
         }
 
         .external-shortlist-toggle:hover {

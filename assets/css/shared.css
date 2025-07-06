@@ -1268,507 +1268,10 @@
             display: none !important;
         }
         /* =================================================================== */
-        /* Custom Header Styles for RealTreasury.com
-        /* This file contains only the styles needed for the new rt-nav header.
-        /* =================================================================== */
-        /* ------------------------------------------------------------------- */
-        /* # Root Variables (for header)
-        /* ------------------------------------------------------------------- */
-        :root {
-            --primary-purple: #7216f4;
-            --secondary-purple: #8f47f6;
-            --light-purple: #c77dff;
-            --dark-text: #281345;
-            --gray-text: #6b7280;
-        }
-        /* ------------------------------------------------------------------- */
-        /* # Custom Header (rt-nav)
-        /* ------------------------------------------------------------------- */
-        .rt-nav-container {
-            width: 100%;
-            background: linear-gradient(135deg, rgba(80, 15, 171, 0.9), rgba(40, 19, 69, 0.95));
-            backdrop-filter: blur(20px) saturate(150%);
-            -webkit-backdrop-filter: blur(20px) saturate(150%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 99999;
-        }
-        .rt-nav-wrapper {
-            max-width: 100%;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            height: 80px;
-        }
-        .rt-logo img {
-            height: 48px;
-            width: auto;
-            background: none !important;
-            box-shadow: none !important;
-        }
-        .rt-nav {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            height: 100%;
-        }
-        .rt-nav-item {
-            position: static;
-            height: 100%;
-            display: flex;
-            align-items: center;
-        }
-        .rt-nav-link {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.05rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        }
-        .rt-nav-link:hover, .rt-nav-item.active .rt-nav-link {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-        .rt-nav-link.has-dropdown::after {
-            content: '';
-            width: 0;
-            height: 0;
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            border-top: 4px solid currentColor;
-            transition: transform 0.3s ease;
-            margin-left: 0.5rem;
-            opacity: 0.8;
-        }
-        .rt-nav-item.active .rt-nav-link.has-dropdown::after {
-            transform: rotate(180deg);
-        }
-        .rt-dropdown {
-            position: fixed;
-            top: 80px;
-            left: 0;
-            right: 0;
-            width: 100vw;
-            background: rgba(255, 255, 255, 0.15);
-            /* UPDATED: Increased blur from 20px to 40px for a more pronounced effect */
-            backdrop-filter: blur(60px) saturate(120%);
-            -webkit-backdrop-filter: blur(60px) saturate(120%);
-            border-top: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
-            border-radius: 0 0 16px 16px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.35s ease;
-            z-index: 1000000;
-            overflow: hidden;
-        }
-        .rt-nav-item.active .rt-dropdown {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        .rt-dropdown-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2.5rem 2rem;
-        }
-        .rt-main-menu {
-            display: grid;
-            grid-template-columns: 1fr 1fr 350px;
-            gap: 3rem;
-            align-items: start;
-        }
-        .rt-main-menu-column h3 {
-            color: var(--dark-text) !important;
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
-        .rt-main-menu-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .rt-main-menu-link {
-            color: var(--dark-text) !important;
-            text-decoration: none !important;
-            padding: 10px 15px !important;
-            transition: all 0.2s ease !important;
-            font-weight: 500 !important;
-            background: none !important;
-            border-radius: 8px;
-            display: block;
-        }
-        .rt-main-menu-link:hover {
-            color: var(--primary-purple) !important;
-            background: rgba(255, 255, 255, 0.5) !important;
-            transform: translateX(5px);
-        }
-        .rt-insights-widget {
-            width: 100%;
-            max-width: 340px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(248, 248, 248, 0.4));
-            backdrop-filter: blur(20px) saturate(130%);
-            -webkit-backdrop-filter: blur(20px) saturate(130%);
-            border: 1px solid rgba(114, 22, 244, 0.2);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-            overflow: hidden;
-        }
-        .rt-insights-header {
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.15), rgba(143, 71, 246, 0.2));
-            color: var(--dark-text);
-            padding: 14px 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(114, 22, 244, 0.2);
-        }
-        .rt-insights-header h3 {
-            color: var(--dark-text) !important;
-            opacity: 1;
-            text-transform: none;
-            letter-spacing: normal;
-            margin-bottom: 0;
-            font-size: 1.1rem;
-        }
-        .rt-insights-content-area {
-            height: 280px;
-            overflow: hidden;
-            position: relative;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 248, 248, 0.6));
-        }
-        .rt-insights-track {
-            display: flex;
-            height: 100%;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .rt-insight-card {
-            flex: 0 0 100%;
-            padding: 16px 20px;
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            box-sizing: border-box;
-            height: 100%;
-        }
-        .rt-insight-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #1f2937;
-            line-height: 1.3;
-            margin-bottom: 12px;
-        }
-        .rt-insight-excerpt {
-            font-size: 0.9rem;
-            color: #6b7280;
-            line-height: 1.5;
-            flex-grow: 1;
-        }
-        .rt-insight-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-            padding-top: 1rem;
-        }
-        .rt-insight-date {
-            font-size: 0.75rem;
-            color: #8b5cf6;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .rt-insight-link {
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.9), rgba(143, 71, 246, 0.95));
-            color: #ffffff !important;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        .rt-insight-link:hover {
-            background: linear-gradient(135deg, rgba(143, 71, 246, 0.95), rgba(157, 78, 221, 1));
-            color: #ffffff !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.25);
-        }
-        .rt-insights-navigation {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 14px;
-            gap: 8px;
-            background: linear-gradient(135deg, rgba(248, 248, 248, 0.6), rgba(255, 255, 255, 0.4));
-            border-top: 1px solid rgba(114, 22, 244, 0.1);
-        }
-        .rt-nav-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(114, 22, 244, 0.2);
-            border: 1px solid rgba(114, 22, 244, 0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .rt-nav-dot.active {
-            background: var(--primary-purple);
-            transform: scale(1.1);
-        }
-        .rt-services-menu {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .rt-services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        .rt-service-item {
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 12px;
-            border: 1px solid rgba(114, 22, 244, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .rt-service-item:hover {
-            background: rgba(255, 255, 255, 0.6);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(114, 22, 244, 0.15);
-            border-color: rgba(114, 22, 244, 0.3);
-        }
-        .rt-service-title {
-            color: var(--dark-text);
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .rt-service-desc {
-            color: var(--gray-text);
-            font-size: 1rem;
-            line-height: 1.4;
-            margin-bottom: 1rem;
-        }
-        .rt-service-cta {
-            color: var(--primary-purple);
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-decoration: none;
-        }
-        .rt-about-menu {
-            max-width: 300px;
-            margin: 0 5% 0 auto;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 2rem;
-            border-radius: 16px;
-        }
-        .rt-about-menu .rt-main-menu-link, .rt-topics-column .rt-main-menu-link {
-            font-size: 1.5rem !important;
-            font-weight: 500 !important;
-            padding: 1rem !important;
-        }
-        .rt-about-menu .rt-main-menu-link {
-            text-align: center;
-        }
-        .rt-topics-column .rt-main-menu-link {
-            text-align: left;
-        }
-        .rt-cta-button {
-            background: linear-gradient(135deg, #8f47f6, #7216f4) !important;
-            color: white !important;
-            text-decoration: none !important;
-            padding: 12px 24px !important;
-            border-radius: 8px !important;
-            font-weight: 600 !important;
-            font-size: 1.05rem !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 4px 15px rgba(114, 22, 244, 0.3) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .rt-cta-button:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.4) !important;
-        }
-        .rt-book-meeting {
-            display: block;
-            background: linear-gradient(135deg, #8f47f6, #7216f4);
-            color: white;
-            text-decoration: none;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1.2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 1.5rem;
-        }
-        .rt-book-meeting:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4);
-        }
-        .rt-mobile-toggle {
-            display: none;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            cursor: pointer;
-            padding: 10px;
-            z-index: 1000002;
-        }
-        .rt-mobile-toggle span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: #ffffff;
-            margin: 5px 0;
-            transition: all 0.3s ease;
-        }
-        .rt-mobile-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        .rt-mobile-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-        .rt-mobile-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-        /* Mobile Styles */
-        @media (max-width: 992px) {
-            .rt-nav {
-                display: none;
-                position: fixed;
-                top: 70px;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(255, 255, 255, 0.95) !important;
-                backdrop-filter: blur(12px) saturate(120%);
-                -webkit-backdrop-filter: blur(12px) saturate(120%);
-                flex-direction: column;
-                padding: 2rem 1rem;
-                gap: 1rem;
-                height: calc(100vh - 70px);
-                overflow-y: auto;
-                align-items: stretch;
-                z-index: 999998;
-            }
-            .rt-nav.active {
-                display: flex;
-            }
-            .rt-mobile-toggle {
-                display: block;
-            }
-            .rt-nav-wrapper {
-                height: 70px;
-                padding: 0 1rem;
-            }
-            .rt-nav-item {
-                width: 100%;
-                height: auto;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .rt-nav-link {
-                width: 100%;
-                padding: 1rem;
-                background: rgba(255, 255, 255, 0.15);
-                border-radius: 12px;
-                justify-content: space-between;
-                color: var(--dark-text);
-                text-shadow: none;
-            }
-            .rt-nav-link.has-dropdown::after {
-                border-top-color: var(--dark-text);
-            }
-            .rt-dropdown {
-                position: static;
-                width: 100%;
-                box-shadow: none;
-                border-radius: 12px;
-                background: rgba(255, 255, 255, 0.15) !important;
-                backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important;
-                border: 1px solid rgba(255, 255, 255, 0.15) !important;
-                opacity: 1;
-                visibility: visible;
-                transform: none;
-                display: none;
-                margin-top: 0.5rem;
-                padding: 0;
-            }
-            .rt-nav-item.active .rt-dropdown {
-                display: block;
-            }
-            .rt-dropdown-inner {
-                padding: 1rem;
-            }
-            .rt-main-menu {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            .rt-insights-widget {
-                display: none;
-            }
-            .rt-main-menu-column:last-child {
-                display: none;
-            }
-            .rt-services-grid {
-                grid-template-columns: 1fr;
-            }
-            .rt-nav .rt-nav-item:last-child {
-                order: -1; /* Moves VIEW PORTAL to top */
-                margin-top: 0;
-                margin-bottom: 1.5rem;
-                padding: 1rem;
-                background: linear-gradient(135deg, #8f47f6, #7216f4);
-                border-radius: 8px;
-            }
-                width: 100%;
-                text-align: center;
-                padding: 1rem !important;
-                box-shadow: none !important;
-                background: none !important;
-                border: none !important;
-                color: white !important;
-            }
-        }
-
-/* Force dropdown to be visible when active */
-.rt-nav-item.active .rt-dropdown {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: translateY(0) !important;
-}
-
 /* =================================================================== */
-/* Custom Header Styles for RealTreasury.com (Hover Version)
+/* REAL TREASURY NAVIGATION - CLEAN VERSION
 /* =================================================================== */
 
-/* # Root Variables
-/* ------------------------------------------------------------------- */
 :root {
     --primary-purple: #7216f4;
     --secondary-purple: #8f47f6;
@@ -1777,8 +1280,7 @@
     --gray-text: #6b7280;
 }
 
-/* # Main Header Container
-/* ------------------------------------------------------------------- */
+/* Main Header Container */
 .rt-nav-container {
     width: 100%;
     background: linear-gradient(135deg, rgba(80, 15, 171, 0.9), rgba(40, 19, 69, 0.95));
@@ -1790,9 +1292,11 @@
     top: 0;
     left: 0;
     z-index: 99999;
+    transition: all 0.4s ease;
 }
+
 .rt-nav-wrapper {
-    max-width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -1800,6 +1304,7 @@
     padding: 0 2rem;
     height: 80px;
 }
+
 .rt-logo img {
     height: 48px;
     width: auto;
@@ -1807,23 +1312,24 @@
     box-shadow: none !important;
 }
 
-/* # Desktop Navigation
-/* ------------------------------------------------------------------- */
+/* Navigation Menu */
 .rt-nav {
     display: flex;
     align-items: center;
     gap: 1.5rem;
     height: 100%;
 }
+
 .rt-nav-item {
-    position: static; /* Changed from static for hover positioning */
+    position: static;
     height: 100%;
     display: flex;
     align-items: center;
 }
+
 .rt-nav-link {
-    color: #ffffff;
-    text-decoration: none;
+    color: #ffffff !important;
+    text-decoration: none !important;
     font-weight: 500;
     font-size: 1.05rem;
     padding: 0.5rem 1rem;
@@ -1833,58 +1339,54 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
-.rt-nav-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+
+.rt-nav-link:hover,
+.rt-nav-item.active .rt-nav-link {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
 }
+
 .rt-nav-link.has-dropdown::after {
     content: '';
     width: 0;
     height: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-top: 4px solid currentColor;
+    border-top: 4px solid #ffffff;
     transition: transform 0.3s ease;
     margin-left: 0.5rem;
     opacity: 0.8;
 }
 
-/* # Dropdown Menu (HOVER BEHAVIOR)
-/* ------------------------------------------------------------------- */
+.rt-nav-item.active .rt-nav-link.has-dropdown::after {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
 .rt-dropdown {
     position: fixed;
     top: 80px;
     left: 0;
     right: 0;
     width: 100vw;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(40px) saturate(120%);
-    -webkit-backdrop-filter: blur(40px) saturate(120%);
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9)) !important;
+    backdrop-filter: blur(20px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
+    border: 1px solid rgba(199, 125, 255, .2) !important;
+    box-shadow: 0 8px 32px rgba(114, 22, 244, .12), inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 0 rgba(0, 0, 0, .03) !important;
     border-radius: 0 0 16px 16px;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.35s ease;
+    transform: translateY(-20px);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000000;
     overflow: hidden;
-    pointer-events: none; /* Prevent interaction when hidden */
+    pointer-events: none;
 }
 
-/* THIS IS THE KEY CHANGE: Show dropdown on hover */
-/*
-.rt-nav-item:hover > .rt-dropdown {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    pointer-events: auto; /* Allow interaction when visible */
-}
-*/
-
-/* ADD THIS INSTEAD */
 .rt-nav-item.active .rt-dropdown {
     opacity: 1 !important;
     visibility: visible !important;
@@ -1898,14 +1400,14 @@
     padding: 2.5rem 2rem;
 }
 
-/* ... (The rest of the dropdown content styles remain the same) ... */
-
+/* Main Menu Layout */
 .rt-main-menu {
     display: grid;
     grid-template-columns: 1fr 1fr 350px;
     gap: 3rem;
     align-items: start;
 }
+
 .rt-main-menu-column h3 {
     color: var(--dark-text) !important;
     font-size: 1.1rem;
@@ -1915,11 +1417,13 @@
     letter-spacing: 1px;
     opacity: 0.9;
 }
+
 .rt-main-menu-links {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
+
 .rt-main-menu-link {
     color: var(--dark-text) !important;
     text-decoration: none !important;
@@ -1930,11 +1434,80 @@
     border-radius: 8px;
     display: block;
 }
+
 .rt-main-menu-link:hover {
     color: var(--primary-purple) !important;
-    background: rgba(255, 255, 255, 0.5) !important;
+    background: hsla(0, 0%, 100%, .5) !important;
     transform: translateX(5px);
 }
+
+/* Services Grid */
+.rt-services-menu {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.rt-services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.rt-service-item {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(114, 22, 244, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.rt-service-item:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(114, 22, 244, 0.15);
+    border-color: rgba(114, 22, 244, 0.3);
+}
+
+.rt-service-title {
+    color: var(--dark-text);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.rt-service-desc {
+    color: var(--gray-text);
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.rt-service-cta {
+    color: var(--primary-purple);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* About Menu */
+.rt-about-menu {
+    max-width: 300px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    border-radius: 16px;
+}
+
+.rt-about-menu .rt-main-menu-link {
+    font-size: 1.2rem !important;
+    text-align: center;
+    padding: 1rem !important;
+}
+
+/* CTA Button */
 .rt-cta-button {
     background: linear-gradient(135deg, #8f47f6, #7216f4) !important;
     color: white !important;
@@ -1949,300 +1522,167 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
+
 .rt-cta-button:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 25px rgba(114, 22, 244, 0.4) !important;
+    color: white !important;
+    text-decoration: none !important;
 }
 
-
-/* # Mobile Navigation
-/* ------------------------------------------------------------------- */
-.rt-mobile-toggle {
-    display: none;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 1000002;
-}
-.rt-mobile-toggle span {
+/* Book Meeting Button */
+.rt-book-meeting {
     display: block;
-    width: 24px;
-    height: 2px;
-    background: #ffffff;
-    margin: 5px 0;
-    transition: all 0.3s ease;
-}
-.rt-mobile-toggle.active span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
-}
-.rt-mobile-toggle.active span:nth-child(2) {
-    opacity: 0;
-}
-.rt-mobile-toggle.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
-}
-
-@media (max-width: 992px) {
-    .rt-nav {
-        display: none;
-        position: fixed;
-        top: 70px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.95) !important;
-        backdrop-filter: blur(12px) saturate(120%);
-        -webkit-backdrop-filter: blur(12px) saturate(120%);
-        flex-direction: column;
-        padding: 2rem 1rem;
-        gap: 1rem;
-        height: calc(100vh - 70px);
-        overflow-y: auto;
-        align-items: stretch;
-        z-index: 999998;
-    }
-    .rt-nav.active {
-        display: flex;
-    }
-    .rt-mobile-toggle {
-        display: block;
-    }
-    .rt-nav-wrapper {
-        height: 70px;
-        padding: 0 1rem;
-    }
-    .rt-nav-item {
-        width: 100%;
-        height: auto;
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .rt-nav-item:hover > .rt-dropdown {
-        /* Disable hover on mobile */
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-    }
-    .rt-nav-link {
-        width: 100%;
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        justify-content: space-between;
-        color: var(--dark-text);
-        text-shadow: none;
-    }
-    .rt-nav-link.has-dropdown::after {
-        border-top-color: var(--dark-text);
-    }
-    .rt-dropdown {
-        position: static;
-        width: 100%;
-        box-shadow: none;
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
-        display: none; /* Hide by default on mobile */
-        margin-top: 0.5rem;
-        padding: 0;
-        pointer-events: auto;
-    }
-    
-    /* Show dropdown on mobile only when active class is present */
-    .rt-nav-item.active .rt-dropdown {
-        display: block;
-    }
-
-    .rt-dropdown-inner {
-        padding: 1rem;
-    }
-    .rt-main-menu {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-    .rt-insights-widget, .rt-main-menu-column:last-child {
-        display: none;
-    }
-    .rt-services-grid {
-        grid-template-columns: 1fr;
-    }
-    .rt-nav .rt-nav-item:last-child {
-        order: -1; /* Moves VIEW PORTAL to top */
-        margin-top: 0;
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-        background: linear-gradient(135deg, #8f47f6, #7216f4);
-        border-radius: 8px;
-    }
-    .rt-nav .rt-cta-button {
-        width: 100%;
-        text-align: center;
-        padding: 1rem !important;
-        box-shadow: none !important;
-        background: none !important;
-        border: none !important;
-        color: white !important;
-    }
-}
-
-/* Hide workshop banner on small screens */
-@media (max-width: 768px) {
-    .workshop-banner {
-        display: none !important;
-    }
-
-    .rt-nav-container {
-        top: 0 !important;
-    }
-
-    body {
-        padding-top: 80px !important;
-    }
-}
-
-.rt-dropdown {
-    position: fixed;
-    top: 80px;
-    left: 0;
-    right: 0;
-    width: 100vw;
-    /* Updated with !important */
-    background: rgba(255, 255, 255, 0.25) !important; 
-    backdrop-filter: blur(50px) saturate(120%) !important;
-    -webkit-backdrop-filter: blur(50px) saturate(120%) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
-    border-radius: 0 0 16px 16px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.35s ease;
-    z-index: 1000000;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-/* =================================================================== */
-/* Custom Header - Frosted Glass Dropdown (Final Version)
-/* =================================================================== */
-
-/* --- Main Header Bar --- */
-.rt-nav-container {
-    width: 100%;
-    background: linear-gradient(135deg, rgba(80, 15, 171, 0.9), rgba(40, 19, 69, 0.95));
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 99999;
-}
-.rt-nav-wrapper {
-    max-width: 100%;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 2rem;
-    height: 80px;
-}
-.rt-logo img {
-    height: 48px;
-    width: auto;
-}
-.rt-nav {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    height: 100%;
-}
-.rt-nav-item {
-    position: relative; /* Changed for hover positioning */
-    height: 100%;
-    display: flex;
-    align-items: center;
-}
-.rt-nav-link {
-    color: #ffffff;
+    background: linear-gradient(135deg, #8f47f6, #7216f4);
+    color: white;
     text-decoration: none;
-    font-weight: 500;
-    font-size: 1.05rem;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.2rem;
+    text-align: center;
     transition: all 0.3s ease;
-    cursor: pointer;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 1.5rem;
 }
 
-/* --- Dropdown Menu with YOUR Frosted Glass Style --- */
-.rt-dropdown {
-    position: fixed;
-    top: 80px;
-    left: 0;
-    right: 0;
-    width: 100vw;
+.rt-book-meeting:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4);
+    color: white;
+    text-decoration: none;
+}
 
-    /* These are the styles you found in .frosted-glass */
-    background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9)) !important;
-    backdrop-filter: blur(20px) saturate(130%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
-    border: 1px solid rgba(199, 125, 255, .2) !important;
-    box-shadow: 0 8px 32px rgba(114, 22, 244, .12), inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 0 rgba(0, 0, 0, .03) !important;
-    
-    border-radius: 0 0 16px 16px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-20px); /* Increased for a nicer animation */
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 1000000;
+/* Insights Widget */
+.rt-insights-widget {
+    width: 100%;
+    max-width: 340px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(248, 248, 248, 0.4));
+    backdrop-filter: blur(20px) saturate(130%);
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    border: 1px solid rgba(114, 22, 244, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(114, 22, 244, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4);
     overflow: hidden;
-    pointer-events: none;
 }
 
-/* --- Show dropdown when active (clicked) --- */
-.rt-nav-item.active > .rt-dropdown {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: translateY(0) !important;
-    pointer-events: auto !important;
+.rt-insights-header {
+    background: linear-gradient(135deg, rgba(114, 22, 244, 0.15), rgba(143, 71, 246, 0.2));
+    color: var(--dark-text);
+    padding: 14px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(114, 22, 244, 0.2);
 }
 
-/* --- Dropdown Content Styling --- */
-.rt-dropdown-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2.5rem 2rem;
-}
-.rt-main-menu-link {
+.rt-insights-header h3 {
     color: var(--dark-text) !important;
-}
-.rt-main-menu-link:hover {
-    color: var(--primary-purple) !important;
-    background: hsla(0, 0%, 100%, .5) !important;
-}
-
-/* --- Mobile Menu --- */
-@media (max-width: 992px) {
-    /* (Mobile styles remain the same) */
-    .rt-mobile-toggle { display: block; }
-    .rt-nav { display: none; }
-    .rt-nav.active { display: flex; }
-    /* ... other mobile styles ... */
+    opacity: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-bottom: 0;
+    font-size: 1.1rem;
 }
 
-/* =================================================================== */
-/* Mobile Navigation Fixes
-/* =================================================================== */
+.rt-insights-content-area {
+    height: 280px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(248, 248, 248, 0.6));
+}
 
-/* Fix hamburger button styling to prevent white appearance */
+.rt-insights-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.rt-insight-card {
+    flex: 0 0 100%;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.rt-insight-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1.3;
+    margin-bottom: 12px;
+}
+
+.rt-insight-excerpt {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.rt-insight-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 1rem;
+}
+
+.rt-insight-date {
+    font-size: 0.75rem;
+    color: #8b5cf6;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.rt-insight-link {
+    background: linear-gradient(135deg, rgba(114, 22, 244, 0.9), rgba(143, 71, 246, 0.95));
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.rt-insight-link:hover {
+    background: linear-gradient(135deg, rgba(143, 71, 246, 0.95), rgba(157, 78, 221, 1));
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(114, 22, 244, 0.25);
+    text-decoration: none;
+}
+
+.rt-insights-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px;
+    gap: 8px;
+    background: linear-gradient(135deg, rgba(248, 248, 248, 0.6), rgba(255, 255, 255, 0.4));
+    border-top: 1px solid rgba(114, 22, 244, 0.1);
+}
+
+.rt-nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(114, 22, 244, 0.2);
+    border: 1px solid rgba(114, 22, 244, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rt-nav-dot.active {
+    background: var(--primary-purple);
+    transform: scale(1.1);
+}
+
+/* Mobile Toggle */
 .rt-mobile-toggle {
     display: none;
     background: rgba(255, 255, 255, 0.1) !important;
@@ -2259,14 +1699,6 @@
     border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
-.rt-mobile-toggle:active,
-.rt-mobile-toggle:focus {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
-    outline: none;
-}
-
-/* Ensure hamburger lines stay white */
 .rt-mobile-toggle span {
     display: block;
     width: 24px;
@@ -2277,7 +1709,6 @@
     border-radius: 1px;
 }
 
-/* Hamburger animation when active */
 .rt-mobile-toggle.active span:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
 }
@@ -2290,14 +1721,7 @@
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Prevent body scroll when mobile menu is open */
-body.menu-open {
-    overflow: hidden !important;
-    position: fixed !important;
-    width: 100% !important;
-}
-
-/* Mobile menu improvements */
+/* Mobile Styles */
 @media (max-width: 992px) {
     .rt-mobile-toggle {
         display: block !important;
@@ -2339,7 +1763,6 @@ body.menu-open {
         align-items: stretch;
     }
     
-    /* Fix mobile nav links */
     .rt-nav-link {
         width: 100%;
         padding: 1rem !important;
@@ -2363,7 +1786,6 @@ body.menu-open {
         border-top-color: var(--dark-text) !important;
     }
     
-    /* Mobile dropdown styling */
     .rt-dropdown {
         position: static !important;
         width: 100% !important;
@@ -2395,7 +1817,6 @@ body.menu-open {
         gap: 1.5rem !important;
     }
     
-    /* Hide insights widget on mobile */
     .rt-insights-widget,
     .rt-main-menu-column:last-child {
         display: none !important;
@@ -2405,7 +1826,6 @@ body.menu-open {
         grid-template-columns: 1fr !important;
     }
     
-    /* Mobile CTA button styling */
     .rt-nav .rt-nav-item:last-child {
         margin-top: 1rem;
         padding: 0;
@@ -2432,7 +1852,6 @@ body.menu-open {
         box-shadow: 0 8px 25px rgba(114, 22, 244, 0.4) !important;
     }
     
-    /* Fix main menu links on mobile */
     .rt-main-menu-link {
         color: var(--dark-text) !important;
         text-decoration: none !important;
@@ -2453,18 +1872,6 @@ body.menu-open {
         border-color: rgba(199, 125, 255, 0.4) !important;
     }
 }
-/* Fix hamburger button hover/active states */
-.rt-mobile-toggle:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-.rt-mobile-toggle:active,
-.rt-mobile-toggle:focus {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
-    outline: none;
-}
 
 /* Prevent body scroll when mobile menu is open */
 body.menu-open {
@@ -2473,894 +1880,34 @@ body.menu-open {
     width: 100% !important;
 }
 
-/* Modern Footer Styling */
-.modern-footer {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-    color: #ffffff;
-    padding: 60px 0 0;
-    position: relative;
-    overflow: hidden;
-}
-
-.modern-footer::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #7216f4, #8f47f6 50%, #9d4edd);
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.footer-main {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
-    gap: 40px;
-    margin-bottom: 40px;
-}
-
-.footer-section {
-    display: flex;
-    flex-direction: column;
-}
-
-.company-section {
-    padding-right: 20px;
-}
-
-.company-logo {
-    margin-bottom: 20px;
-}
-
-.footer-logo {
-    height: 60px;
-    width: auto;
-    filter: brightness(1.1);
-}
-
-.company-tagline {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #d1d5db;
-    margin-bottom: 30px;
-    font-style: italic;
-}
-
-.footer-cta {
-    margin-top: auto;
-}
-
-.footer-cta-button {
-    background: linear-gradient(135deg, #7216f4, #8f47f6);
-    color: #ffffff;
-    text-decoration: none;
-    padding: 16px 24px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 1.4;
-    text-align: center;
-    display: inline-block;
-    max-width: 240px;
-    width: 100%;
-    box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3);
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.footer-cta-button:hover {
-    background: linear-gradient(135deg, #8f47f6, #9d4edd);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4);
-    color: #ffffff;
-    text-decoration: none;
-}
-
-.footer-heading {
-    font-size: 18px !important;
-    font-weight: 600 !important;
-    margin-bottom: 20px;
-    color: #ffffff !important; /* FIXED: Added !important to override theme styles */
-    position: relative;
-}
-
-.footer-heading::after {
-    content: "";
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 30px;
-    height: 2px;
-    background: linear-gradient(90deg, #7216f4, #8f47f6);
-    border-radius: 2px;
-}
-
-.footer-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer-links li {
-    margin-bottom: 12px;
-}
-
-.footer-links a {
-    color: #d1d5db;
-    text-decoration: none;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    display: inline-block;
-    position: relative;
-}
-
-.footer-links a:hover {
-    color: #c77dff;
-    transform: translateX(5px);
-}
-
-.contact-info {
-    margin-bottom: 25px;
-}
-
-.contact-email a {
-    color: #c77dff;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 16px;
-}
-
-.contact-email a:hover {
-    color: #8f47f6;
-}
-
-.contact-location {
-    color: #9ca3af;
-    font-size: 14px;
-    margin-top: 8px;
-}
-
-.social-links {
-    display: flex;
-    gap: 15px;
-}
-
-.social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: #d1d5db;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.social-link:hover {
-    background: linear-gradient(135deg, #7216f4, #8f47f6);
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(114, 22, 244, 0.3);
-}
-
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 30px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.footer-copyright p {
-    margin: 0;
-    color: #9ca3af;
-    font-size: 14px;
-}
-
-.footer-legal {
-    display: flex;
-    gap: 25px;
-}
-
-.footer-legal a {
-    color: #9ca3af;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.3s ease;
-}
-
-.footer-legal a:hover {
-    color: #c77dff;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-    .footer-main {
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-    }
-    
-    .company-section {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding-right: 0;
-        margin-bottom: 20px;
-    }
-    
-    .footer-cta-button {
-        margin: 0 auto;
-        max-width: 280px;
-    }
-}
-
-@media (max-width: 768px) {
-    .modern-footer {
-        padding: 40px 0 0;
-    }
-    
-    .footer-main {
-        grid-template-columns: 1fr;
-        gap: 30px;
-        text-align: center;
-    }
-    
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-    
-    .footer-legal {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-    }
-    
-    .social-links {
-        justify-content: center;
-    }
-}
-
-@media (max-width: 480px) {
-    .footer-container {
-        padding: 0 15px;
-    }
-    
-    .footer-cta-button {
-        font-size: 13px;
-        padding: 14px 20px;
-    }
-    
-    .footer-legal {
-        flex-direction: column;
-        gap: 10px;
-    }
-}
-
-/* Initially hide portal access links until JS determines state */
-a[href="#openPortalModal"] {
-    opacity: 0.3 !important;
-    pointer-events: none !important;
-    transition: opacity 0.2s ease !important;
-}
-
-a[href="#openPortalModal"].tpa-btn-ready {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
-
-/* =================================================================== */
-/* Homepage Button Fixes - Add these styles to improve button behavior */
-/* =================================================================== */
-
-/* Fix 1: Ensure hover animation covers full button */
-.cta-button {
-    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
-    color: #ffffff !important; /* Force white text */
-    padding: 16px 28px !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 12px !important;
-    font-size: 1.3rem !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-    text-align: center !important;
-    display: inline-block !important;
-    box-sizing: border-box !important;
-    width: 250px !important;
-    min-height: 56px !important; /* Ensure consistent height */
-    line-height: 1.4 !important;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important; /* Darker text shadow for readability */
-    box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3) !important;
-    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-    cursor: pointer !important;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    z-index: 2 !important;
-    position: relative !important;
-    overflow: hidden !important; /* Prevent animation overflow */
-}
-
-/* Fix 2: Improve hover state for better coverage and contrast */
-.cta-button:hover {
-    background: linear-gradient(135deg, #8f47f6, #9d4edd) !important; /* Lighter purple for better contrast */
-    color: #ffffff !important; /* Ensure white text on hover */
-    transform: translateY(-6px) scale(1.05) !important;
-    box-shadow: 0 14px 40px rgba(114, 22, 244, 0.4) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important; /* Stronger text shadow on hover */
-}
-
-/* Fix 3: Active state for better feedback */
-.cta-button:active {
-    transform: translateY(-2px) scale(1.02) !important;
-    box-shadow: 0 8px 24px rgba(114, 22, 244, 0.3) !important;
-}
-
-/* Fix 4: Focus state for accessibility */
-.cta-button:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.5) !important;
-    outline-offset: 2px !important;
-    color: #ffffff !important;
-}
-
-/* Fix 5: Alternative button style with better contrast */
-.cta-button-alt {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
-    color: #7216f4 !important; /* Purple text on white background */
-    border: 2px solid #7216f4 !important;
-    padding: 16px 28px !important;
-    border-radius: 12px !important;
-    font-size: 1.3rem !important;
-    font-weight: 600 !important;
-    text-decoration: none !important;
-    text-align: center !important;
-    display: inline-block !important;
-    box-sizing: border-box !important;
-    width: 250px !important;
-    min-height: 56px !important;
-    line-height: 1.4 !important;
-    text-shadow: none !important;
-    box-shadow: 0 8px 32px rgba(114, 22, 244, 0.15) !important;
-    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-    cursor: pointer !important;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    z-index: 2 !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
-
-.cta-button-alt:hover {
-    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
-    color: #ffffff !important;
-    border-color: #ffffff !important;
-    transform: translateY(-6px) scale(1.05) !important;
-    box-shadow: 0 14px 40px rgba(114, 22, 244, 0.4) !important;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-}
-
-/* Fix 6: WordPress button compatibility */
-.wp-block-button__link.cta-button,
-.wp-block-button .wp-block-button__link {
-    background: linear-gradient(135deg, #7216f4, #8f47f6) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
-    overflow: hidden !important;
-}
-
-.wp-block-button__link.cta-button:hover,
-.wp-block-button .wp-block-button__link:hover {
-    background: linear-gradient(135deg, #8f47f6, #9d4edd) !important;
-    color: #ffffff !important;
-    text-decoration: none !important;
-    transform: translateY(-4px) scale(1.03) !important;
-    box-shadow: 0 12px 32px rgba(114, 22, 244, 0.35) !important;
-}
-
-/* Fix 7: Ensure no conflicting text colors */
-.cta-button,
-.cta-button:visited,
-.cta-button:link,
-.cta-button:active,
-.cta-button:hover,
-.cta-button:focus {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-/* Fix 8: Mobile responsiveness improvements */
-@media (max-width: 768px) {
-    .cta-button {
-        width: 100% !important;
-        max-width: 280px !important;
-        font-size: 1.2rem !important;
-        padding: 14px 24px !important;
-    }
-    
-    .cta-button:hover {
-        transform: translateY(-4px) scale(1.02) !important; /* Reduced transform for mobile */
-    }
-}
-
-/* Fix 9: High contrast mode support */
-@media (prefers-contrast: high) {
-    .cta-button {
-        background: #7216f4 !important;
-        border: 2px solid #ffffff !important;
-        color: #ffffff !important;
-        text-shadow: none !important;
-    }
-    
-    .cta-button:hover {
-        background: #ffffff !important;
-        color: #7216f4 !important;
-        border-color: #7216f4 !important;
-    }
-}
-
-/* Fix 10: Smooth transform origin for better animation */
-.cta-button {
-    transform-origin: center center !important;
-    backface-visibility: hidden !important; /* Prevent animation flicker */
-    -webkit-backface-visibility: hidden !important;
-}
-
-/* Fix 11: Button container improvements */
-.button-container {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    box-sizing: border-box;
-    position: relative;
-    z-index: 1;
-    overflow: visible !important; /* Allow button hover effects to show */
-}
-/* =================================================================== */
-/* BANNER ABOVE HEADER - Add this to the END of your shared.css file */
-/* =================================================================== */
-
-/* 1. Banner positioning - make it appear above header */
+/* Banner Integration */
 .workshop-banner {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    z-index: 100000 !important; /* Higher than header's 99999 */
-    min-height: 80px !important;
-    width: 100vw !important;
-}
-
-/* 2. Header menu positioning - move below banner */
-.rt-nav-container {
-    top: 80px !important; /* Height of the banner */
-}
-
-/* 3. Body padding to account for both banner and header */
-body {
-    padding-top: 160px !important; /* Banner (80px) + Header (80px) */
-    transition: padding-top 0.4s ease !important;
-}
-
-/* 4. When banner is closed, move header back to top */
-body.banner-closed .rt-nav-container {
-    top: 0 !important;
-    transition: top 0.4s ease !important;
-}
-
-body.banner-closed {
-    padding-top: 80px !important; /* Only header height when banner is closed */
-    transition: padding-top 0.4s ease !important;
-}
-
-/* 5. Mobile adjustments */
-@media (max-width: 768px) {
-    body {
-        padding-top: 140px !important; /* Banner (60px) + Header (70px) for mobile */
-    }
-
-    .workshop-banner {
-        min-height: 60px !important;
-    }
-
-    .rt-nav-container {
-        top: 60px !important;
-        height: 70px !important;
-    }
-
-    body.banner-closed {
-        padding-top: 70px !important;
-    }
-
-    body.banner-closed .rt-nav-container {
-        top: 0 !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .workshop-banner {
-        min-height: 50px !important;
-    }
-
-    body {
-        padding-top: 120px !important; /* Banner (50px) + Header (70px) */
-    }
-
-    .rt-nav-container {
-        top: 50px !important;
-    }
-}
-/* Add this to fix the checkbox text wrapping issue */
-@media (max-width: 600px) {
-    .checkbox-row {
-        display: flex !important;
-        align-items: flex-start !important;
-        margin-bottom: 16px !important;
-        padding: 12px !important;
-        background: rgba(255, 255, 255, 0.7) !important;
-        border-radius: 8px !important;
-        border: 1px solid rgba(199, 125, 255, 0.2) !important;
-        box-sizing: border-box !important;
-    }
-
-    .checkbox-row label {
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        hyphens: auto !important;
-        flex: 1 !important;
-        max-width: calc(100% - 28px) !important;
-    }
-}
-
-/* =================================================================== */
-/* CRITICAL MOBILE FIXES - Add these to your shared.css file
-/* These will override your existing mobile styles for better display
-/* =================================================================== */
-
-/* Fix mobile modal sizing */
-@media (max-width: 768px) {
-    .modal {
-        padding: 10px !important;
-    }
-    
-    .modal-content {
-        padding: 5px !important;
-        max-width: calc(100vw - 20px) !important;
-        max-height: calc(100vh - 20px) !important;
-        width: 100% !important;
-        margin: 0 !important;
-    }
-    
-    .video-access-form {
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: auto !important;
-        padding: 20px 16px !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-        border-radius: 12px !important;
-    }
-    
-    /* Fix title sizing */
-    .video-access-form h3 {
-        font-size: 1.3rem !important;
-        line-height: 1.3 !important;
-        padding-right: 40px !important;
-        margin-bottom: 12px !important;
-        text-align: center !important;
-    }
-    
-    /* Improve close button positioning */
-    .close-btn {
-        top: 8px !important;
-        right: 8px !important;
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 18px !important;
-        z-index: 1000006 !important;
-    }
-    
-    /* Fix form field groups */
-    .form-row-group {
-        flex-direction: column !important;
-        gap: 0 !important;
-        margin-bottom: 16px !important;
-    }
-    
-    .form-row-group .form-row {
-        flex: none !important;
-        margin-bottom: 16px !important;
-        margin-right: 0 !important;
-        width: 100% !important;
-    }
-    
-    .form-row-group .form-row:last-child {
-        margin-bottom: 0 !important;
-    }
-    
-    /* Better form input styling */
-    .form-control, 
-    .wpcf7-form-control:not(.wpcf7-submit) {
-        width: 100% !important;
-        padding: 14px 12px !important;
-        font-size: 16px !important;
-        border-radius: 8px !important;
-        box-sizing: border-box !important;
-        margin: 0 !important;
-    }
-    
-    /* Fix label spacing */
-    .form-row label {
-        display: block !important;
-        margin-bottom: 6px !important;
-        font-weight: 500 !important;
-        color: #333 !important;
-        font-size: 15px !important;
-    }
-    
-    /* Critical: Fix checkbox layout */
-    .checkbox-row {
-        display: flex !important;
-        align-items: flex-start !important;
-        margin-bottom: 16px !important;
-        padding: 12px !important;
-        background: rgba(255, 255, 255, 0.8) !important;
-        border-radius: 8px !important;
-        border: 1px solid rgba(199, 125, 255, 0.3) !important;
-        box-sizing: border-box !important;
-        width: 100% !important;
-    }
-    
-    .checkbox-row input[type=checkbox] {
-        width: 18px !important;
-        height: 18px !important;
-        margin: 2px 12px 0 0 !important;
-        flex-shrink: 0 !important;
-        accent-color: var(--primary-purple) !important;
-    }
-    
-    .checkbox-row label {
-        margin-bottom: 0 !important;
-        color: #333 !important;
-        font-size: 14px !important;
-        line-height: 1.4 !important;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        flex: 1 !important;
-        width: calc(100% - 30px) !important;
-    }
-    
-    /* Submit button optimization */
-    .submit-btn, 
-    .wpcf7-form input[type=submit], 
-    .wpcf7-submit {
-        width: 100% !important;
-        padding: 16px 20px !important;
-        font-size: 16px !important;
-        margin-top: 16px !important;
-        border-radius: 8px !important;
-        box-sizing: border-box !important;
-    }
-    
-    /* Contact Form 7 wrapper fixes */
-    .video-access-form .wpcf7 {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .video-access-form .wpcf7-form {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .video-access-form .wpcf7-form p {
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-    }
-    
-    .video-access-form .wpcf7-form-control-wrap {
-        display: block !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    /* Hide any extra breaks */
-    .video-access-form br {
-        display: none !important;
-    }
-}
-
-/* Extra small mobile devices */
-@media (max-width: 480px) {
-    .modal {
-        padding: 5px !important;
-    }
-    
-    .modal-content {
-        padding: 2px !important;
-        max-width: calc(100vw - 10px) !important;
-    }
-    
-    .video-access-form {
-        padding: 16px 12px !important;
-        border-radius: 8px !important;
-    }
-    
-    .video-access-form h3 {
-        font-size: 1.1rem !important;
-        padding-right: 35px !important;
-    }
-    
-    .close-btn {
-        top: 6px !important;
-        right: 6px !important;
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 16px !important;
-    }
-    
-    .checkbox-row {
-        padding: 10px !important;
-    }
-    
-    .checkbox-row label {
-        font-size: 13px !important;
-    }
-}
-
-/* Landscape orientation fix */
-@media (max-width: 768px) and (orientation: landscape) {
-    .video-access-form {
-        max-height: calc(100vh - 40px) !important;
-        overflow-y: auto !important;
-    }
-    
-    .modal-content {
-        align-items: flex-start !important;
-        padding-top: 10px !important;
-    }
-}
-
-/* Prevent any overflow issues */
-@media (max-width: 768px) {
-    body.modal-open {
-        overflow: hidden !important;
-        position: fixed !important;
-        width: 100% !important;
-        height: 100% !important;
-    }
-    
-    .modal {
-        overflow-y: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-    }
-    
-    .video-access-form * {
-        box-sizing: border-box !important;
-    }
-}
-/* =================================================================== */
-/* BANNER ABOVE HEADER - FIXED VERSION
-/* Add this to the END of your shared.css file to override any conflicts
-/* =================================================================== */
-
-/* 1. Banner positioning - appears above everything */
-.workshop-banner {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 100000 !important; /* Higher than header's 99999 */
+    z-index: 100000 !important;
     width: 100vw !important;
     min-height: 80px !important;
-    margin: 0 !important;
     transition: transform 0.4s ease, opacity 0.4s ease !important;
 }
 
-/* 2. Header positioning - initially below banner */
 .rt-nav-container {
-    position: fixed !important;
-    top: 80px !important; /* Banner height */
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 99999 !important;
+    top: 80px !important;
     transition: top 0.4s ease !important;
 }
 
-/* 3. Body padding to account for both banner and header */
 body {
-    padding-top: 160px !important; /* Banner (80px) + Header (80px) */
+    padding-top: 160px !important;
     transition: padding-top 0.4s ease !important;
 }
 
-/* 4. CRITICAL: When banner is closed, move header to top */
 body.banner-closed .rt-nav-container {
     top: 0 !important;
 }
 
 body.banner-closed {
-    padding-top: 80px !important; /* Only header height */
-}
-
-/* 5. Mobile responsive adjustments */
-@media (max-width: 768px) {
-    .workshop-banner {
-        min-height: 60px !important;
-    }
-    
-    .rt-nav-container {
-        top: 60px !important;
-        height: 70px !important;
-    }
-    
-    body {
-        padding-top: 130px !important; /* Banner (60px) + Header (70px) */
-    }
-    
-    body.banner-closed .rt-nav-container {
-        top: 0 !important;
-    }
-    
-    body.banner-closed {
-        padding-top: 70px !important;
-    }
-}
-
-@media (max-width: 480px) {
-    .workshop-banner {
-        min-height: 50px !important;
-    }
-    
-    .rt-nav-container {
-        top: 50px !important;
-    }
-    
-    body {
-        padding-top: 120px !important; /* Banner (50px) + Header (70px) */
-    }
-    
-    body.banner-closed {
-        padding-top: 70px !important;
-    }
-}
-
-/* 6. Ensure smooth transitions for all states */
-.rt-nav-container,
-body,
-.workshop-banner {
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-}
-
-/* 7. Override any theme conflicts */
-.rt-nav-container {
-    width: 100% !important;
-    margin: 0 !important;
-}
-
-/* 8. Ensure banner stays above everything */
-.workshop-banner {
-    box-sizing: border-box !important;
-}
-
-/* 9. Fix any potential layout shifts */
-html {
-    scroll-behavior: smooth;
+    padding-top: 80px !important;
 }
 
 body.banner-closed .workshop-banner {
@@ -3368,121 +1915,45 @@ body.banner-closed .workshop-banner {
     opacity: 0 !important;
     pointer-events: none !important;
 }
-/* =================================================================== */
-/* NAVIGATION LINK COLOR FIXES - Add these to your shared.css file
-/* These styles ensure navigation links stay white in all states
-/* =================================================================== */
 
-/* Force all navigation link states to remain white */
-.rt-nav-link,
-.rt-nav-link:link,
-.rt-nav-link:visited,
-.rt-nav-link:hover,
-.rt-nav-link:active,
-.rt-nav-link:focus {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-/* Ensure active dropdown navigation items stay white */
-.rt-nav-item.active .rt-nav-link,
-.rt-nav-item.active .rt-nav-link:link,
-.rt-nav-item.active .rt-nav-link:visited,
-.rt-nav-item.active .rt-nav-link:hover,
-.rt-nav-item.active .rt-nav-link:active,
-.rt-nav-item.active .rt-nav-link:focus {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-/* Fix dropdown arrow color to stay white */
-.rt-nav-link.has-dropdown::after {
-    border-top-color: #ffffff !important;
-    opacity: 0.8;
-}
-
-.rt-nav-item.active .rt-nav-link.has-dropdown::after {
-    border-top-color: #ffffff !important;
-    transform: rotate(180deg);
-}
-
-/* Override default styles for top-level navigation links only */
-.rt-nav > .rt-nav-item > .rt-nav-link,
-.rt-nav > .rt-nav-item > .rt-nav-link:link,
-.rt-nav > .rt-nav-item > .rt-nav-link:visited,
-.rt-nav > .rt-nav-item > .rt-nav-link:hover,
-.rt-nav > .rt-nav-item > .rt-nav-link:active,
-.rt-nav > .rt-nav-item > .rt-nav-link:focus {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-/* Ensure hover effects keep white text */
-.rt-nav-link:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-    transform: none !important; /* Prevent any transforms that might affect color */
-}
-
-/* Fix for any potential WordPress theme overrides */
-.rt-nav-container .rt-nav-link,
-.rt-nav-container .rt-nav-link:link,
-.rt-nav-container .rt-nav-link:visited,
-.rt-nav-container .rt-nav-link:hover,
-.rt-nav-container .rt-nav-link:active,
-.rt-nav-container .rt-nav-link:focus {
-    color: #ffffff !important;
-    text-decoration: none !important;
-}
-
-/* Fix focus outlines to be white instead of default purple */
-.rt-nav-link:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.5) !important;
-    outline-offset: 2px !important;
-}
-
-/* Ensure VIEW PORTAL button stays properly styled */
-.rt-cta-button,
-.rt-cta-button:link,
-.rt-cta-button:visited,
-.rt-cta-button:hover,
-.rt-cta-button:active,
-.rt-cta-button:focus {
-    background: linear-gradient(135deg, #8f47f6, #7216f4) !important;
-    color: white !important;
-    text-decoration: none !important;
-}
-
-/* Additional specificity for stubborn themes */
-.rt-nav-container .rt-nav .rt-nav-item .rt-nav-link {
-    color: #ffffff !important;
-}
-
-.rt-nav-container .rt-nav .rt-nav-item.active .rt-nav-link {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Mobile navigation fixes */
-@media (max-width: 992px) {
-    /* Override highly specific desktop rule */
-    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link,
-    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:link,
-    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:visited,
-    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:hover,
-    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:active,
-    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link:focus {
-        color: var(--dark-text) !important; /* Dark text on mobile light background */
+/* Mobile banner adjustments */
+@media (max-width: 768px) {
+    .workshop-banner {
+        min-height: 60px !important;
     }
-
-    .rt-nav-container .rt-nav .rt-nav-item.active .rt-nav-link {
-        color: var(--dark-text) !important;
-        background: rgba(255, 255, 255, 0.1) !important;
+    
+    .rt-nav-container {
+        top: 60px !important;
+        height: 70px !important;
     }
+    
+    body {
+        padding-top: 130px !important;
+    }
+    
+    body.banner-closed .rt-nav-container {
+        top: 0 !important;
+    }
+    
+    body.banner-closed {
+        padding-top: 70px !important;
+    }
+}
 
-    .rt-nav-container .rt-nav .rt-nav-item .rt-nav-link.has-dropdown::after,
-    .rt-nav-container .rt-nav .rt-nav-item.active .rt-nav-link.has-dropdown::after {
-        border-top-color: var(--dark-text) !important;
+@media (max-width: 480px) {
+    .workshop-banner {
+        min-height: 50px !important;
+    }
+    
+    .rt-nav-container {
+        top: 50px !important;
+    }
+    
+    body {
+        padding-top: 120px !important;
+    }
+    
+    body.banner-closed {
+        padding-top: 70px !important;
     }
 }

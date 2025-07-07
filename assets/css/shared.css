@@ -2479,7 +2479,11 @@ body.banner-closed .workshop-banner {
     display: none !important;
 }
 
-/* Fix checkbox structure - target the actual checkbox input */
+/* =================================================================== */
+/* CONTACT FORM 7 CHECKBOX FIX - CORRECTED */
+/* =================================================================== */
+
+/* Reset the checkbox container */
 .portal-access-form .checkbox-row {
     display: flex !important;
     align-items: flex-start !important;
@@ -2491,7 +2495,7 @@ body.banner-closed .workshop-banner {
     border: 1px solid #e2e8f0 !important;
 }
 
-/* Reset the checkbox paragraph wrapper */
+/* Reset CF7 checkbox wrapper paragraph */
 .portal-access-form .checkbox-row p {
     margin: 0 !important;
     padding: 0 !important;
@@ -2501,8 +2505,25 @@ body.banner-closed .workshop-banner {
     width: 100% !important;
 }
 
-/* Style the checkbox input when it's properly generated */
-.portal-access-form .checkbox-row input[type="checkbox"] {
+/* Target the CF7 checkbox wrapper span */
+.portal-access-form .wpcf7-checkbox {
+    display: flex !important;
+    align-items: flex-start !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Target the CF7 checkbox label span that contains the input */
+.portal-access-form .wpcf7-checkbox .wpcf7-list-item {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+}
+
+/* Style the actual checkbox input */
+.portal-access-form .wpcf7-checkbox input[type="checkbox"] {
     appearance: none !important;
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
@@ -2519,12 +2540,12 @@ body.banner-closed .workshop-banner {
     transition: all 0.2s ease !important;
 }
 
-.portal-access-form .checkbox-row input[type="checkbox"]:checked {
+.portal-access-form .wpcf7-checkbox input[type="checkbox"]:checked {
     background: #7216f4 !important;
     border-color: #7216f4 !important;
 }
 
-.portal-access-form .checkbox-row input[type="checkbox"]:checked::before {
+.portal-access-form .wpcf7-checkbox input[type="checkbox"]:checked::before {
     content: '✓' !important;
     position: absolute !important;
     top: 50% !important;
@@ -2536,7 +2557,12 @@ body.banner-closed .workshop-banner {
     line-height: 1 !important;
 }
 
-/* Style the checkbox label */
+/* Hide the CF7 generated label text since we have our own */
+.portal-access-form .wpcf7-checkbox .wpcf7-list-item-label {
+    display: none !important;
+}
+
+/* Style our custom label */
 .portal-access-form .checkbox-row label {
     margin: 0 !important;
     font-size: 14px !important;
@@ -2545,13 +2571,19 @@ body.banner-closed .workshop-banner {
     cursor: pointer !important;
     font-weight: 400 !important;
     flex: 1 !important;
+    margin-left: 8px !important;
 }
 
-/* Fix the CF7 checkbox wrapper spans */
-.portal-access-form .wpcf7-checkbox {
-    display: flex !important;
-    align-items: flex-start !important;
-    gap: 8px !important;
+/* Ensure links in the label work */
+.portal-access-form .checkbox-row label a {
+    color: #8b5cf6 !important;
+    text-decoration: underline !important;
+    font-weight: 500 !important;
+}
+
+.portal-access-form .checkbox-row label a:hover {
+    text-decoration: none !important;
+    color: #7c3aed !important;
 }
 
 /* Ensure proper spacing for the entire form */

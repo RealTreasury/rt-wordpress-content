@@ -93,7 +93,7 @@ function add_my_custom_header_html() {
                             <div class="rt-services-menu">
                                 <div class="rt-services-grid">
                                     <div class="rt-service-item">
-                                        <div class="rt-service-title">Vendor Demo Library</div>
+                                        <div class="rt-service-title">Treasury Tech Portal</div>
                                         <div class="rt-service-desc">Access curated treasury tech stack demos and solution overviews.</div>
                                         <a href="#openPortalModal" class="rt-service-cta">Request Access</a>
                                     </div>

@@ -417,12 +417,21 @@
                 }
             }, true);
 
-            // Resume animation
+            // Resume animation from the current offset
             function resumeAnimation() {
-                if (!track.classList.contains('dragging')) {
-                    track.style.transform = '';
-                    currentX = 0;
-                }
+                if (track.classList.contains('dragging')) return;
+
+                const styles = getComputedStyle(track);
+                const duration = parseFloat(styles.animationDuration) || 20;
+                const halfWidth = track.scrollWidth / 2;
+
+                // Constrain offset to the animation range
+                currentX = ((currentX % halfWidth) + halfWidth) % halfWidth - halfWidth;
+
+                // Set animation delay so the CSS animation picks up from this offset
+                const progress = -currentX / halfWidth; // 0 at start, 1 at -50%
+                track.style.animationDelay = `-${progress * duration}s`;
+                track.style.transform = '';
             }
         }
     </script>

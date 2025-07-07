@@ -1200,317 +1200,145 @@ add_action('rest_api_init', function() {
 
 ?>
 <?php
-// Portal Access Gating System for /treasury-tech-portal/
+// ===============================================================
+// REMOVE OR COMMENT OUT THE OLD PORTAL ACCESS SYSTEM
+// ===============================================================
+
+/*
+// OLD SYSTEM - COMMENT OUT OR REMOVE THESE FUNCTIONS:
+
 add_action('template_redirect', 'rt_gate_portal_access');
-// Ensure jQuery is loaded for Contact Form 7
-add_action('wp_enqueue_scripts', 'ensure_jquery_loaded');
-function ensure_jquery_loaded() {
-    if (!wp_script_is('jquery', 'enqueued')) {
-        wp_enqueue_script('jquery');
-    }
-}
 function rt_gate_portal_access() {
-    if (is_page('treasury-tech-portal') || $_SERVER['REQUEST_URI'] === '/treasury-tech-portal/') {
-        if (!rt_has_portal_access()) {
-            if (!session_id()) session_start();
-            $_SESSION['rt_portal_redirect'] = home_url('/treasury-tech-portal/');
-            wp_redirect(home_url('/?show_portal_modal=1'));
-            exit;
-        }
-    }
+    // This function is causing the redirect loop - REMOVE IT
 }
 
 function rt_has_portal_access() {
-    // Check URL parameter first (immediate access after form)
-    if (isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
-        if (!session_id()) session_start();
-        $_SESSION['rt_portal_access'] = true;
-        $_SESSION['rt_portal_access_expires'] = time() + (180 * 24 * 60 * 60);
-        return true;
-    }
-
-    // Check for the simple cookie
-    if (isset($_COOKIE['portal_access_token']) && $_COOKIE['portal_access_token'] === 'granted') {
-        return true;
-    }
-
-    // Check session
-    if (!session_id()) session_start();
-    if (isset($_SESSION['rt_portal_access']) && $_SESSION['rt_portal_access_expires'] > time()) {
-        return true;
-    }
-
-    // Fallback to existing complex cookie check
-    if (isset($_COOKIE['rt_portal_access'])) {
-        $access_data = json_decode(stripslashes($_COOKIE['rt_portal_access']), true);
-        if ($access_data && isset($access_data['expires']) && time() < $access_data['expires']) {
-            return true;
-        }
-    }
-
-    return false;
+    // This function conflicts with the plugin - REMOVE IT  
 }
 
 function rt_grant_portal_access($email, $name) {
-    $expires = time() + (24 * 60 * 60);
-    $access_data = array('email' => sanitize_email($email), 'name' => sanitize_text_field($name), 'granted' => time(), 'expires' => $expires);
-    setcookie('rt_portal_access', json_encode($access_data), $expires, '/', '', is_ssl(), true);
-    if (!session_id()) session_start();
-    $_SESSION['rt_portal_access'] = true;
-    $_SESSION['rt_portal_access_expires'] = $expires;
+    // This function is redundant with the plugin - REMOVE IT
 }
 
 add_action('wpcf7_mail_sent', 'rt_handle_portal_form_submission');
 function rt_handle_portal_form_submission($contact_form) {
-    $form_id = $contact_form->id();
-    $selected_form_id = get_option('tpa_form_id');
-    if ($selected_form_id && $form_id == $selected_form_id) {
-        $submission = WPCF7_Submission::get_instance();
-        if ($submission) {
-            $posted_data = $submission->get_posted_data();
-            $email = isset($posted_data['email']) ? $posted_data['email'] : '';
-            $first_name = isset($posted_data['first-name']) ? $posted_data['first-name'] : '';
-            $last_name = isset($posted_data['last-name']) ? $posted_data['last-name'] : '';
-            $name = trim($first_name . ' ' . $last_name);
-            if (!empty($email)) {
-                // Set the simple cookie that the JavaScript also sets
-                $expires = time() + (180 * 24 * 60 * 60); // 180 days
-                setcookie('portal_access_token', 'granted', $expires, '/', '', is_ssl(), true);
-
-                // Also set the complex cookie for backwards compatibility
-                rt_grant_portal_access($email, $name);
-
-                if (!session_id()) session_start();
-                $_SESSION['rt_portal_access_granted'] = true;
-            }
-        }
-    }
+    // This function conflicts with the plugin - REMOVE IT
 }
 
 add_action('wp_footer', 'rt_portal_gating_javascript');
 function rt_portal_gating_javascript() {
-    if ( ! session_id() ) {
-        session_start();
+    // This function conflicts with the plugin - REMOVE IT
+}
+*/
+
+// ===============================================================
+// NEW INTEGRATED SOLUTION - USE THIS INSTEAD
+// ===============================================================
+
+/**
+ * Integrated portal access gate that works with Treasury Portal Access plugin
+ * This replaces the old rt_gate_portal_access function
+ */
+add_action('template_redirect', 'tpa_integrated_gate_portal_access');
+function tpa_integrated_gate_portal_access() {
+    // Only gate the treasury-tech-portal page
+    if (!is_page('treasury-tech-portal') && $_SERVER['REQUEST_URI'] !== '/treasury-tech-portal/') {
+        return;
     }
 
-    $show_modal = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
-    $form_id = get_option( 'tpa_form_id', '325' );
-    $redirect_url = 'https://realtreasury.com/treasury-tech-portal/';
+    // Check if the Treasury Portal Access plugin is active
+    if (!class_exists('Treasury_Portal_Access')) {
+        // Plugin not active, allow access (or show error message)
+        return;
+    }
 
-    // Output the modal HTML first, then the JavaScript
+    // Get the plugin instance
+    $tpa_instance = Treasury_Portal_Access::get_instance();
+    
+    // Check if user has access using the plugin's method
+    if ($tpa_instance->has_portal_access()) {
+        // User has valid access, allow them to proceed
+        return;
+    }
+
+    // Check for access_granted parameter (immediate access after form submission)
+    if (isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
+        // User just completed the form, allow access
+        return;
+    }
+
+    // User doesn't have access, redirect to show the modal
+    if (!session_id()) session_start();
+    $_SESSION['tpa_portal_redirect'] = home_url('/treasury-tech-portal/');
+    wp_redirect(home_url('/?show_portal_modal=1'));
+    exit;
+}
+
+/**
+ * Add the modal trigger JavaScript only when needed
+ * This replaces the old rt_portal_gating_javascript function
+ */
+add_action('wp_footer', 'tpa_integrated_modal_trigger');
+function tpa_integrated_modal_trigger() {
+    // Only show modal trigger if the URL parameter is set
+    if (!isset($_GET['show_portal_modal']) || $_GET['show_portal_modal'] !== '1') {
+        return;
+    }
+
+    // Only add this if the Treasury Portal Access plugin is active
+    if (!class_exists('Treasury_Portal_Access')) {
+        return;
+    }
+
     ?>
-
-    <!-- Portal Modal HTML (separate from JavaScript) -->
-    <div id="portalModal" class="tpa-modal" style="display: none;">
-        <div class="tpa-modal-content">
-            <div class="portal-access-form">
-                <button class="close-btn" type="button" onclick="closePortalModal()">&times;</button>
-                <h3>Access Treasury Tech Portal</h3>
-                <div class="portal-form-container">
-                    <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-    // Portal Access System - Clean JavaScript (no HTML embedding)
-    (function() {
-        'use strict';
-        
-        let modalShown = false;
-        let formSubmitted = false;
-        const FORM_ID = '<?php echo esc_js($form_id); ?>';
-        const REDIRECT_URL = '<?php echo esc_js($redirect_url); ?>';
-
-        document.addEventListener('DOMContentLoaded', function () {
-            <?php if ( $show_modal ) : ?>
-            setTimeout(showPortalModal, 500);
-            <?php endif; ?>
-            
-            // Setup form monitoring
-            setTimeout(setupFormMonitoring, 1000);
-        });
-
-        function showPortalModal() {
-            if (modalShown) return;
-            modalShown = true;
-            
-            const modal = document.getElementById('portalModal');
-            if (modal) {
-                modal.style.display = 'flex';
-                setTimeout(() => modal.classList.add('show'), 10);
-                document.body.classList.add('modal-open');
-                
-                // Re-setup monitoring after modal is shown
-                setTimeout(setupFormMonitoring, 500);
+    // Integrated portal modal trigger that works with Treasury Portal Access plugin
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait a bit for the plugin's scripts to load
+        setTimeout(function() {
+            if (window.TPA && typeof window.TPA.openModal === 'function') {
+                // Use the plugin's modal system
+                window.TPA.openModal();
+            } else if (typeof window.showPortalModal === 'function') {
+                // Fallback to old system if available
+                window.showPortalModal();
+            } else {
+                console.log('⚠️ Portal modal system not found. Plugin may not be loaded.');
             }
-        }
-
-        function setupFormMonitoring() {
-            console.log('🔍 Setting up form monitoring for form ID:', FORM_ID);
-            
-            // Method 1: Listen for wpcf7mailsent event
-            document.addEventListener('wpcf7mailsent', function(event) {
-                console.log('📧 wpcf7mailsent event fired for form:', event.detail.contactFormId);
-                if (event.detail.contactFormId.toString() === FORM_ID) {
-                    handleFormSuccess();
-                }
-            });
-            
-            // Method 2: Watch for success message with DOM observer
-            const formContainer = document.querySelector('.portal-form-container');
-            if (formContainer) {
-                const observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.addedNodes) {
-                            for (let node of mutation.addedNodes) {
-                                if (node.nodeType === 1) {
-                                    if (node.querySelector && (
-                                        node.querySelector('.wpcf7-mail-sent-ok') ||
-                                        node.classList.contains('wpcf7-mail-sent-ok')
-                                    )) {
-                                        console.log('✅ Success message detected via DOM observer');
-                                        handleFormSuccess();
-                                    }
-                                }
-                            }
-                        }
-                    });
-                });
-                
-                observer.observe(formContainer, { 
-                    childList: true, 
-                    subtree: true,
-                    attributes: true
-                });
-            }
-            
-            // Method 3: Monitor form submission directly
-            const form = document.querySelector('form.wpcf7-form');
-            if (form) {
-                form.addEventListener('submit', function() {
-                    console.log('📝 Form submitted, checking for success...');
-                    setTimeout(checkForSuccess, 2000);
-                    setTimeout(checkForSuccess, 4000);
-                });
-            }
-        }
-        
-        function checkForSuccess() {
-            const successMsg = document.querySelector('.wpcf7-mail-sent-ok');
-            if (successMsg && successMsg.style.display !== 'none') {
-                console.log('✅ Success message found');
-                handleFormSuccess();
-            }
-        }
-
-        function handleFormSuccess() {
-            if (formSubmitted) return;
-            formSubmitted = true;
-            
-            console.log('🎉 Form success confirmed! Processing...');
-            
-            // Try to set cookie
-            try {
-                document.cookie = "portal_access_token=granted; path=/; max-age=15552000; secure; samesite=lax";
-                console.log('🍪 Cookie set successfully');
-            } catch (e) {
-                console.log('🚫 Cookie failed:', e);
-            }
-            
-            // Show success message
-            const formContainer = document.querySelector('.portal-form-container');
-            if (formContainer) {
-                formContainer.innerHTML = '<div class="portal-access-granted" style="text-align: center; padding: 30px; background: #f0f9ff; border-radius: 8px; border: 2px solid #10b981;"><h4 style="color: #10b981; margin: 0 0 10px 0; font-size: 18px;">✅ Access Granted!</h4><p style="margin: 0 0 15px 0; color: #059669;">Redirecting to Treasury Portal...</p><div style="font-size: 24px; color: #10b981;">⏳</div></div>';
-            }
-            
-            // Redirect with access parameter
-            setTimeout(function() {
-                console.log('🔄 Redirecting to:', REDIRECT_URL);
-                window.location.href = REDIRECT_URL + '?access_granted=1&t=' + Date.now();
-            }, 2000);
-        }
-
-        // Global functions
-        window.closePortalModal = function () {
-            const modal = document.getElementById('portalModal');
-            if (modal) {
-                modal.classList.remove('show');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    document.body.classList.remove('modal-open');
-                }, 300);
-            }
-        };
-
-        window.showPortalModal = showPortalModal;
-        
-        // Debug info
-        console.log('🚀 Portal access system initialized');
-        console.log('📋 Form ID:', FORM_ID);
-        console.log('🔗 Redirect URL:', REDIRECT_URL);
-        
-    })();
+        }, 500);
+    });
     </script>
-
-    <style>
-    .tpa-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 999999;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .tpa-modal.show {
-        opacity: 1;
-    }
-    
-    .tpa-modal-content {
-        background: white;
-        padding: 0;
-        border-radius: 12px;
-        max-width: 500px;
-        width: 90%;
-        max-height: 90vh;
-        overflow-y: auto;
-        position: relative;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    }
-    
-    .portal-access-form {
-        padding: 30px;
-    }
-    
-    .close-btn {
-        position: absolute;
-        top: 15px;
-        right: 20px;
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        color: #666;
-        z-index: 1;
-    }
-    
-    .close-btn:hover {
-        color: #333;
-    }
-    
-    body.modal-open {
-        overflow: hidden;
-    }
-    </style>
     <?php
 }
 
+/**
+ * Update the plugin's redirect URL handling to prevent loops
+ * This hooks into the plugin's form submission process
+ */
+add_action('wpcf7_mail_sent', 'tpa_integrated_form_handler', 5); // Priority 5 to run before plugin
+function tpa_integrated_form_handler($contact_form) {
+    $selected_form_id = get_option('tpa_form_id');
+    if (empty($selected_form_id) || $contact_form->id() != $selected_form_id) {
+        return;
+    }
+
+    // Let the plugin handle the form submission, but ensure proper redirect
+    if (!session_id()) session_start();
+    $_SESSION['tpa_form_just_submitted'] = true;
+    $_SESSION['tpa_form_submission_time'] = time();
+}
+
+/**
+ * Clean up any conflicting cookies from the old system
+ */
+add_action('init', 'tpa_cleanup_old_cookies');
+function tpa_cleanup_old_cookies() {
+    // Remove old system cookies that might conflict
+    $old_cookies = ['rt_portal_access', 'rt_portal_access_token'];
+    foreach ($old_cookies as $cookie_name) {
+        if (isset($_COOKIE[$cookie_name])) {
+            setcookie($cookie_name, '', time() - 3600, '/', '', is_ssl(), true);
+        }
+    }
+}
 ?>

@@ -2895,6 +2895,7 @@ body.banner-closed .portal-access-modal,
 body.banner-closed .modal,
 body.banner-closed .tpa-modal,
 body.banner-closed .treasury-portal .ttp-modal {
+
     padding-top: 100px !important;
 }
 
@@ -2925,6 +2926,7 @@ body.banner-closed .treasury-portal .ttp-modal-content {
     .tpa-modal,
     .treasury-portal .ttp-modal {
         padding-top: 90px !important;
+
     }
 
     .portal-access-modal .portal-access-form,

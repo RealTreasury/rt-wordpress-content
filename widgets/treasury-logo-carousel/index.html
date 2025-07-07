@@ -284,6 +284,12 @@
             }
         ];
 
+        // Count how many vendors share the same logo URL
+        const logoCounts = treasuryVendors.reduce((acc, vendor) => {
+            acc[vendor.logoUrl] = (acc[vendor.logoUrl] || 0) + 1;
+            return acc;
+        }, {});
+
         function createLogoSlide(vendor) {
             const slide = document.createElement('div');
             slide.className = 'logo-slide';
@@ -293,7 +299,7 @@
             link.href = `${portalBase}?tool=${encodeURIComponent(vendor.name)}`;
             link.target = '_blank';
             link.rel = 'noopener noreferrer';
-            
+
             const img = document.createElement('img');
             img.className = 'vendor-logo';
             img.src = vendor.logoUrl;
@@ -304,10 +310,13 @@
             link.appendChild(img);
             slide.appendChild(link);
 
-            const label = document.createElement('div');
-            label.className = 'vendor-name';
-            label.textContent = vendor.name;
-            slide.appendChild(label);
+            // Only display the vendor name if the logo is shared with other vendors
+            if (logoCounts[vendor.logoUrl] > 1) {
+                const label = document.createElement('div');
+                label.className = 'vendor-name';
+                label.textContent = vendor.name;
+                slide.appendChild(label);
+            }
 
             return slide;
         }

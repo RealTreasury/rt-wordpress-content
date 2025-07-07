@@ -1378,7 +1378,7 @@ body.modal-open {
     top: 80px;
     left: 0;
     right: 0;
-    width: 100vw;
+    width: 100%;
     background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9)) !important;
     backdrop-filter: blur(20px) saturate(130%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
@@ -1931,7 +1931,7 @@ body.banner-minimized .content-area {
     left: 0 !important;
     right: 0 !important;
     z-index: 100000 !important;
-    width: 100vw !important;
+    width: 100% !important;
     min-height: 80px !important;
     transition: transform 0.4s ease, opacity 0.4s ease !important;
 }

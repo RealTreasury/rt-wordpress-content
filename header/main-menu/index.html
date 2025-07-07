@@ -23,7 +23,7 @@ body {
 }
 
 .workshop-banner {
-    width: 100vw;
+    width: 100%;
     margin: 0;
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.25), 
@@ -147,7 +147,7 @@ body {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    max-width: 380px !important;
+    max-width: clamp(150px, 50vw, 380px) !important;
 }
 
 .workshop-banner.minimized .banner-cta {

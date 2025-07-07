@@ -17,17 +17,16 @@
             padding: 0;
             margin: 0;
             min-height: 100vh;
-            /* FIX: overflow-x: hidden prevents a horizontal scrollbar from appearing
-               when an element (like the banner using 100vw) is slightly wider than the viewport.
-               This stops the page content from "jumping" or resizing when the banner is closed. */
+            /* Prevent horizontal scrollbars when the banner spans the full viewport
+               width. This stops the page content from "jumping" or resizing when
+               the banner is closed. */
             overflow-x: hidden;
         }
 
         .workshop-banner {
-            /* FIX: Using 100vw makes the banner truly full-width, edge-to-edge.
-               Combined with `overflow-x: hidden` on the body, this provides the desired
-               visuals without causing a layout shift on close. */
-            width: 100vw;
+            /* The banner spans the full viewport width.
+               With `overflow-x: hidden` on the body, this prevents layout shifts when closing. */
+            width: 100%;
             margin: 0;
             margin-top: 0 !important;
             background: linear-gradient(135deg, 

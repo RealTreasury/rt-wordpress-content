@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Enterprise treasury platform known for deep ERP integration, advanced reporting, and sophisticated multi-entity consolidation for complex organizational structures.",
                         "features": ["Deep ERP integration", "Multi-entity consolidation", "Advanced analytics", "Customizable workflows", "Real-time reporting", "API connectivity"],
                         "target": "Fortune 500 companies requiring complex consolidation and reporting",
-                        "videoUrl": "https://youtu.be/06Kjx3X748I?si=inoxdyJF9LEfuP_j",
+                        "videoUrl": "",
                         "websiteUrl": "https://gtreasury.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/GTreasury.png"
                     }, {
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Comprehensive treasury and risk platform owned by ION Group, specializing in sophisticated derivatives valuation, hedge accounting, and regulatory reporting.",
                         "features": ["Derivatives valuation", "Hedge accounting", "Market data integration", "Risk analytics", "Regulatory reporting", "Trade capture"],
                         "target": "Financial institutions and corporations with complex derivative portfolios",
-                        "videoUrl": "https://youtu.be/WTYKRBzst-w?si=YiP8RFt1VOkFwH0o",
+                        "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/reval/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png"
                     }, {
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Advanced treasury management system with real-time risk analytics, portfolio optimization, and sophisticated hedging strategies for financial institutions.",
                         "features": ["Real-time risk monitoring", "Portfolio optimization", "Stress testing", "Automated hedging", "Compliance controls", "Advanced analytics"],
                         "target": "Investment banks and large financial institutions",
-                        "videoUrl": "https://youtu.be/RAWH8-FUdpQ?si=2E8JU7N-pP0rtqUr",
+                        "videoUrl": "",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/FIS.png"
                     }, {
                         "name": "WallStreet Suite",
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Complete treasury and risk platform with multi-asset support, advanced analytics, and comprehensive regulatory reporting for complex financial operations.",
                         "features": ["Multi-asset support", "Advanced analytics", "Regulatory compliance", "Trade management", "Risk controls", "Market data feeds"],
                         "target": "Large banks and corporations requiring full-scale treasury operations",
-                        "videoUrl": "https://youtu.be/WTYKRBzst-w?si=YiP8RFt1VOkFwH0o",
+                        "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/wallstreet-suite/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png"
                     }, {
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Enterprise treasury solution emphasizing governance, compliance, and audit trails for highly regulated financial environments and complex organizational structures.",
                         "features": ["Governance controls", "Audit trails", "Compliance management", "Policy enforcement", "Risk controls", "Workflow approval"],
                         "target": "Highly regulated industries requiring strict governance and compliance",
-                        "videoUrl": "https://youtu.be/RAWH8-FUdpQ?si=2E8JU7N-pP0rtqUr",
+                        "videoUrl": "",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/FIS.png"
                     }, {
                         "name": "IT2",
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Integrated treasury technology platform combining cash management, risk analytics, and payment processing in a unified enterprise solution.",
                         "features": ["Integrated platform", "Cash management", "Risk analytics", "Payment processing", "Bank connectivity", "Unified reporting"],
                         "target": "Large enterprises seeking integrated treasury technology solutions",
-                        "videoUrl": "https://youtu.be/WTYKRBzst-w?si=YiP8RFt1VOkFwH0o",
+                        "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/it2/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png"
                     }, {
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Treasury management system with powerful analytics engine, multi-entity support, and comprehensive reporting capabilities for complex treasury operations.",
                         "features": ["Advanced analytics", "Multi-entity support", "Data visualization", "Custom reporting", "Cash positioning", "Risk monitoring"],
                         "target": "Large corporations requiring sophisticated analytics and reporting",
-                        "videoUrl": "https://youtu.be/qX_iOGiuNwM?si=omRZs79-y3pyZRdk",
+                        "videoUrl": "",
                         "websiteUrl": "https://www.datalog-finance.com/en/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Datalog-logo.png"
                     }, {
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Business spend management platform with integrated treasury operations, procurement workflows, and comprehensive spend analytics for enterprise organizations.",
                         "features": ["Spend management", "Treasury integration", "Procurement workflows", "Supplier management", "Analytics dashboard", "Automation tools"],
                         "target": "Large enterprises requiring integrated spend and treasury management",
-                        "videoUrl": "https://youtu.be/NSeXuo6f-dw?si=sxvZ3KpwVcPA8eMC",
+                        "videoUrl": "",
                         "websiteUrl": "https://www.coupa.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Coupa.png"
                     }, {
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "AI-powered cash management platform providing real-time bank connectivity, predictive forecasting, and intelligent cash visibility for modern finance teams.",
                         "features": ["AI forecasting", "Real-time connectivity", "Predictive analytics", "Cash visibility", "Mobile access", "API integration"],
                         "target": "Mid to large companies seeking AI-driven cash management solutions",
-                        "videoUrl": "https://youtu.be/Vx4At4BN-og",
+                        "videoUrl": "",
                         "websiteUrl": "https://trovata.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Trovata.png"
                     }, {
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "AI-first cash management solution with predictive analytics, automated scenario modeling, and intelligent cash optimization recommendations.",
                         "features": ["AI predictions", "Automated scenarios", "Smart recommendations", "Risk assessment", "Cash optimization", "Intelligent alerts"],
                         "target": "Tech-forward companies embracing AI-driven financial operations",
-                        "videoUrl": "https://youtu.be/vcSdH5wcx5c?si=rhvCylzfg54nLuxB",
+                        "videoUrl": "",
                         "websiteUrl": "https://www.autocash.ai/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/AutoCash.png"
                     }, {
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Digital treasury platform focused on liquidity optimization, real-time cash visibility, and modern workflow automation for finance teams.",
                         "features": ["Liquidity optimization", "Digital workflows", "Real-time data", "Modern interface", "Mobile platform", "Automated reporting"],
                         "target": "Modern finance teams seeking digital-first cash management solutions",
-                        "videoUrl": "https://youtu.be/7XGzkaVSZzc?si=uxCD7HYRUmssywNa",
+                        "videoUrl": "",
                         "websiteUrl": "https://www.obol.app/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Obol.png"
                     }, {
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Working capital optimization platform specializing in payment timing analytics, A/R and A/P integration, and cash flow enhancement strategies.",
                         "features": ["Working capital optimization", "Payment timing analytics", "A/R & A/P integration", "Cash flow enhancement", "Performance tracking", "Optimization tools"],
                         "target": "Companies focused on working capital optimization and payment timing",
-                        "videoUrl": "https://youtu.be/p2svAyM74nI?si=zFPF_QZkgBo2rbz8",
+                        "videoUrl": "",
                         "websiteUrl": "https://www.thepanax.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Panax.png"
                     }, {
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "User-friendly treasury management system offering essential cash and risk management features with simplified implementation and competitive pricing.",
                         "features": ["User-friendly", "Essential features", "Simplified setup", "Competitive pricing", "Basic reporting", "Standard integrations"],
                         "target": "Mid-market companies seeking accessible treasury management solutions",
-                        "videoUrl": "https://youtu.be/WTYKRBzst-w?si=YiP8RFt1VOkFwH0o",
+                        "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/treasura/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png"
                     }, {
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Simplified treasury management solution focusing on core functionality with intuitive interface and streamlined user experience.",
                         "features": ["Simplified interface", "Core functionality", "Easy setup", "Streamlined UX", "Basic reporting", "Cost-effective"],
                         "target": "Companies seeking simplified treasury management with core functionality",
-                        "videoUrl": "https://youtu.be/5pD7P1fOYPU?si=lgolb0x0I9dJWTcv",
+                        "videoUrl": "",
                         "websiteUrl": "https://www.treasurycurve.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Curve.png"
                     }, {
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Treasury system specifically designed for mid-market companies with growth-oriented features, quick implementation, and scalable pricing.",
                         "features": ["Mid-market focus", "Growth-oriented", "Quick implementation", "Scalable pricing", "Support included", "Practical features"],
                         "target": "Mid-market companies seeking practical and growth-oriented solutions",
-                        "videoUrl": "https://youtu.be/WTYKRBzst-w?si=YiP8RFt1VOkFwH0o",
+                        "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/city-financials/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png"
                     }, {
@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Autonomous finance platform combining AI-powered accounts receivable optimization with treasury management for integrated financial operations.",
                         "features": ["AI automation", "A/R optimization", "Treasury integration", "Machine learning", "Process automation", "Autonomous finance"],
                         "target": "Companies seeking AI-powered automation for A/R and treasury operations",
-                        "videoUrl": "https://youtu.be/B0gngAz85js?si=K2r1E4GwX5VaGwVn",
+                        "videoUrl": "",
                         "websiteUrl": "https://www.highradius.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/High-Radius.png"
                     }, {

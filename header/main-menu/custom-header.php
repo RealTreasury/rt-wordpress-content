@@ -130,7 +130,7 @@ function add_my_custom_header_html() {
                 </div>
                 <!-- View Portal -->
                 <div class="rt-nav-item">
-                    <a href="#openPortalModal" class="rt-cta-button">VIEW PORTAL</a>
+                    <a href="#openPortalModal" class="rt-cta-button tpa-btn-loading" id="portalAccessBtn">VIEW PORTAL</a>
                 </div>
             </div>
         </div>

@@ -57,8 +57,9 @@ if (empty($form_id)) {
             // Full initialization on DOM ready
             document.addEventListener('DOMContentLoaded', () => {
                 this.checkAccessPersistence();
+                this.updateHeaderButton(); // Check header button state
                 this.addEventListeners();
-                this.showButtons(); // Make buttons visible after state is determined
+                this.showButtons();
             });
         },
 
@@ -109,6 +110,35 @@ if (empty($form_id)) {
                 el.classList.add('tpa-btn-loading');
                 el.classList.remove('tpa-btn-ready');
             });
+        },
+
+        updateHeaderButton: function() {
+            const headerBtn = document.getElementById('portalAccessBtn');
+            if (!headerBtn) return;
+
+            // Check if user has access
+            const hasCookie = document.cookie.includes('portal_access_token=');
+
+            if (hasCookie) {
+                // User has access - make button go directly to portal
+                headerBtn.href = this.redirectUrl;
+                headerBtn.textContent = 'View Portal';
+                headerBtn.classList.remove('open-portal-modal', 'tpa-btn-loading');
+                headerBtn.classList.add('tpa-btn-ready');
+
+                // Remove modal trigger and add direct navigation
+                headerBtn.removeEventListener('click', this.openModal);
+                headerBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = headerBtn.href;
+                });
+            } else {
+                // No access - ensure button opens modal
+                headerBtn.href = '#openPortalModal';
+                headerBtn.textContent = 'VIEW PORTAL';
+                headerBtn.classList.remove('tpa-btn-loading');
+                headerBtn.classList.add('tpa-btn-ready', 'open-portal-modal');
+            }
         },
 
         checkAccessPersistence: function() {
@@ -274,13 +304,7 @@ if (empty($form_id)) {
             this.isRedirecting = true;
             console.log('TPA: Starting redirect process...');
 
-            // Close modal if it exists
-            if (this.modal && this.modal.classList.contains('show')) {
-                console.log('TPA: Closing modal before redirect');
-                this.closeModal();
-            }
-
-            // Update form with success message
+            // Show success message in modal
             const formContainer = document.querySelector('.portal-access-form');
             if (formContainer) {
                 formContainer.innerHTML = `
@@ -299,16 +323,18 @@ if (empty($form_id)) {
                 `;
             }
 
-            // Execute redirect after a short delay
+            // CRITICAL: Redirect directly to portal page immediately
+            // The cookie should already be set by the PHP backend
             setTimeout(() => {
                 if (this.redirectUrl) {
-                    console.log('TPA: Redirecting to:', this.redirectUrl);
+                    console.log('TPA: Redirecting to portal:', this.redirectUrl);
+                    // Direct redirect to portal page with access parameter
                     window.location.href = this.redirectUrl + '?access_granted=1&t=' + Date.now();
                 } else {
-                    console.log('TPA: No redirect URL configured, reloading page');
-                    location.reload();
+                    console.log('TPA: No redirect URL configured');
+                    window.location.href = '/treasury-tech-portal/?access_granted=1';
                 }
-            }, 1000);
+            }, 1500); // Slightly longer delay to ensure cookie is set
         },
 
         revoke: function() {
@@ -343,16 +369,19 @@ if (empty($form_id)) {
                 if (event.detail.contactFormId.toString() !== formId) return;
 
                 console.log('TPA: Form submission successful for form ID:', formId);
-                
+
                 // Show success message
-                this.showMessage('Access granted! Redirecting...', 'success');
-                
+                this.showMessage('Access granted! Redirecting to portal...', 'success');
+
+                // Update header button immediately for next page load
+                this.updateHeaderButton();
+
                 // Sync to localStorage for persistence
                 this.syncToLocal();
-                
-                // Execute redirect - ALWAYS redirect on successful form submission
+
+                // Execute redirect - ALWAYS redirect directly to portal
                 this.executeRedirect();
-                
+
             }, false);
 
             // Handle form errors

@@ -256,7 +256,14 @@ final class Treasury_Portal_Access {
             'httponly' => false,
             'samesite' => 'Lax'
         ];
+
+        // Set the cookie immediately
         setcookie('portal_access_token', $access_token, $options);
+
+        // Also set it in $_COOKIE for immediate availability
+        $_COOKIE['portal_access_token'] = $access_token;
+
+        error_log("✅ TPA: Cookie set for {$email}, expires: " . date('Y-m-d H:i:s', $expiry));
     }
     
     public function has_portal_access() {

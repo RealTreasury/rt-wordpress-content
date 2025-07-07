@@ -794,13 +794,36 @@
 
         /* Modal Header */
         .treasury-portal .modal-header {
-            padding: 12px 20px; /* Reduced padding */
+            padding: 12px 20px;
             border-bottom: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
-            gap: 12px; /* Reduced gap */
+            gap: 12px;
+        }
+
+        /* Group modal title and logo together */
+        .treasury-portal .modal-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        /* Ensure modal title doesn't have conflicting margins */
+        .treasury-portal .modal-title-group .modal-title {
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        /* Style the logo within the title group */
+        .treasury-portal .modal-title-group .modal-tool-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            display: block;
+            flex-shrink: 0;
         }
 
         .treasury-portal .modal-title {

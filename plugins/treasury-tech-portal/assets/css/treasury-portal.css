@@ -605,16 +605,22 @@
     }
 }
 
-        .treasury-portal .video-indicator {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            background: rgba(99, 102, 241, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            transition: all 0.3s ease;
-            margin-right: 16px;
-        }
+.treasury-portal .video-indicator {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    background: rgba(99, 102, 241, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    transition: all 0.3s ease;
+    margin-right: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #6366f1;
+    font-weight: 500;
+    cursor: pointer;
+}
 
         .treasury-portal .tool-card:hover .video-indicator {
             opacity: 1;

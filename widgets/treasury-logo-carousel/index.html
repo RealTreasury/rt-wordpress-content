@@ -32,7 +32,7 @@
 
         .carousel-track {
             display: flex;
-            animation: scroll 40s linear infinite;
+            animation: scroll 20s linear infinite;
             gap: 0;
             user-select: none;
         }
@@ -47,8 +47,9 @@
 
         .logo-slide {
             min-width: 200px;
-            height: 100px;
+            height: 120px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
@@ -88,6 +89,13 @@
             -webkit-user-drag: none;
         }
 
+        .vendor-name {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: #111827;
+            text-align: center;
+        }
+
         .logo-slide:hover .vendor-logo {
             filter: grayscale(0%);
         }
@@ -105,7 +113,7 @@
         @media (max-width: 768px) {
             .logo-slide {
                 min-width: 150px;
-                height: 80px;
+                height: 100px;
                 padding: 15px;
             }
             
@@ -118,7 +126,7 @@
         @media (max-width: 480px) {
             .logo-slide {
                 min-width: 120px;
-                height: 70px;
+                height: 90px;
                 padding: 12px;
             }
             
@@ -279,7 +287,7 @@
         function createLogoSlide(vendor) {
             const slide = document.createElement('div');
             slide.className = 'logo-slide';
-            
+
             const link = document.createElement('a');
             link.className = 'logo-link';
             link.href = `${portalBase}?tool=${encodeURIComponent(vendor.name)}`;
@@ -292,10 +300,15 @@
             img.alt = vendor.name + ' logo';
             img.title = vendor.name;
             img.draggable = false;
-            
+
             link.appendChild(img);
             slide.appendChild(link);
-            
+
+            const label = document.createElement('div');
+            label.className = 'vendor-name';
+            label.textContent = vendor.name;
+            slide.appendChild(label);
+
             return slide;
         }
 

@@ -26,15 +26,15 @@
         }
 
         .widget-header {
-            background: #7216f4;
-            color: #fff;
+            background: #fff;
+            color: #281345;
             padding: 16px 24px;
             text-align: center;
         }
 
         .widget-title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 26px;
+            font-weight: 700;
             position: relative;
             z-index: 1;
         }
@@ -206,7 +206,7 @@
             { name: "City Financials", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png", websiteUrl: "https://iongroup.com/products/treasury/city-financials/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
             { name: "HighRadius", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/High-Radius.png", websiteUrl: "https://www.highradius.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
             { name: "Treasury4", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury4Logo-GraphiteGreen.png", websiteUrl: "https://www.treasury4.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" }
-        ];
+        ].sort((a, b) => a.name.localeCompare(b.name));
 
         // Count occurrences of each logo URL
         const logoCounts = treasuryVendors.reduce((acc, vendor) => {

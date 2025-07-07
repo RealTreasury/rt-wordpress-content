@@ -578,17 +578,15 @@
     height: 120px;
     object-fit: contain;
     display: block;
-    margin: 0;
-    margin-right: 20px;
+    margin: 0 20px 0 12px;
+    flex-shrink: 0;
 }
 
 .treasury-portal .tool-logo-inline {
-    width: 80px;
-    height: 80px;
+    width: 75px;
+    height: 75px;
     object-fit: contain;
-    margin-top: 0;
-    margin-left: 12px;
-    margin-right: 16px;
+    margin: 0 16px 0 12px;
     flex-shrink: 0;
 }
 
@@ -598,8 +596,9 @@
 
 @media (max-width: 768px) {
     .treasury-portal .tool-logo-inline {
-        width: 65px;
-        height: 65px;
+        width: 60px;
+        height: 60px;
+        margin: 0 12px 0 8px;
     }
 }
 
@@ -822,10 +821,11 @@
 
         /* Style the logo within the title group */
         .treasury-portal .modal-title-group .modal-tool-logo {
-            width: 40px;
-            height: 40px;
+            width: 120px;
+            height: 120px;
             object-fit: contain;
             display: block;
+            margin: 0 20px 0 12px;
             flex-shrink: 0;
         }
 
@@ -911,8 +911,8 @@
     height: 120px;
     object-fit: contain;
     display: block;
-    margin: 0;
-    margin-right: 20px;
+    margin: 0 20px 0 12px;
+    flex-shrink: 0;
 }
 
         /* Website link - more compact */
@@ -977,8 +977,15 @@
             }
 
             .treasury-portal .modal-tool-logo {
-                width: 100px;
-                height: 100px;
+                width: 90px;
+                height: 90px;
+                margin: 0 16px 0 8px;
+            }
+
+            .treasury-portal .modal-title-group .modal-tool-logo {
+                width: 90px;
+                height: 90px;
+                margin: 0 16px 0 8px;
             }
         }
 

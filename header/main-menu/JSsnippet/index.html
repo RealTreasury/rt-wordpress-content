@@ -1,3 +1,21 @@
+function updateDropdownPositioning() {
+    const navContainer = document.querySelector('.rt-nav-container');
+    const banner = document.querySelector('.workshop-banner');
+
+    if (!navContainer) return;
+
+    const navHeight = navContainer.offsetHeight;
+    const bannerHeight = banner && banner.style.display !== 'none'
+        ? banner.offsetHeight
+        : 0;
+
+    document.documentElement.style.setProperty('--nav-height', `${navHeight}px`);
+    document.documentElement.style.setProperty('--banner-height', `${bannerHeight}px`);
+}
+
+window.addEventListener('load', updateDropdownPositioning);
+window.addEventListener('resize', updateDropdownPositioning);
+
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile hamburger toggle functionality
     const mobileToggle = document.querySelector('.rt-mobile-toggle');

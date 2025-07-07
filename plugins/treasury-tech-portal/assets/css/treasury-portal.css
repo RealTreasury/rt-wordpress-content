@@ -38,6 +38,18 @@
             overflow: hidden;
         }
 
+        /* Ensure portal content doesn't get covered */
+        .treasury-portal {
+            position: relative;
+            z-index: 1; /* Lower than navigation elements */
+        }
+
+        /* Fix for iframe embedding */
+        .treasury-portal.embedded {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+
         .treasury-portal .container {
             position: relative;
             margin-left: 60px;
@@ -123,15 +135,16 @@
             object-fit: contain;
         }
 
-        /* Header */
+        /* Treasury Portal Header - Better Integration with Workshop Banner */
         .treasury-portal .header {
             position: sticky;
             top: 0;
-            z-index: 99;
+            z-index: 98; /* Below workshop banner and main nav */
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(8px);
             border-bottom: 1px solid #e5e7eb;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-top: 0; /* Remove any top margin that might cause issues */
         }
 
         .treasury-portal .header-content {

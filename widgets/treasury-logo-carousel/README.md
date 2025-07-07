@@ -2,7 +2,7 @@
 
 A clean, responsive logo carousel showcasing all 27 treasury technology vendors from the RealTreasury portal with a professional header.
 
-- **Professional Header**: Displays "Treasury Technology Vendors" title with vendor count
+- **Professional Header**: Displays "North American Treasury Tech Vendors" heading with vendor count
 - **True Infinite Scroll**: Seamless continuous loop with no visible jumps or resets
 - **Optimized Performance**: Smooth 40-second full cycle with hardware acceleration
 - **Interactive Controls**: Drag/swipe functionality for manual control

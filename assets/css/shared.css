@@ -2616,3 +2616,143 @@ body.banner-closed .workshop-banner {
 .portal-access-form .wpcf7-spam-blocked {
     display: none !important;
 }
+
+/* =================================================================== */
+/* Z-INDEX HIERARCHY FIX */
+/* =================================================================== */
+
+:root {
+    --z-behind: -1;
+    --z-normal: 1;
+    --z-tooltip: 1000;
+    --z-fixed: 1001;
+    --z-sticky: 1002;
+    --z-sidebar: 1003;
+    --z-modal-backdrop: 1004;
+    --z-modal: 1005;
+    --z-dropdown: 1006;
+    --z-toast: 1007;
+    --z-navigation: 99999;
+    --z-emergency: 100000;
+}
+
+.rt-nav-container {
+    z-index: var(--z-navigation) !important;
+}
+
+.treasury-portal .side-menu,
+.treasury-portal .shortlist-menu {
+    z-index: var(--z-sidebar) !important;
+}
+
+.treasury-portal .side-menu-overlay,
+.treasury-portal .shortlist-menu-overlay {
+    z-index: calc(var(--z-sidebar) - 1) !important;
+}
+
+.treasury-portal .external-menu-toggle,
+.treasury-portal .external-shortlist-toggle {
+    z-index: var(--z-fixed) !important;
+}
+
+/* =================================================================== */
+/* SIDEBAR POSITIONING FIX */
+/* =================================================================== */
+
+.treasury-portal .side-menu,
+.treasury-portal .shortlist-menu {
+    top: 80px !important;
+    height: calc(100vh - 80px) !important;
+}
+
+.treasury-portal .external-menu-toggle {
+    top: 120px !important;
+}
+
+.treasury-portal .external-shortlist-toggle {
+    top: 120px !important;
+}
+
+@media (max-width: 992px) {
+    .treasury-portal .side-menu,
+    .treasury-portal .shortlist-menu {
+        top: 70px !important;
+        height: calc(100vh - 70px) !important;
+    }
+    .treasury-portal .external-menu-toggle,
+    .treasury-portal .external-shortlist-toggle {
+        top: 110px !important;
+    }
+}
+
+body:not(.banner-closed) .treasury-portal .side-menu,
+body:not(.banner-closed) .treasury-portal .shortlist-menu {
+    top: 160px !important;
+    height: calc(100vh - 160px) !important;
+}
+
+body:not(.banner-closed) .treasury-portal .external-menu-toggle,
+body:not(.banner-closed) .treasury-portal .external-shortlist-toggle {
+    top: 200px !important;
+}
+
+/* =================================================================== */
+/* MODAL Z-INDEX FIX */
+/* =================================================================== */
+
+.treasury-portal .ttp-modal,
+.portal-access-modal,
+.modal,
+.tpa-modal,
+.download-modal {
+    z-index: var(--z-modal) !important;
+}
+
+.rt-dropdown {
+    z-index: var(--z-dropdown) !important;
+}
+
+/* =================================================================== */
+/* MOBILE SIDEBAR FIXES */
+/* =================================================================== */
+
+@media (max-width: 768px) {
+    .rt-nav.active ~ .treasury-portal .side-menu,
+    .rt-nav.active ~ .treasury-portal .shortlist-menu {
+        transform: translateX(-100%) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    body.menu-open .treasury-portal .external-menu-toggle,
+    body.menu-open .treasury-portal .external-shortlist-toggle {
+        display: none !important;
+    }
+    .treasury-portal .side-menu {
+        width: 90% !important;
+        transform: translateX(-100%) !important;
+    }
+    .treasury-portal .shortlist-menu {
+        width: 90% !important;
+        transform: translateX(100%) !important;
+    }
+}
+
+/* =================================================================== */
+/* SCROLL MANAGEMENT FIX */
+/* =================================================================== */
+
+body.modal-open,
+body.side-menu-open,
+body.shortlist-menu-open {
+    overflow: hidden !important;
+    position: fixed !important;
+    width: 100% !important;
+}
+
+body.modal-open.side-menu-open .treasury-portal .side-menu {
+    display: none !important;
+}
+
+body.modal-open.shortlist-menu-open .treasury-portal .shortlist-menu {
+    display: none !important;
+}

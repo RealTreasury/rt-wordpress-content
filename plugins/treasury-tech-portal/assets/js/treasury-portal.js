@@ -87,6 +87,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 200);
     });
+    const navDropdowns = document.querySelectorAll(".rt-nav-item");
+    const treasuryPortal = window.treasuryTechPortal;
+
+    navDropdowns.forEach(item => {
+        item.addEventListener("click", function() {
+            if (treasuryPortal) {
+                if (treasuryPortal.sideMenuOpen) {
+                    treasuryPortal.closeSideMenu();
+                }
+                if (treasuryPortal.shortlistMenuOpen) {
+                    treasuryPortal.closeShortlistMenu();
+                }
+            }
+        });
+    });
+
+    document.addEventListener("click", function(e) {
+        if (e.target.closest(".external-menu-toggle") ||
+            e.target.closest(".external-shortlist-toggle")) {
+            document.querySelectorAll(".rt-nav-item.active").forEach(item => {
+                item.classList.remove("active");
+            });
+        }
+    });
+
 });
         class TreasuryTechPortal {
             constructor() {

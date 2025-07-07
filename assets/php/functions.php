@@ -1199,3 +1199,132 @@ add_action('rest_api_init', function() {
 });
 
 ?>
+<?php
+// Portal Access Gating System for /treasury-tech-portal/
+add_action('template_redirect', 'rt_gate_portal_access');
+function rt_gate_portal_access() {
+    if (is_page('treasury-tech-portal') || $_SERVER['REQUEST_URI'] === '/treasury-tech-portal/') {
+        if (!rt_has_portal_access()) {
+            if (!session_id()) session_start();
+            $_SESSION['rt_portal_redirect'] = home_url('/treasury-tech-portal/');
+            wp_redirect(home_url('/?show_portal_modal=1'));
+            exit;
+        }
+    }
+}
+
+function rt_has_portal_access() {
+    if (isset($_COOKIE['rt_portal_access'])) {
+        $access_data = json_decode(stripslashes($_COOKIE['rt_portal_access']), true);
+        if ($access_data && isset($access_data['expires']) && time() < $access_data['expires']) {
+            return true;
+        }
+    }
+    if (!session_id()) session_start();
+    return isset($_SESSION['rt_portal_access']) && $_SESSION['rt_portal_access_expires'] > time();
+}
+
+function rt_grant_portal_access($email, $name) {
+    $expires = time() + (24 * 60 * 60);
+    $access_data = array('email' => sanitize_email($email), 'name' => sanitize_text_field($name), 'granted' => time(), 'expires' => $expires);
+    setcookie('rt_portal_access', json_encode($access_data), $expires, '/', '', is_ssl(), true);
+    if (!session_id()) session_start();
+    $_SESSION['rt_portal_access'] = true;
+    $_SESSION['rt_portal_access_expires'] = $expires;
+}
+
+add_action('wpcf7_mail_sent', 'rt_handle_portal_form_submission');
+function rt_handle_portal_form_submission($contact_form) {
+    $form_id = $contact_form->id();
+    if ($form_id == '0779c74') {
+        $submission = WPCF7_Submission::get_instance();
+        if ($submission) {
+            $posted_data = $submission->get_posted_data();
+            $email = isset($posted_data['email']) ? $posted_data['email'] : '';
+            $first_name = isset($posted_data['first-name']) ? $posted_data['first-name'] : '';
+            $last_name = isset($posted_data['last-name']) ? $posted_data['last-name'] : '';
+            $name = trim($first_name . ' ' . $last_name);
+            if (!empty($email)) {
+                rt_grant_portal_access($email, $name);
+                if (!session_id()) session_start();
+                $_SESSION['rt_portal_access_granted'] = true;
+            }
+        }
+    }
+}
+
+add_action('wp_footer', 'rt_portal_gating_javascript');
+function rt_portal_gating_javascript() {
+    if (!session_id()) session_start();
+    $show_modal = isset($_GET['show_portal_modal']) && $_GET['show_portal_modal'] == '1';
+    $access_granted = isset($_SESSION['rt_portal_access_granted']) && $_SESSION['rt_portal_access_granted'];
+    $redirect_url = isset($_SESSION['rt_portal_redirect']) ? $_SESSION['rt_portal_redirect'] : '';
+    if ($access_granted) {
+        unset($_SESSION['rt_portal_access_granted']);
+        unset($_SESSION['rt_portal_redirect']);
+    }
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if ($show_modal): ?>
+        setTimeout(function() { showPortalModal(); }, 500);
+        <?php endif; ?>
+        <?php if ($access_granted && $redirect_url): ?>
+        showAccessGrantedMessage();
+        setTimeout(function() { window.location.href = '<?php echo esc_js($redirect_url); ?>'; }, 3000);
+        <?php endif; ?>
+    });
+    
+    function showAccessGrantedMessage() {
+        const successDiv = document.createElement('div');
+        successDiv.style.cssText = 'position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:20px 24px;border-radius:12px;box-shadow:0 8px 32px rgba(16,185,129,0.3);z-index:1000000;font-weight:600;max-width:400px;';
+        successDiv.innerHTML = '<div style="margin-bottom:8px;font-size:18px;">✅ Portal Access Granted!</div><div style="font-size:14px;opacity:0.9;">Redirecting to Treasury Portal in 3 seconds...</div>';
+        document.body.appendChild(successDiv);
+        setTimeout(() => successDiv.remove(), 4000);
+    }
+    
+    function showPortalModal() {
+        let modal = document.querySelector('.portal-access-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.className = 'portal-access-modal modal tpa-modal';
+            modal.innerHTML = '<div class="portal-access-form"><button class="close-btn" onclick="closePortalModal()">&times;</button><h3>Treasury Technology Portal Access</h3><p class="subtitle">Please provide your information to access our exclusive treasury technology portal and resources.</p><div class="portal-access-info"><h4>🔐 What you\'ll get access to:</h4><ul><li>Exclusive treasury technology insights and whitepapers</li><li>Advanced cash management tools and calculators</li><li>Industry benchmarking data and reports</li><li>Priority access to webinars and expert consultations</li></ul></div><div class="portal-form-container"><?php echo do_shortcode('[contact-form-7 id="0779c74" title="Portal Access Gate Form"]'); ?></div></div>';
+            document.body.appendChild(modal);
+        }
+        modal.classList.add('show');
+        document.body.classList.add('modal-open');
+    }
+    
+    window.closePortalModal = function() {
+        const modal = document.querySelector('.portal-access-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            document.body.classList.remove('modal-open');
+            setTimeout(() => { if (modal.parentNode) modal.remove(); }, 400);
+        }
+        if (window.location.search.includes('show_portal_modal=1')) {
+            setTimeout(() => { window.location.href = '<?php echo esc_js(home_url()); ?>'; }, 300);
+        }
+    };
+    
+    document.addEventListener('wpcf7mailsent', function(event) {
+        if (event.detail.contactFormId == '0779c74') {
+            const formContainer = document.querySelector('.portal-form-container');
+            if (formContainer) {
+                formContainer.innerHTML = '<div class="portal-access-granted"><h4>✅ Access Granted!</h4><p>Thank you! Your access to the Treasury Technology Portal has been approved.</p><p class="countdown">Redirecting to portal in <span id="countdown">3</span> seconds...</p></div>';
+                let seconds = 3;
+                const countdownEl = document.getElementById('countdown');
+                const countdownInterval = setInterval(() => {
+                    seconds--;
+                    if (countdownEl) countdownEl.textContent = seconds;
+                    if (seconds <= 0) { clearInterval(countdownInterval); closePortalModal(); }
+                }, 1000);
+            }
+        }
+    });
+    
+    window.showPortalModal = showPortalModal;
+    </script>
+    <?php
+}
+?>

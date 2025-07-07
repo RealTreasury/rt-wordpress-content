@@ -356,8 +356,16 @@ body {
 
 /* Navigation positioning adjustments */
 .rt-nav-container {
-    top: 80px !important;
+    top: 0 !important;
     transition: top 0.3s ease !important;
+}
+
+body.banner-present .rt-nav-container {
+    top: 80px !important;
+}
+body.banner-closed .rt-nav-container,
+body:not(.banner-present) .rt-nav-container {
+    top: 0 !important;
 }
 
 /* When banner is minimized, adjust navigation */
@@ -368,6 +376,10 @@ body.banner-minimized .rt-nav-container {
 
 body.banner-minimized {
     padding-top: 140px !important; /* 60px banner + 80px nav */
+}
+
+body.banner-closed {
+    padding-top: 80px !important;
 }
 
 body.banner-minimized .rt-dropdown {
@@ -388,9 +400,18 @@ body.banner-minimized .rt-dropdown {
         padding-top: 90px !important; /* 20px banner + 70px mobile nav */
     }
 
+    body.banner-closed {
+        padding-top: 80px !important;
+    }
+
     body.banner-minimized .rt-nav-container {
         top: 20px !important;
         height: 70px !important;
+    }
+
+    body.banner-closed .rt-nav-container,
+    body:not(.banner-present) .rt-nav-container {
+        top: 0 !important;
     }
 }
 

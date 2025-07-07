@@ -443,6 +443,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.shortlistMenuOpen = false;
                 this.touchDragTool = null;
                 this.previousFocusedElement = null;
+                this.videoTimes = {};
+                this.currentToolId = null;
+                this.spaceHandler = null;
                 this.handleOutsideSideMenuClick = (e) => {
                     const sideMenu = document.getElementById('sideMenu');
                     const toggle = document.getElementById('sideMenuToggle');
@@ -467,7 +470,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 this.init();
-            }
+
+                window.addEventListener('message', (e) => {
+                    if (e.origin.includes('youtube.com') && typeof e.data === 'string') {
+                        try {
+                            const data = JSON.parse(e.data);
+                            if (data.event === 'infoDelivery' && typeof data.info === 'number' && data.id) {
+                                const key = data.id.replace(/^yt-/, '');
+                                this.videoTimes[key] = data.info;
+                            }
+                        } catch (_) {}
+                    }
+                });
+           }
 
             isMobile() {
                 return window.matchMedia('(max-width: 768px)').matches;
@@ -727,6 +742,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!modal || !modalBody) return;
 
+                if (this.spaceHandler) {
+                    this.spaceHandler.el.removeEventListener('keydown', this.spaceHandler.fn);
+                    this.spaceHandler = null;
+                }
+
+                this.currentToolId = tool.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
                 // 1. Update the static content first
                 if (modalTitle) modalTitle.textContent = tool.name;
                 if (modalDescription) modalDescription.textContent = tool.desc;
@@ -766,57 +788,67 @@ document.addEventListener('DOMContentLoaded', () => {
                     const videoSection = document.createElement('div');
                     videoSection.className = 'feature-section video-demo-section';
 
-                    let embedUrl = tool.videoUrl;
-                    let canEmbed = true;
+                    const resume = this.videoTimes[this.currentToolId] || 0;
 
-                    if (embedUrl.includes('youtu.be/')) {
-                        const id = embedUrl.split('youtu.be/')[1].split('?')[0];
-                        embedUrl = `https://www.youtube.com/embed/${id}`;
-                    } else if (embedUrl.includes('youtube.com/watch')) {
-                        const id = new URL(embedUrl).searchParams.get('v');
-                        embedUrl = `https://www.youtube.com/embed/${id}`;
-                    } else if (embedUrl.includes('realtreasury.com') && !embedUrl.includes('.mp4')) {
-                        embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'embed=1';
-                    } else if (!embedUrl.includes('.mp4')) {
-                        canEmbed = false;
-                    }
-
-                    if (canEmbed) {
-                        if (embedUrl.includes('.mp4')) {
-                            videoSection.innerHTML = `
-                                <h4>🎥 Product Differentiator</h4>
-                                <div class="video-container">
-                                    <video src="${embedUrl}" controls playsinline></video>
-                                </div>
-                            `;
+                    if (tool.videoUrl.includes('youtu.be/') || tool.videoUrl.includes('youtube.com/watch')) {
+                        let embedUrl = tool.videoUrl;
+                        if (tool.videoUrl.includes('youtu.be/')) {
+                            const videoId = tool.videoUrl.split('youtu.be/')[1].split('?')[0];
+                            embedUrl = `https://www.youtube.com/embed/${videoId}`;
                         } else {
-                            embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'enablejsapi=1&playsinline=1';
-                            videoSection.innerHTML = `
-                                <h4>🎥 Product Differentiator</h4>
-                                <div class="video-container">
-                                    <iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" playsinline></iframe>
-                                </div>
-                            `;
+                            const videoId = new URL(tool.videoUrl).searchParams.get('v');
+                            embedUrl = `https://www.youtube.com/embed/${videoId}`;
                         }
+                        embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'enablejsapi=1&playsinline=1';
+                        if (resume) embedUrl += `&start=${Math.floor(resume)}&autoplay=1`;
+
+                        videoSection.innerHTML = `
+                            <h4>🎥 Product Differentiator</h4>
+                            <div class="video-container">
+                                <iframe id="yt-${this.currentToolId}" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" playsinline></iframe>
+                            </div>
+                        `;
                     } else {
                         videoSection.innerHTML = `
                             <h4>🎥 Product Differentiator</h4>
                             <div class="video-container">
-                                <p><a href="${tool.videoUrl}" target="_blank" rel="noopener noreferrer">Watch Video</a></p>
+                                <video src="${tool.videoUrl}" controls playsinline></video>
                             </div>
                         `;
+                        if (resume) {
+                            videoSection.querySelector('video').currentTime = resume;
+                        }
                     }
 
-                    const tagSection = modalTags ? modalTags.parentElement : null;
+                    const tagSection = modalTags?.closest('.feature-section');
                     if (tagSection) {
                         modalBody.insertBefore(videoSection, tagSection);
                     } else {
-                        modalBody.insertBefore(videoSection, modalBody.firstChild);
+                        modalBody.appendChild(videoSection);
                     }
                 }
 
                 // 4. Show the modal
                 this.openModal(modal);
+
+                const content = modal.querySelector('.modal-content, .ttp-modal-content');
+                if (content) {
+                    const handler = (e) => {
+                        if (e.code === 'Space' || e.key === ' ') {
+                            const vid = modal.querySelector('video');
+                            const iframe = modal.querySelector('iframe');
+                            if (vid) {
+                                e.preventDefault();
+                                vid.paused ? vid.play() : vid.pause();
+                            } else if (iframe && iframe.contentWindow) {
+                                e.preventDefault();
+                                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', 'https://www.youtube.com');
+                            }
+                        }
+                    };
+                    content.addEventListener('keydown', handler);
+                    this.spaceHandler = { el: content, fn: handler };
+                }
             }
 
             showCategoryModal(categoryInfo, categoryKey) {
@@ -876,11 +908,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (modal && modal.classList.contains('show')) {
                     modal.classList.remove('show');
                     portalRoot.classList.remove('modal-open');
-                    
-                    // Stop video from playing in the background
-                    const iframe = modal.querySelector('iframe');
-                    if (iframe && iframe.contentWindow) {
-                        iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', 'https://www.youtube.com');
+
+                    if (modalId === 'toolModal' && this.currentToolId) {
+                        const key = this.currentToolId;
+
+                        modal.querySelectorAll('iframe').forEach(iframe => {
+                            if (iframe.src.includes('youtube.com') && iframe.contentWindow) {
+                                iframe.contentWindow.postMessage(JSON.stringify({
+                                    event: 'command',
+                                    func: 'getCurrentTime',
+                                    id: `yt-${key}`
+                                }), 'https://www.youtube.com');
+                                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', 'https://www.youtube.com');
+                            }
+                        });
+
+                        modal.querySelectorAll('video').forEach(video => {
+                            this.videoTimes[key] = video.currentTime;
+                            video.pause();
+                        });
+
+                        if (this.spaceHandler) {
+                            this.spaceHandler.el.removeEventListener('keydown', this.spaceHandler.fn);
+                            this.spaceHandler = null;
+                        }
                     }
 
                     if (this.previousFocusedElement) {

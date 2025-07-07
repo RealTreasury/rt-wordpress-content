@@ -794,7 +794,8 @@
             margin-bottom: 20px;
         }
 
-        .treasury-portal .video-container iframe {
+        .treasury-portal .video-container iframe,
+        .treasury-portal .video-container video {
             position: absolute;
             top: 0;
             left: 0;

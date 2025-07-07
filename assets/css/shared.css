@@ -1950,6 +1950,7 @@ body.banner-closed .workshop-banner {
 /* Mobile banner adjustments */
 @media (max-width: 768px) {
     .workshop-banner {
+        display: none !important;
         min-height: 60px !important;
     }
     
@@ -1973,6 +1974,7 @@ body.banner-closed .workshop-banner {
 
 @media (max-width: 480px) {
     .workshop-banner {
+        display: none !important;
         min-height: 50px !important;
     }
     

@@ -501,6 +501,21 @@ function closeBanner(event) {
     banner.classList.add('minimized');
     document.body.classList.add('banner-minimized');
     updateBannerState(); // Add this line
+
+    // Force dropdown recalculation after banner transition
+    setTimeout(() => {
+        const dropdowns = document.querySelectorAll('.rt-dropdown');
+        dropdowns.forEach(dropdown => {
+            // Force browser to recalculate positioning
+            dropdown.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                if (dropdown.closest('.rt-nav-item.active')) {
+                    dropdown.style.transform = 'translateY(0)';
+                }
+            }, 10);
+        });
+    }, 300); // After banner transition completes
+
     const closeBtn = banner.querySelector('.close-btn');
     if (closeBtn) closeBtn.style.display = 'none';
 

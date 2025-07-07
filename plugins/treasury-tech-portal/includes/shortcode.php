@@ -237,8 +237,8 @@ if (!defined("ABSPATH")) exit;
         </div>
 
         <!-- Tool Details Modal -->
-        <div class="modal" id="toolModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-            <div class="modal-content" tabindex="-1">
+        <div class="ttp-modal" id="toolModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="ttp-modal-content" tabindex="-1">
                 <div class="modal-header">
                     <img id="modalToolLogo" class="modal-tool-logo" alt="">
                     <h3 class="modal-title" id="modalTitle"></h3>
@@ -261,8 +261,8 @@ if (!defined("ABSPATH")) exit;
         </div>
 
         <!-- Category Details Modal -->
-        <div class="modal" id="categoryModal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
-            <div class="modal-content" tabindex="-1">
+        <div class="ttp-modal" id="categoryModal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+            <div class="ttp-modal-content" tabindex="-1">
                 <div class="modal-header">
                     <h3 class="modal-title" id="categoryModalTitle"></h3>
                      <div class="modal-header-actions">

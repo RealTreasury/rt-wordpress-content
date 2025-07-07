@@ -294,20 +294,20 @@ if (empty($form_id)) {
                 const formId = '<?php echo esc_js($form_id); ?>';
                 if (event.detail.contactFormId.toString() !== formId) return;
 
-                console.log('TPA: Form submission detected');
+                const start = performance.now();
+                console.log('TPA: Form submission detected at', start);
                 this.showMessage('Access granted! Redirecting...', 'success');
                 this.syncToLocal();
 
                 // Only redirect if not in a modal (to prevent conflicts)
                 if (!document.querySelector('.portal-access-form')) {
-                    setTimeout(() => {
-                        if (this.redirectUrl) {
-                            console.log('TPA: Redirecting to', this.redirectUrl);
-                            window.location.href = this.redirectUrl;
-                        } else {
-                            location.reload();
-                        }
-                    }, 1500);
+                    if (this.redirectUrl) {
+                        console.log('TPA: Instant redirect to', this.redirectUrl);
+                        window.location.href = this.redirectUrl + '?access_granted=1&t=' + Date.now();
+                    } else {
+                        location.reload();
+                    }
+                    console.log('TPA: Redirect executed in', (performance.now() - start).toFixed(2), 'ms');
                 }
             }, false);
         }

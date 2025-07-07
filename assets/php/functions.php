@@ -1239,7 +1239,7 @@ function rt_portal_gating_javascript() {
  * Add custom JavaScript to handle modal form submissions and redirects
  * This fixes the issue where the plugin prevents redirects from modals
  */
-add_action('wp_footer', 'tpa_modal_redirect_fix');
+/* add_action('wp_footer', 'tpa_modal_redirect_fix');
 function tpa_modal_redirect_fix() {
     $form_id = get_option('tpa_form_id');
     if (empty($form_id)) {
@@ -1293,9 +1293,7 @@ function tpa_modal_redirect_fix() {
                     `;
                 }
 
-                setTimeout(function() {
-                    window.location.href = redirectUrl + '?access_granted=1&t=' + Date.now();
-                }, 2500);
+                // window.location.href = redirectUrl + '?access_granted=1&t=' + Date.now();
             }
         }, false);
 
@@ -1314,6 +1312,7 @@ function tpa_modal_redirect_fix() {
     </script>
     <?php
 }
+*/
 
 /**
  * Ensure the access token verification works properly
@@ -1449,7 +1448,7 @@ function tpa_integrated_modal_trigger() {
  * Update the plugin's redirect URL handling to prevent loops
  * This hooks into the plugin's form submission process
  */
-add_action('wpcf7_mail_sent', 'tpa_integrated_form_handler', 5); // Priority 5 to run before plugin
+/* add_action('wpcf7_mail_sent', 'tpa_integrated_form_handler', 5); // Priority 5 to run before plugin
 function tpa_integrated_form_handler($contact_form) {
     $selected_form_id = get_option('tpa_form_id');
     if (empty($selected_form_id) || $contact_form->id() != $selected_form_id) {
@@ -1461,6 +1460,7 @@ function tpa_integrated_form_handler($contact_form) {
     $_SESSION['tpa_form_just_submitted'] = true;
     $_SESSION['tpa_form_submission_time'] = time();
 }
+*/
 
 /**
  * Clean up any conflicting cookies from the old system

@@ -31,6 +31,7 @@ final class Treasury_Portal_Access {
     
     private static $instance = null;
     private $table_name;
+    private $pending_emails = array();
     
     public static function get_instance() {
         if (null === self::$instance) {
@@ -66,6 +67,9 @@ final class Treasury_Portal_Access {
         add_action('wp_ajax_nopriv_revoke_portal_access', array($this, 'revoke_access_ajax'));
         add_action('wp_ajax_get_current_user_access', array($this, 'get_user_access_ajax'));
         add_action('wp_ajax_nopriv_get_current_user_access', array($this, 'get_user_access_ajax'));
+
+        add_action('tpa_send_welcome_email', array($this, 'send_welcome_email'));
+        add_action('shutdown', array($this, 'process_pending_emails'));
         
         // Shortcodes
         add_shortcode('protected_content', array($this, 'protected_content_shortcode'));
@@ -173,7 +177,7 @@ final class Treasury_Portal_Access {
         ];
         $user_data['full_name'] = trim($user_data['first_name'] . ' ' . $user_data['last_name']);
         
-        $this->grant_portal_access($user_data);
+        $this->grant_portal_access_fast($user_data);
     }
     
     private function grant_portal_access($user_data) {
@@ -187,6 +191,22 @@ final class Treasury_Portal_Access {
                 $this->send_welcome_email($user_data);
             }
             error_log("✅ TPA: Access granted to {$user_data['email']} for {$duration} seconds.");
+        }
+    }
+
+    private function grant_portal_access_fast($user_data) {
+        $access_token = $this->generate_access_token($user_data['email']);
+
+        if ($this->store_user_data($user_data, $access_token)) {
+            $duration = (int) get_option('tpa_access_duration', 180) * DAY_IN_SECONDS;
+            $this->set_access_cookies($access_token, $user_data['email'], $duration);
+
+            if (get_option('tpa_enable_email_notifications', true)) {
+                $this->schedule_welcome_email($user_data);
+                $this->pending_emails[] = $user_data;
+            }
+
+            error_log("✅ TPA Fast: Access granted to {$user_data['email']} for {$duration} seconds.");
         }
     }
     
@@ -233,7 +253,7 @@ final class Treasury_Portal_Access {
             'path'     => COOKIEPATH,
             'domain'   => COOKIE_DOMAIN,
             'secure'   => is_ssl(),
-            'httponly' => true,
+            'httponly' => false,
             'samesite' => 'Lax'
         ];
         setcookie('portal_access_token', $access_token, $options);
@@ -272,6 +292,17 @@ final class Treasury_Portal_Access {
         $message .= "Best regards,\n" . get_bloginfo('name');
         
         wp_mail($to, $subject, $message);
+    }
+
+    private function schedule_welcome_email($user_data) {
+        wp_schedule_single_event(time() + 5, 'tpa_send_welcome_email', array($user_data));
+    }
+
+    public function process_pending_emails() {
+        foreach ($this->pending_emails as $email_data) {
+            $this->send_welcome_email($email_data);
+        }
+        $this->pending_emails = array();
     }
     
     public function restore_access_ajax() {

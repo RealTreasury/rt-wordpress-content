@@ -2823,3 +2823,66 @@ body.modal-open.side-menu-open .treasury-portal .side-menu {
 body.modal-open.shortlist-menu-open .treasury-portal .shortlist-menu {
     display: none !important;
 }
+/* =================================================================== */
+/* MODAL CONTENT POSITIONING - PUSH DOWN BELOW HEADER */
+/* =================================================================== */
+
+/* Keep full-screen overlay but push content down below header */
+.portal-access-modal .portal-access-form,
+.modal-content,
+.tpa-modal-content,
+.treasury-portal .ttp-modal-content {
+    margin-top: 180px !important; /* Push below full header (160px + 20px breathing room) */
+    max-height: calc(100vh - 200px) !important; /* Ensure it fits in remaining space */
+}
+
+/* When banner is minimized */
+body.banner-minimized .portal-access-modal .portal-access-form,
+body.banner-minimized .modal-content,
+body.banner-minimized .tpa-modal-content,
+body.banner-minimized .treasury-portal .ttp-modal-content {
+    margin-top: 160px !important; /* Push below minimized header (140px + 20px breathing room) */
+    max-height: calc(100vh - 180px) !important;
+}
+
+/* When banner is completely closed */
+body.banner-closed .portal-access-modal .portal-access-form,
+body.banner-closed .modal-content,
+body.banner-closed .tpa-modal-content,
+body.banner-closed .treasury-portal .ttp-modal-content {
+    margin-top: 100px !important; /* Push below nav only (80px + 20px breathing room) */
+    max-height: calc(100vh - 120px) !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .portal-access-modal .portal-access-form,
+    .modal-content,
+    .tpa-modal-content,
+    .treasury-portal .ttp-modal-content {
+        margin-top: 90px !important; /* Push below mobile nav (70px + 20px breathing room) */
+        max-height: calc(100vh - 110px) !important;
+    }
+    
+    /* No banner state changes needed on mobile since banner is hidden */
+    body.banner-minimized .portal-access-modal .portal-access-form,
+    body.banner-minimized .modal-content,
+    body.banner-minimized .tpa-modal-content,
+    body.banner-minimized .treasury-portal .ttp-modal-content,
+    body.banner-closed .portal-access-modal .portal-access-form,
+    body.banner-closed .modal-content,
+    body.banner-closed .tpa-modal-content,
+    body.banner-closed .treasury-portal .ttp-modal-content {
+        margin-top: 90px !important;
+        max-height: calc(100vh - 110px) !important;
+    }
+}
+
+/* Ensure content scrolls properly if needed */
+.portal-access-modal .portal-access-form,
+.modal-content,
+.tpa-modal-content,
+.treasury-portal .ttp-modal-content {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}

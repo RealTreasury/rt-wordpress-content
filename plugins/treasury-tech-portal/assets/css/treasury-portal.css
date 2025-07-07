@@ -549,7 +549,7 @@
             display: flex;
             align-items: center;
             flex-wrap: nowrap;
-            gap: 6px;
+            gap: 12px;
             position: relative;
             z-index: 1;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -612,6 +612,26 @@
         }
 
         .treasury-portal .tool-card:hover .video-indicator {
+            opacity: 1;
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .treasury-portal .tool-name-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .treasury-portal .tool-name-group .tool-name-title {
+            margin-right: 0;
+        }
+
+        .treasury-portal .tool-name-group .video-indicator {
+            margin-right: 0;
+        }
+
+        .treasury-portal .tool-card:hover .tool-name-group .video-indicator {
             opacity: 1;
             background: rgba(99, 102, 241, 0.2);
             border-color: rgba(99, 102, 241, 0.4);

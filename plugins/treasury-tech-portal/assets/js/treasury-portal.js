@@ -1072,8 +1072,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="tool-header">
                             <div class="tool-info">
                                 <div class="tool-name">
-                                    <span class="tool-name-title">${tool.name}</span>
-                                    ${tool.videoUrl ? '<span class="video-indicator">🎥</span>' : ''}
+                                    <div class="tool-name-group">
+                                        <span class="tool-name-title">${tool.name}</span>
+                                        ${tool.videoUrl ? '<span class="video-indicator">🎥</span>' : ''}
+                                    </div>
                                     ${tool.logoUrl ? `<img class="tool-logo-inline${tool.videoUrl ? '' : ' no-video'}" src="${tool.logoUrl}" alt="${tool.name} logo">` : ''}
                                     <div class="tool-actions">
                                         ${tool.websiteUrl ? `<a class="tool-website-link" href="${tool.websiteUrl}" target="_blank" rel="noopener noreferrer">Website</a>` : ''}

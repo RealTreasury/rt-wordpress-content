@@ -1323,8 +1323,13 @@ function rt_portal_gating_javascript() {
                 document.body.classList.remove('modal-open');
             }, 300);
         }
+
+        // FIXED: Always redirect to portal after successful form submission
         if (window.location.search.includes('show_portal_modal=1')) {
-            setTimeout(() => { window.location.href = <?php echo $home_url_js; ?>; }, 300);
+            setTimeout(() => {
+                console.log('Redirecting to portal:', <?php echo $plugin_redirect_js; ?>);
+                window.location.href = <?php echo $plugin_redirect_js; ?>;
+            }, 300);
         }
     };
 
@@ -1344,18 +1349,15 @@ function rt_portal_gating_javascript() {
                     if (countdownEl) countdownEl.textContent = seconds;
                     if (seconds <= 0) {
                         clearInterval(countdownInterval);
-                        // Close modal and redirect to portal
-                        closePortalModal();
-                        setTimeout(() => {
-                            console.log('Redirecting to:', <?php echo $plugin_redirect_js; ?>);
-                            window.location.href = <?php echo $plugin_redirect_js; ?>;
-                        }, 500);
+                        // FIXED: Direct redirect to portal instead of closing modal
+                        console.log('Redirecting to portal:', <?php echo $plugin_redirect_js; ?>);
+                        window.location.href = <?php echo $plugin_redirect_js; ?>;
                     }
                 }, 1000);
             } else {
                 // Fallback if modal container not found
                 setTimeout(() => {
-                    console.log('Fallback redirect to:', <?php echo $plugin_redirect_js; ?>);
+                    console.log('Fallback redirect to portal:', <?php echo $plugin_redirect_js; ?>);
                     window.location.href = <?php echo $plugin_redirect_js; ?>;
                 }, 1500);
             }

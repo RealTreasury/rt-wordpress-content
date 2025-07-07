@@ -1328,7 +1328,7 @@
 
         .external-menu-toggle.active .icon {
             background: rgba(114,22,244,0.9);
-            color: #fff;
+            color: #7216f4;
         }
 
         .external-menu-toggle.active .icon::before {
@@ -1382,7 +1382,7 @@
 
         .external-shortlist-toggle.active .icon {
             background: rgba(114,22,244,0.9);
-            color: #fff;
+            color: #7216f4;
         }
 
         .external-shortlist-toggle.active .icon::before {

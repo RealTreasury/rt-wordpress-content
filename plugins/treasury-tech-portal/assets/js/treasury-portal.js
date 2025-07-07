@@ -764,9 +764,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (modalLogo) {
                     if (tool.logoUrl) {
-                        modalLogo.src = tool.logoUrl;
-                        modalLogo.alt = `${tool.name} logo`;
-                        modalLogo.style.display = 'block';
+                        if (tool.websiteUrl) {
+                            modalLogo.outerHTML = `<a href="${tool.websiteUrl}" target="_blank" rel="noopener noreferrer" class="modal-logo-link"><img id="modalToolLogo" class="modal-tool-logo" src="${tool.logoUrl}" alt="${tool.name} logo"></a>`;
+                        } else {
+                            modalLogo.src = tool.logoUrl;
+                            modalLogo.alt = `${tool.name} logo`;
+                            modalLogo.style.display = 'block';
+                        }
                     } else {
                         modalLogo.style.display = 'none';
                     }
@@ -1076,9 +1080,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                         <span class="tool-name-title">${tool.name}</span>
                                         ${tool.videoUrl ? '<span class="video-indicator">🎥</span>' : ''}
                                     </div>
-                                    ${tool.logoUrl ? `<img class="tool-logo-inline${tool.videoUrl ? '' : ' no-video'}" src="${tool.logoUrl}" alt="${tool.name} logo">` : ''}
+                                    ${tool.logoUrl ? `<a href="${tool.websiteUrl || '#'}" target="_blank" rel="noopener noreferrer" class="tool-logo-link" ${!tool.websiteUrl ? 'style="pointer-events: none; cursor: default;"' : ''}><img class="tool-logo-inline${tool.videoUrl ? '' : ' no-video'}" src="${tool.logoUrl}" alt="${tool.name} logo"></a>` : ''}
                                     <div class="tool-actions">
-                                        ${tool.websiteUrl ? `<a class="tool-website-link" href="${tool.websiteUrl}" target="_blank" rel="noopener noreferrer">Website</a>` : ''}
                                         <div class="tool-icon">${iconMap[tool.category]}</div>
                                     </div>
                                 </div>
@@ -1139,6 +1142,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         this.touchDragTool = null;
                     });
+                }
+
+                // Prevent logo click from triggering card modal when logo has a valid link
+                if (tool.websiteUrl) {
+                    const logoLink = card.querySelector('.tool-logo-link');
+                    if (logoLink) {
+                        logoLink.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                        });
+                    }
                 }
 
                 return card;

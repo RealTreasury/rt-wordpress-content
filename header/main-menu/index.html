@@ -349,11 +349,11 @@ body {
 /* When banner is minimized, adjust navigation */
 .workshop-banner.minimized ~ .rt-nav-container,
 body.banner-minimized .rt-nav-container {
-    top: 50px !important;
+    top: 20px !important;
 }
 
 body.banner-minimized {
-    padding-top: 130px !important; /* 50px banner + 80px nav */
+    padding-top: 100px !important; /* 20px banner + 80px nav */
 }
 
 /* Hide banner entirely on mobile */
@@ -361,9 +361,18 @@ body.banner-minimized {
     .workshop-banner {
         display: none !important;
     }
-    
+
     body {
         padding-top: 80px !important;
+    }
+
+    body.banner-minimized {
+        padding-top: 90px !important; /* 20px banner + 70px mobile nav */
+    }
+
+    body.banner-minimized .rt-nav-container {
+        top: 20px !important;
+        height: 70px !important;
     }
 }
 

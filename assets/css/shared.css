@@ -1911,6 +1911,20 @@ body.menu-open {
 }
 
 /* Banner Integration */
+/* Ensure all page content adjusts properly */
+.entry-content,
+.site-main,
+main,
+.content-area {
+    transition: padding-top 0.4s ease !important;
+}
+
+body.banner-minimized .entry-content,
+body.banner-minimized .site-main,
+body.banner-minimized main,
+body.banner-minimized .content-area {
+    padding-top: 0 !important;
+}
 .workshop-banner {
     position: fixed !important;
     top: 0 !important;
@@ -1930,6 +1944,15 @@ body.menu-open {
 body {
     padding-top: 160px !important;
     transition: padding-top 0.4s ease !important;
+}
+
+/* Add missing body padding for minimized banner state */
+body.banner-minimized {
+    padding-top: 100px !important; /* 20px minimized banner + 80px nav */
+}
+
+body.banner-minimized .rt-nav-container {
+    top: 20px !important; /* Position nav below minimized banner */
 }
 
 body.banner-closed .rt-nav-container {
@@ -1960,6 +1983,15 @@ body.banner-closed .workshop-banner {
     
     body {
         padding-top: 130px !important;
+    }
+
+    body.banner-minimized {
+        padding-top: 90px !important; /* 20px minimized banner + 70px mobile nav */
+    }
+
+    body.banner-minimized .rt-nav-container {
+        top: 20px !important;
+        height: 70px !important;
     }
     
     body.banner-closed .rt-nav-container {
@@ -2697,6 +2729,18 @@ body:not(.banner-closed) .treasury-portal .external-shortlist-toggle {
 }
 
 /* Enhanced Treasury Portal Integration with Workshop Banner */
+/* Treasury portal content positioning fixes */
+.treasury-portal {
+    transition: margin-top 0.4s ease !important;
+}
+
+body.banner-minimized .treasury-portal {
+    margin-top: 0 !important;
+}
+
+body.banner-closed .treasury-portal {
+    margin-top: 0 !important;
+}
 .treasury-portal .external-menu-toggle {
     position: fixed;
     top: 160px; /* Start below banner + nav */

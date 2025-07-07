@@ -547,9 +547,9 @@
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             line-height: 1.2;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             flex-wrap: nowrap;
-            gap: 8px;
+            gap: 6px;
             position: relative;
             z-index: 1;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -562,8 +562,8 @@
             word-break: break-word;
             hyphens: auto;
             line-height: 1.3;
-            max-width: 60%;
             margin-right: 0;
+            align-self: center;
         }
         .treasury-portal .tool-logo {
             width: 100px;
@@ -582,21 +582,21 @@
         }
 
         .treasury-portal .tool-logo-inline {
-            width: 75px;
-            height: 75px;
+            width: 60px;
+            height: 60px;
             object-fit: contain;
             margin-top: 0;
             flex-shrink: 0;
         }
 
         .treasury-portal .tool-logo-inline.no-video {
-            margin-left: 16px;
+            margin-left: 8px;
         }
 
         @media (max-width: 768px) {
             .treasury-portal .tool-logo-inline {
-                width: 50px;
-                height: 50px;
+                width: 45px;
+                height: 45px;
             }
         }
 

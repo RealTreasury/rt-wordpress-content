@@ -112,6 +112,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const params = new URLSearchParams(window.location.search);
+    const toolName = params.get('tool');
+    if (toolName && document.cookie.includes('portal_access_token=')) {
+        const toolObj = treasuryTechPortal.TREASURY_TOOLS.find(t =>
+            t.name.toLowerCase() === decodeURIComponent(toolName).toLowerCase());
+        if (toolObj) {
+            setTimeout(() => treasuryTechPortal.showToolModal(toolObj), 500);
+        }
+    }
+
 });
         class TreasuryTechPortal {
             constructor() {

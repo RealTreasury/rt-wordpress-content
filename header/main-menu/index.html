@@ -93,12 +93,12 @@ body {
 
 /* Minimized state - keep key info visible */
 .workshop-banner.minimized {
-    min-height: 50px !important;
-    padding: 8px 40px !important;
+    min-height: 70px !important;
+    padding: 12px 40px !important;
     cursor: pointer;
-    background: linear-gradient(135deg, 
-        rgba(114, 22, 244, 0.9), 
-        rgba(143, 71, 246, 0.95) 50%, 
+    background: linear-gradient(135deg,
+        rgba(114, 22, 244, 0.9),
+        rgba(143, 71, 246, 0.95) 50%,
         rgba(157, 78, 221, 0.9)) !important;
 }
 
@@ -110,9 +110,9 @@ body {
 }
 
 .workshop-banner.minimized .banner-icon {
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 16px !important;
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 18px !important;
     background: rgba(255, 255, 255, 0.2) !important;
     color: #ffffff !important;
 }
@@ -122,21 +122,29 @@ body {
 }
 
 .workshop-banner.minimized .banner-title {
-    font-size: 0.9rem !important;
-    margin-bottom: 0 !important;
+    font-size: 1rem !important;
+    margin-bottom: 2px !important;
     color: #ffffff !important;
 }
 
 .workshop-banner.minimized .banner-subtitle {
-    display: none !important;
+    display: block !important;
+    font-size: 0.75rem !important;
+    opacity: 0.9 !important;
+    color: #ffffff !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 300px !important;
 }
 
 .workshop-banner.minimized .banner-cta {
-    padding: 6px 12px !important;
-    font-size: 0.8rem !important;
-    min-width: auto !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+    min-width: 100px !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
 .workshop-banner.minimized .banner-cta span {
@@ -144,11 +152,11 @@ body {
 }
 
 .workshop-banner.minimized .close-btn {
-    width: 24px !important;
-    height: 24px !important;
-    font-size: 14px !important;
-    top: 13px !important;
-    background: rgba(255, 255, 255, 0.2) !important;
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 16px !important;
+    top: 21px !important;
+    background: rgba(255, 255, 255, 0.25) !important;
     color: #ffffff !important;
 }
 

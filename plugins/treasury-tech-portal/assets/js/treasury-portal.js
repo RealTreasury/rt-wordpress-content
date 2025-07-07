@@ -764,15 +764,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (modalLogo) {
                     if (tool.logoUrl) {
+                        // Always wrap in a link if websiteUrl exists
                         if (tool.websiteUrl) {
-                            modalLogo.outerHTML = `<a href="${tool.websiteUrl}" target="_blank" rel="noopener noreferrer" class="modal-logo-link"><img id="modalToolLogo" class="modal-tool-logo" src="${tool.logoUrl}" alt="${tool.name} logo"></a>`;
+                            modalLogo.outerHTML = `<a href="${tool.websiteUrl}" target="_blank" rel="noopener noreferrer" class="modal-logo-link">
+                                <img id="modalToolLogo" class="modal-tool-logo" src="${tool.logoUrl}" alt="${tool.name} logo">
+                            </a>`;
                         } else {
+                            // No website URL - show logo without link
                             modalLogo.src = tool.logoUrl;
                             modalLogo.alt = `${tool.name} logo`;
                             modalLogo.style.display = 'block';
+                            // Ensure it's not wrapped in a link
+                            if (modalLogo.parentElement.classList.contains('modal-logo-link')) {
+                                modalLogo.parentElement.replaceWith(modalLogo);
+                            }
                         }
                     } else {
                         modalLogo.style.display = 'none';
+                    }
+
+                    // After the logo link creation, add event handling
+                    if (tool.websiteUrl && tool.logoUrl) {
+                        setTimeout(() => {
+                            const logoLink = document.querySelector('.modal-logo-link');
+                            if (logoLink) {
+                                logoLink.addEventListener('click', (e) => {
+                                    e.stopPropagation(); // Prevent modal from closing
+                                });
+                            }
+                        }, 0);
                     }
                 }
 

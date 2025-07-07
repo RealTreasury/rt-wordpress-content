@@ -1,25 +1,20 @@
 function updateDropdownPositioning() {
-    const navContainer = document.querySelector('.rt-nav-container');
+    // Simple function - no complex calculations needed
     const banner = document.querySelector('.workshop-banner');
+    const navContainer = document.querySelector('.rt-nav-container');
 
     if (!navContainer) return;
 
-    const navHeight = navContainer.getBoundingClientRect().height;
-    const bannerHeight = banner && banner.style.display !== 'none' && !banner.classList.contains('minimized')
-        ? banner.getBoundingClientRect().height
-        : banner && banner.classList.contains('minimized')
-        ? 60
-        : 0;
-
-    document.documentElement.style.setProperty('--nav-height', `${navHeight}px`);
-    document.documentElement.style.setProperty('--banner-height', `${bannerHeight}px`);
-
-    const dropdowns = document.querySelectorAll('.rt-dropdown');
-    dropdowns.forEach(dropdown => {
-        dropdown.style.display = 'none';
-        dropdown.offsetHeight;
-        dropdown.style.display = '';
-    });
+    // Just handle banner positioning for nav container
+    if (banner && banner.style.display !== 'none') {
+        if (banner.classList.contains('minimized')) {
+            document.body.classList.add('banner-minimized');
+        } else {
+            document.body.classList.add('banner-present');
+        }
+    } else {
+        document.body.classList.add('banner-closed');
+    }
 }
 
 window.addEventListener('load', updateDropdownPositioning);

@@ -733,14 +733,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1000;
-            background: rgba(40, 19, 69, 0.25);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            z-index: 100001; /* Higher than navigation */
+            background: rgba(40, 19, 69, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
             box-sizing: border-box;
             opacity: 0;
             visibility: hidden;
@@ -756,11 +756,11 @@
         /* Modal Content Box */
         .treasury-portal .ttp-modal-content {
             background: white;
-            border-radius: 16px;
+            border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 550px;
-            max-height: 90vh;
+            max-width: 480px; /* Reduced from 550px */
+            max-height: 80vh; /* Reduced from 90vh */
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -774,138 +774,99 @@
 
         /* Modal Header */
         .treasury-portal .modal-header {
-            padding: 16px 24px;
+            padding: 12px 20px; /* Reduced padding */
             border-bottom: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
-            gap: 16px;
+            gap: 12px; /* Reduced gap */
         }
-        
+
         .treasury-portal .modal-title {
-            font-size: 1.25rem;
+            font-size: 1.1rem; /* Reduced from 1.25rem */
             font-weight: 600;
             color: #281345;
             flex-grow: 1;
             margin: 0;
-            line-height: 1.4;
+            line-height: 1.3;
         }
-        
+
         .treasury-portal .modal-header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px; /* Reduced gap */
             flex-shrink: 0;
         }
-        
+
         /* Modal Body: Scrollable */
         .treasury-portal .modal-body {
-            padding: 24px;
+            padding: 16px 20px; /* Reduced from 24px */
             overflow-y: auto;
             flex-grow: 1;
             -webkit-overflow-scrolling: touch;
         }
-        
-        .treasury-portal .modal-body::-webkit-scrollbar { width: 6px; }
-        .treasury-portal .modal-body::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
-        .treasury-portal .modal-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        .treasury-portal .modal-body::-webkit-scrollbar-thumb:hover { background: #aab5c6; }
 
-        /* Modal Close Button */
-        .treasury-portal .modal-close {
-            background: #f3f4f6;
-            border: none;
-            color: #6b7280;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            font-weight: 400;
-            line-height: 1;
+        .treasury-portal .modal-body::-webkit-scrollbar {
+            width: 4px; /* Thinner scrollbar */
+        }
+        .treasury-portal .modal-body::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 2px;
+        }
+        .treasury-portal .modal-body::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+        .treasury-portal .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #aab5c6;
         }
 
-        .treasury-portal .modal-close:hover {
-            background: #e5e7eb;
-            color: #281345;
-            transform: rotate(90deg) scale(1.1);
-        }
-        
-        .treasury-portal .video-container {
-            width: 100%;
-            height: 0;
-            padding-bottom: 56.25%;
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #000;
-            margin-bottom: 20px;
-        }
-
-        .treasury-portal .video-container iframe,
-        .treasury-portal .video-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
+        /* Feature sections - more compact */
         .treasury-portal .feature-section {
-            margin-bottom: 24px;
-        }
-        
-        /* Added class specifically for dynamically added video sections */
-        .treasury-portal .video-demo-section {
-            /* This class is just a marker for JS */
+            margin-bottom: 16px; /* Reduced from 24px */
         }
 
         .treasury-portal .feature-section h4 {
-            font-size: 1.1rem;
+            font-size: 1rem; /* Reduced from 1.1rem */
             font-weight: 600;
             color: #281345;
-            margin-bottom: 12px;
+            margin-bottom: 8px; /* Reduced from 12px */
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px; /* Reduced gap */
         }
 
-        .treasury-portal .feature-list {
-            list-style: none;
-            display: grid;
-            gap: 10px;
-        }
-
-        .treasury-portal .feature-list li {
-            color: #4b5563;
-            font-size: 0.9rem;
-            padding-left: 20px;
+        /* Video container - more compact */
+        .treasury-portal .video-container {
+            width: 100%;
+            height: 0;
+            padding-bottom: 50%; /* Reduced from 56.25% */
             position: relative;
-            line-height: 1.5;
+            border-radius: 8px; /* Reduced from 12px */
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 12px; /* Reduced from 20px */
         }
 
-        .treasury-portal .feature-list li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: #6366f1;
-            font-weight: bold;
+        /* Modal logo - smaller */
+        .treasury-portal .modal-tool-logo {
+            width: 60px; /* Reduced from 100px */
+            height: 60px;
+            object-fit: contain;
+            display: block;
+            margin: 0;
         }
 
+        /* Website link - more compact */
         .treasury-portal .website-link--modal {
             background: linear-gradient(135deg, #7216f4, #8f47f6);
             color: #ffffff;
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            padding: 10px 18px;
-            font-size: 0.9rem;
+            padding: 8px 14px; /* Reduced from 10px 18px */
+            font-size: 0.8rem; /* Reduced from 0.9rem */
             text-decoration: none;
-            border-radius: 10px;
+            border-radius: 8px; /* Reduced from 10px */
             font-weight: 600;
             transition: all 0.3s ease;
             display: inline-flex;
@@ -915,11 +876,71 @@
             border: none;
         }
 
-        .treasury-portal .website-link--modal:hover {
-            background: linear-gradient(135deg, #8f47f6, #7216f4);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px -8px rgba(114, 22, 244, 0.6);
-            color: #ffffff;
+        /* Modal Close Button - smaller */
+        .treasury-portal .modal-close {
+            background: #f3f4f6;
+            border: none;
+            color: #6b7280;
+            width: 28px; /* Reduced from 36px */
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px; /* Reduced from 18px */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .treasury-portal .ttp-modal {
+                padding: 10px;
+            }
+
+            .treasury-portal .ttp-modal-content {
+                max-width: 95vw;
+                max-height: 85vh;
+                border-radius: 10px;
+            }
+
+            .treasury-portal .modal-header,
+            .treasury-portal .modal-body {
+                padding: 12px 16px;
+            }
+
+            .treasury-portal .modal-title {
+                font-size: 1rem;
+            }
+
+            .treasury-portal .video-container {
+                padding-bottom: 45%;
+            }
+
+            .treasury-portal .modal-tool-logo {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .treasury-portal .ttp-modal-content {
+                max-height: 90vh;
+            }
+
+            .treasury-portal .modal-header {
+                padding: 10px 14px;
+            }
+
+            .treasury-portal .modal-body {
+                padding: 12px 14px;
+            }
+
+            .treasury-portal .feature-section {
+                margin-bottom: 12px;
+            }
         }
 
         /* Mobile adjustments */

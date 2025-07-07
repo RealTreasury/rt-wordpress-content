@@ -1260,21 +1260,25 @@ function rt_portal_gating_javascript() {
         session_start();
     }
 
-    $show_modal    = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
+    $show_modal     = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
     $access_granted = ! empty( $_SESSION['rt_portal_access_granted'] );
-    $redirect_url   = isset( $_SESSION['rt_portal_redirect'] ) ? $_SESSION['rt_portal_redirect'] : '';
+    $redirect_url   = isset( $_SESSION['rt_portal_redirect'] ) ? $_SESSION['rt_portal_redirect'] : 'https://realtreasury.com/treasury-tech-portal/';
 
     if ( $access_granted ) {
         unset( $_SESSION['rt_portal_access_granted'] );
         unset( $_SESSION['rt_portal_redirect'] );
     }
 
+    // Get the configured redirect URL from plugin settings
+    $plugin_redirect_url = get_option('tpa_redirect_url', 'https://realtreasury.com/treasury-tech-portal/');
+
     // Prepare the Contact Form 7 markup for insertion into JavaScript.
     $form_id = get_option( 'tpa_form_id', '0779c74' );
-    $contact_form_html = do_shortcode( '[contact-form-7 id="' . esc_attr( $form_id ) . '"]' );
-    $contact_form_js   = json_encode( $contact_form_html );
-    $redirect_url_js   = json_encode( $redirect_url );
-    $home_url_js       = json_encode( esc_url( home_url() ) );
+    $contact_form_html  = do_shortcode( '[contact-form-7 id="' . esc_attr( $form_id ) . '"]' );
+    $contact_form_js    = json_encode( $contact_form_html );
+    $redirect_url_js    = json_encode( $redirect_url );
+    $plugin_redirect_js = json_encode( $plugin_redirect_url );
+    $home_url_js        = json_encode( esc_url( home_url() ) );
     ?>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -1324,18 +1328,36 @@ function rt_portal_gating_javascript() {
         }
     };
 
+    // UPDATED: Single event handler for form submission with proper redirect
     document.addEventListener('wpcf7mailsent', function (event) {
         if (event.detail.contactFormId == <?php echo json_encode( $form_id ); ?>) {
+            console.log('Portal form submitted successfully');
+
             const formContainer = document.querySelector('.portal-form-container');
             if (formContainer) {
                 formContainer.innerHTML = '<div class="portal-access-granted"><h4>✅ Access Granted!</h4><p>Thank you! Your access to the Treasury Technology Portal has been approved.</p><p class="countdown">Redirecting to portal in <span id="countdown">3</span> seconds...</p></div>';
+
                 let seconds = 3;
                 const countdownEl = document.getElementById('countdown');
                 const countdownInterval = setInterval(() => {
                     seconds--;
                     if (countdownEl) countdownEl.textContent = seconds;
-                    if (seconds <= 0) { clearInterval(countdownInterval); closePortalModal(); }
+                    if (seconds <= 0) {
+                        clearInterval(countdownInterval);
+                        // Close modal and redirect to portal
+                        closePortalModal();
+                        setTimeout(() => {
+                            console.log('Redirecting to:', <?php echo $plugin_redirect_js; ?>);
+                            window.location.href = <?php echo $plugin_redirect_js; ?>;
+                        }, 500);
+                    }
                 }, 1000);
+            } else {
+                // Fallback if modal container not found
+                setTimeout(() => {
+                    console.log('Fallback redirect to:', <?php echo $plugin_redirect_js; ?>);
+                    window.location.href = <?php echo $plugin_redirect_js; ?>;
+                }, 1500);
             }
         }
     });

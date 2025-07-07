@@ -1201,91 +1201,380 @@ add_action('rest_api_init', function() {
 ?>
 <?php
 // ===============================================================
-// CLEAN PORTAL ACCESS INTEGRATION - Replace existing portal code
+// ENHANCED PORTAL ACCESS GATE - PLUGIN COMPATIBLE VERSION
 // ===============================================================
 
 /**
- * Integrated portal access gate that works with Treasury Portal Access plugin
- * This should be the ONLY portal access function in functions.php
+ * CRITICAL: Portal access gate that works WITH the Treasury Portal Access plugin
+ * This function supplements the plugin's functionality by adding page-level gating
  */
-add_action('template_redirect', 'tpa_integrated_gate_portal_access');
-function tpa_integrated_gate_portal_access() {
-    // Only gate the treasury-tech-portal page
-    if (!is_page('treasury-tech-portal') && $_SERVER['REQUEST_URI'] !== '/treasury-tech-portal/') {
+add_action('template_redirect', 'tpa_theme_portal_gate', 1);
+function tpa_theme_portal_gate() {
+    
+    // Only proceed if Treasury Portal Access plugin is active
+    if (!class_exists('Treasury_Portal_Access')) {
+        return; // Let WordPress handle normally if plugin not active
+    }
+    
+    // Enable debugging for admins
+    $debug = current_user_can('manage_options');
+    
+    if ($debug) {
+        error_log('TPA Theme Gate: Checking URL: ' . $_SERVER['REQUEST_URI']);
+    }
+    
+    // CRITICAL: Check if this is the portal page using multiple methods
+    $is_portal_page = false;
+    
+    // Method 1: Direct URL match
+    if (strpos($_SERVER['REQUEST_URI'], 'treasury-tech-portal') !== false) {
+        $is_portal_page = true;
+    }
+    
+    // Method 2: WordPress page check
+    if (is_page('treasury-tech-portal')) {
+        $is_portal_page = true;
+    }
+    
+    // Method 3: Post slug check
+    global $post;
+    if ($post && $post->post_name === 'treasury-tech-portal') {
+        $is_portal_page = true;
+    }
+    
+    // Method 4: Query vars check
+    if (get_query_var('pagename') === 'treasury-tech-portal') {
+        $is_portal_page = true;
+    }
+    
+    if ($debug) {
+        error_log('TPA Theme Gate: Is portal page: ' . ($is_portal_page ? 'YES' : 'NO'));
+    }
+    
+    // If not portal page, allow through
+    if (!$is_portal_page) {
         return;
     }
-
-    // Check if Treasury Portal Access plugin is active and user has access
-    if (class_exists('Treasury_Portal_Access')) {
-        $tpa_instance = Treasury_Portal_Access::get_instance();
-        if ($tpa_instance->has_portal_access()) {
-            return; // User has access, allow them through
-        }
-    }
-
-    // Fallback: check for URL parameter indicating recent access grant
-    if (isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
-        return; // User was just granted access, allow them through
-    }
-
-    // User doesn't have access, redirect to show the modal
-    if (!session_id()) session_start();
-    $_SESSION['tpa_portal_redirect'] = home_url('/treasury-tech-portal/');
     
-    // Redirect to homepage with modal trigger
-    wp_redirect(home_url('/?show_portal_modal=1'));
-    exit;
+    if ($debug) {
+        error_log('TPA Theme Gate: Portal page detected - checking access...');
+    }
+    
+    // IMPORTANT: Use the plugin's native access checking method
+    $tpa_instance = Treasury_Portal_Access::get_instance();
+    $has_access = $tpa_instance->has_portal_access();
+    
+    if ($debug) {
+        error_log('TPA Theme Gate: Plugin access check: ' . ($has_access ? 'GRANTED' : 'DENIED'));
+        error_log('TPA Theme Gate: Cookie exists: ' . (isset($_COOKIE['portal_access_token']) ? 'YES' : 'NO'));
+    }
+    
+    // Check for fresh access grant (from plugin redirect)
+    if (!$has_access && isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
+        if ($debug) {
+            error_log('TPA Theme Gate: Fresh access grant detected');
+        }
+        $has_access = true;
+    }
+    
+    // If user has access via plugin, allow through
+    if ($has_access) {
+        if ($debug) {
+            error_log('TPA Theme Gate: Access granted by plugin - allowing through');
+        }
+        return;
+    }
+    
+    // BLOCK ACCESS - redirect to modal
+    if ($debug) {
+        error_log('TPA Theme Gate: ACCESS BLOCKED - redirecting to modal');
+    }
+    
+    // Start session for redirect tracking
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $_SESSION['tpa_requested_page'] = $_SERVER['REQUEST_URI'];
+    
+    // Force redirect to homepage with modal trigger
+    $redirect_url = home_url('/?portal_access_required=1&t=' . time());
+    
+    if ($debug) {
+        error_log('TPA Theme Gate: Redirecting to: ' . $redirect_url);
+    }
+    
+    wp_redirect($redirect_url, 302);
+    exit; // CRITICAL: Must exit to prevent page from loading
 }
 
 /**
- * Add the modal trigger JavaScript only when needed
+ * Modal trigger that integrates with the plugin's modal system
  */
-add_action('wp_footer', 'tpa_integrated_modal_trigger');
-function tpa_integrated_modal_trigger() {
-    // Only show modal trigger if the URL parameter is set
-    if (!isset($_GET['show_portal_modal']) || $_GET['show_portal_modal'] !== '1') {
+add_action('wp_footer', 'tpa_theme_modal_trigger');
+function tpa_theme_modal_trigger() {
+    
+    // Only trigger if redirected here for portal access
+    if (!isset($_GET['portal_access_required'])) {
         return;
     }
-
-    // Only add this if the Treasury Portal Access plugin is active
+    
+    // Only if plugin is active
     if (!class_exists('Treasury_Portal_Access')) {
+        ?>
+        <div style="position: fixed; top: 0; left: 0; right: 0; background: #d73502; color: white; padding: 15px; text-align: center; z-index: 99999;">
+            <strong>Portal Access Plugin Error:</strong> Treasury Portal Access plugin is required but not active.
+        </div>
+        <?php
         return;
     }
-
+    
+    // Check if plugin has a form configured
+    $form_id = get_option('tpa_form_id');
+    if (!$form_id) {
+        ?>
+        <div style="position: fixed; top: 0; left: 0; right: 0; background: #d73502; color: white; padding: 15px; text-align: center; z-index: 99999;">
+            <strong>Configuration Error:</strong> No Contact Form 7 form is configured for portal access.
+        </div>
+        <?php
+        return;
+    }
+    
     ?>
+    <!-- Portal Access Required Modal Trigger - Plugin Compatible -->
     <script>
-    // Integrated portal modal trigger that works with Treasury Portal Access plugin
+    console.log('🚫 Portal access blocked by theme gate - integrating with plugin modal...');
+    
     document.addEventListener('DOMContentLoaded', function() {
-        // Wait a bit for the plugin's scripts to load
-        setTimeout(function() {
+        
+        // Show loading indicator while waiting for plugin modal system
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'portal-theme-gate-loading';
+        loadingDiv.innerHTML = `
+            <div style="
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(40, 19, 69, 0.95); z-index: 99998;
+                display: flex; align-items: center; justify-content: center;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            ">
+                <div style="
+                    background: white; padding: 40px; border-radius: 20px;
+                    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                    max-width: 400px; margin: 20px;
+                ">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div>
+                    <h3 style="color: #7216f4; margin: 0 0 15px 0; font-size: 24px;">Portal Access Required</h3>
+                    <p style="color: #666; margin: 0 0 20px 0;">Loading access form...</p>
+                    <div style="
+                        width: 40px; height: 40px; margin: 0 auto;
+                        border: 4px solid #7216f4; border-top: 4px solid transparent;
+                        border-radius: 50%; animation: spin 1s linear infinite;
+                    "></div>
+                </div>
+            </div>
+            <style>
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            </style>
+        `;
+        document.body.appendChild(loadingDiv);
+        
+        // Try to integrate with plugin's modal system
+        let attempts = 0;
+        const maxAttempts = 20; // More attempts since we're waiting for plugin
+        
+        function attemptPluginModalOpen() {
+            attempts++;
+            console.log(`🔄 Plugin integration attempt ${attempts}/${maxAttempts}`);
+            
+            // PRIORITY 1: Use plugin's native TPA modal system
             if (window.TPA && typeof window.TPA.openModal === 'function') {
-                // Use the plugin's modal system
+                console.log('✅ Opening via plugin TPA.openModal()');
+                document.getElementById('portal-theme-gate-loading').remove();
                 window.TPA.openModal();
-                console.log('✅ Portal modal opened via plugin');
-            } else {
-                console.log('⚠️ Portal modal system not found. Plugin may not be loaded.');
-                // Fallback: redirect directly to portal page
-                setTimeout(() => {
-                    window.location.href = '<?php echo esc_js(home_url('/treasury-tech-portal/')); ?>';
-                }, 2000);
+                return;
             }
-        }, 500);
+            
+            // PRIORITY 2: Look for plugin's modal element
+            const pluginModal = document.getElementById('portalModal');
+            if (pluginModal) {
+                console.log('✅ Opening plugin modal directly');
+                document.getElementById('portal-theme-gate-loading').remove();
+                pluginModal.style.display = 'flex';
+                setTimeout(() => pluginModal.classList.add('show'), 10);
+                document.body.classList.add('modal-open');
+                return;
+            }
+            
+            // PRIORITY 3: Click any plugin portal trigger button
+            const portalTriggers = [
+                'a[href="#openPortalModal"]',
+                '.open-portal-modal',
+                '#portalAccessBtn',
+                '.tpa-btn',
+                '[data-target="#portalModal"]'
+            ];
+            
+            for (let selector of portalTriggers) {
+                const trigger = document.querySelector(selector);
+                if (trigger) {
+                    console.log('✅ Opening via plugin trigger: ' + selector);
+                    document.getElementById('portal-theme-gate-loading').remove();
+                    trigger.click();
+                    return;
+                }
+            }
+            
+            // Keep trying or show fallback
+            if (attempts < maxAttempts) {
+                setTimeout(attemptPluginModalOpen, 500);
+            } else {
+                console.log('❌ Plugin modal integration failed - showing fallback');
+                // Keep the loading screen but change message
+                document.getElementById('portal-theme-gate-loading').innerHTML = `
+                    <div style="
+                        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                        background: rgba(40, 19, 69, 0.95); z-index: 99998;
+                        display: flex; align-items: center; justify-content: center;
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    ">
+                        <div style="
+                            background: white; padding: 40px; border-radius: 20px;
+                            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                            max-width: 500px; margin: 20px;
+                        ">
+                            <div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div>
+                            <h3 style="color: #7216f4; margin: 0 0 15px 0;">Portal Access Required</h3>
+                            <p style="color: #666; margin: 0 0 25px 0;">
+                                Please complete our access form to view exclusive Treasury Portal content.
+                            </p>
+                            <a href="mailto:hello@realtreasury.com?subject=Portal Access Request" 
+                               style="
+                                   background: #7216f4; color: white; padding: 12px 24px;
+                                   border-radius: 8px; text-decoration: none; font-weight: 600;
+                                   display: inline-block; margin-right: 10px;
+                               ">Contact Support</a>
+                            <button onclick="window.location.reload()" style="
+                                background: transparent; border: 2px solid #7216f4; color: #7216f4;
+                                padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;
+                            ">Try Again</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Start attempting after delay to let plugin load
+        setTimeout(attemptPluginModalOpen, 1000);
     });
     </script>
     <?php
 }
 
 /**
- * Clean up any conflicting cookies from old systems
+ * Ensure theme integration doesn't conflict with plugin functionality
  */
-add_action('init', 'tpa_cleanup_old_cookies');
-function tpa_cleanup_old_cookies() {
-    // Remove old system cookies that might conflict
-    $old_cookies = ['rt_portal_access', 'rt_portal_access_token'];
-    foreach ($old_cookies as $cookie_name) {
-        if (isset($_COOKIE[$cookie_name])) {
-            setcookie($cookie_name, '', time() - 3600, '/', '', is_ssl(), true);
+add_action('init', 'tpa_theme_compatibility_check', 5);
+function tpa_theme_compatibility_check() {
+    
+    // Only run compatibility checks if plugin is active
+    if (!class_exists('Treasury_Portal_Access')) {
+        return;
+    }
+    
+    // Clean up any old theme-based cookie systems that might conflict
+    $conflicting_cookies = ['rt_portal_access', 'rt_portal_access_token', 'old_portal_token'];
+    foreach ($conflicting_cookies as $cookie) {
+        if (isset($_COOKIE[$cookie])) {
+            setcookie($cookie, '', time() - 3600, '/', '', is_ssl(), true);
+            unset($_COOKIE[$cookie]);
         }
+    }
+    
+    // Remove any conflicting theme functions that might duplicate plugin functionality
+    remove_action('wp_footer', 'add_modal_bridge_script', 10);
+    
+    // Ensure the theme works with plugin's cache settings
+    if (strpos($_SERVER['REQUEST_URI'], 'treasury-tech-portal') !== false) {
+        // Let plugin handle its own caching, but add theme-level cache prevention
+        if (!defined('DONOTCACHEPAGE')) {
+            define('DONOTCACHEPAGE', true);
+        }
+    }
+}
+
+/**
+ * Admin integration notice - shows compatibility status
+ */
+add_action('admin_notices', 'tpa_theme_integration_notice');
+function tpa_theme_integration_notice() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    
+    // Only show on relevant admin pages
+    $screen = get_current_screen();
+    if (!$screen || (!in_array($screen->id, ['treasury-portal-access', 'treasury-portal-access-settings']) && $screen->post_type !== 'page')) {
+        return;
+    }
+    
+    $portal_page = get_page_by_path('treasury-tech-portal');
+    $plugin_active = class_exists('Treasury_Portal_Access');
+    $form_id = get_option('tpa_form_id');
+    $redirect_url = get_option('tpa_redirect_url');
+    
+    // Check for proper plugin-theme integration
+    $integration_ok = ($portal_page && $plugin_active && $form_id && $redirect_url);
+    $status_color = $integration_ok ? 'notice-success' : 'notice-error';
+    
+    echo '<div class="notice ' . $status_color . '"><p>';
+    echo '<strong>🔐 Portal Access Integration Status:</strong><br>';
+    echo '📄 Portal Page: ' . ($portal_page ? '✅ Found (ID: ' . $portal_page->ID . ')' : '❌ Missing') . '<br>';
+    echo '🔌 Plugin Active: ' . ($plugin_active ? '✅ Treasury Portal Access plugin active' : '❌ Plugin not active') . '<br>';
+    echo '📝 Form Configured: ' . ($form_id ? '✅ Form ID ' . $form_id . ' set' : '❌ No Contact Form 7 selected') . '<br>';
+    echo '🔄 Redirect URL: ' . ($redirect_url ? '✅ Set to ' . $redirect_url : '❌ Not configured') . '<br>';
+    
+    if ($integration_ok) {
+        echo '<br><strong>✅ Theme-Plugin integration is working!</strong><br>';
+        echo 'Test the gate: <a href="' . get_permalink($portal_page) . '" target="_blank">Access portal page</a> (should redirect to modal)<br>';
+        echo 'Plugin admin: <a href="' . admin_url('admin.php?page=treasury-portal-access') . '">View portal users</a>';
+    } else {
+        echo '<br><strong>❌ Integration issues detected:</strong><br>';
+        if (!$plugin_active) echo '• Activate Treasury Portal Access plugin<br>';
+        if (!$portal_page) echo '• Create page with slug "treasury-tech-portal"<br>';
+        if (!$form_id) echo '• Configure Contact Form 7 in plugin settings<br>';
+        if (!$redirect_url) echo '• Set redirect URL in plugin settings<br>';
+    }
+    echo '</p></div>';
+}
+
+/**
+ * Add debugging capability for theme-plugin integration
+ */
+if (isset($_GET['tpa_debug']) && current_user_can('manage_options')) {
+    add_action('wp_footer', 'tpa_theme_debug_output');
+    function tpa_theme_debug_output() {
+        $portal_page = get_page_by_path('treasury-tech-portal');
+        $plugin_active = class_exists('Treasury_Portal_Access');
+        $has_access = false;
+        
+        if ($plugin_active) {
+            $tpa_instance = Treasury_Portal_Access::get_instance();
+            $has_access = $tpa_instance->has_portal_access();
+        }
+        
+        ?>
+        <div style="position: fixed; bottom: 10px; left: 10px; background: #000; color: #fff; padding: 15px; border-radius: 8px; font-size: 12px; z-index: 99999; max-width: 400px; font-family: monospace;">
+            <strong>🔍 TPA Theme-Plugin Debug:</strong><br>
+            Current URL: <?php echo esc_html($_SERVER['REQUEST_URI']); ?><br>
+            Portal Page: <?php echo $portal_page ? 'Found (ID: ' . $portal_page->ID . ')' : 'Not found'; ?><br>
+            is_page(): <?php echo is_page('treasury-tech-portal') ? 'true' : 'false'; ?><br>
+            Plugin Active: <?php echo $plugin_active ? 'true' : 'false'; ?><br>
+            Has Access: <?php echo $has_access ? 'true' : 'false'; ?><br>
+            Cookie Set: <?php echo isset($_COOKIE['portal_access_token']) ? 'true' : 'false'; ?><br>
+            Form ID: <?php echo get_option('tpa_form_id', 'Not set'); ?><br>
+            Redirect URL: <?php echo get_option('tpa_redirect_url', 'Not set'); ?><br>
+            Theme Gate: <?php echo function_exists('tpa_theme_portal_gate') ? 'Loaded' : 'Missing'; ?>
+        </div>
+        <?php
     }
 }
 ?>

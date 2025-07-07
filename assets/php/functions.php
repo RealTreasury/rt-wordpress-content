@@ -1255,26 +1255,37 @@ function rt_handle_portal_form_submission($contact_form) {
 
 add_action('wp_footer', 'rt_portal_gating_javascript');
 function rt_portal_gating_javascript() {
-    if (!session_id()) session_start();
-    $show_modal = isset($_GET['show_portal_modal']) && $_GET['show_portal_modal'] == '1';
-    $access_granted = isset($_SESSION['rt_portal_access_granted']) && $_SESSION['rt_portal_access_granted'];
-    $redirect_url = isset($_SESSION['rt_portal_redirect']) ? $_SESSION['rt_portal_redirect'] : '';
-    if ($access_granted) {
-        unset($_SESSION['rt_portal_access_granted']);
-        unset($_SESSION['rt_portal_redirect']);
+    if ( ! session_id() ) {
+        session_start();
     }
+
+    $show_modal    = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
+    $access_granted = ! empty( $_SESSION['rt_portal_access_granted'] );
+    $redirect_url   = isset( $_SESSION['rt_portal_redirect'] ) ? $_SESSION['rt_portal_redirect'] : '';
+
+    if ( $access_granted ) {
+        unset( $_SESSION['rt_portal_access_granted'] );
+        unset( $_SESSION['rt_portal_redirect'] );
+    }
+
+    // Prepare the Contact Form 7 markup for insertion into JavaScript.
+    $contact_form_html = do_shortcode( '[contact-form-7 id="0779c74" title="Portal Access Gate Form"]' );
+    $contact_form_js   = json_encode( $contact_form_html );
+    $redirect_url_js   = json_encode( $redirect_url );
+    $home_url_js       = json_encode( esc_url( home_url() ) );
     ?>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        <?php if ($show_modal): ?>
-        setTimeout(function() { showPortalModal(); }, 500);
+    document.addEventListener('DOMContentLoaded', function () {
+        <?php if ( $show_modal ) : ?>
+        setTimeout(showPortalModal, 500);
         <?php endif; ?>
-        <?php if ($access_granted && $redirect_url): ?>
+
+        <?php if ( $access_granted && $redirect_url ) : ?>
         showAccessGrantedMessage();
-        setTimeout(function() { window.location.href = '<?php echo esc_js($redirect_url); ?>'; }, 3000);
+        setTimeout(function () { window.location.href = <?php echo $redirect_url_js; ?>; }, 3000);
         <?php endif; ?>
     });
-    
+
     function showAccessGrantedMessage() {
         const successDiv = document.createElement('div');
         successDiv.style.cssText = 'position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:20px 24px;border-radius:12px;box-shadow:0 8px 32px rgba(16,185,129,0.3);z-index:1000000;font-weight:600;max-width:400px;';
@@ -1282,20 +1293,20 @@ function rt_portal_gating_javascript() {
         document.body.appendChild(successDiv);
         setTimeout(() => successDiv.remove(), 4000);
     }
-    
+
     function showPortalModal() {
         let modal = document.querySelector('.portal-access-modal');
         if (!modal) {
             modal = document.createElement('div');
             modal.className = 'portal-access-modal modal tpa-modal';
-            modal.innerHTML = '<div class="portal-access-form"><button class="close-btn" onclick="closePortalModal()">&times;</button><h3>Treasury Technology Portal Access</h3><p class="subtitle">Please provide your information to access our exclusive treasury technology portal and resources.</p><div class="portal-access-info"><h4>🔐 What you\'ll get access to:</h4><ul><li>Exclusive treasury technology insights and whitepapers</li><li>Advanced cash management tools and calculators</li><li>Industry benchmarking data and reports</li><li>Priority access to webinars and expert consultations</li></ul></div><div class="portal-form-container"><?php echo do_shortcode('[contact-form-7 id="0779c74" title="Portal Access Gate Form"]'); ?></div></div>';
+            modal.innerHTML = `<div class="portal-access-form"><button class="close-btn" onclick="closePortalModal()">&times;</button><h3>Treasury Technology Portal Access</h3><p class="subtitle">Please provide your information to access our exclusive treasury technology portal and resources.</p><div class="portal-access-info"><h4>🔐 What you'll get access to:</h4><ul><li>Exclusive treasury technology insights and whitepapers</li><li>Advanced cash management tools and calculators</li><li>Industry benchmarking data and reports</li><li>Priority access to webinars and expert consultations</li></ul></div><div class="portal-form-container">` + <?php echo $contact_form_js; ?> + `</div></div>`;
             document.body.appendChild(modal);
         }
         modal.classList.add('show');
         document.body.classList.add('modal-open');
     }
-    
-    window.closePortalModal = function() {
+
+    window.closePortalModal = function () {
         const modal = document.querySelector('.portal-access-modal');
         if (modal) {
             modal.classList.remove('show');
@@ -1303,11 +1314,11 @@ function rt_portal_gating_javascript() {
             setTimeout(() => { if (modal.parentNode) modal.remove(); }, 400);
         }
         if (window.location.search.includes('show_portal_modal=1')) {
-            setTimeout(() => { window.location.href = '<?php echo esc_js(home_url()); ?>'; }, 300);
+            setTimeout(() => { window.location.href = <?php echo $home_url_js; ?>; }, 300);
         }
     };
-    
-    document.addEventListener('wpcf7mailsent', function(event) {
+
+    document.addEventListener('wpcf7mailsent', function (event) {
         if (event.detail.contactFormId == '0779c74') {
             const formContainer = document.querySelector('.portal-form-container');
             if (formContainer) {
@@ -1322,7 +1333,7 @@ function rt_portal_gating_javascript() {
             }
         }
     });
-    
+
     window.showPortalModal = showPortalModal;
     </script>
     <?php

@@ -241,8 +241,10 @@ if (!defined("ABSPATH")) exit;
         <div class="ttp-modal" id="toolModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
             <div class="ttp-modal-content" tabindex="-1">
                 <div class="modal-header">
-                    <img id="modalToolLogo" class="modal-tool-logo" alt="">
-                    <h3 class="modal-title" id="modalTitle"></h3>
+                    <div class="modal-title-group">
+                        <h3 class="modal-title" id="modalTitle"></h3>
+                        <img id="modalToolLogo" class="modal-tool-logo" alt="">
+                    </div>
                     <div class="modal-header-actions">
                         <a id="modalWebsiteLink" href="#" target="_blank" rel="noopener noreferrer" class="website-link--modal" style="display: none;">Website</a>
                         <button class="modal-close" id="modalClose">×</button>

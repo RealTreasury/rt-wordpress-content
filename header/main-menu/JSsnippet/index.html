@@ -4,13 +4,22 @@ function updateDropdownPositioning() {
 
     if (!navContainer) return;
 
-    const navHeight = navContainer.offsetHeight;
-    const bannerHeight = banner && banner.style.display !== 'none'
-        ? banner.offsetHeight
+    const navHeight = navContainer.getBoundingClientRect().height;
+    const bannerHeight = banner && banner.style.display !== 'none' && !banner.classList.contains('minimized')
+        ? banner.getBoundingClientRect().height
+        : banner && banner.classList.contains('minimized')
+        ? 60
         : 0;
 
     document.documentElement.style.setProperty('--nav-height', `${navHeight}px`);
     document.documentElement.style.setProperty('--banner-height', `${bannerHeight}px`);
+
+    const dropdowns = document.querySelectorAll('.rt-dropdown');
+    dropdowns.forEach(dropdown => {
+        dropdown.style.display = 'none';
+        dropdown.offsetHeight;
+        dropdown.style.display = '';
+    });
 }
 
 window.addEventListener('load', updateDropdownPositioning);

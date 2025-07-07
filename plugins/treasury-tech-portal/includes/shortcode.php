@@ -2,6 +2,7 @@
 // Exit if accessed directly
 if (!defined("ABSPATH")) exit;
 ?>
+<div class="treasury-portal">
     <div class="container">
         <button class="external-menu-toggle" id="externalMenuToggle">
             <span class="icon"></span>
@@ -290,4 +291,6 @@ if (!defined("ABSPATH")) exit;
         <button id="bottomSearch"><span class="icon">🔍</span> Search</button>
         <button id="bottomShortlist"><span class="icon">📝</span> Shortlist</button>
     </div>
+
+</div>
 

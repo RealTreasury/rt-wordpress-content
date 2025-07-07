@@ -1,5 +1,6 @@
         const EMBED_ORIGIN = 'https://realtreasury.com';
         let treasuryTechPortal;
+        const portalRoot = document.querySelector('.treasury-portal') || document.body;
 
         function postHeight() {
             if (window.parent !== window) {
@@ -45,11 +46,11 @@ window.addEventListener('resize', debouncedPostHeight);
 
 new ResizeObserver(() => {
     debouncedPostHeight();
-}).observe(document.body);
+}).observe(portalRoot);
 
 new MutationObserver(() => {
     debouncedPostHeight();
-}).observe(document.body, { 
+}).observe(portalRoot, {
     childList: true, 
     subtree: true, 
     attributes: true,
@@ -678,7 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  if (modal) {
                     this.previousFocusedElement = document.activeElement;
                     modal.classList.add('show');
-                    document.body.classList.add('modal-open');
+                    portalRoot.classList.add('modal-open');
 
                     const focusable = modal.querySelector('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
                     if (focusable) {
@@ -849,7 +850,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const modal = document.getElementById(modalId);
                 if (modal && modal.classList.contains('show')) {
                     modal.classList.remove('show');
-                    document.body.classList.remove('modal-open');
+                    portalRoot.classList.remove('modal-open');
                     
                     // Stop video from playing in the background
                     const iframe = modal.querySelector('iframe');
@@ -1256,11 +1257,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const externalToggle = document.getElementById('externalMenuToggle');
 
                 sideMenu?.classList.add('open');
-                document.body.classList.add('side-menu-open');
+                portalRoot.classList.add('side-menu-open');
                 overlay?.classList.add('show');
                 toggle?.classList.add('active');
                 externalToggle?.classList.add('active');
-                document.body.style.overflow = 'hidden';
+                portalRoot.style.overflow = 'hidden';
                 document.addEventListener('click', this.handleOutsideSideMenuClick, true);
                 this.sideMenuOpen = true;
             }
@@ -1275,8 +1276,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 overlay?.classList.remove('show');
                 toggle?.classList.remove('active');
                 externalToggle?.classList.remove('active');
-                document.body.classList.remove('side-menu-open');
-                document.body.style.overflow = '';
+                portalRoot.classList.remove('side-menu-open');
+                portalRoot.style.overflow = '';
                 document.removeEventListener('click', this.handleOutsideSideMenuClick, true);
                 this.sideMenuOpen = false;
             }
@@ -1414,12 +1415,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const externalToggle = document.getElementById('externalShortlistToggle');
 
                 menu?.classList.add('open');
-                document.body.classList.add('shortlist-menu-open');
+                portalRoot.classList.add('shortlist-menu-open');
                 overlay?.classList.add('show');
                 document.addEventListener('click', this.handleOutsideShortlistMenuClick);
                toggle?.classList.add('active');
                externalToggle?.classList.add('active');
-               document.body.style.overflow = 'hidden';
+               portalRoot.style.overflow = 'hidden';
                this.shortlistMenuOpen = true;
             }
 
@@ -1430,12 +1431,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const externalToggle = document.getElementById('externalShortlistToggle');
 
                 menu?.classList.remove('open');
-                document.body.classList.remove('shortlist-menu-open');
+                portalRoot.classList.remove('shortlist-menu-open');
                 overlay?.classList.remove('show');
                 document.removeEventListener('click', this.handleOutsideShortlistMenuClick);
                toggle?.classList.remove('active');
                externalToggle?.classList.remove('active');
-               document.body.style.overflow = '';
+               portalRoot.style.overflow = '';
                this.shortlistMenuOpen = false;
             }
 

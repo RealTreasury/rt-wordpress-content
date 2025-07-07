@@ -1407,6 +1407,53 @@ body.modal-open {
     padding: 2.5rem 2rem;
 }
 
+/* =================================================================== */
+/* WORKSHOP BANNER - DROPDOWN POSITIONING FIXES */
+/* =================================================================== */
+
+/* Default dropdown position (when banner is present and full size) */
+.rt-dropdown {
+    position: fixed;
+    top: 160px !important; /* 80px banner + 80px nav */
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+/* When banner is minimized */
+body.banner-minimized .rt-dropdown,
+.workshop-banner.minimized ~ * .rt-dropdown {
+    top: 140px !important; /* 60px minimized banner + 80px nav */
+}
+
+/* When banner is completely closed/hidden */
+body.banner-closed .rt-dropdown,
+body:not(.banner-present) .rt-dropdown {
+    top: 80px !important; /* Just nav height */
+}
+
+/* Mobile adjustments */
+@media (max-width: 992px) {
+    .rt-dropdown {
+        top: 150px !important; /* 80px banner + 70px mobile nav */
+    }
+
+    body.banner-minimized .rt-dropdown {
+        top: 130px !important; /* 60px minimized banner + 70px mobile nav */
+    }
+
+    body.banner-closed .rt-dropdown {
+        top: 70px !important; /* Just mobile nav height */
+    }
+}
+
+/* Hide dropdowns when mobile menu is open */
+@media (max-width: 992px) {
+    body.menu-open .rt-dropdown {
+        display: none !important;
+    }
+}
+
 /* Main Menu Layout */
 .rt-main-menu {
     display: grid;

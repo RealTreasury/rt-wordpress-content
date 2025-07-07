@@ -453,7 +453,24 @@ body.banner-minimized .rt-dropdown {
         </a>
     </div>
 
-    <script>
+<script>
+// Add banner state management
+function updateBannerState() {
+    const banner = document.getElementById('workshopBanner');
+    if (!banner) return;
+
+    if (banner.style.display === 'none') {
+        document.body.classList.add('banner-closed');
+        document.body.classList.remove('banner-present', 'banner-minimized');
+    } else if (banner.classList.contains('minimized')) {
+        document.body.classList.add('banner-minimized', 'banner-present');
+        document.body.classList.remove('banner-closed');
+    } else {
+        document.body.classList.add('banner-present');
+        document.body.classList.remove('banner-closed', 'banner-minimized');
+    }
+}
+
 function closeBanner(event) {
     event.stopPropagation();
     const banner = document.getElementById('workshopBanner');
@@ -462,6 +479,7 @@ function closeBanner(event) {
     // Minimize instead of hide
     banner.classList.add('minimized');
     document.body.classList.add('banner-minimized');
+    updateBannerState(); // Add this line
     const closeBtn = banner.querySelector('.close-btn');
     if (closeBtn) closeBtn.style.display = 'none';
 
@@ -482,6 +500,7 @@ function expandBanner(event) {
 
     banner.classList.remove('minimized');
     document.body.classList.remove('banner-minimized');
+    updateBannerState(); // Add this line
     banner.removeEventListener('click', expandBanner);
     const closeBtn = banner.querySelector('.close-btn');
     if (closeBtn) closeBtn.style.display = '';
@@ -509,15 +528,20 @@ function isMobileDevice() {
 }
 
 // Simplified initialization - no glitchy animations
+// Add to the window load event
 window.addEventListener('load', function() {
     const banner = document.getElementById('workshopBanner');
     if (!banner) return;
-    
+
     if (isMobileDevice()) {
         banner.style.display = 'none';
         document.body.classList.add('banner-closed');
+        updateBannerState(); // Add this line
         return;
     }
+
+    document.body.classList.add('banner-present'); // Add this line
+    updateBannerState(); // Add this line
 
     // Auto-minimize after 3 seconds (no initial animation needed)
     setTimeout(() => {

@@ -519,12 +519,13 @@
             border-top: 1px solid #e5e7eb;
         }
 
-        .treasury-portal .tool-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 6px;
-        }
+.treasury-portal .tool-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+    min-height: 60px; /* Accommodate potential multi-line names */
+}
 
         .treasury-portal .tool-meta {
             display: flex;
@@ -545,7 +546,7 @@
             color: #281345;
             margin-bottom: 0;
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            line-height: 1.2;
+            line-height: 1.3;
             display: flex;
             align-items: center;
             flex-wrap: nowrap;
@@ -559,11 +560,13 @@
         .treasury-portal .tool-name-title {
             flex: 1;
             min-width: 0;
-            word-break: break-word;
-            hyphens: auto;
-            line-height: 1.3;
+            word-break: normal;
+            overflow-wrap: break-word;
+            hyphens: none;
+            line-height: 1.25;
             margin-right: 0;
-            align-self: center;
+            align-self: flex-start;
+            max-width: 200px; /* Encourage wrapping at reasonable width */
         }
         .treasury-portal .tool-logo {
             width: 100px;
@@ -621,8 +624,10 @@
 
         .treasury-portal .tool-name-group {
             display: flex;
-            align-items: center;
-            gap: 4px;
+            align-items: flex-start;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
         }
 
         .treasury-portal .tool-name-group .tool-name-title {
@@ -1005,6 +1010,14 @@
             .treasury-portal .feature-section {
                 margin-bottom: 12px;
             }
+
+            .treasury-portal .tool-name {
+                font-size: 1rem;
+            }
+
+            .treasury-portal .tool-name-title {
+                max-width: 120px;
+            }
         }
 
         /* Mobile adjustments */
@@ -1097,7 +1110,16 @@
 
             .treasury-portal .tool-name {
                 font-size: 1.1rem;
-                letter-spacing: 0.5px;
+                letter-spacing: 0.3px;
+            }
+
+            .treasury-portal .tool-name-title {
+                max-width: 150px;
+                line-height: 1.2;
+            }
+
+            .treasury-portal .tool-header {
+                min-height: 50px;
             }
 
             .treasury-portal .search-container {

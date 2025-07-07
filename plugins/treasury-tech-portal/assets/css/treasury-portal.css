@@ -753,13 +753,20 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 15px;
+            align-items: flex-start;
+            padding: 100px 15px 15px 15px;
             box-sizing: border-box;
             opacity: 0;
             visibility: hidden;
+
             transition: opacity 0.3s ease, visibility 0s 0.3s linear;
+        }
+
+        @media (max-width: 992px) {
+            .treasury-portal .ttp-modal {
+                padding-top: 90px;
+            }
         }
 
         .treasury-portal .ttp-modal.show {
@@ -980,7 +987,7 @@
         /* Mobile adjustments */
         @media (max-width: 768px) {
             .treasury-portal .ttp-modal {
-                padding: 10px;
+                padding: 90px 10px 10px 10px;
             }
 
             .treasury-portal .ttp-modal-content {

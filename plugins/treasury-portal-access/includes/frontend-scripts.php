@@ -1,6 +1,6 @@
 <?php
 /**
- * Frontend Scripts for Treasury Portal Access
+ * Frontend Scripts for Treasury Portal Access - FIXED REDIRECT VERSION
  */
 if (!defined('ABSPATH')) exit;
 
@@ -26,7 +26,7 @@ if (empty($form_id)) {
 </div>
 
 <script>
-// Treasury Portal Access Frontend Script v1.0.8
+// Treasury Portal Access Frontend Script v1.0.9 - FIXED REDIRECTS
 (function() {
     'use strict';
 
@@ -42,6 +42,7 @@ if (empty($form_id)) {
         ajaxUrl: '<?php echo admin_url('admin-ajax.php'); ?>',
         accessDuration: <?php echo (int) get_option('tpa_access_duration', 180) * 86400; ?>, // seconds
         redirectUrl: '<?php echo esc_js(get_option('tpa_redirect_url', home_url('/treasury-tech-portal/'))); ?>',
+        isRedirecting: false, // Flag to prevent double redirects
         
         init: function() {
             this.modal = document.getElementById('portalModal');
@@ -264,6 +265,52 @@ if (empty($form_id)) {
             }, 300);
         },
 
+        executeRedirect: function() {
+            if (this.isRedirecting) {
+                console.log('TPA: Redirect already in progress, skipping...');
+                return;
+            }
+
+            this.isRedirecting = true;
+            console.log('TPA: Starting redirect process...');
+
+            // Close modal if it exists
+            if (this.modal && this.modal.classList.contains('show')) {
+                console.log('TPA: Closing modal before redirect');
+                this.closeModal();
+            }
+
+            // Update form with success message
+            const formContainer = document.querySelector('.portal-access-form');
+            if (formContainer) {
+                formContainer.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; background: #f0f9ff; border-radius: 12px; border: 2px solid #10b981;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">✅</div>
+                        <h3 style="color: #10b981; margin: 0 0 15px 0; font-size: 24px;">Access Granted!</h3>
+                        <p style="margin: 0 0 20px 0; color: #059669; font-size: 16px;">Redirecting to Treasury Portal...</p>
+                        <div style="width: 40px; height: 40px; border: 4px solid #10b981; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto;"></div>
+                    </div>
+                    <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    </style>
+                `;
+            }
+
+            // Execute redirect after a short delay
+            setTimeout(() => {
+                if (this.redirectUrl) {
+                    console.log('TPA: Redirecting to:', this.redirectUrl);
+                    window.location.href = this.redirectUrl + '?access_granted=1&t=' + Date.now();
+                } else {
+                    console.log('TPA: No redirect URL configured, reloading page');
+                    location.reload();
+                }
+            }, 1000);
+        },
+
         revoke: function() {
             if (confirm('Are you sure you want to sign out of the portal?')) {
                 this.clearLocal();
@@ -290,25 +337,40 @@ if (empty($form_id)) {
                 }
             });
 
+            // FIXED: Redirect event handler
             document.addEventListener('wpcf7mailsent', (event) => {
                 const formId = '<?php echo esc_js($form_id); ?>';
                 if (event.detail.contactFormId.toString() !== formId) return;
 
-                const start = performance.now();
-                console.log('TPA: Form submission detected at', start);
+                console.log('TPA: Form submission successful for form ID:', formId);
+                
+                // Show success message
                 this.showMessage('Access granted! Redirecting...', 'success');
+                
+                // Sync to localStorage for persistence
                 this.syncToLocal();
+                
+                // Execute redirect - ALWAYS redirect on successful form submission
+                this.executeRedirect();
+                
+            }, false);
 
-                // Only redirect if not in a modal (to prevent conflicts)
-                if (!document.querySelector('.portal-access-form')) {
-                    if (this.redirectUrl) {
-                        console.log('TPA: Instant redirect to', this.redirectUrl);
-                        window.location.href = this.redirectUrl + '?access_granted=1&t=' + Date.now();
-                    } else {
-                        location.reload();
-                    }
-                    console.log('TPA: Redirect executed in', (performance.now() - start).toFixed(2), 'ms');
-                }
+            // Handle form errors
+            document.addEventListener('wpcf7mailfailed', (event) => {
+                const formId = '<?php echo esc_js($form_id); ?>';
+                if (event.detail.contactFormId.toString() !== formId) return;
+                
+                console.error('TPA: Form submission failed');
+                this.showMessage('Form submission failed. Please try again.', 'error');
+            }, false);
+
+            // Handle validation errors
+            document.addEventListener('wpcf7invalid', (event) => {
+                const formId = '<?php echo esc_js($form_id); ?>';
+                if (event.detail.contactFormId.toString() !== formId) return;
+                
+                console.log('TPA: Form validation errors');
+                this.showMessage('Please correct the errors and try again.', 'error');
             }, false);
         }
     };

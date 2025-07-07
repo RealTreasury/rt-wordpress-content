@@ -2652,7 +2652,7 @@ body.banner-closed .workshop-banner {
 
 .treasury-portal .external-menu-toggle,
 .treasury-portal .external-shortlist-toggle {
-    z-index: var(--z-fixed) !important;
+    z-index: calc(var(--z-sidebar) + 1) !important;
 }
 
 /* =================================================================== */

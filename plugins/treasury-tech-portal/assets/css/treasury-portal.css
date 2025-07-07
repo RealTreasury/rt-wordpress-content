@@ -1292,7 +1292,7 @@
             color: #7216f4;
             transition: background 0.3s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            z-index: 1002;
+            z-index: calc(var(--z-sidebar) + 1);
         }
         @media (max-width: 768px) {
             .treasury-portal .external-menu-toggle {
@@ -1357,7 +1357,7 @@
             color: #7216f4;
             transition: background 0.3s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            z-index: 1002;
+            z-index: calc(var(--z-sidebar) + 1);
         }
 
         .treasury-portal .external-shortlist-toggle:hover {

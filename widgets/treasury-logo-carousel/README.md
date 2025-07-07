@@ -2,8 +2,7 @@
 
 A clean, responsive logo carousel showcasing all 26 treasury technology vendors from the RealTreasury portal.
 
-## Features
-- Auto-scrolling at optimal speed (40s full cycle)
+- Auto-scrolling at optimal speed (20s full cycle)
 - Drag/swipe functionality for manual control
 - Mobile-optimized with touch support
 - Clickable logos linking to vendor websites
@@ -18,7 +17,7 @@ Simply embed the `index.html` file into any webpage or use as an iframe:
 ```
 
 ### Customization
-- Adjust scroll speed by changing the animation duration in CSS (currently 40s)
+- Adjust scroll speed by changing the animation duration in CSS (currently 20s)
 - Modify logo sizing in the responsive breakpoints
 - Update vendor data in the JavaScript array
 

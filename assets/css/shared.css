@@ -2696,6 +2696,70 @@ body:not(.banner-closed) .treasury-portal .external-shortlist-toggle {
     top: 200px !important;
 }
 
+/* Enhanced Treasury Portal Integration with Workshop Banner */
+.treasury-portal .external-menu-toggle {
+    position: fixed;
+    top: 160px; /* Start below banner + nav */
+    left: 15px;
+    transition: top 0.4s ease;
+    z-index: calc(var(--z-sidebar) + 1);
+}
+
+.treasury-portal .external-shortlist-toggle {
+    position: fixed;
+    top: 160px; /* Start below banner + nav */
+    right: 15px;
+    transition: top 0.4s ease;
+    z-index: calc(var(--z-sidebar) + 1);
+}
+
+body.banner-minimized .treasury-portal .external-menu-toggle,
+body.banner-minimized .treasury-portal .external-shortlist-toggle {
+    top: 120px !important; /* 20px banner + 80px nav + 20px spacing */
+}
+
+body.banner-closed .treasury-portal .external-menu-toggle,
+body.banner-closed .treasury-portal .external-shortlist-toggle {
+    top: 100px !important; /* 80px nav + 20px spacing */
+}
+
+.treasury-portal .side-menu,
+.treasury-portal .shortlist-menu {
+    top: 160px !important; /* Start below banner + nav */
+    height: calc(100vh - 160px) !important;
+    transition: top 0.4s ease, height 0.4s ease;
+}
+
+body.banner-minimized .treasury-portal .side-menu,
+body.banner-minimized .treasury-portal .shortlist-menu {
+    top: 100px !important; /* 20px banner + 80px nav */
+    height: calc(100vh - 100px) !important;
+}
+
+body.banner-closed .treasury-portal .side-menu,
+body.banner-closed .treasury-portal .shortlist-menu {
+    top: 80px !important;
+    height: calc(100vh - 80px) !important;
+}
+
+@media (max-width: 768px) {
+    .treasury-portal .external-menu-toggle,
+    .treasury-portal .external-shortlist-toggle {
+        top: 130px !important; /* Mobile nav height + spacing */
+    }
+    
+    body.banner-minimized .treasury-portal .external-menu-toggle,
+    body.banner-minimized .treasury-portal .external-shortlist-toggle {
+        top: 110px !important;
+    }
+    
+    .treasury-portal .side-menu,
+    .treasury-portal .shortlist-menu {
+        top: 70px !important;
+        height: calc(100vh - 70px) !important;
+    }
+}
+
 /* =================================================================== */
 /* MODAL Z-INDEX FIX */
 /* =================================================================== */

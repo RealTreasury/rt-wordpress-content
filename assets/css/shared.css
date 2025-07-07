@@ -2480,7 +2480,7 @@ body.banner-closed .workshop-banner {
 }
 
 /* =================================================================== */
-/* CONTACT FORM 7 CHECKBOX FIX - FINAL VERSION */
+/* CONTACT FORM 7 CHECKBOX FIX - TARGETING THE RIGHT WRAPPER */
 /* =================================================================== */
 
 /* Reset the checkbox container */
@@ -2506,13 +2506,12 @@ body.banner-closed .workshop-banner {
 }
 
 /* Target the CF7 checkbox wrapper span - DON'T let it stretch */
-.portal-access-form .wpcf7-checkbox {
-    display: flex !important;
-    align-items: flex-start !important;
-    margin: 0 !important;
-    padding: 0 !important;
+.portal-access-form .wpcf7-form-control.wpcf7-checkbox {
+    display: inline-flex !important;
     width: auto !important;
     flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Target the CF7 checkbox list item wrapper - keep it compact */

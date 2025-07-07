@@ -321,7 +321,7 @@
     </style>
 </head>
 <body>
-    <div class="workshop-banner" id="workshopBanner" onclick="navigateWorkshop(event)">
+    <div class="workshop-banner" id="workshopBanner">
         <button class="close-btn" onclick="closeBanner()" aria-label="Close banner">&times;</button>
         
         <div class="banner-content">
@@ -360,13 +360,7 @@
             window.open('https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration', '_blank');
         }
 
-        function navigateWorkshop(event) {
-            // Ignore clicks on the close button or Register link
-            if (event.target.closest('.close-btn') || event.target.closest('.banner-cta')) {
-                return;
-            }
-            window.location.href = 'https://realtreasury.com/tech-selection-workshop/';
-        }
+
 
         function isMobileDevice() {
             const ua = navigator.userAgent || navigator.vendor || window.opera;

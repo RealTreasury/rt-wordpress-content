@@ -1489,8 +1489,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         div.innerHTML = `
                             <div class="shortlist-card-header">
                                 <div class="shortlist-card-title-wrapper">
+                                    ${item.tool.logoUrl ? `<img class="shortlist-logo" src="${item.tool.logoUrl}" alt="${item.tool.name} logo">` : ''}
                                     <span class="shortlist-card-title">${item.tool.name}</span>
-                                    ${item.tool.websiteUrl ? `<a class="shortlist-card-link" href="${item.tool.websiteUrl}" target="_blank" rel="noopener noreferrer" title="Visit website">↗</a>` : ''}
+                                    ${item.tool.websiteUrl ? `<a class="shortlist-card-link" href="${item.tool.websiteUrl}" target="_blank" rel="noopener noreferrer">Visit<br>Website</a>` : ''}
                                 </div>
                                 <div class="shortlist-card-buttons">
                                     <button class="move-up" data-name="${item.tool.name}" aria-label="Move up">▲</button>

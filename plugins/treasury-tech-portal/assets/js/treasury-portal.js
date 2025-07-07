@@ -649,7 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (toolModal) {
                     toolModal.addEventListener('click', (e) => {
-                        if (e.target.closest('.modal-content') === null) this.closeModal('toolModal');
+                        if (e.target.closest('.ttp-modal-content') === null) this.closeModal('toolModal');
                     });
                 }
 
@@ -661,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (categoryModal) {
                     categoryModal.addEventListener('click', (e) => {
-                        if (e.target.closest('.modal-content') === null) this.closeModal('categoryModal');
+                        if (e.target.closest('.ttp-modal-content') === null) this.closeModal('categoryModal');
                     });
                 }
 
@@ -683,7 +683,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (focusable) {
                         focusable.focus();
                     } else {
-                        const content = modal.querySelector('.modal-content');
+                        const content = modal.querySelector('.ttp-modal-content');
                         if (content) content.focus();
                     }
                 }

@@ -31,7 +31,7 @@ class Treasury_Tech_Portal {
         $css_file = TTP_PLUGIN_DIR . 'assets/css/treasury-portal.css';
         $css_ver  = file_exists($css_file) ? filemtime($css_file) : '1.0';
         wp_enqueue_style(
-            'treasury-portal-css',
+            'treasury-tech-portal-css',
             $plugin_url . 'assets/css/treasury-portal.css',
             array(),
             $css_ver
@@ -41,7 +41,7 @@ class Treasury_Tech_Portal {
         $js_file = TTP_PLUGIN_DIR . 'assets/js/' . $js_filename;
         $js_ver  = file_exists($js_file) ? filemtime($js_file) : '1.0';
         wp_enqueue_script(
-            'treasury-portal-js',
+            'treasury-tech-portal-js',
             $plugin_url . 'assets/js/' . $js_filename,
             array(),
             $js_ver,
@@ -49,7 +49,7 @@ class Treasury_Tech_Portal {
         );
 
         wp_localize_script(
-            'treasury-portal-js',
+            'treasury-tech-portal-js',
             'TTP_DATA',
             [
                 'rest_url' => esc_url_raw(rest_url('ttp/v1/tools'))

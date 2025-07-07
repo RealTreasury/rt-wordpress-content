@@ -2881,21 +2881,22 @@ body.banner-closed .treasury-portal .ttp-modal-content {
 .modal,
 .tpa-modal,
 .treasury-portal .ttp-modal {
-    padding-top: 160px !important;
+    padding-top: 180px !important;
 }
 
 body.banner-minimized .portal-access-modal,
 body.banner-minimized .modal,
 body.banner-minimized .tpa-modal,
 body.banner-minimized .treasury-portal .ttp-modal {
-    padding-top: 140px !important;
+    padding-top: 160px !important;
 }
 
 body.banner-closed .portal-access-modal,
 body.banner-closed .modal,
 body.banner-closed .tpa-modal,
 body.banner-closed .treasury-portal .ttp-modal {
-    padding-top: 80px !important;
+
+    padding-top: 100px !important;
 }
 
 .portal-access-modal .portal-access-form,
@@ -2924,7 +2925,8 @@ body.banner-closed .treasury-portal .ttp-modal-content {
     .modal,
     .tpa-modal,
     .treasury-portal .ttp-modal {
-        padding-top: 70px !important;
+        padding-top: 90px !important;
+
     }
 
     .portal-access-modal .portal-access-form,

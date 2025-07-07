@@ -22,85 +22,529 @@ body {
     padding-top: 160px !important;
 }
 
-.top-banner {
-    background-color: #5d3a9b;
-    color: white;
+.workshop-banner {
     width: 100%;
-    padding: 12px 0;
-    box-sizing: border-box;
-}
-
-.banner-content {
+    margin: 0;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.25), 
+        rgba(255, 255, 255, 0.15) 25%, 
+        rgba(114, 22, 244, 0.08) 50%, 
+        rgba(255, 255, 255, 0.15) 75%, 
+        rgba(255, 255, 255, 0.25));
+    backdrop-filter: blur(25px) saturate(140%);
+    -webkit-backdrop-filter: blur(25px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: none;
+    border-bottom: 1px solid rgba(199, 125, 255, 0.2);
+    box-shadow: 
+        0 8px 32px rgba(114, 22, 244, 0.12),
+        0 1px 0 rgba(255, 255, 255, 0.4) inset,
+        0 -1px 0 rgba(255, 255, 255, 0.2) inset,
+        0 20px 40px rgba(0, 0, 0, 0.02);
+    padding: 16px 40px;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 100000 !important;
+    min-height: 80px !important;
+    overflow: hidden !important;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-    gap: 15px;
+    gap: 20px;
+    /* Remove complex animations - start in final state */
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    transition: min-height 0.3s ease, background 0.3s ease !important;
+}
+
+.workshop-banner:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        #7216f4 20%, 
+        #8f47f6 50%, 
+        #c77dff 80%, 
+        transparent);
+    opacity: 0.8;
+    z-index: 1;
+}
+
+.workshop-banner:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(114, 22, 244, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.03) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 30%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Minimized state - keep key info visible */
+.workshop-banner.minimized {
+    min-height: 60px !important;
+    padding: 10px 16px !important;
+    cursor: pointer;
+    background: linear-gradient(135deg,
+        rgba(114, 22, 244, 0.9),
+        rgba(143, 71, 246, 0.95) 50%,
+        rgba(157, 78, 221, 0.9)) !important;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+/* In minimized state, show condensed info instead of hiding everything */
+.workshop-banner.minimized .banner-content {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    flex-grow: 1;
+}
+
+.workshop-banner.minimized .banner-icon {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 18px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+.workshop-banner.minimized .banner-text {
+    display: flex !important;
+    align-items: center;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    gap: 4px;
+}
+
+.workshop-banner.minimized .banner-title {
+    font-size: 1rem !important;
+    margin-bottom: 0 !important;
+    margin-right: 6px !important;
+    color: #ffffff !important;
+}
+
+.workshop-banner.minimized .banner-subtitle {
+    display: inline !important;
+    font-size: 0.75rem !important;
+    opacity: 0.9 !important;
+    color: #ffffff !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: clamp(150px, 50vw, 380px) !important;
+}
+
+.workshop-banner.minimized .banner-cta {
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+    min-width: 100px !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.workshop-banner.minimized .banner-cta span {
+    display: none !important;
+}
+
+.workshop-banner.minimized .close-btn {
+    display: none !important;
+}
+
+.banner-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+    /* Remove problematic transitions */
+    transition: none !important;
 }
 
 .banner-icon {
-    font-size: 24px;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, 
+        rgba(114, 22, 244, 0.15), 
+        rgba(143, 71, 246, 0.25) 50%, 
+        rgba(157, 78, 221, 0.15));
+    backdrop-filter: blur(15px) saturate(120%);
+    -webkit-backdrop-filter: blur(15px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7216f4;
+    font-size: 22px;
+    font-weight: bold;
+    box-shadow: 
+        0 8px 24px rgba(114, 22, 244, 0.15),
+        0 1px 0 rgba(255, 255, 255, 0.4) inset,
+        0 -1px 0 rgba(114, 22, 244, 0.1) inset;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-icon:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 40%);
+    pointer-events: none;
+    border-radius: 16px;
 }
 
 .banner-text {
-    flex-grow: 1;
-    text-align: center;
+    flex: 1;
 }
 
 .banner-title {
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.banner-highlight {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 2px 8px;
-    border-radius: 4px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #281345;
+    margin-bottom: 4px;
+    line-height: 1.2;
 }
 
 .banner-subtitle {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin-top: 4px;
+    font-size: 0.95rem;
+    color: #7e7e7e;
+    font-weight: 500;
+    line-height: 1.3;
 }
 
-.banner-register {
-    background-color: #ffffff;
-    color: #5d3a9b;
-    padding: 8px 16px;
+.banner-highlight {
+    color: #7216f4;
+    font-weight: 600;
+}
+
+.workshop-banner.minimized .banner-highlight {
+    color: #ffffff !important;
+}
+
+.banner-cta {
+    background: linear-gradient(135deg, 
+        rgba(114, 22, 244, 0.9), 
+        rgba(143, 71, 246, 0.95) 50%, 
+        rgba(157, 78, 221, 0.9));
+    backdrop-filter: blur(15px) saturate(120%);
+    -webkit-backdrop-filter: blur(15px) saturate(120%);
+    color: white;
+    padding: 12px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
     text-decoration: none;
-    font-weight: bold;
-    border-radius: 5px;
-    white-space: nowrap;
-    transition: background-color 0.3s, color 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+    box-shadow: 
+        0 8px 24px rgba(114, 22, 244, 0.25),
+        0 1px 0 rgba(255, 255, 255, 0.3) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.1) inset;
+    overflow: hidden;
+    min-width: 140px;
+    justify-content: center;
 }
 
-.banner-register:hover {
-    background-color: #f0f0f0;
+.banner-cta:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent 50%);
+    pointer-events: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.banner-cta:hover {
+    background: linear-gradient(135deg, 
+        rgba(143, 71, 246, 0.95), 
+        rgba(157, 78, 221, 1) 50%, 
+        rgba(186, 85, 211, 0.95));
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+        0 12px 32px rgba(114, 22, 244, 0.35),
+        0 1px 0 rgba(255, 255, 255, 0.4) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.15) inset;
+    color: white;
+    text-decoration: none;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.banner-cta:hover:before {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), transparent 60%);
+}
+
+.banner-cta:active {
+    transform: translateY(0px);
+}
+
+.close-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.3), 
+        rgba(255, 255, 255, 0.2) 50%, 
+        rgba(255, 255, 255, 0.1));
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #7216f4;
+    cursor: pointer;
+    z-index: 3;
+    transition: all 0.3s ease;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 
+        0 4px 12px rgba(114, 22, 244, 0.1),
+        0 1px 0 rgba(255, 255, 255, 0.4) inset;
+}
+
+.close-btn:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.4), 
+        rgba(255, 255, 255, 0.3) 50%, 
+        rgba(255, 255, 255, 0.2));
+    border-color: rgba(199, 125, 255, 0.4);
+    transform: scale(1.1);
+    box-shadow: 
+        0 6px 16px rgba(114, 22, 244, 0.15),
+        0 1px 0 rgba(255, 255, 255, 0.5) inset;
+}
+
+/* Navigation positioning adjustments */
+.rt-nav-container {
+    top: 80px !important;
+    transition: top 0.3s ease !important;
+}
+
+/* When banner is minimized, adjust navigation */
+.workshop-banner.minimized ~ .rt-nav-container,
+body.banner-minimized .rt-nav-container {
+    top: 60px !important;
+}
+
+body.banner-minimized {
+    padding-top: 140px !important; /* 60px banner + 80px nav */
+}
+
+body.banner-minimized .rt-dropdown {
+    top: 140px !important;
+}
+
+/* Hide banner entirely on mobile */
+@media (max-width: 768px) {
+    .workshop-banner {
+        display: none !important;
+    }
+
+    body {
+        padding-top: 80px !important;
+    }
+
+    body.banner-minimized {
+        padding-top: 90px !important; /* 20px banner + 70px mobile nav */
+    }
+
+    body.banner-minimized .rt-nav-container {
+        top: 20px !important;
+        height: 70px !important;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .workshop-banner {
+        padding: 12px 30px;
+        gap: 15px;
+    }
+    
+    .banner-title {
+        font-size: 1.1rem;
+    }
+    
+    .banner-subtitle {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .workshop-banner {
+        padding: 10px 20px;
+        gap: 10px;
+    }
+    
+    .banner-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .banner-cta {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+        min-width: 120px;
+    }
 }
 </style>
 </head>
 <body>
-    <div class="top-banner">
-      <div class="banner-content">
-
-        <div class="banner-icon">🔍</div>
-
-        <div class="banner-text">
-          <div class="banner-title">
-            <span class="banner-highlight">Tech Selection</span> Workshop
-          </div>
-          <div class="banner-subtitle">
-            Tue Jul 15 | 12:00 PM ET / 9:00 AM PT | 6 Steps to Treasury Tech Without Regret
-          </div>
+    <div class="workshop-banner" id="workshopBanner" onclick="navigateWorkshop(event)">
+        <button class="close-btn" onclick="closeBanner(event)" aria-label="Close banner">&times;</button>
+        
+        <div class="banner-content">
+            <div class="banner-icon">🔍</div>
+            
+            <div class="banner-text">
+                <div class="banner-title">
+                    <span class="banner-highlight">Tech Selection</span> Workshop
+                </div>
+                <div class="banner-subtitle">
+                    Tue Jul 15 | 12:00 PM ET / 9:00 AM PT | 6 Steps to Treasury Tech Without Regret
+                </div>
+            </div>
         </div>
 
-        <a href="#" class="banner-register">REGISTER</a>
-
-      </div>
+        <a href="#register" class="banner-cta" onclick="registerWorkshop(event)">
+            Register
+            <span>→</span>
+        </a>
     </div>
 
+    <script>
+function closeBanner(event) {
+    event.stopPropagation();
+    const banner = document.getElementById('workshopBanner');
+    if (!banner) return;
+
+    // Minimize instead of hide
+    banner.classList.add('minimized');
+    document.body.classList.add('banner-minimized');
+    const closeBtn = banner.querySelector('.close-btn');
+    if (closeBtn) closeBtn.style.display = 'none';
+
+    // Set up click to expand
+    setTimeout(() => {
+        banner.addEventListener('click', expandBanner);
+    }, 300);
+}
+
+function expandBanner(event) {
+    // Don't expand if clicking close button or CTA
+    if (event.target.closest('.close-btn') || event.target.closest('.banner-cta')) {
+        return;
+    }
+    
+    const banner = document.getElementById('workshopBanner');
+    if (!banner) return;
+
+    banner.classList.remove('minimized');
+    document.body.classList.remove('banner-minimized');
+    banner.removeEventListener('click', expandBanner);
+    const closeBtn = banner.querySelector('.close-btn');
+    if (closeBtn) closeBtn.style.display = '';
+
+    // Auto-minimize again after 4 seconds
+    setTimeout(() => {
+        if (!banner.classList.contains('minimized')) {
+            closeBanner({ stopPropagation: () => {} });
+        }
+    }, 4000);
+}
+
+function registerWorkshop(event) {
+    event.stopPropagation();
+    // Redirect to the actual workshop registration
+    window.open('https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration', '_blank');
+}
+
+function navigateWorkshop(event) {
+    // Ignore clicks on the close button or Register link
+    if (event.target.closest('.close-btn') || event.target.closest('.banner-cta')) {
+        return;
+    }
+    window.location.href = 'https://realtreasury.com/tech-selection-workshop/';
+}
+
+function isMobileDevice() {
+    return window.innerWidth <= 768 || /android|iphone|ipad|ipod|iemobile|blackberry|bada/i.test(
+        (navigator.userAgent || navigator.vendor || window.opera).toLowerCase()
+    );
+}
+
+// Simplified initialization - no glitchy animations
+window.addEventListener('load', function() {
+    const banner = document.getElementById('workshopBanner');
+    if (!banner) return;
+    
+    if (isMobileDevice()) {
+        banner.style.display = 'none';
+        document.body.classList.add('banner-closed');
+        return;
+    }
+
+    // Auto-minimize after 3 seconds (no initial animation needed)
+    setTimeout(() => {
+        closeBanner({ stopPropagation: () => {} });
+    }, 3000);
+});
+
+window.addEventListener('resize', function() {
+    const banner = document.getElementById('workshopBanner');
+    if (!banner) return;
+    
+    if (isMobileDevice()) {
+        banner.style.display = 'none';
+        document.body.classList.add('banner-closed');
+    } else {
+        if (banner.style.display === 'none') {
+            banner.style.display = '';
+            document.body.classList.remove('banner-closed');
+        }
+    }
+});
+</script>
 </body>
 </html>

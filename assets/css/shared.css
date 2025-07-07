@@ -1277,6 +1277,9 @@ body.modal-open {
     --light-purple: #c77dff;
     --dark-text: #281345;
     --gray-text: #6b7280;
+    --nav-height: 80px;
+    --banner-height: 80px;
+    --banner-height-minimized: 60px;
 }
 
 /* Main Header Container */
@@ -1387,16 +1390,18 @@ body.banner-closed {
 /* Dropdown Menu */
 .rt-dropdown {
     position: fixed;
-    top: 80px;
+    top: calc(var(--nav-height, 80px) + var(--banner-height, 80px)) !important;
     left: 0;
     right: 0;
     width: 100%;
+    margin-top: 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9)) !important;
     backdrop-filter: blur(20px) saturate(130%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
     border: 1px solid rgba(199, 125, 255, .2) !important;
     box-shadow: 0 8px 32px rgba(114, 22, 244, .12), inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 0 rgba(0, 0, 0, .03) !important;
-    border-radius: 0 0 16px 16px;
+    border-radius: 0 0 16px 16px !important;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-20px);
@@ -1411,6 +1416,8 @@ body.banner-closed {
     visibility: visible !important;
     transform: translateY(0) !important;
     pointer-events: auto !important;
+    border-top: none !important;
+    box-shadow: 0 0 0 1px rgba(199, 125, 255, .2) inset !important;
 }
 
 .rt-dropdown-inner {
@@ -1426,36 +1433,37 @@ body.banner-closed {
 /* Default dropdown position (when banner is present and full size) */
 .rt-dropdown {
     position: fixed;
-    top: 160px !important; /* 80px banner + 80px nav */
+    top: calc(var(--nav-height, 80px) + var(--banner-height, 80px)) !important;
     left: 0;
     right: 0;
     width: 100%;
+    margin-top: 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* When banner is minimized */
-body.banner-minimized .rt-dropdown,
-.workshop-banner.minimized ~ * .rt-dropdown {
-    top: 140px !important; /* 60px minimized banner + 80px nav */
+body.banner-minimized {
+    --banner-height: var(--banner-height-minimized);
+}
+
+body.banner-minimized .rt-dropdown {
+    top: calc(var(--nav-height) + var(--banner-height-minimized)) !important;
 }
 
 /* When banner is completely closed/hidden */
 body.banner-closed .rt-dropdown,
 body:not(.banner-present) .rt-dropdown {
-    top: 80px !important; /* Just nav height */
+    top: var(--nav-height) !important;
 }
 
 /* Mobile adjustments */
 @media (max-width: 992px) {
     .rt-dropdown {
-        top: 150px !important; /* 80px banner + 70px mobile nav */
-    }
-
-    body.banner-minimized .rt-dropdown {
-        top: 130px !important; /* 60px minimized banner + 70px mobile nav */
-    }
-
-    body.banner-closed .rt-dropdown {
-        top: 70px !important; /* Just mobile nav height */
+        position: static !important;
+        top: auto !important;
+        border-radius: 12px !important;
+        margin-top: 0.5rem !important;
+        border-top: 1px solid rgba(199, 125, 255, 0.3) !important;
     }
 }
 
@@ -1876,6 +1884,7 @@ body:not(.banner-present) .rt-dropdown {
     
     .rt-dropdown {
         position: static !important;
+        top: auto !important;
         width: 100% !important;
         box-shadow: none !important;
         border-radius: 12px !important;
@@ -1883,6 +1892,7 @@ body:not(.banner-present) .rt-dropdown {
         backdrop-filter: blur(10px) !important;
         -webkit-backdrop-filter: blur(10px) !important;
         border: 1px solid rgba(199, 125, 255, 0.3) !important;
+        border-top: 1px solid rgba(199, 125, 255, 0.3) !important;
         opacity: 1 !important;
         visibility: visible !important;
         transform: none !important;
@@ -1894,6 +1904,8 @@ body:not(.banner-present) .rt-dropdown {
     
     .rt-nav-item.active .rt-dropdown {
         display: block !important;
+        border-top: none !important;
+        box-shadow: 0 0 0 1px rgba(199, 125, 255, .2) inset !important;
     }
     
     .rt-dropdown-inner {

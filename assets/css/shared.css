@@ -1297,13 +1297,13 @@ body.modal-open {
     /* Remove any border-bottom that might create spacing */
 }
 
-body.banner-present .rt-nav-container {
-    top: 80px;
+/* Override any banner-specific nav positioning that might interfere */
+body.banner-present .rt-nav-container,
+body.banner-minimized .rt-nav-container,
+body.banner-closed .rt-nav-container {
+    /* Let the banner JavaScript handle positioning, don't override here */
 }
-body.banner-closed .rt-nav-container,
-body:not(.banner-present) .rt-nav-container {
-    top: 0;
-}
+
 
 body.banner-closed {
     padding-top: 80px !important;

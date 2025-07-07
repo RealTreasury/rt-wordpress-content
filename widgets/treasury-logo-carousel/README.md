@@ -5,6 +5,7 @@ A clean, responsive logo carousel showcasing all 26 treasury technology vendors 
 ## Features
 - Auto-scrolling at optimal speed (40s full cycle)
 - Drag/swipe functionality for manual control
+- Click or tap and drag to pan left or right; auto-scroll resumes from that spot
 - Mobile-optimized with touch support
 - Clickable logos linking to vendor websites
 - Seamless infinite loop

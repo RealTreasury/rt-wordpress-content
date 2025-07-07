@@ -2453,3 +2453,121 @@ body.banner-closed .workshop-banner {
         padding: 20px 24px !important;
     }
 }
+/* =================================================================== */
+/* CONTACT FORM 7 MODAL FIXES */
+/* =================================================================== */
+
+/* CRITICAL: Hide the blue response bar completely */
+.portal-access-form .wpcf7-response-output {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: none !important;
+}
+
+/* Hide CF7 validation errors in modal */
+.portal-access-form .wpcf7-validation-errors {
+    display: none !important;
+}
+
+/* Hide CF7 spinner */
+.portal-access-form .wpcf7-spinner {
+    display: none !important;
+}
+
+/* Fix checkbox structure - target the actual checkbox input */
+.portal-access-form .checkbox-row {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    margin: 24px 0 !important;
+    padding: 16px !important;
+    background: #fafbfc !important;
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* Reset the checkbox paragraph wrapper */
+.portal-access-form .checkbox-row p {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    width: 100% !important;
+}
+
+/* Style the checkbox input when it's properly generated */
+.portal-access-form .checkbox-row input[type="checkbox"] {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    width: 18px !important;
+    height: 18px !important;
+    border: 2px solid #d1d5db !important;
+    border-radius: 4px !important;
+    background: #ffffff !important;
+    margin: 0 !important;
+    margin-top: 2px !important;
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    position: relative !important;
+    transition: all 0.2s ease !important;
+}
+
+.portal-access-form .checkbox-row input[type="checkbox"]:checked {
+    background: #7216f4 !important;
+    border-color: #7216f4 !important;
+}
+
+.portal-access-form .checkbox-row input[type="checkbox"]:checked::before {
+    content: '✓' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+}
+
+/* Style the checkbox label */
+.portal-access-form .checkbox-row label {
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    color: #6b7280 !important;
+    cursor: pointer !important;
+    font-weight: 400 !important;
+    flex: 1 !important;
+}
+
+/* Fix the CF7 checkbox wrapper spans */
+.portal-access-form .wpcf7-checkbox {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+}
+
+/* Ensure proper spacing for the entire form */
+.portal-access-form .wpcf7 > p:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Remove any extra margins from form elements */
+.portal-access-form .wpcf7-form > p {
+    margin-bottom: 0 !important;
+}
+
+/* Force hide any CF7 messages that might appear */
+.portal-access-form .wpcf7-mail-sent-ok,
+.portal-access-form .wpcf7-mail-sent-ng,
+.portal-access-form .wpcf7-aborted,
+.portal-access-form .wpcf7-spam-blocked {
+    display: none !important;
+}

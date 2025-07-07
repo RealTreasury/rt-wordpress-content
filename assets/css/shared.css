@@ -2480,7 +2480,7 @@ body.banner-closed .workshop-banner {
 }
 
 /* =================================================================== */
-/* CONTACT FORM 7 CHECKBOX FIX - TARGETING THE RIGHT WRAPPER */
+/* CONTACT FORM 7 CHECKBOX FIX - FINAL COMPLETE VERSION */
 /* =================================================================== */
 
 /* Reset the checkbox container */
@@ -2505,7 +2505,21 @@ body.banner-closed .workshop-banner {
     width: 100% !important;
 }
 
-/* Target the CF7 checkbox wrapper span - DON'T let it stretch */
+/* Hide the BR tag that breaks the layout */
+.portal-access-form .checkbox-row br {
+    display: none !important;
+}
+
+/* Target the CF7 form control wrap - another wrapper I missed */
+.portal-access-form .wpcf7-form-control-wrap {
+    display: inline-flex !important;
+    width: auto !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Target the CF7 form control wrapper */
 .portal-access-form .wpcf7-form-control.wpcf7-checkbox {
     display: inline-flex !important;
     width: auto !important;
@@ -2514,7 +2528,7 @@ body.banner-closed .workshop-banner {
     padding: 0 !important;
 }
 
-/* Target the CF7 checkbox list item wrapper - keep it compact */
+/* Target the CF7 checkbox list item wrapper */
 .portal-access-form .wpcf7-checkbox .wpcf7-list-item {
     margin: 0 !important;
     padding: 0 !important;
@@ -2522,7 +2536,6 @@ body.banner-closed .workshop-banner {
     align-items: center !important;
     gap: 0 !important;
     width: auto !important;
-    flex-shrink: 0 !important;
 }
 
 /* Style the actual checkbox input */
@@ -2559,7 +2572,7 @@ body.banner-closed .workshop-banner {
     line-height: 1 !important;
 }
 
-/* Hide the CF7 generated label text since we have our own */
+/* Hide the CF7 generated label text */
 .portal-access-form .wpcf7-checkbox .wpcf7-list-item-label {
     display: none !important;
 }

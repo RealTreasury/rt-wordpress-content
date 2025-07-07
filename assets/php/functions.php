@@ -1208,103 +1208,104 @@ add_action('rest_api_init', function() {
  * CRITICAL: Portal access gate that works WITH the Treasury Portal Access plugin
  * This function supplements the plugin's functionality by adding page-level gating
  */
-add_action('template_redirect', 'tpa_theme_portal_gate', 1);
-function tpa_theme_portal_gate() {
-    
-    // Only proceed if Treasury Portal Access plugin is active
-    if (!class_exists('Treasury_Portal_Access')) {
-        return; // Let WordPress handle normally if plugin not active
-    }
-    
-    // Enable debugging for admins
-    $debug = current_user_can('manage_options');
-    
-    if ($debug) {
-        error_log('TPA Theme Gate: Checking URL: ' . $_SERVER['REQUEST_URI']);
-    }
-    
-    // CRITICAL: Check if this is the portal page using multiple methods
-    $is_portal_page = false;
-    
-    // Method 1: Direct URL match
-    if (strpos($_SERVER['REQUEST_URI'], 'treasury-tech-portal') !== false) {
-        $is_portal_page = true;
-    }
-    
-    // Method 2: WordPress page check
-    if (is_page('treasury-tech-portal')) {
-        $is_portal_page = true;
-    }
-    
-    // Method 3: Post slug check
-    global $post;
-    if ($post && $post->post_name === 'treasury-tech-portal') {
-        $is_portal_page = true;
-    }
-    
-    // Method 4: Query vars check
-    if (get_query_var('pagename') === 'treasury-tech-portal') {
-        $is_portal_page = true;
-    }
-    
-    if ($debug) {
-        error_log('TPA Theme Gate: Is portal page: ' . ($is_portal_page ? 'YES' : 'NO'));
-    }
-    
-    // If not portal page, allow through
-    if (!$is_portal_page) {
+add_action('wp', 'tpa_enhanced_portal_gate', 1);
+function tpa_enhanced_portal_gate() {
+
+    // Early return if not main query, admin area, or AJAX
+    if (!is_main_query() || is_admin() || (defined('DOING_AJAX') && DOING_AJAX)) {
         return;
     }
-    
-    if ($debug) {
-        error_log('TPA Theme Gate: Portal page detected - checking access...');
+
+    // Check if plugin is active
+    if (!class_exists('Treasury_Portal_Access')) {
+        return tpa_basic_fallback_gate();
     }
-    
-    // IMPORTANT: Use the plugin's native access checking method
+
+    // Detect portal page
+    if (!tpa_detect_portal_page()) {
+        return;
+    }
+
     $tpa_instance = Treasury_Portal_Access::get_instance();
     $has_access = $tpa_instance->has_portal_access();
-    
-    if ($debug) {
-        error_log('TPA Theme Gate: Plugin access check: ' . ($has_access ? 'GRANTED' : 'DENIED'));
-        error_log('TPA Theme Gate: Cookie exists: ' . (isset($_COOKIE['portal_access_token']) ? 'YES' : 'NO'));
-    }
-    
-    // Check for fresh access grant (from plugin redirect)
+
+    // Fresh access indicator
     if (!$has_access && isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
-        if ($debug) {
-            error_log('TPA Theme Gate: Fresh access grant detected');
-        }
         $has_access = true;
     }
-    
-    // If user has access via plugin, allow through
+
     if ($has_access) {
-        if ($debug) {
-            error_log('TPA Theme Gate: Access granted by plugin - allowing through');
-        }
         return;
     }
-    
-    // BLOCK ACCESS - redirect to modal
-    if ($debug) {
-        error_log('TPA Theme Gate: ACCESS BLOCKED - redirecting to modal');
+
+    tpa_block_access();
+}
+
+function tpa_detect_portal_page() {
+    $request_path = rtrim(strtok($_SERVER['REQUEST_URI'], '?'), '/');
+    if ($request_path === '/treasury-tech-portal') {
+        return true;
     }
-    
-    // Start session for redirect tracking
+    if (is_page('treasury-tech-portal')) {
+        return true;
+    }
+    global $post;
+    if ($post && ($post->post_name === 'treasury-tech-portal' || $post->post_title === 'Treasury Tech Portal')) {
+        return true;
+    }
+    if (get_query_var('pagename') === 'treasury-tech-portal') {
+        return true;
+    }
+    $portal_page = get_page_by_path('treasury-tech-portal');
+    if ($portal_page && is_page($portal_page->ID)) {
+        return true;
+    }
+    return false;
+}
+
+function tpa_block_access() {
+    if (strpos($_SERVER['REQUEST_URI'], 'portal_access_required=1') !== false) {
+        wp_die('A redirect loop was prevented. Please clear your cookies and try again.', 'Redirect Loop Error');
+        return;
+    }
+
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
     $_SESSION['tpa_requested_page'] = $_SERVER['REQUEST_URI'];
-    
-    // Force redirect to homepage with modal trigger
+
     $redirect_url = home_url('/?portal_access_required=1&t=' . time());
-    
-    if ($debug) {
-        error_log('TPA Theme Gate: Redirecting to: ' . $redirect_url);
-    }
-    
+
     wp_redirect($redirect_url, 302);
-    exit; // CRITICAL: Must exit to prevent page from loading
+    exit;
+}
+
+function tpa_basic_fallback_gate() {
+    if (!tpa_detect_portal_page()) {
+        return;
+    }
+
+    if (!isset($_COOKIE['basic_portal_access'])) {
+        tpa_block_access();
+    }
+}
+
+add_action('wpcf7_mail_sent', 'tpa_enhanced_cookie_handler', 10, 1);
+function tpa_enhanced_cookie_handler($contact_form) {
+    if ($contact_form->id() != 'YOUR_FORM_ID_HERE') {
+        return;
+    }
+
+    $expiry = time() + (180 * 24 * 60 * 60);
+    $domain = '.' . str_replace('www.', '', $_SERVER['HTTP_HOST']);
+
+    setcookie('basic_portal_access', 'granted', $expiry, '/', $domain, is_ssl(), false);
+    setcookie('rt_portal_access', time(), $expiry, '/', $domain, is_ssl(), false);
+    setcookie('portal_access_token', 'basic_' . time(), $expiry, '/', '', is_ssl(), false);
+
+    $_COOKIE['basic_portal_access'] = 'granted';
+    $_COOKIE['rt_portal_access'] = time();
+    $_COOKIE['portal_access_token'] = 'basic_' . time();
 }
 
 /**
@@ -1572,7 +1573,7 @@ if (isset($_GET['tpa_debug']) && current_user_can('manage_options')) {
             Cookie Set: <?php echo isset($_COOKIE['portal_access_token']) ? 'true' : 'false'; ?><br>
             Form ID: <?php echo get_option('tpa_form_id', 'Not set'); ?><br>
             Redirect URL: <?php echo get_option('tpa_redirect_url', 'Not set'); ?><br>
-            Theme Gate: <?php echo function_exists('tpa_theme_portal_gate') ? 'Loaded' : 'Missing'; ?>
+            Theme Gate: <?php echo function_exists('tpa_enhanced_portal_gate') ? 'Loaded' : 'Missing'; ?>
         </div>
         <?php
     }

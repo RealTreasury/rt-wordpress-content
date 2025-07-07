@@ -94,12 +94,16 @@ body {
 /* Minimized state - keep key info visible */
 .workshop-banner.minimized {
     min-height: 60px !important;
-    padding: 10px 40px !important;
+    padding: 10px 16px !important;
     cursor: pointer;
     background: linear-gradient(135deg,
         rgba(114, 22, 244, 0.9),
         rgba(143, 71, 246, 0.95) 50%,
         rgba(157, 78, 221, 0.9)) !important;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
 }
 
 /* In minimized state, show condensed info instead of hiding everything */
@@ -107,6 +111,7 @@ body {
     opacity: 1 !important;
     pointer-events: auto !important;
     transform: none !important;
+    flex-grow: 1;
 }
 
 .workshop-banner.minimized .banner-icon {
@@ -118,17 +123,23 @@ body {
 }
 
 .workshop-banner.minimized .banner-text {
-    display: block !important;
+    display: flex !important;
+    align-items: center;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    gap: 4px;
 }
 
 .workshop-banner.minimized .banner-title {
     font-size: 1rem !important;
-    margin-bottom: 2px !important;
+    margin-bottom: 0 !important;
+    margin-right: 6px !important;
     color: #ffffff !important;
 }
 
 .workshop-banner.minimized .banner-subtitle {
-    display: block !important;
+    display: inline !important;
     font-size: 0.75rem !important;
     opacity: 0.9 !important;
     color: #ffffff !important;
@@ -152,12 +163,7 @@ body {
 }
 
 .workshop-banner.minimized .close-btn {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 16px !important;
-    top: 21px !important;
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: #ffffff !important;
+    display: none !important;
 }
 
 .banner-content {
@@ -456,6 +462,8 @@ function closeBanner(event) {
     // Minimize instead of hide
     banner.classList.add('minimized');
     document.body.classList.add('banner-minimized');
+    const closeBtn = banner.querySelector('.close-btn');
+    if (closeBtn) closeBtn.style.display = 'none';
 
     // Set up click to expand
     setTimeout(() => {
@@ -475,6 +483,8 @@ function expandBanner(event) {
     banner.classList.remove('minimized');
     document.body.classList.remove('banner-minimized');
     banner.removeEventListener('click', expandBanner);
+    const closeBtn = banner.querySelector('.close-btn');
+    if (closeBtn) closeBtn.style.display = '';
 
     // Auto-minimize again after 4 seconds
     setTimeout(() => {

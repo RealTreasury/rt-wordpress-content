@@ -1236,7 +1236,8 @@ function rt_grant_portal_access($email, $name) {
 add_action('wpcf7_mail_sent', 'rt_handle_portal_form_submission');
 function rt_handle_portal_form_submission($contact_form) {
     $form_id = $contact_form->id();
-    if ($form_id == '0779c74') {
+    $selected_form_id = get_option('tpa_form_id');
+    if ($selected_form_id && $form_id == $selected_form_id) {
         $submission = WPCF7_Submission::get_instance();
         if ($submission) {
             $posted_data = $submission->get_posted_data();
@@ -1269,7 +1270,8 @@ function rt_portal_gating_javascript() {
     }
 
     // Prepare the Contact Form 7 markup for insertion into JavaScript.
-    $contact_form_html = do_shortcode( '[contact-form-7 id="0779c74" title="Portal Access Gate Form"]' );
+    $form_id = get_option( 'tpa_form_id', '0779c74' );
+    $contact_form_html = do_shortcode( '[contact-form-7 id="' . esc_attr( $form_id ) . '"]' );
     $contact_form_js   = json_encode( $contact_form_html );
     $redirect_url_js   = json_encode( $redirect_url );
     $home_url_js       = json_encode( esc_url( home_url() ) );
@@ -1295,23 +1297,27 @@ function rt_portal_gating_javascript() {
     }
 
     function showPortalModal() {
-        let modal = document.querySelector('.portal-access-modal');
+        let modal = document.getElementById('portalModal');
         if (!modal) {
             modal = document.createElement('div');
-            modal.className = 'portal-access-modal modal tpa-modal';
-            modal.innerHTML = `<div class="portal-access-form"><button class="close-btn" onclick="closePortalModal()">&times;</button><h3>Treasury Technology Portal Access</h3><p class="subtitle">Please provide your information to access our exclusive treasury technology portal and resources.</p><div class="portal-access-info"><h4>🔐 What you'll get access to:</h4><ul><li>Exclusive treasury technology insights and whitepapers</li><li>Advanced cash management tools and calculators</li><li>Industry benchmarking data and reports</li><li>Priority access to webinars and expert consultations</li></ul></div><div class="portal-form-container">` + <?php echo $contact_form_js; ?> + `</div></div>`;
+            modal.id = 'portalModal';
+            modal.className = 'tpa-modal';
+            modal.innerHTML = `<div class="tpa-modal-content"><div class="portal-access-form"><button class="close-btn" type="button" aria-label="Close dialog" onclick="closePortalModal()">&times;</button><h3 id="portalModalTitle">Access Treasury Tech Portal</h3><div class="portal-form-container">` + <?php echo $contact_form_js; ?> + `</div></div></div>`;
             document.body.appendChild(modal);
         }
-        modal.classList.add('show');
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('show'), 10);
         document.body.classList.add('modal-open');
     }
 
     window.closePortalModal = function () {
-        const modal = document.querySelector('.portal-access-modal');
+        const modal = document.getElementById('portalModal');
         if (modal) {
             modal.classList.remove('show');
-            document.body.classList.remove('modal-open');
-            setTimeout(() => { if (modal.parentNode) modal.remove(); }, 400);
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.classList.remove('modal-open');
+            }, 300);
         }
         if (window.location.search.includes('show_portal_modal=1')) {
             setTimeout(() => { window.location.href = <?php echo $home_url_js; ?>; }, 300);
@@ -1319,7 +1325,7 @@ function rt_portal_gating_javascript() {
     };
 
     document.addEventListener('wpcf7mailsent', function (event) {
-        if (event.detail.contactFormId == '0779c74') {
+        if (event.detail.contactFormId == <?php echo json_encode( $form_id ); ?>) {
             const formContainer = document.querySelector('.portal-form-container');
             if (formContainer) {
                 formContainer.innerHTML = '<div class="portal-access-granted"><h4>✅ Access Granted!</h4><p>Thank you! Your access to the Treasury Technology Portal has been approved.</p><p class="countdown">Redirecting to portal in <span id="countdown">3</span> seconds...</p></div>';

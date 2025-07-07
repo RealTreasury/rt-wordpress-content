@@ -2032,8 +2032,12 @@ body.banner-closed .workshop-banner {
 .modern-footer {
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
     color: #ffffff;
-    padding: 60px 0 0;
+    width: 100vw;
     position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-top: 60px;
+    padding-bottom: 0;
     overflow: hidden;
 }
 
@@ -2049,8 +2053,10 @@ body.banner-closed .workshop-banner {
 
 .footer-container {
     max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .footer-main {
@@ -2262,7 +2268,8 @@ body.banner-closed .workshop-banner {
 
 @media (max-width: 768px) {
     .modern-footer {
-        padding: 40px 0 0;
+        padding-top: 40px;
+        padding-bottom: 0;
     }
     
     .footer-main {
@@ -2290,7 +2297,8 @@ body.banner-closed .workshop-banner {
 
 @media (max-width: 480px) {
     .footer-container {
-        padding: 0 15px;
+        padding-left: 15px;
+        padding-right: 15px;
     }
     
     .footer-cta-button {

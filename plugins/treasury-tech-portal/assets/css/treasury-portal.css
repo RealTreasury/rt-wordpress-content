@@ -597,6 +597,34 @@
             margin-left: 8px;
         }
 
+/* Remove default focus outlines from logo elements */
+.treasury-portal .tool-logo,
+.treasury-portal .modal-tool-logo,
+.treasury-portal .tool-logo-inline,
+.treasury-portal .tool-logo-link,
+.treasury-portal .modal-logo-link,
+.treasury-portal .tool-logo-link img,
+.treasury-portal .modal-logo-link img {
+    outline: none !important;
+    border: none !important;
+}
+
+.treasury-portal .tool-logo:focus,
+.treasury-portal .modal-tool-logo:focus,
+.treasury-portal .tool-logo-inline:focus,
+.treasury-portal .tool-logo-link:focus,
+.treasury-portal .modal-logo-link:focus,
+.treasury-portal .tool-logo-link:focus img,
+.treasury-portal .modal-logo-link:focus img {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.treasury-portal button:focus {
+    outline: none !important;
+}
+
 @media (max-width: 768px) {
     .treasury-portal .tool-logo-inline {
         width: 60px;

@@ -16,14 +16,55 @@
             background: #f8f9fa;
         }
 
+        .widget-container {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .widget-header {
+            background: linear-gradient(135deg, #7216f4, #8f47f6);
+            color: #fff;
+            padding: 16px 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .widget-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+            pointer-events: none;
+        }
+
+        .widget-title {
+            font-size: 18px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-subtitle {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
         .carousel-container {
             width: 100%;
             overflow: hidden;
-            background: white;
-            border-top: 1px solid #e5e7eb;
-            border-bottom: 1px solid #e5e7eb;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background: #fff;
             cursor: grab;
+            position: relative;
         }
 
         .carousel-container:active {
@@ -32,11 +73,14 @@
 
         .carousel-track {
             display: flex;
-            animation: scroll 20s linear infinite;
             gap: 0;
             user-select: none;
+            will-change: transform;
         }
 
+        .carousel-track.auto-scroll {
+            animation: infiniteScroll 40s linear infinite;
+        }
 
         .carousel-track.dragging {
             animation-play-state: paused;
@@ -50,7 +94,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: white;
+            background: #fff;
             border-right: 1px solid #f3f4f6;
             flex-shrink: 0;
             transition: background-color 0.3s ease;
@@ -97,23 +141,22 @@
             filter: grayscale(0%);
         }
 
-        @keyframes scroll {
+        @keyframes infiniteScroll {
             0% {
                 transform: translateX(0);
             }
             100% {
-                transform: translateX(-50%);
+                transform: translateX(calc(-1 * var(--scroll-width)));
             }
         }
 
-        /* Mobile optimizations */
         @media (max-width: 768px) {
             .logo-slide {
                 min-width: 150px;
                 height: 100px;
                 padding: 15px;
             }
-            
+
             .vendor-logo {
                 max-width: 100px;
                 max-height: 45px;
@@ -126,7 +169,7 @@
                 height: 90px;
                 padding: 12px;
             }
-            
+
             .vendor-logo {
                 max-width: 80px;
                 max-height: 40px;
@@ -135,153 +178,49 @@
     </style>
 </head>
 <body>
-    <div class="carousel-container">
-        <div class="carousel-track" id="carouselTrack">
-            <!-- Logos will be inserted here by JavaScript -->
+    <div class="widget-container">
+        <div class="widget-header">
+            <div class="widget-title">Treasury Technology Vendors</div>
+            <div class="widget-subtitle">27 vendors</div>
+        </div>
+        <div class="carousel-container">
+            <div class="carousel-track auto-scroll" id="carouselTrack"></div>
         </div>
     </div>
 
     <script>
         const portalBase = 'https://realtreasury.com/treasury-tech-portal/';
         const treasuryVendors = [
-            {
-                name: "Kyriba",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Kyriba.png",
-                websiteUrl: "https://www.kyriba.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "GTreasury",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/GTreasury.png",
-                websiteUrl: "https://gtreasury.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Reval",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png",
-                websiteUrl: "https://iongroup.com/products/treasury/reval/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Quantum",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/FIS.png",
-                websiteUrl: "#"
-            },
-            {
-                name: "WallStreet Suite",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png",
-                websiteUrl: "https://iongroup.com/products/treasury/wallstreet-suite/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "ATOM",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ATOM-TM.png",
-                websiteUrl: "#"
-            },
-            {
-                name: "Integrity",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/FIS.png",
-                websiteUrl: "#"
-            },
-            {
-                name: "IT2",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png",
-                websiteUrl: "https://iongroup.com/products/treasury/it2/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Datalog",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Datalog-logo.png",
-                websiteUrl: "https://www.datalog-finance.com/en/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Coupa",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Coupa.png",
-                websiteUrl: "https://www.coupa.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Treasury Cube",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Cube.png",
-                websiteUrl: "https://treasurycube.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Trovata",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Trovata.png",
-                websiteUrl: "https://trovata.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Tesorio",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Tesorio.jpg",
-                websiteUrl: "https://www.tesorio.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Autocash",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/AutoCash.png",
-                websiteUrl: "https://www.autocash.ai/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Balance",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Balance-Cash.jpg",
-                websiteUrl: "https://www.balancecash.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Nilus",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Nilus.png",
-                websiteUrl: "https://www.nilus.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Obol",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Obol.png",
-                websiteUrl: "https://www.obol.app/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Panax",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Panax.png",
-                websiteUrl: "https://www.thepanax.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Statement",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Statement.png",
-                websiteUrl: "https://www.statement.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Treasury Suite",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Suite-Logo-PNG.png",
-                websiteUrl: "https://www.treasurysuite.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Vesto",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Vesto.png",
-                websiteUrl: "https://www.vesto.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Treasura",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png",
-                websiteUrl: "https://iongroup.com/products/treasury/treasura/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Treasury Curve",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Curve.png",
-                websiteUrl: "https://www.treasurycurve.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Bottomline",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/bottomline-technologies-logo.png",
-                websiteUrl: "https://www.bottomline.com/us?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "City Financials",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png",
-                websiteUrl: "https://iongroup.com/products/treasury/city-financials/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "HighRadius",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/High-Radius.png",
-                websiteUrl: "https://www.highradius.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            },
-            {
-                name: "Treasury4",
-                logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury4Logo-GraphiteGreen.png",
-                websiteUrl: "https://www.treasury4.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral"
-            }
+            { name: "Kyriba", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Kyriba.png", websiteUrl: "https://www.kyriba.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "GTreasury", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/GTreasury.png", websiteUrl: "https://gtreasury.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Reval", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png", websiteUrl: "https://iongroup.com/products/treasury/reval/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Quantum", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/FIS.png", websiteUrl: "#" },
+            { name: "WallStreet Suite", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png", websiteUrl: "https://iongroup.com/products/treasury/wallstreet-suite/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "ATOM", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ATOM-TM.png", websiteUrl: "#" },
+            { name: "Integrity", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/FIS.png", websiteUrl: "#" },
+            { name: "IT2", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png", websiteUrl: "https://iongroup.com/products/treasury/it2/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Datalog", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Datalog-logo.png", websiteUrl: "https://www.datalog-finance.com/en/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Coupa", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Coupa.png", websiteUrl: "https://www.coupa.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Treasury Cube", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Cube.png", websiteUrl: "https://treasurycube.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Trovata", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Trovata.png", websiteUrl: "https://trovata.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Tesorio", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Tesorio.jpg", websiteUrl: "https://www.tesorio.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Autocash", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/AutoCash.png", websiteUrl: "https://www.autocash.ai/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Balance", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Balance-Cash.jpg", websiteUrl: "https://www.balancecash.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Nilus", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Nilus.png", websiteUrl: "https://www.nilus.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Obol", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Obol.png", websiteUrl: "https://www.obol.app/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Panax", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Panax.png", websiteUrl: "https://www.thepanax.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Statement", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Statement.png", websiteUrl: "https://www.statement.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Treasury Suite", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Suite-Logo-PNG.png", websiteUrl: "https://www.treasurysuite.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Vesto", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Vesto.png", websiteUrl: "https://www.vesto.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Treasura", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png", websiteUrl: "https://iongroup.com/products/treasury/treasura/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Treasury Curve", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Curve.png", websiteUrl: "https://www.treasurycurve.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Bottomline", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/bottomline-technologies-logo.png", websiteUrl: "https://www.bottomline.com/us?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "City Financials", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ION-Treasury.png", websiteUrl: "https://iongroup.com/products/treasury/city-financials/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "HighRadius", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/High-Radius.png", websiteUrl: "https://www.highradius.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
+            { name: "Treasury4", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury4Logo-GraphiteGreen.png", websiteUrl: "https://www.treasury4.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" }
         ];
 
-        // Count how many vendors share the same logo URL
+        // Count occurrences of each logo URL
         const logoCounts = treasuryVendors.reduce((acc, vendor) => {
             acc[vendor.logoUrl] = (acc[vendor.logoUrl] || 0) + 1;
             return acc;
@@ -307,7 +246,6 @@
             link.appendChild(img);
             slide.appendChild(link);
 
-            // Only display the vendor name if the logo is shared with other vendors
             if (logoCounts[vendor.logoUrl] > 1) {
                 const label = document.createElement('div');
                 label.className = 'vendor-name';
@@ -320,28 +258,27 @@
 
         function initializeCarousel() {
             const carouselTrack = document.getElementById('carouselTrack');
-            
-            // Create slides and duplicate for seamless loop
+
             const slides = [];
             treasuryVendors.forEach(vendor => {
                 slides.push(createLogoSlide(vendor));
             });
-            
-            // Duplicate slides for seamless scrolling
+
             const duplicatedSlides = [...slides, ...slides];
-            
             duplicatedSlides.forEach(slide => {
                 carouselTrack.appendChild(slide);
             });
+
+            // Set scroll distance for CSS animation
+            const trackWidth = carouselTrack.scrollWidth / 2;
+            carouselTrack.style.setProperty('--scroll-width', trackWidth + 'px');
         }
 
-        // Initialize carousel when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeCarousel();
             setupDragScroll();
         });
 
-        // Drag scroll functionality
         function setupDragScroll() {
             const container = document.querySelector('.carousel-container');
             const track = document.getElementById('carouselTrack');
@@ -350,7 +287,6 @@
             let currentX = 0;
             let hasMoved = false;
 
-            // Mouse events
             container.addEventListener('mousedown', (e) => {
                 isDown = true;
                 hasMoved = false;
@@ -385,7 +321,6 @@
                 startX = x;
             });
 
-            // Touch events for mobile
             container.addEventListener('touchstart', (e) => {
                 isDown = true;
                 hasMoved = false;
@@ -409,7 +344,6 @@
                 startX = x;
             }, { passive: true });
 
-            // Prevent link clicks when dragging
             container.addEventListener('click', (e) => {
                 if (hasMoved) {
                     e.preventDefault();
@@ -417,19 +351,15 @@
                 }
             }, true);
 
-            // Resume animation from the current offset
             function resumeAnimation() {
                 if (track.classList.contains('dragging')) return;
-
                 const styles = getComputedStyle(track);
-                const duration = parseFloat(styles.animationDuration) || 20;
-                const halfWidth = track.scrollWidth / 2;
+                const duration = parseFloat(styles.animationDuration) || 40;
+                const distance = parseFloat(styles.getPropertyValue('--scroll-width')) || 0;
 
-                // Constrain offset to the animation range
-                currentX = ((currentX % halfWidth) + halfWidth) % halfWidth - halfWidth;
+                currentX = ((currentX % distance) + distance) % distance - distance;
 
-                // Set animation delay so the CSS animation picks up from this offset
-                const progress = -currentX / halfWidth; // 0 at start, 1 at -50%
+                const progress = -currentX / distance;
                 track.style.animationDelay = `-${progress * duration}s`;
                 track.style.transform = '';
             }

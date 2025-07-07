@@ -97,7 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         "desc": "Market-leading cloud treasury platform serving 3,000+ global clients with AI-powered cash forecasting, comprehensive risk management, and advanced derivatives trading capabilities.",
                         "features": ["AI-driven cash forecasting", "Real-time risk analytics", "Derivatives management", "Multi-bank connectivity", "Regulatory compliance", "Hedge accounting automation"],
                         "target": "Large enterprises and multinational corporations with complex treasury operations",
-                        "videoUrl": "https://realtreasury.com/kyriba-06-2025/",
+                        // Embed landing page video directly
+                        "videoUrl": "https://realtreasury.com/kyriba-06-2025/?embed=1",
                         "websiteUrl": "https://www.kyriba.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Kyriba.png"
                     }, {
@@ -739,18 +740,43 @@ document.addEventListener('DOMContentLoaded', () => {
                     const videoSection = document.createElement('div');
                     videoSection.className = 'feature-section video-demo-section';
 
-                    if (tool.videoUrl.includes('.mp4')) {
-                        videoSection.innerHTML = `
-                            <h4>🎥 Product Differentiator</h4>
-                            <div class="video-container">
-                                <video src="${tool.videoUrl}" controls playsinline></video>
-                            </div>
-                        `;
+                    let embedUrl = tool.videoUrl;
+                    let canEmbed = true;
+
+                    if (embedUrl.includes('youtu.be/')) {
+                        const id = embedUrl.split('youtu.be/')[1].split('?')[0];
+                        embedUrl = `https://www.youtube.com/embed/${id}`;
+                    } else if (embedUrl.includes('youtube.com/watch')) {
+                        const id = new URL(embedUrl).searchParams.get('v');
+                        embedUrl = `https://www.youtube.com/embed/${id}`;
+                    } else if (embedUrl.includes('realtreasury.com') && !embedUrl.includes('.mp4')) {
+                        embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'embed=1';
+                    } else if (!embedUrl.includes('.mp4')) {
+                        canEmbed = false;
+                    }
+
+                    if (canEmbed) {
+                        if (embedUrl.includes('.mp4')) {
+                            videoSection.innerHTML = `
+                                <h4>🎥 Product Differentiator</h4>
+                                <div class="video-container">
+                                    <video src="${embedUrl}" controls playsinline></video>
+                                </div>
+                            `;
+                        } else {
+                            embedUrl += (embedUrl.includes('?') ? '&' : '?') + 'enablejsapi=1&playsinline=1';
+                            videoSection.innerHTML = `
+                                <h4>🎥 Product Differentiator</h4>
+                                <div class="video-container">
+                                    <iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" playsinline></iframe>
+                                </div>
+                            `;
+                        }
                     } else {
                         videoSection.innerHTML = `
                             <h4>🎥 Product Differentiator</h4>
                             <div class="video-container">
-                                <iframe src="${tool.videoUrl}" frameborder="0" allowfullscreen loading="lazy" playsinline></iframe>
+                                <p><a href="${tool.videoUrl}" target="_blank" rel="noopener noreferrer">Watch Video</a></p>
                             </div>
                         `;
                     }

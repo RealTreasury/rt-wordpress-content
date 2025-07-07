@@ -1202,6 +1202,13 @@ add_action('rest_api_init', function() {
 <?php
 // Portal Access Gating System for /treasury-tech-portal/
 add_action('template_redirect', 'rt_gate_portal_access');
+// Ensure jQuery is loaded for Contact Form 7
+add_action('wp_enqueue_scripts', 'ensure_jquery_loaded');
+function ensure_jquery_loaded() {
+    if (!wp_script_is('jquery', 'enqueued')) {
+        wp_enqueue_script('jquery');
+    }
+}
 function rt_gate_portal_access() {
     if (is_page('treasury-tech-portal') || $_SERVER['REQUEST_URI'] === '/treasury-tech-portal/') {
         if (!rt_has_portal_access()) {
@@ -1214,8 +1221,22 @@ function rt_gate_portal_access() {
 }
 
 function rt_has_portal_access() {
-    // Check for the simple cookie first
+    // Check URL parameter first (immediate access after form)
+    if (isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
+        if (!session_id()) session_start();
+        $_SESSION['rt_portal_access'] = true;
+        $_SESSION['rt_portal_access_expires'] = time() + (180 * 24 * 60 * 60);
+        return true;
+    }
+
+    // Check for the simple cookie
     if (isset($_COOKIE['portal_access_token']) && $_COOKIE['portal_access_token'] === 'granted') {
+        return true;
+    }
+
+    // Check session
+    if (!session_id()) session_start();
+    if (isset($_SESSION['rt_portal_access']) && $_SESSION['rt_portal_access_expires'] > time()) {
         return true;
     }
 
@@ -1227,9 +1248,7 @@ function rt_has_portal_access() {
         }
     }
 
-    // Fallback to session check
-    if (!session_id()) session_start();
-    return isset($_SESSION['rt_portal_access']) && $_SESSION['rt_portal_access_expires'] > time();
+    return false;
 }
 
 function rt_grant_portal_access($email, $name) {
@@ -1274,77 +1293,153 @@ function rt_portal_gating_javascript() {
         session_start();
     }
 
-    $show_modal = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
+    $show_modal  = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
     $form_id     = get_option( 'tpa_form_id', '325' );
     $redirect_url = 'https://realtreasury.com/treasury-tech-portal/';
 
     ?>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        <?php if ( $show_modal ) : ?>
-        setTimeout(showPortalModal, 500);
-        <?php endif; ?>
-    });
+    (function() {
+        'use strict';
 
-    function showPortalModal() {
-        let modal = document.getElementById('portalModal');
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'portalModal';
-            modal.className = 'tpa-modal';
-            modal.innerHTML = `
-                <div class="tpa-modal-content">
-                    <div class="portal-access-form">
-                        <button class="close-btn" type="button" onclick="closePortalModal()">&times;</button>
-                        <h3>Access Treasury Tech Portal</h3>
-                        <div class="portal-form-container">
-                            <?php echo addslashes(do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]')); ?>
+        let modalShown = false;
+        let formSubmitted = false;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            <?php if ( $show_modal ) : ?>
+            setTimeout(showPortalModal, 500);
+            <?php endif; ?>
+            setTimeout(setupFormMonitoring, 1000);
+        });
+
+        function showPortalModal() {
+            if (modalShown) return;
+            modalShown = true;
+
+            let modal = document.getElementById('portalModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'portalModal';
+                modal.className = 'tpa-modal';
+                modal.innerHTML = `
+                    <div class="tpa-modal-content">
+                        <div class="portal-access-form">
+                            <button class="close-btn" type="button" onclick="closePortalModal()">&times;</button>
+                            <h3>Access Treasury Tech Portal</h3>
+                            <div class="portal-form-container">
+                                <?php echo addslashes(do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]')); ?>
+                            </div>
                         </div>
-                    </div>
-                </div>`;
-            document.body.appendChild(modal);
+                    </div>`;
+                document.body.appendChild(modal);
+            }
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+            document.body.classList.add('modal-open');
+
+            setTimeout(setupFormMonitoring, 500);
         }
-        modal.style.display = 'flex';
-        setTimeout(() => modal.classList.add('show'), 10);
-        document.body.classList.add('modal-open');
-    }
 
-    window.closePortalModal = function () {
-        const modal = document.getElementById('portalModal');
-        if (modal) {
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-                document.body.classList.remove('modal-open');
-            }, 300);
+        function setupFormMonitoring() {
+            document.addEventListener('wpcf7mailsent', handleFormSuccess);
+
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes) {
+                        for (let node of mutation.addedNodes) {
+                            if (node.nodeType === 1) {
+                                if (node.querySelector && (
+                                    node.querySelector('.wpcf7-mail-sent-ok') ||
+                                    node.classList.contains('wpcf7-mail-sent-ok') ||
+                                    (node.textContent && node.textContent.includes('Thank you'))
+                                )) {
+                                    console.log('✅ CF7 success detected via DOM observer');
+                                    handleFormSuccess();
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+            const modalContainer = document.querySelector('.portal-form-container');
+            if (modalContainer) {
+                observer.observe(modalContainer, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+            }
+
+            const form = document.querySelector('form.wpcf7-form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    setTimeout(checkForSuccess, 2000);
+                    setTimeout(checkForSuccess, 4000);
+                    setTimeout(checkForSuccess, 6000);
+                });
+            }
         }
-    };
 
-    document.addEventListener('wpcf7mailsent', function (event) {
-        if (event.detail.contactFormId == <?php echo json_encode($form_id); ?>) {
-            console.log('✅ Portal form submitted successfully');
+        function checkForSuccess() {
+            const successMsg = document.querySelector('.wpcf7-mail-sent-ok');
+            const formContainer = document.querySelector('.portal-form-container');
 
-            document.cookie = "portal_access_token=granted; path=/; max-age=<?php echo 180 * 24 * 60 * 60; ?>; secure; samesite=lax";
+            if (successMsg && successMsg.style.display !== 'none') {
+                console.log('✅ Success message found via polling');
+                handleFormSuccess();
+            } else if (formContainer && formContainer.innerHTML.includes('Thank you')) {
+                console.log('✅ Thank you message found via polling');
+                handleFormSuccess();
+            }
+        }
+
+        function handleFormSuccess() {
+            if (formSubmitted) return;
+            formSubmitted = true;
+
+            try {
+                document.cookie = "portal_access_token=granted; path=/; max-age=<?php echo 180 * 24 * 60 * 60; ?>; secure; samesite=lax";
+                console.log('🍪 Cookie set successfully');
+            } catch (e) {
+                console.log('🚫 Cookie blocked by tracking prevention');
+            }
+
+            try {
+                localStorage.setItem('portal_access_granted', 'true');
+                localStorage.setItem('portal_access_time', Date.now());
+                console.log('💾 localStorage set successfully');
+            } catch (e) {
+                console.log('🚫 localStorage blocked by tracking prevention');
+            }
 
             const formContainer = document.querySelector('.portal-form-container');
             if (formContainer) {
                 formContainer.innerHTML = `
-                    <div class="portal-access-granted">
-                        <h4>✅ Access Granted!</h4>
-                        <p>Redirecting to Treasury Portal...</p>
-                        <div class="loading-spinner">⏳</div>
+                    <div class="portal-access-granted" style="text-align: center; padding: 20px;">
+                        <h4 style="color: #10b981; margin-bottom: 10px;">✅ Access Granted!</h4>
+                        <p style="margin-bottom: 15px;">Redirecting to Treasury Portal...</p>
+                        <div style="font-size: 24px;">⏳</div>
                     </div>`;
             }
 
             setTimeout(() => {
-                console.log('🔄 Redirecting to:', '<?php echo $redirect_url; ?>');
-                window.location.href = '<?php echo $redirect_url; ?>';
-            }, 1500);
+                console.log('🔄 Redirecting to portal with access token...');
+                window.location.href = '<?php echo $redirect_url; ?>?access_granted=1&t=' + Date.now();
+            }, 2000);
         }
-    });
 
-    window.showPortalModal = showPortalModal;
+        window.closePortalModal = function () {
+            const modal = document.getElementById('portalModal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.classList.remove('modal-open');
+                }, 300);
+            }
+        };
+
+        window.showPortalModal = showPortalModal;
+    })();
     </script>
     <?php
 }
+
 ?>

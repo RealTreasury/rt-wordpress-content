@@ -93,8 +93,8 @@ body {
 
 /* Minimized state - keep key info visible */
 .workshop-banner.minimized {
-    min-height: 70px !important;
-    padding: 12px 40px !important;
+    min-height: 60px !important;
+    padding: 10px 40px !important;
     cursor: pointer;
     background: linear-gradient(135deg,
         rgba(114, 22, 244, 0.9),
@@ -357,11 +357,15 @@ body {
 /* When banner is minimized, adjust navigation */
 .workshop-banner.minimized ~ .rt-nav-container,
 body.banner-minimized .rt-nav-container {
-    top: 20px !important;
+    top: 60px !important;
 }
 
 body.banner-minimized {
-    padding-top: 100px !important; /* 20px banner + 80px nav */
+    padding-top: 140px !important; /* 60px banner + 80px nav */
+}
+
+body.banner-minimized .rt-dropdown {
+    top: 140px !important;
 }
 
 /* Hide banner entirely on mobile */

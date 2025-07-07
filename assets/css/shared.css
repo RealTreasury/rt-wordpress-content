@@ -1948,11 +1948,15 @@ body {
 
 /* Add missing body padding for minimized banner state */
 body.banner-minimized {
-    padding-top: 150px !important; /* 70px banner + 80px nav */
+    padding-top: 140px !important; /* 60px banner + 80px nav */
 }
 
 body.banner-minimized .rt-nav-container {
-    top: 70px !important; /* Position nav below minimized banner */
+    top: 60px !important; /* Position nav below minimized banner */
+}
+
+body.banner-minimized .rt-dropdown {
+    top: 140px !important; /* Dropdown appears below nav */
 }
 
 body.banner-closed .rt-nav-container {

@@ -948,6 +948,7 @@
     display: inline-block;
     text-decoration: none;
     transition: opacity 0.3s ease;
+    cursor: pointer;
 }
 
 .treasury-portal .modal-logo-link:hover {

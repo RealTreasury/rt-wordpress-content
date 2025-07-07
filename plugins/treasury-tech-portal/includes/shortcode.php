@@ -243,7 +243,7 @@ if (!defined("ABSPATH")) exit;
                 <div class="modal-header">
                     <div class="modal-title-group">
                         <h3 class="modal-title" id="modalTitle"></h3>
-                        <img id="modalToolLogo" class="modal-tool-logo" alt="">
+                        <img id="modalToolLogo" class="modal-tool-logo" alt="" style="display: none;">
                     </div>
                     <div class="modal-header-actions">
                         <a id="modalWebsiteLink" href="#" target="_blank" rel="noopener noreferrer" class="website-link--modal" style="display: none;">Website</a>

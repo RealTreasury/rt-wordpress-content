@@ -798,7 +798,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (modalTags) {
                     const tags = tool.tags || [];
-                    modalTags.innerHTML = tags.map(t => `<span class="tool-tag">${t}</span>`).join('');
+                    const sortedTags = [...tags].sort((a, b) => a.localeCompare(b));
+                    const displayTags = sortedTags.slice(0, 5); // Show first 5 tags
+                    const hasMoreTags = sortedTags.length > 5;
+
+                    modalTags.innerHTML = displayTags.map(tag => `<span class="tool-tag">${tag}</span>`).join('');
+                    if (hasMoreTags) {
+                        modalTags.innerHTML += `<button class="show-more-modal-tags-btn" data-tool-name="${tool.name}">... more (${sortedTags.length - 5})</button>`;
+                    }
+
+                    // Add event listeners for show more/less buttons in modal
+                    modalTags.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('show-more-modal-tags-btn')) {
+                            e.stopPropagation();
+                            const toolName = e.target.dataset.toolName;
+                            const currentTool = this.TREASURY_TOOLS.find(t => t.name === toolName);
+                            if (currentTool) {
+                                const sortedTags = [...currentTool.tags || []].sort((a, b) => a.localeCompare(b));
+                                modalTags.innerHTML = sortedTags.map(tag => `<span class="tool-tag">${tag}</span>`).join('');
+                                modalTags.innerHTML += `<button class="show-less-modal-tags-btn" data-tool-name="${toolName}">Show less</button>`;
+                            }
+                        } else if (e.target.classList.contains('show-less-modal-tags-btn')) {
+                            e.stopPropagation();
+                            const toolName = e.target.dataset.toolName;
+                            const currentTool = this.TREASURY_TOOLS.find(t => t.name === toolName);
+                            if (currentTool) {
+                                const sortedTags = [...currentTool.tags || []].sort((a, b) => a.localeCompare(b));
+                                const displayTags = sortedTags.slice(0, 5);
+                                const hasMoreTags = sortedTags.length > 5;
+                                modalTags.innerHTML = displayTags.map(tag => `<span class="tool-tag">${tag}</span>`).join('');
+                                if (hasMoreTags) {
+                                    modalTags.innerHTML += `<button class="show-more-modal-tags-btn" data-tool-name="${toolName}">... more (${sortedTags.length - 5})</button>`;
+                                }
+                            }
+                        }
+                    });
                 }
 
                 // 2. Remove any video section from a previous click

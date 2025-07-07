@@ -1214,12 +1214,20 @@ function rt_gate_portal_access() {
 }
 
 function rt_has_portal_access() {
+    // Check for the simple cookie first
+    if (isset($_COOKIE['portal_access_token']) && $_COOKIE['portal_access_token'] === 'granted') {
+        return true;
+    }
+
+    // Fallback to existing complex cookie check
     if (isset($_COOKIE['rt_portal_access'])) {
         $access_data = json_decode(stripslashes($_COOKIE['rt_portal_access']), true);
         if ($access_data && isset($access_data['expires']) && time() < $access_data['expires']) {
             return true;
         }
     }
+
+    // Fallback to session check
     if (!session_id()) session_start();
     return isset($_SESSION['rt_portal_access']) && $_SESSION['rt_portal_access_expires'] > time();
 }
@@ -1246,7 +1254,13 @@ function rt_handle_portal_form_submission($contact_form) {
             $last_name = isset($posted_data['last-name']) ? $posted_data['last-name'] : '';
             $name = trim($first_name . ' ' . $last_name);
             if (!empty($email)) {
+                // Set the simple cookie that the JavaScript also sets
+                $expires = time() + (180 * 24 * 60 * 60); // 180 days
+                setcookie('portal_access_token', 'granted', $expires, '/', '', is_ssl(), true);
+
+                // Also set the complex cookie for backwards compatibility
                 rt_grant_portal_access($email, $name);
+
                 if (!session_id()) session_start();
                 $_SESSION['rt_portal_access_granted'] = true;
             }
@@ -1260,45 +1274,17 @@ function rt_portal_gating_javascript() {
         session_start();
     }
 
-    $show_modal     = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
-    $access_granted = ! empty( $_SESSION['rt_portal_access_granted'] );
-    $redirect_url   = isset( $_SESSION['rt_portal_redirect'] ) ? $_SESSION['rt_portal_redirect'] : 'https://realtreasury.com/treasury-tech-portal/';
+    $show_modal = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
+    $form_id     = get_option( 'tpa_form_id', '325' );
+    $redirect_url = 'https://realtreasury.com/treasury-tech-portal/';
 
-    if ( $access_granted ) {
-        unset( $_SESSION['rt_portal_access_granted'] );
-        unset( $_SESSION['rt_portal_redirect'] );
-    }
-
-    // Get the configured redirect URL from plugin settings
-    $plugin_redirect_url = get_option('tpa_redirect_url', 'https://realtreasury.com/treasury-tech-portal/');
-
-    // Prepare the Contact Form 7 markup for insertion into JavaScript.
-    $form_id = get_option( 'tpa_form_id', '0779c74' );
-    $contact_form_html  = do_shortcode( '[contact-form-7 id="' . esc_attr( $form_id ) . '"]' );
-    $contact_form_js    = json_encode( $contact_form_html );
-    $redirect_url_js    = json_encode( $redirect_url );
-    $plugin_redirect_js = json_encode( $plugin_redirect_url );
-    $home_url_js        = json_encode( esc_url( home_url() ) );
     ?>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         <?php if ( $show_modal ) : ?>
         setTimeout(showPortalModal, 500);
         <?php endif; ?>
-
-        <?php if ( $access_granted && $redirect_url ) : ?>
-        showAccessGrantedMessage();
-        setTimeout(function () { window.location.href = <?php echo $redirect_url_js; ?>; }, 3000);
-        <?php endif; ?>
     });
-
-    function showAccessGrantedMessage() {
-        const successDiv = document.createElement('div');
-        successDiv.style.cssText = 'position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#10b981,#059669);color:white;padding:20px 24px;border-radius:12px;box-shadow:0 8px 32px rgba(16,185,129,0.3);z-index:1000000;font-weight:600;max-width:400px;';
-        successDiv.innerHTML = '<div style="margin-bottom:8px;font-size:18px;">✅ Portal Access Granted!</div><div style="font-size:14px;opacity:0.9;">Redirecting to Treasury Portal in 3 seconds...</div>';
-        document.body.appendChild(successDiv);
-        setTimeout(() => successDiv.remove(), 4000);
-    }
 
     function showPortalModal() {
         let modal = document.getElementById('portalModal');
@@ -1306,7 +1292,16 @@ function rt_portal_gating_javascript() {
             modal = document.createElement('div');
             modal.id = 'portalModal';
             modal.className = 'tpa-modal';
-            modal.innerHTML = `<div class="tpa-modal-content"><div class="portal-access-form"><button class="close-btn" type="button" aria-label="Close dialog" onclick="closePortalModal()">&times;</button><h3 id="portalModalTitle">Access Treasury Tech Portal</h3><div class="portal-form-container">` + <?php echo $contact_form_js; ?> + `</div></div></div>`;
+            modal.innerHTML = `
+                <div class="tpa-modal-content">
+                    <div class="portal-access-form">
+                        <button class="close-btn" type="button" onclick="closePortalModal()">&times;</button>
+                        <h3>Access Treasury Tech Portal</h3>
+                        <div class="portal-form-container">
+                            <?php echo addslashes(do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]')); ?>
+                        </div>
+                    </div>
+                </div>`;
             document.body.appendChild(modal);
         }
         modal.style.display = 'flex';
@@ -1323,44 +1318,28 @@ function rt_portal_gating_javascript() {
                 document.body.classList.remove('modal-open');
             }, 300);
         }
-
-        // FIXED: Always redirect to portal after successful form submission
-        if (window.location.search.includes('show_portal_modal=1')) {
-            setTimeout(() => {
-                console.log('Redirecting to portal:', <?php echo $plugin_redirect_js; ?>);
-                window.location.href = <?php echo $plugin_redirect_js; ?>;
-            }, 300);
-        }
     };
 
-    // UPDATED: Single event handler for form submission with proper redirect
     document.addEventListener('wpcf7mailsent', function (event) {
-        if (event.detail.contactFormId == <?php echo json_encode( $form_id ); ?>) {
-            console.log('Portal form submitted successfully');
+        if (event.detail.contactFormId == <?php echo json_encode($form_id); ?>) {
+            console.log('✅ Portal form submitted successfully');
+
+            document.cookie = "portal_access_token=granted; path=/; max-age=<?php echo 180 * 24 * 60 * 60; ?>; secure; samesite=lax";
 
             const formContainer = document.querySelector('.portal-form-container');
             if (formContainer) {
-                formContainer.innerHTML = '<div class="portal-access-granted"><h4>✅ Access Granted!</h4><p>Thank you! Your access to the Treasury Technology Portal has been approved.</p><p class="countdown">Redirecting to portal in <span id="countdown">3</span> seconds...</p></div>';
-
-                let seconds = 3;
-                const countdownEl = document.getElementById('countdown');
-                const countdownInterval = setInterval(() => {
-                    seconds--;
-                    if (countdownEl) countdownEl.textContent = seconds;
-                    if (seconds <= 0) {
-                        clearInterval(countdownInterval);
-                        // FIXED: Direct redirect to portal instead of closing modal
-                        console.log('Redirecting to portal:', <?php echo $plugin_redirect_js; ?>);
-                        window.location.href = <?php echo $plugin_redirect_js; ?>;
-                    }
-                }, 1000);
-            } else {
-                // Fallback if modal container not found
-                setTimeout(() => {
-                    console.log('Fallback redirect to portal:', <?php echo $plugin_redirect_js; ?>);
-                    window.location.href = <?php echo $plugin_redirect_js; ?>;
-                }, 1500);
+                formContainer.innerHTML = `
+                    <div class="portal-access-granted">
+                        <h4>✅ Access Granted!</h4>
+                        <p>Redirecting to Treasury Portal...</p>
+                        <div class="loading-spinner">⏳</div>
+                    </div>`;
             }
+
+            setTimeout(() => {
+                console.log('🔄 Redirecting to:', '<?php echo $redirect_url; ?>');
+                window.location.href = '<?php echo $redirect_url; ?>';
+            }, 1500);
         }
     });
 

@@ -1201,192 +1201,12 @@ add_action('rest_api_init', function() {
 ?>
 <?php
 // ===============================================================
-// REMOVE OR COMMENT OUT THE OLD PORTAL ACCESS SYSTEM
-// ===============================================================
-
-/*
-// OLD SYSTEM - COMMENT OUT OR REMOVE THESE FUNCTIONS:
-
-add_action('template_redirect', 'rt_gate_portal_access');
-function rt_gate_portal_access() {
-    // This function is causing the redirect loop - REMOVE IT
-}
-
-function rt_has_portal_access() {
-    // This function conflicts with the plugin - REMOVE IT  
-}
-
-function rt_grant_portal_access($email, $name) {
-    // This function is redundant with the plugin - REMOVE IT
-}
-
-add_action('wpcf7_mail_sent', 'rt_handle_portal_form_submission');
-function rt_handle_portal_form_submission($contact_form) {
-    // This function conflicts with the plugin - REMOVE IT
-}
-
-add_action('wp_footer', 'rt_portal_gating_javascript');
-function rt_portal_gating_javascript() {
-    // This function conflicts with the plugin - REMOVE IT
-}
-*/
-
-// ===============================================================
-// PORTAL REDIRECT FIX - additional helpers
-// ===============================================================
-
-/**
- * Add custom JavaScript to handle modal form submissions and redirects
- * This fixes the issue where the plugin prevents redirects from modals
- */
-/* add_action('wp_footer', 'tpa_modal_redirect_fix');
-function tpa_modal_redirect_fix() {
-    $form_id = get_option('tpa_form_id');
-    if (empty($form_id)) {
-        return;
-    }
-
-    $redirect_url = get_option('tpa_redirect_url', home_url('/treasury-tech-portal/'));
-    ?>
-    <script>
-    // Portal Modal Redirect Fix
-    (function() {
-        'use strict';
-
-        document.addEventListener('wpcf7mailsent', function(event) {
-            const formId = '<?php echo esc_js($form_id); ?>';
-            const redirectUrl = '<?php echo esc_js($redirect_url); ?>';
-
-            if (event.detail.contactFormId.toString() === formId) {
-                try {
-                    document.cookie = "portal_access_token=granted; path=/; max-age=15552000; secure; samesite=lax";
-                } catch (e) {
-                    console.error('Cookie setting failed:', e);
-                }
-
-                try {
-                    localStorage.setItem('tpa_access_token', JSON.stringify({
-                        token: 'granted',
-                        email: document.querySelector('input[name="email-address"]')?.value || '',
-                        name: document.querySelector('input[name="first-name"]')?.value || '',
-                        timestamp: Math.floor(Date.now() / 1000)
-                    }));
-                } catch (e) {
-                    console.error('localStorage failed:', e);
-                }
-
-                const formContainer = document.querySelector('.portal-form-container');
-                if (formContainer) {
-                    formContainer.innerHTML = `
-                        <div style="text-align: center; padding: 40px 20px; background: #f0f9ff; border-radius: 12px; border: 2px solid #10b981;">
-                            <div style="font-size: 48px; margin-bottom: 20px;">✅</div>
-                            <h3 style="color: #10b981; margin: 0 0 15px 0; font-size: 24px;">Access Granted!</h3>
-                            <p style="margin: 0 0 20px 0; color: #059669; font-size: 16px;">Redirecting to Treasury Portal...</p>
-                            <div style="width: 40px; height: 40px; border: 4px solid #10b981; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto;"></div>
-                        </div>
-                        <style>
-                        @keyframes spin {
-                            0% { transform: rotate(0deg); }
-                            100% { transform: rotate(360deg); }
-                        }
-                        </style>
-                    `;
-                }
-
-                // window.location.href = redirectUrl + '?access_granted=1&t=' + Date.now();
-            }
-        }, false);
-
-        setTimeout(function() {
-            if (window.TPA && window.TPA.showMessage) {
-                const originalShowMessage = window.TPA.showMessage;
-                window.TPA.showMessage = function(message, type) {
-                    if (message.includes('redirecting') || message.includes('granted')) {
-                        return;
-                    }
-                    return originalShowMessage.call(this, message, type);
-                };
-            }
-        }, 1000);
-    })();
-    </script>
-    <?php
-}
-*/
-
-/**
- * Ensure the access token verification works properly
- */
-add_action('init', 'tpa_ensure_access_verification');
-function tpa_ensure_access_verification() {
-    if (isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
-        if (!session_id()) session_start();
-        $_SESSION['tpa_just_granted_access'] = true;
-        $_SESSION['tpa_access_time'] = time();
-
-        if (!isset($_COOKIE['portal_access_token'])) {
-            setcookie('portal_access_token', 'granted', time() + (180 * 24 * 60 * 60), '/', '', is_ssl(), true);
-        }
-    }
-}
-
-/**
- * Enhanced portal access verification for the integrated system
- */
-function tpa_verify_portal_access() {
-    if (class_exists('Treasury_Portal_Access')) {
-        $tpa_instance = Treasury_Portal_Access::get_instance();
-        if ($tpa_instance->has_portal_access()) {
-            return true;
-        }
-    }
-
-    if (isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
-        return true;
-    }
-
-    if (!session_id()) session_start();
-    if (isset($_SESSION['tpa_just_granted_access']) &&
-        isset($_SESSION['tpa_access_time']) &&
-        (time() - $_SESSION['tpa_access_time']) < 300) {
-        return true;
-    }
-
-    if (isset($_COOKIE['portal_access_token']) && $_COOKIE['portal_access_token'] === 'granted') {
-        return true;
-    }
-
-    return false;
-}
-
-/**
- * Debug helper to inspect state in the browser console
- */
-add_action('wp_footer', 'tpa_debug_access_state');
-function tpa_debug_access_state() {
-    if (current_user_can('manage_options')) {
-        ?>
-        <script>
-        console.log('🔍 TPA Debug Info:', {
-            'cookies': document.cookie,
-            'localStorage': localStorage.getItem('tpa_access_token'),
-            'url': window.location.href,
-            'hasPlugin': <?php echo class_exists('Treasury_Portal_Access') ? 'true' : 'false'; ?>,
-            'isPortalPage': <?php echo (is_page('treasury-tech-portal') || $_SERVER['REQUEST_URI'] === '/treasury-tech-portal/') ? 'true' : 'false'; ?>
-        });
-        </script>
-        <?php
-    }
-}
-
-
-// ===============================================================
-// NEW INTEGRATED SOLUTION - USE THIS INSTEAD
+// CLEAN PORTAL ACCESS INTEGRATION - Replace existing portal code
 // ===============================================================
 
 /**
  * Integrated portal access gate that works with Treasury Portal Access plugin
- * This replaces the old rt_gate_portal_access function
+ * This should be the ONLY portal access function in functions.php
  */
 add_action('template_redirect', 'tpa_integrated_gate_portal_access');
 function tpa_integrated_gate_portal_access() {
@@ -1395,21 +1215,30 @@ function tpa_integrated_gate_portal_access() {
         return;
     }
 
-    // Use the enhanced verification to determine access
-    if (tpa_verify_portal_access()) {
-        return;
+    // Check if Treasury Portal Access plugin is active and user has access
+    if (class_exists('Treasury_Portal_Access')) {
+        $tpa_instance = Treasury_Portal_Access::get_instance();
+        if ($tpa_instance->has_portal_access()) {
+            return; // User has access, allow them through
+        }
+    }
+
+    // Fallback: check for URL parameter indicating recent access grant
+    if (isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
+        return; // User was just granted access, allow them through
     }
 
     // User doesn't have access, redirect to show the modal
     if (!session_id()) session_start();
     $_SESSION['tpa_portal_redirect'] = home_url('/treasury-tech-portal/');
+    
+    // Redirect to homepage with modal trigger
     wp_redirect(home_url('/?show_portal_modal=1'));
     exit;
 }
 
 /**
  * Add the modal trigger JavaScript only when needed
- * This replaces the old rt_portal_gating_javascript function
  */
 add_action('wp_footer', 'tpa_integrated_modal_trigger');
 function tpa_integrated_modal_trigger() {
@@ -1432,11 +1261,13 @@ function tpa_integrated_modal_trigger() {
             if (window.TPA && typeof window.TPA.openModal === 'function') {
                 // Use the plugin's modal system
                 window.TPA.openModal();
-            } else if (typeof window.showPortalModal === 'function') {
-                // Fallback to old system if available
-                window.showPortalModal();
+                console.log('✅ Portal modal opened via plugin');
             } else {
                 console.log('⚠️ Portal modal system not found. Plugin may not be loaded.');
+                // Fallback: redirect directly to portal page
+                setTimeout(() => {
+                    window.location.href = '<?php echo esc_js(home_url('/treasury-tech-portal/')); ?>';
+                }, 2000);
             }
         }, 500);
     });
@@ -1445,25 +1276,7 @@ function tpa_integrated_modal_trigger() {
 }
 
 /**
- * Update the plugin's redirect URL handling to prevent loops
- * This hooks into the plugin's form submission process
- */
-/* add_action('wpcf7_mail_sent', 'tpa_integrated_form_handler', 5); // Priority 5 to run before plugin
-function tpa_integrated_form_handler($contact_form) {
-    $selected_form_id = get_option('tpa_form_id');
-    if (empty($selected_form_id) || $contact_form->id() != $selected_form_id) {
-        return;
-    }
-
-    // Let the plugin handle the form submission, but ensure proper redirect
-    if (!session_id()) session_start();
-    $_SESSION['tpa_form_just_submitted'] = true;
-    $_SESSION['tpa_form_submission_time'] = time();
-}
-*/
-
-/**
- * Clean up any conflicting cookies from the old system
+ * Clean up any conflicting cookies from old systems
  */
 add_action('init', 'tpa_cleanup_old_cookies');
 function tpa_cleanup_old_cookies() {

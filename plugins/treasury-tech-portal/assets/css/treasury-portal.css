@@ -652,24 +652,6 @@
             flex-shrink: 0;
         }
 
-        .treasury-portal .tool-website-link {
-            display: inline-block;
-            text-align: center;
-            background: linear-gradient(135deg, #7216f4, #8f47f6);
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            line-height: 1.1;
-        }
-
-        .treasury-portal .tool-website-link:hover {
-            background: linear-gradient(135deg, #8f47f6, #7216f4);
-            text-decoration: none;
-        }
-
         .treasury-portal .tool-type {
             font-size: 0.8rem;
             color: #7e7e7e;

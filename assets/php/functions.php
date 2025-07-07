@@ -1293,99 +1293,114 @@ function rt_portal_gating_javascript() {
         session_start();
     }
 
-    $show_modal  = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
-    $form_id     = get_option( 'tpa_form_id', '325' );
+    $show_modal = isset( $_GET['show_portal_modal'] ) && '1' === $_GET['show_portal_modal'];
+    $form_id = get_option( 'tpa_form_id', '325' );
     $redirect_url = 'https://realtreasury.com/treasury-tech-portal/';
 
+    // Output the modal HTML first, then the JavaScript
     ?>
+
+    <!-- Portal Modal HTML (separate from JavaScript) -->
+    <div id="portalModal" class="tpa-modal" style="display: none;">
+        <div class="tpa-modal-content">
+            <div class="portal-access-form">
+                <button class="close-btn" type="button" onclick="closePortalModal()">&times;</button>
+                <h3>Access Treasury Tech Portal</h3>
+                <div class="portal-form-container">
+                    <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+    // Portal Access System - Clean JavaScript (no HTML embedding)
     (function() {
         'use strict';
-
+        
         let modalShown = false;
         let formSubmitted = false;
+        const FORM_ID = '<?php echo esc_js($form_id); ?>';
+        const REDIRECT_URL = '<?php echo esc_js($redirect_url); ?>';
 
         document.addEventListener('DOMContentLoaded', function () {
             <?php if ( $show_modal ) : ?>
             setTimeout(showPortalModal, 500);
             <?php endif; ?>
+            
+            // Setup form monitoring
             setTimeout(setupFormMonitoring, 1000);
         });
 
         function showPortalModal() {
             if (modalShown) return;
             modalShown = true;
-
-            let modal = document.getElementById('portalModal');
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'portalModal';
-                modal.className = 'tpa-modal';
-                modal.innerHTML = `
-                    <div class="tpa-modal-content">
-                        <div class="portal-access-form">
-                            <button class="close-btn" type="button" onclick="closePortalModal()">&times;</button>
-                            <h3>Access Treasury Tech Portal</h3>
-                            <div class="portal-form-container">
-                                <?php echo addslashes(do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]')); ?>
-                            </div>
-                        </div>
-                    </div>`;
-                document.body.appendChild(modal);
+            
+            const modal = document.getElementById('portalModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('show'), 10);
+                document.body.classList.add('modal-open');
+                
+                // Re-setup monitoring after modal is shown
+                setTimeout(setupFormMonitoring, 500);
             }
-            modal.style.display = 'flex';
-            setTimeout(() => modal.classList.add('show'), 10);
-            document.body.classList.add('modal-open');
-
-            setTimeout(setupFormMonitoring, 500);
         }
 
         function setupFormMonitoring() {
-            document.addEventListener('wpcf7mailsent', handleFormSuccess);
-
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.addedNodes) {
-                        for (let node of mutation.addedNodes) {
-                            if (node.nodeType === 1) {
-                                if (node.querySelector && (
-                                    node.querySelector('.wpcf7-mail-sent-ok') ||
-                                    node.classList.contains('wpcf7-mail-sent-ok') ||
-                                    (node.textContent && node.textContent.includes('Thank you'))
-                                )) {
-                                    console.log('✅ CF7 success detected via DOM observer');
-                                    handleFormSuccess();
+            console.log('🔍 Setting up form monitoring for form ID:', FORM_ID);
+            
+            // Method 1: Listen for wpcf7mailsent event
+            document.addEventListener('wpcf7mailsent', function(event) {
+                console.log('📧 wpcf7mailsent event fired for form:', event.detail.contactFormId);
+                if (event.detail.contactFormId.toString() === FORM_ID) {
+                    handleFormSuccess();
+                }
+            });
+            
+            // Method 2: Watch for success message with DOM observer
+            const formContainer = document.querySelector('.portal-form-container');
+            if (formContainer) {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.addedNodes) {
+                            for (let node of mutation.addedNodes) {
+                                if (node.nodeType === 1) {
+                                    if (node.querySelector && (
+                                        node.querySelector('.wpcf7-mail-sent-ok') ||
+                                        node.classList.contains('wpcf7-mail-sent-ok')
+                                    )) {
+                                        console.log('✅ Success message detected via DOM observer');
+                                        handleFormSuccess();
+                                    }
                                 }
                             }
                         }
-                    }
+                    });
                 });
-            });
-
-            const modalContainer = document.querySelector('.portal-form-container');
-            if (modalContainer) {
-                observer.observe(modalContainer, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+                
+                observer.observe(formContainer, { 
+                    childList: true, 
+                    subtree: true,
+                    attributes: true
+                });
             }
-
+            
+            // Method 3: Monitor form submission directly
             const form = document.querySelector('form.wpcf7-form');
             if (form) {
                 form.addEventListener('submit', function() {
+                    console.log('📝 Form submitted, checking for success...');
                     setTimeout(checkForSuccess, 2000);
                     setTimeout(checkForSuccess, 4000);
-                    setTimeout(checkForSuccess, 6000);
                 });
             }
         }
-
+        
         function checkForSuccess() {
             const successMsg = document.querySelector('.wpcf7-mail-sent-ok');
-            const formContainer = document.querySelector('.portal-form-container');
-
             if (successMsg && successMsg.style.display !== 'none') {
-                console.log('✅ Success message found via polling');
-                handleFormSuccess();
-            } else if (formContainer && formContainer.innerHTML.includes('Thank you')) {
-                console.log('✅ Thank you message found via polling');
+                console.log('✅ Success message found');
                 handleFormSuccess();
             }
         }
@@ -1393,38 +1408,31 @@ function rt_portal_gating_javascript() {
         function handleFormSuccess() {
             if (formSubmitted) return;
             formSubmitted = true;
-
+            
+            console.log('🎉 Form success confirmed! Processing...');
+            
+            // Try to set cookie
             try {
-                document.cookie = "portal_access_token=granted; path=/; max-age=<?php echo 180 * 24 * 60 * 60; ?>; secure; samesite=lax";
+                document.cookie = "portal_access_token=granted; path=/; max-age=15552000; secure; samesite=lax";
                 console.log('🍪 Cookie set successfully');
             } catch (e) {
-                console.log('🚫 Cookie blocked by tracking prevention');
+                console.log('🚫 Cookie failed:', e);
             }
-
-            try {
-                localStorage.setItem('portal_access_granted', 'true');
-                localStorage.setItem('portal_access_time', Date.now());
-                console.log('💾 localStorage set successfully');
-            } catch (e) {
-                console.log('🚫 localStorage blocked by tracking prevention');
-            }
-
+            
+            // Show success message
             const formContainer = document.querySelector('.portal-form-container');
             if (formContainer) {
-                formContainer.innerHTML = `
-                    <div class="portal-access-granted" style="text-align: center; padding: 20px;">
-                        <h4 style="color: #10b981; margin-bottom: 10px;">✅ Access Granted!</h4>
-                        <p style="margin-bottom: 15px;">Redirecting to Treasury Portal...</p>
-                        <div style="font-size: 24px;">⏳</div>
-                    </div>`;
+                formContainer.innerHTML = '<div class="portal-access-granted" style="text-align: center; padding: 30px; background: #f0f9ff; border-radius: 8px; border: 2px solid #10b981;"><h4 style="color: #10b981; margin: 0 0 10px 0; font-size: 18px;">✅ Access Granted!</h4><p style="margin: 0 0 15px 0; color: #059669;">Redirecting to Treasury Portal...</p><div style="font-size: 24px; color: #10b981;">⏳</div></div>';
             }
-
-            setTimeout(() => {
-                console.log('🔄 Redirecting to portal with access token...');
-                window.location.href = '<?php echo $redirect_url; ?>?access_granted=1&t=' + Date.now();
+            
+            // Redirect with access parameter
+            setTimeout(function() {
+                console.log('🔄 Redirecting to:', REDIRECT_URL);
+                window.location.href = REDIRECT_URL + '?access_granted=1&t=' + Date.now();
             }, 2000);
         }
 
+        // Global functions
         window.closePortalModal = function () {
             const modal = document.getElementById('portalModal');
             if (modal) {
@@ -1437,8 +1445,71 @@ function rt_portal_gating_javascript() {
         };
 
         window.showPortalModal = showPortalModal;
+        
+        // Debug info
+        console.log('🚀 Portal access system initialized');
+        console.log('📋 Form ID:', FORM_ID);
+        console.log('🔗 Redirect URL:', REDIRECT_URL);
+        
     })();
     </script>
+
+    <style>
+    .tpa-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .tpa-modal.show {
+        opacity: 1;
+    }
+    
+    .tpa-modal-content {
+        background: white;
+        padding: 0;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .portal-access-form {
+        padding: 30px;
+    }
+    
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #666;
+        z-index: 1;
+    }
+    
+    .close-btn:hover {
+        color: #333;
+    }
+    
+    body.modal-open {
+        overflow: hidden;
+    }
+    </style>
     <?php
 }
 

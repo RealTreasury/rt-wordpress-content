@@ -117,4 +117,28 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
         });
     });
+
+    // Enhanced dropdown positioning fix
+    function fixDropdownPositioning() {
+        const activeDropdowns = document.querySelectorAll('.rt-nav-item.active .rt-dropdown');
+        activeDropdowns.forEach(dropdown => {
+            dropdown.style.transform = 'translateY(0)';
+            dropdown.style.top = 'calc(100% - 1px)';
+        });
+    }
+
+    const dropdownObserver = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const target = mutation.target;
+                if (target.classList.contains('rt-nav-item') && target.classList.contains('active')) {
+                    setTimeout(fixDropdownPositioning, 10);
+                }
+            }
+        });
+    });
+
+    document.querySelectorAll('.rt-nav-item').forEach(item => {
+        dropdownObserver.observe(item, { attributes: true });
+    });
 });

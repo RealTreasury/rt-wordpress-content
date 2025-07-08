@@ -1412,6 +1412,7 @@ function tpa_theme_modal_trigger() {
             // Look for plugin trigger buttons
             const portalTriggers = [
                 'a[href="#openPortalModal"]',
+                'a[href="#openportalmodal"]',
                 '.open-portal-modal',
                 '#portalAccessBtn',
                 '.tpa-btn'

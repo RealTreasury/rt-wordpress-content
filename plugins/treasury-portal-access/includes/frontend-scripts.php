@@ -301,7 +301,7 @@ body.modal-open {
 
         preUpdateButtons: function() {
             setTimeout(() => {
-                document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"]').forEach(el => {
+                document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"], a[href="#openportalmodal"]').forEach(el => {
                     if (el.textContent.trim() === 'Access Portal') {
                         el.textContent = 'View Portal';
                         if (el.tagName.toLowerCase() === 'a') {
@@ -314,14 +314,14 @@ body.modal-open {
 
         showButtons: function() {
             console.log('👆 TPA: Showing portal buttons...');
-            document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"], .tpa-btn').forEach(el => {
+            document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"], a[href="#openportalmodal"], .tpa-btn').forEach(el => {
                 el.classList.remove('tpa-btn-loading');
                 el.classList.add('tpa-btn-ready');
             });
         },
 
         hideButtons: function() {
-            document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"], .tpa-btn').forEach(el => {
+            document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"], a[href="#openportalmodal"], .tpa-btn').forEach(el => {
                 el.classList.add('tpa-btn-loading');
                 el.classList.remove('tpa-btn-ready');
             });
@@ -480,7 +480,7 @@ body.modal-open {
             
             // Click handlers for modal triggers
             document.addEventListener('click', e => {
-                if (e.target.closest('.open-portal-modal, a[href="#openPortalModal"]')) {
+                if (e.target.closest('.open-portal-modal, a[href="#openPortalModal"], a[href="#openportalmodal"]')) {
                     e.preventDefault();
                     console.log('🎯 TPA: Portal button clicked');
                     this.openModal();

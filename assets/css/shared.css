@@ -3549,7 +3549,8 @@ body.treasury-portal-ready .treasury-portal .external-shortlist-toggle {
 /* Prevent button jumping during state changes */
 .tpa-btn,
 .open-portal-modal,
-a[href="#openPortalModal"] {
+a[href="#openPortalModal"],
+a[href="#openportalmodal"] {
     min-height: 44px;
     display: inline-flex;
     align-items: center;

@@ -19,6 +19,7 @@
             --light-purple: #c77dff;
             --dark-text: #281345;
             --gray-text: #7e7e7e;
+            --about-section-gap: clamp(1.5rem, 3vw, 2.5rem);
         }
         #inspector-text-control-8 {
             color: #000 !important;
@@ -1629,11 +1630,21 @@ body.banner-closed {
 /* Enhanced About Menu */
 .rt-about-enhanced {
     display: grid;
-    grid-template-columns: 1fr 280px 200px;
-    gap: 3rem;
+    grid-template-columns: 2fr 1.2fr 1fr;
+    gap: var(--about-section-gap);
     align-items: start;
     max-width: 1000px;
     margin: 0 auto;
+}
+
+.rt-about-enhanced h3 {
+    color: var(--dark-text) !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 1.5rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    opacity: 0.9 !important;
 }
 
 .rt-about-story {
@@ -1642,11 +1653,11 @@ body.banner-closed {
 
 .rt-about-story h3 {
     color: var(--dark-text) !important;
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-    text-transform: none;
-    letter-spacing: normal;
+    font-size: 1.4rem !important;
+    margin-bottom: 1rem !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
 }
 
 .rt-about-story > p {
@@ -1698,12 +1709,12 @@ body.banner-closed {
 
 .rt-about-team h3 {
     color: var(--dark-text) !important;
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0.9;
+    font-size: 1.2rem !important;
+    margin-bottom: 1.5rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    opacity: 0.9 !important;
 }
 
 .rt-founders-grid {
@@ -1802,28 +1813,30 @@ body.banner-closed {
 
 .rt-about-stats h3 {
     color: var(--dark-text) !important;
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0.9;
+    font-size: 1.2rem !important;
+    margin-bottom: 1.5rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    opacity: 0.9 !important;
 }
 
+
 .rt-stats-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
 }
 
 .rt-stat-item {
     background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    padding: 1rem;
+    padding: 0.8rem 0.6rem !important;
     border-radius: 12px;
     border: 1px solid rgba(114, 22, 244, 0.1);
     transition: all 0.3s ease;
+    text-align: center !important;
 }
 
 .rt-stat-item:hover {
@@ -1834,38 +1847,45 @@ body.banner-closed {
 }
 
 .rt-stat-number {
-    font-size: 1.8rem;
+    font-size: 1.6rem !important;
     font-weight: 800;
     color: var(--primary-purple);
     line-height: 1;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem !important;
 }
 
 .rt-stat-label {
     color: var(--gray-text);
     font-weight: 500;
-    font-size: 0.8rem;
-    line-height: 1.2;
+    font-size: 0.75rem !important;
+    line-height: 1.1 !important;
 }
 
 /* Mobile responsiveness for About dropdown */
-@media (max-width: 992px) {
+@media (max-width: 1200px) {
+    .rt-about-enhanced {
+        gap: 2rem !important;
+        grid-template-columns: 1.8fr 1fr 1fr !important;
+    }
+}
+
+@media (max-width: 768px) {
     .rt-about-enhanced {
         grid-template-columns: 1fr !important;
-        gap: 2rem !important;
-        text-align: center;
+        gap: 1.5rem !important;
+        text-align: center !important;
     }
-    
+
     .rt-about-story {
-        padding-right: 0;
+        padding-right: 0 !important;
     }
-    
+
     .rt-founders-grid {
         flex-direction: row;
         justify-content: center;
         gap: 1rem;
     }
-    
+
     .rt-founder-card {
         flex-direction: column;
         text-align: center;
@@ -1873,21 +1893,24 @@ body.banner-closed {
         flex: 1;
         max-width: 120px;
     }
-    
+
     .rt-founder-info {
         text-align: center;
     }
-    
+}
+
+@media (max-width: 768px) {
     .rt-stats-grid {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.8rem;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.6rem !important;
     }
-    
+
     .rt-stat-item {
-        flex: 1;
-        min-width: 120px;
+        padding: 0.6rem 0.4rem !important;
+    }
+
+    .rt-stat-number {
+        font-size: 1.4rem !important;
     }
 }
 

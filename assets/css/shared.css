@@ -1403,30 +1403,43 @@ body.banner-closed {
  * gap when the dropdown was positioned absolutely.
  */
 
-/* Dropdown Menu */
+/* Dropdown Menu - FIXED VERSION */
 .rt-dropdown {
-    position: absolute !important;
-    top: calc(100% - 1px) !important;
+    position: fixed !important;
+    top: 80px !important;
     left: 0 !important;
     right: 0 !important;
     width: 100vw !important;
-    margin-left: calc(-50vw + 50%) !important;
+    /* Fixed positioning approach - no complex calc() needed */
+    margin-left: 0 !important;
     background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9)) !important;
     backdrop-filter: blur(20px) saturate(130%) !important;
     -webkit-backdrop-filter: blur(20px) saturate(130%) !important;
     border: 1px solid rgba(199, 125, 255, .2) !important;
-    border-top: 1px solid rgba(199, 125, 255, .1) !important;
+    border-top: none !important;
     box-shadow: 0 8px 32px rgba(114, 22, 244, .12), inset 0 1px 0 hsla(0, 0%, 100%, .8), inset 0 -1px 0 rgba(0, 0, 0, .03) !important;
     border-radius: 0 0 16px 16px !important;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-5px);
+    transform: translateY(-10px);
     transition: all 0.3s ease;
     z-index: 1000000;
     overflow: hidden;
     pointer-events: none;
 }
 
+/* Adjust dropdown positioning based on banner state */
+body.banner-present .rt-dropdown {
+    top: 160px !important;
+}
+
+body.banner-minimized .rt-dropdown {
+    top: 140px !important;
+}
+
+body.banner-closed .rt-dropdown {
+    top: 80px !important;
+}
 
 /* Remove any bottom spacing from navigation wrapper */
 .rt-nav-wrapper {
@@ -1463,6 +1476,17 @@ body.banner-closed {
     }
 }
 
+@media (max-width: 992px) {
+    .rt-dropdown {
+        top: 70px !important;
+    }
+    
+    body.banner-present .rt-dropdown,
+    body.banner-minimized .rt-dropdown,
+    body.banner-closed .rt-dropdown {
+        top: 70px !important;
+    }
+}
 
 /* Main Menu Layout */
 .rt-main-menu {
@@ -1695,16 +1719,15 @@ body.banner-closed {
 
 /* Smaller overlay text inside the main menu dropdown */
 .rt-main-menu .chart-title-overlay {
-    min-width: 0;
-    max-width: 100%;
+    min-width: 260px;
     padding: 8px 14px;
 }
 .rt-main-menu .chart-title-overlay h3 {
-    font-size: 0.6rem;
+     font-size: 0.6rem;
     white-space: nowrap;
 }
 .rt-main-menu .chart-title-overlay p {
-    font-size: 0.75rem;
+    font-size: 0.6rem;
 }
 
 /* Insights Widget */

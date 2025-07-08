@@ -1632,10 +1632,11 @@ body.banner-closed {
 /* Enhanced About Menu */
 .rt-about-enhanced {
     display: grid;
-    grid-template-columns: 2fr 1.2fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr;
     gap: var(--about-section-gap);
     align-items: start;
-    max-width: 1000px;
+    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
 }
 

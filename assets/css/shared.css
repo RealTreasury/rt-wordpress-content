@@ -1560,6 +1560,7 @@ body.banner-closed {
     border-radius: 8px;
     display: block;
     font-size: 1.5rem !important;
+    text-align: center;
 }
 
 .rt-main-menu-link:hover {
@@ -1589,6 +1590,7 @@ body.banner-closed {
     border: 1px solid rgba(114, 22, 244, 0.1);
     transition: all 0.3s ease;
     cursor: pointer;
+    text-align: center;
 }
 
 .rt-service-item:hover {

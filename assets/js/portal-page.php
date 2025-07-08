@@ -1,7 +1,12 @@
 // AGGRESSIVE FOUC Prevention - Treasury Portal
 add_action('wp_head', 'treasury_portal_immediate_fouc_prevention', 1);
 function treasury_portal_immediate_fouc_prevention() {
-    if (is_page('treasury-tech-portal') || 
+    // Skip if the Treasury Portal Access plugin is active
+    if (class_exists('Treasury_Portal_Access')) {
+        return;
+    }
+
+    if (is_page('treasury-tech-portal') ||
         strpos($_SERVER['REQUEST_URI'], 'treasury-tech-portal') !== false) {
         ?>
         <style>

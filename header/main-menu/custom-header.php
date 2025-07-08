@@ -193,8 +193,8 @@ function add_my_custom_header_html() {
                                         </div>
                                     </div>
                                     <div class="rt-testimonial">
-                                        <div class="rt-testimonial-text">"Real Treasury cut our selection timeline in half while ensuring we found the perfect fit."</div>
-                                        <div class="rt-testimonial-author">— Finance Director, Fortune 500</div>
+                                        <div class="rt-testimonial-text">"They brought strategic insights we hadn't considered—highlighting key features, gaps, and opportunities."</div>
+                                        <div class="rt-testimonial-author">— Thi Pham, CFO, Vie Management</div>
                                     </div>
                                 </div>
                             </div>

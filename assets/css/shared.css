@@ -4089,20 +4089,23 @@ a[href="#openportalmodal"] {
 }
 
 .rt-services-stats h3 {
-    font-size: 0.95rem;
+    font-size: 1rem; /* Consistent with other section headers */
     font-weight: 600;
     color: var(--dark-text);
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem; /* Consistent spacing */
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    text-transform: uppercase; /* Add for consistency */
+    letter-spacing: 0.5px; /* Add for consistency */
+    opacity: 0.9; /* Add for consistency */
 }
 
 .rt-stats-grid {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    margin-bottom: 1.5rem; /* Increased spacing before testimonial */
+    margin-bottom: 2rem; /* Increase from 1.5rem for better separation from testimonial */
 }
 
 .rt-stat-item {
@@ -4138,19 +4141,20 @@ a[href="#openportalmodal"] {
 /* REAL TESTIMONIAL WITH PROPER SPACING */
 .rt-testimonial {
     background: white;
-    padding: 1rem; /* Increased from 0.875rem */
-    border-radius: 8px; /* Increased from 6px */
+    padding: 1.25rem; /* Increase from 1rem for better spacing */
+    border-radius: 10px; /* Increase from 8px to match other elements */
     border-left: 3px solid var(--success-green);
-    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08); /* Enhanced shadow */
-    margin-top: auto; /* Push to bottom */
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08);
+    margin-top: 1.5rem; /* Increase from auto for proper spacing after stats */
+    border: 1px solid rgba(16, 185, 129, 0.15); /* Add consistent border like other cards */
 }
 
 .rt-testimonial-text {
-    font-size: 0.8rem;
+    font-size: 0.85rem; /* Increase from 0.8rem for better readability */
     color: var(--gray-text);
     font-style: italic;
-    line-height: 1.4; /* Increased from 1.3 */
-    margin-bottom: 0.75rem; /* Increased from 0.5rem */
+    line-height: 1.5; /* Increase from 1.4 for better readability */
+    margin-bottom: 1rem; /* Increase from 0.75rem for better spacing */
 }
 
 .rt-testimonial-author {
@@ -4180,6 +4184,20 @@ a[href="#openportalmodal"] {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 0.5rem;
+    }
+
+    .rt-testimonial {
+        padding: 1rem;
+        margin-top: 1.25rem;
+    }
+
+    .rt-testimonial-text {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+
+    .rt-stats-grid {
+        margin-bottom: 1.5rem;
     }
 
     .rt-stat-item {

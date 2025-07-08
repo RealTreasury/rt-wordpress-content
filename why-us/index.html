@@ -80,10 +80,10 @@
           <p contenteditable="true" style="font-family: 'Inter', sans-serif; font-size: 1.125rem; color: #7e7e7e; line-height: 1.6; margin-bottom: 20px;">
             Skip months of research. Our database of 50+ treasury vendors is continuously updated with real implementation data, pricing benchmarks, and client reviews.
           </p>
-          <div class="mini-testimonial" style="background: rgba(114, 22, 244, 0.05); padding: 15px; border-radius: 12px; border-left: 3px solid #7216f4;">
-            <p contenteditable="true" style="font-size: 0.875rem; color: #281345; font-style: italic; margin: 0;">
-              "Cut our vendor selection from 6 months to 6 weeks" – CFO, Tech Unicorn
-            </p>
+          <div class="testimonial-card">
+            <div class="testimonial-quote">“They brought strategic insights we hadn’t considered—highlighting key features, gaps, and opportunities.”</div>
+            <div class="testimonial-author">Thi Pham</div>
+            <div class="testimonial-role">CFO, Vie Management</div>
           </div>
         </div>
 
@@ -249,6 +249,49 @@
   .mini-cta:hover {
     color: #8f47f6 !important;
     gap: 10px !important;
+  }
+
+  .testimonial-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(248, 248, 248, 0.9) 50%,
+      rgba(255, 255, 255, 0.8) 100%);
+    backdrop-filter: blur(20px) saturate(130%);
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    padding: 48px 40px;
+    border-radius: 24px;
+    border: 2px solid rgba(199, 125, 255, 0.25);
+    box-shadow: 0 12px 40px rgba(114, 22, 244, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: all 0.4s ease;
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 50px rgba(114, 22, 244, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  .testimonial-quote {
+    font-size: 1.6rem;
+    font-style: italic;
+    margin-bottom: 32px;
+    line-height: 1.6;
+    font-weight: 500;
+    color: #281345;
+  }
+
+  .testimonial-author {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #7216f4;
+  }
+
+  .testimonial-role {
+    opacity: 0.8;
+    margin-top: 8px;
+    font-size: 1rem;
+    color: #7e7e7e;
   }
 
   .edit-mode [contenteditable="true"] {

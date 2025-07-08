@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Calculate and set dropdown position for full width - SEAMLESS VERSION
+    // FIXED: Calculate and set dropdown position for full width
     function positionDropdown(navItem) {
         const dropdown = navItem.querySelector('.rt-dropdown');
         if (!dropdown) return;
@@ -92,32 +92,33 @@ document.addEventListener('DOMContentLoaded', function() {
         const navContainer = document.querySelector('.rt-nav-container');
         if (!navContainer) return;
 
-        const viewportWidth = window.innerWidth;
+        // Get the navigation container's position
+        const navRect = navContainer.getBoundingClientRect();
+        const navItemRect = navItem.getBoundingClientRect();
 
-        // Apply positioning styles directly - override any CSS conflicts
-        dropdown.style.setProperty('width', `${viewportWidth}px`, 'important');
-        dropdown.style.setProperty('left', '0', 'important');
+        // Calculate the offset needed to align dropdown to viewport
+        const leftOffset = -navItemRect.left;
+
+        // Apply positioning styles - FIXED VERSION
+        dropdown.style.setProperty('position', 'absolute', 'important');
+        dropdown.style.setProperty('width', '100vw', 'important');
+        dropdown.style.setProperty('left', `${leftOffset}px`, 'important');
         dropdown.style.setProperty('right', 'auto', 'important');
         dropdown.style.setProperty('transform', 'none', 'important');
-
-        // CRITICAL: Don't set margin-left, let CSS handle centering
-        dropdown.style.removeProperty('margin-left');
-        dropdown.style.removeProperty('margin-right');
-
-        // Ensure the inner content can center properly
-        const dropdownInner = dropdown.querySelector('.rt-dropdown-inner');
-        if (dropdownInner) {
-            dropdownInner.style.removeProperty('margin-left');
-            dropdownInner.style.removeProperty('margin-right');
-            dropdownInner.style.setProperty('margin', '0 auto', 'important');
-            dropdownInner.style.setProperty('max-width', '1200px', 'important');
-        }
-
-        // Ensure seamless connection
         dropdown.style.setProperty('top', 'calc(100% - 1px)', 'important');
         dropdown.style.setProperty('border-top', 'none', 'important');
-        dropdown.style.setProperty('margin-top', '0', 'important');
-        dropdown.style.setProperty('padding-top', '0', 'important');
+        dropdown.style.setProperty('margin', '0', 'important');
+        dropdown.style.setProperty('padding', '0', 'important');
+
+        // Ensure the inner content centers properly
+        const dropdownInner = dropdown.querySelector('.rt-dropdown-inner');
+        if (dropdownInner) {
+            dropdownInner.style.setProperty('margin', '0 auto', 'important');
+            dropdownInner.style.setProperty('max-width', '1200px', 'important');
+            dropdownInner.style.setProperty('width', '100%', 'important');
+            dropdownInner.style.setProperty('padding', '2.5rem 2rem', 'important');
+            dropdownInner.style.setProperty('box-sizing', 'border-box', 'important');
+        }
     }
 
     // Recalculate on window resize

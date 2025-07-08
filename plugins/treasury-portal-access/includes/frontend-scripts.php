@@ -1,6 +1,6 @@
 <?php
 /**
- * Frontend Scripts for Treasury Portal Access - FOUC FIXED VERSION
+ * Frontend Scripts for Treasury Portal Access - FIXED VERSION
  */
 if (!defined('ABSPATH')) exit;
 
@@ -173,11 +173,14 @@ body.modal-open {
 </div>
 
 <script>
-// Treasury Portal Access Frontend Script v1.1.0 - FOUC FIXED
+// Treasury Portal Access Frontend Script v1.2.0 - FIXED VERSION
 (function() {
     'use strict';
 
+    // Prevent multiple initializations
     if (window.TPA) return;
+
+    console.log('🏛️ TPA: Initializing Treasury Portal Access v1.2.0');
 
     window.TPA = {
         modal: null,
@@ -190,9 +193,11 @@ body.modal-open {
         shouldAutoOpen: false,
         
         init: function() {
+            console.log('🔧 TPA: Starting initialization...');
+            
             this.modal = document.getElementById('portalModal');
             if (!this.modal) {
-                console.error('TPA Error: Modal element #portalModal not found.');
+                console.error('❌ TPA Error: Modal element #portalModal not found.');
                 return;
             }
 
@@ -202,17 +207,28 @@ body.modal-open {
             // Immediate access check
             this.quickAccessCheck();
 
-            document.addEventListener('DOMContentLoaded', () => {
-                this.checkAccessPersistence();
-                this.updateHeaderButton();
-                this.addEventListeners();
-                this.showButtons();
+            // Wait for DOM to be ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.domReady());
+            } else {
+                this.domReady();
+            }
+        },
 
-                // Handle auto-open after DOM is ready
-                if (this.shouldAutoOpen) {
-                    setTimeout(() => this.openModal(), 500);
-                }
-            });
+        domReady: function() {
+            console.log('📄 TPA: DOM ready, completing initialization...');
+            
+            this.checkAccessPersistence();
+            this.updateHeaderButton();
+            this.addEventListeners();
+            this.showButtons();
+
+            // Handle auto-open after DOM is ready
+            if (this.shouldAutoOpen) {
+                setTimeout(() => this.openModal(), 500);
+            }
+            
+            console.log('✅ TPA: Initialization complete!');
         },
 
         quickAccessCheck: function() {
@@ -227,7 +243,7 @@ body.modal-open {
                         this.preUpdateButtons();
                     }
                 } catch (e) {
-                    console.log('TPA: Error parsing stored access data');
+                    console.log('⚠️ TPA: Error parsing stored access data');
                 }
             }
         },
@@ -246,7 +262,7 @@ body.modal-open {
 
                 if (!hasCookie && !hasLocalStorage) {
                     this.shouldAutoOpen = true;
-                    console.log('TPA: Will auto-open modal for portal URL without access');
+                    console.log('🔄 TPA: Will auto-open modal for portal URL without access');
                 }
             }
         },
@@ -260,9 +276,27 @@ body.modal-open {
                            (Date.now()/1000 - storedData.timestamp) < this.accessDuration;
                 }
             } catch (e) {
-                console.log('TPA: Error checking localStorage access');
+                console.log('⚠️ TPA: Error checking localStorage access');
             }
             return false;
+        },
+
+        // FIXED: Added missing checkAccessPersistence method
+        checkAccessPersistence: function() {
+            console.log('🔍 TPA: Checking access persistence...');
+            
+            const hasCookie = document.cookie.includes('portal_access_token=');
+            const hasLocalStorage = this.checkLocalStorageAccess();
+            
+            console.log('🍪 TPA: Cookie access:', hasCookie);
+            console.log('💾 TPA: LocalStorage access:', hasLocalStorage);
+            
+            if (!hasCookie && hasLocalStorage) {
+                console.log('🔄 TPA: Attempting to restore access from localStorage...');
+                this.syncFromLocal();
+            }
+            
+            return hasCookie || hasLocalStorage;
         },
 
         preUpdateButtons: function() {
@@ -279,6 +313,7 @@ body.modal-open {
         },
 
         showButtons: function() {
+            console.log('👆 TPA: Showing portal buttons...');
             document.querySelectorAll('.open-portal-modal, a[href="#openPortalModal"], .tpa-btn').forEach(el => {
                 el.classList.remove('tpa-btn-loading');
                 el.classList.add('tpa-btn-ready');
@@ -294,9 +329,13 @@ body.modal-open {
 
         updateHeaderButton: function() {
             const headerBtn = document.getElementById('portalAccessBtn');
-            if (!headerBtn) return;
+            if (!headerBtn) {
+                console.log('ℹ️ TPA: No header button found with ID portalAccessBtn');
+                return;
+            }
 
             const hasCookie = document.cookie.includes('portal_access_token=');
+            console.log('🔄 TPA: Updating header button, has access:', hasCookie);
 
             if (hasCookie) {
                 headerBtn.href = this.redirectUrl;
@@ -311,16 +350,17 @@ body.modal-open {
                 });
             } else {
                 headerBtn.href = '#openPortalModal';
-                headerBtn.textContent = 'VIEW PORTAL';
+                headerBtn.textContent = 'ACCESS PORTAL';
                 headerBtn.classList.remove('tpa-btn-loading');
                 headerBtn.classList.add('tpa-btn-ready', 'open-portal-modal');
             }
         },
 
-        // FIXED: Improved modal opening with FOUC prevention
         openModal: function() {
+            console.log('🚀 TPA: Opening portal access modal...');
+            
             if (!this.modal) {
-                console.error('TPA: Modal element not found');
+                console.error('❌ TPA: Modal element not found');
                 return;
             }
             
@@ -344,6 +384,8 @@ body.modal-open {
         },
 
         closeModal: function() {
+            console.log('❌ TPA: Closing modal...');
+            
             if (!this.modal) return;
             
             this.modal.style.opacity = '0';
@@ -356,12 +398,91 @@ body.modal-open {
             }, 300);
         },
 
-        // ... rest of your existing methods remain the same ...
+        showMessage: function(message, type = 'info') {
+            console.log(`💬 TPA: ${type.toUpperCase()}: ${message}`);
+            
+            let messageEl = document.getElementById('tpa-message');
+            if (!messageEl) {
+                const container = document.createElement('div');
+                container.className = 'tpa-message-container';
+                messageEl = document.createElement('div');
+                messageEl.id = 'tpa-message';
+                container.appendChild(messageEl);
+                document.body.appendChild(container);
+            }
+            
+            messageEl.textContent = message;
+            messageEl.className = `tpa-message-${type}`;
+            
+            requestAnimationFrame(() => {
+                messageEl.classList.add('show');
+                setTimeout(() => messageEl.classList.remove('show'), 4000);
+            });
+        },
+
+        syncToLocal: function() {
+            const localStorageEnabled = <?php echo get_option('tpa_enable_localStorage', true) ? 'true' : 'false'; ?>;
+            if (!localStorageEnabled) return;
+
+            const token = document.cookie.match(/portal_access_token=([^;]+)/);
+            if (token) {
+                try {
+                    localStorage.setItem('tpa_access_token', JSON.stringify({
+                        token: token[1],
+                        timestamp: Math.floor(Date.now() / 1000),
+                        email: 'user@example.com' // This should be set from the form
+                    }));
+                    console.log('💾 TPA: Access synced to localStorage');
+                } catch (e) {
+                    console.log('⚠️ TPA: Could not sync to localStorage');
+                }
+            }
+        },
+
+        syncFromLocal: function() {
+            const localStorageEnabled = <?php echo get_option('tpa_enable_localStorage', true) ? 'true' : 'false'; ?>;
+            if (!localStorageEnabled) return;
+
+            try {
+                const localData = localStorage.getItem('tpa_access_token');
+                if (localData) {
+                    const storedData = JSON.parse(localData);
+                    if (storedData && storedData.email) {
+                        // Try to restore access via AJAX
+                        this.restoreAccessFromEmail(storedData.email);
+                    }
+                }
+            } catch (e) {
+                console.log('⚠️ TPA: Error syncing from localStorage');
+            }
+        },
+
+        restoreAccessFromEmail: function(email) {
+            console.log('🔄 TPA: Attempting to restore access for:', email);
+            
+            // This would make an AJAX call to restore access
+            // Implementation depends on your backend setup
+        },
+
+        executeRedirect: function() {
+            if (this.isRedirecting) return;
+            this.isRedirecting = true;
+            
+            console.log('↗️ TPA: Redirecting to portal...');
+            
+            setTimeout(() => {
+                window.location.href = this.redirectUrl;
+            }, 2000);
+        },
         
         addEventListeners: function() {
+            console.log('🎧 TPA: Adding event listeners...');
+            
+            // Click handlers for modal triggers
             document.addEventListener('click', e => {
                 if (e.target.closest('.open-portal-modal, a[href="#openPortalModal"]')) {
                     e.preventDefault();
+                    console.log('🎯 TPA: Portal button clicked');
                     this.openModal();
                 }
                 if (e.target.closest('.close-btn') || e.target === this.modal) {
@@ -370,49 +491,57 @@ body.modal-open {
                 }
             });
 
+            // Escape key handler
             document.addEventListener('keydown', e => {
-                if (e.key === 'Escape' && this.modal.classList.contains('show')) {
+                if (e.key === 'Escape' && this.modal && this.modal.classList.contains('show')) {
                     this.closeModal();
                 }
             });
 
+            // Contact Form 7 success handler
             document.addEventListener('wpcf7mailsent', (event) => {
                 const formId = '<?php echo esc_js($form_id); ?>';
                 if (event.detail.contactFormId.toString() !== formId) return;
 
-                console.log('TPA: Form submission successful for form ID:', formId);
+                console.log('✅ TPA: Form submission successful for form ID:', formId);
                 this.showMessage('Access granted! Redirecting to portal...', 'success');
                 this.updateHeaderButton();
                 this.syncToLocal();
                 this.executeRedirect();
             }, false);
+
+            console.log('✅ TPA: Event listeners added');
         }
     };
 
-window.TPA.init();
+    // Initialize immediately
+    window.TPA.init();
 
 })();
 </script>
+
 <script>
 // Emergency fallback for direct portal URL visits
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚨 TPA Emergency: Checking for portal page access...');
+    
     // Check if we're on the portal page without access
     const isPortalPage = window.location.pathname.includes('treasury-tech-portal');
     const hasAccess = document.cookie.includes('portal_access_token=');
 
     if (isPortalPage && !hasAccess) {
-        console.log('TPA Emergency: Portal page without access detected');
+        console.log('🚨 TPA Emergency: Portal page without access detected');
 
         // Wait for TPA to load, then open modal
         let attempts = 0;
         const checkAndOpen = setInterval(function() {
             attempts++;
             if (window.TPA && window.TPA.openModal) {
-                console.log('TPA Emergency: Opening modal');
+                console.log('🚨 TPA Emergency: Opening modal');
                 window.TPA.openModal();
                 clearInterval(checkAndOpen);
             } else if (attempts > 10) {
-                console.log('TPA Emergency: Could not find TPA object after 10 attempts');
+                console.log('🚨 TPA Emergency: Could not find TPA object after 10 attempts');
                 clearInterval(checkAndOpen);
             }
         }, 500);

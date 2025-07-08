@@ -1505,13 +1505,13 @@ body.banner-closed {
     --banner-height: 80px;
     --banner-height-minimized: 60px;
     --dropdown-bg: linear-gradient(135deg,
-        hsla(0, 0%, 100%, .55),
-        hsla(0, 0%, 97%, .6) 50%,
-        hsla(0, 0%, 100%, .55));
+        hsla(0, 0%, 100%, .75),
+        hsla(0, 0%, 97%, .8) 50%,
+        hsla(0, 0%, 100%, .75));
     --dropdown-inner-bg: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.15),
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0.15));
+        rgba(255, 255, 255, 0.25),
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.25));
     --dropdown-border-color: rgba(199, 125, 255, .35);
 }
 

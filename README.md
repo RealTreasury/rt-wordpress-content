@@ -43,3 +43,4 @@ The repository includes the **Treasury Portal Access** plugin (`plugins/treasury
 1. Visit the portal page in a private or incognito window.
 2. Submit the access form and verify you are redirected to your portal page.
 3. Refresh the page to confirm protected content remains visible while the cookie is active.
+4. Click the original portal button again and ensure it now navigates directly to the portal instead of reopening the form.

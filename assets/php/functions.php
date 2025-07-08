@@ -1257,7 +1257,8 @@ function tpa_basic_fallback_gate() {
 
 add_action('wpcf7_mail_sent', 'tpa_enhanced_cookie_handler', 10, 1);
 function tpa_enhanced_cookie_handler($contact_form) {
-    if ($contact_form->id() != 'YOUR_FORM_ID_HERE') {
+    $selected_id = get_option('tpa_form_id');
+    if (!$selected_id || $contact_form->id() != $selected_id) {
         return;
     }
 

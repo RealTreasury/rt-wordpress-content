@@ -2801,7 +2801,10 @@ body.menu-open {
 
 .rt-nav-container {
     z-index: var(--z-navigation) !important;
-    position: relative; /* Ensure proper dropdown positioning context */
+    position: fixed !important; /* Keep navigation sticky */
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
 }
 
 /* Ensure dropdowns work correctly with banner positioning */

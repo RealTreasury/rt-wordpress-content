@@ -1626,19 +1626,269 @@ body.banner-closed {
     text-decoration: none;
 }
 
-/* About Menu */
-.rt-about-menu {
-    max-width: 300px;
+/* Enhanced About Menu */
+.rt-about-enhanced {
+    display: grid;
+    grid-template-columns: 1fr 280px 200px;
+    gap: 3rem;
+    align-items: start;
+    max-width: 1000px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 2rem;
-    border-radius: 16px;
 }
 
-.rt-about-menu .rt-main-menu-link {
-    font-size: 1.5rem !important;
+.rt-about-story {
+    padding-right: 1rem;
+}
+
+.rt-about-story h3 {
+    color: var(--dark-text) !important;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.rt-about-story > p {
+    color: var(--primary-purple) !important;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+}
+
+.rt-about-description p {
+    color: var(--gray-text) !important;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.rt-about-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.rt-about-link {
+    color: var(--dark-text) !important;
+    text-decoration: none !important;
+    padding: 10px 15px !important;
+    transition: all 0.2s ease !important;
+    font-weight: 500 !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+    border-radius: 8px !important;
+    display: block !important;
+    border: 1px solid rgba(199, 125, 255, 0.2) !important;
+    font-size: 1rem !important;
+}
+
+.rt-about-link:hover {
+    color: var(--primary-purple) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    transform: translateX(5px) !important;
+    border-color: rgba(199, 125, 255, 0.4) !important;
+}
+
+/* Team Preview Section */
+.rt-about-team {
     text-align: center;
-    padding: 1rem !important;
+}
+
+.rt-about-team h3 {
+    color: var(--dark-text) !important;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+.rt-founders-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.rt-founder-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(114, 22, 244, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.rt-founder-card:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(114, 22, 244, 0.15);
+    border-color: rgba(114, 22, 244, 0.3);
+}
+
+.rt-founder-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(199, 125, 255, 0.3);
+    flex-shrink: 0;
+}
+
+.rt-founder-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+}
+
+/* Specific fix for Tracey's image in dropdown */
+.rt-founder-image img[src*="Tracey-Headshot-Website.png"] {
+    object-fit: cover;
+    object-position: center 20%;
+    transform: scale(1.2);
+}
+
+.rt-founder-info {
+    text-align: left;
+    flex: 1;
+}
+
+.rt-founder-name {
+    font-weight: 600;
+    color: var(--dark-text);
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.rt-founder-role {
+    font-size: 0.85rem;
+    color: var(--gray-text);
+    opacity: 0.8;
+}
+
+.rt-team-cta {
+    background: linear-gradient(135deg, #8f47f6, #7216f4);
+    color: white !important;
+    text-decoration: none !important;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(114, 22, 244, 0.3);
+}
+
+.rt-team-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(114, 22, 244, 0.4);
+    color: white !important;
+    text-decoration: none !important;
+}
+
+/* Stats Section */
+.rt-about-stats {
+    text-align: center;
+}
+
+.rt-about-stats h3 {
+    color: var(--dark-text) !important;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+.rt-stats-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.rt-stat-item {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(114, 22, 244, 0.1);
+    transition: all 0.3s ease;
+}
+
+.rt-stat-item:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(114, 22, 244, 0.15);
+    border-color: rgba(114, 22, 244, 0.3);
+}
+
+.rt-stat-number {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary-purple);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+
+.rt-stat-label {
+    color: var(--gray-text);
+    font-weight: 500;
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+/* Mobile responsiveness for About dropdown */
+@media (max-width: 992px) {
+    .rt-about-enhanced {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+        text-align: center;
+    }
+    
+    .rt-about-story {
+        padding-right: 0;
+    }
+    
+    .rt-founders-grid {
+        flex-direction: row;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    .rt-founder-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+        flex: 1;
+        max-width: 120px;
+    }
+    
+    .rt-founder-info {
+        text-align: center;
+    }
+    
+    .rt-stats-grid {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8rem;
+    }
+    
+    .rt-stat-item {
+        flex: 1;
+        min-width: 120px;
+    }
 }
 
 /* CTA Button */

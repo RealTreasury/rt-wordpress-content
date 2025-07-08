@@ -92,19 +92,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const navContainer = document.querySelector('.rt-nav-container');
         if (!navContainer) return;
 
-        const navContainerRect = navContainer.getBoundingClientRect();
-        const navItemRect = navItem.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
 
-        // Calculate the offset needed to make dropdown full width
-        const leftOffset = -navItemRect.left;
-
         // Apply positioning styles directly - override any CSS conflicts
-        dropdown.style.setProperty('margin-left', `${leftOffset}px`, 'important');
         dropdown.style.setProperty('width', `${viewportWidth}px`, 'important');
         dropdown.style.setProperty('left', '0', 'important');
         dropdown.style.setProperty('right', 'auto', 'important');
         dropdown.style.setProperty('transform', 'none', 'important');
+
+        // CRITICAL: Don't set margin-left, let CSS handle centering
+        dropdown.style.removeProperty('margin-left');
+        dropdown.style.removeProperty('margin-right');
+
+        // Ensure the inner content can center properly
+        const dropdownInner = dropdown.querySelector('.rt-dropdown-inner');
+        if (dropdownInner) {
+            dropdownInner.style.removeProperty('margin-left');
+            dropdownInner.style.removeProperty('margin-right');
+            dropdownInner.style.setProperty('margin', '0 auto', 'important');
+            dropdownInner.style.setProperty('max-width', '1200px', 'important');
+        }
 
         // Ensure seamless connection
         dropdown.style.setProperty('top', 'calc(100% - 1px)', 'important');

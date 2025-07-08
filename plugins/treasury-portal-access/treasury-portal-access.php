@@ -79,6 +79,9 @@ final class Treasury_Portal_Access {
         add_shortcode('portal_button', array($this, 'portal_button_shortcode'));
         add_shortcode('protected_videos', array($this, 'protected_content_shortcode')); // Backward compatibility
         add_shortcode('video_button', array($this, 'portal_button_shortcode')); // Backward compatibility
+
+        // Intercept portal shortcode output when plugin is active
+        add_filter('do_shortcode_tag', array($this, 'intercept_portal_shortcode'), 10, 4);
     }
     
     public function init() {
@@ -612,6 +615,23 @@ final class Treasury_Portal_Access {
     
     public function cf7_missing_notice() {
         echo '<div class="notice notice-error"><p>⚠️ <strong>Treasury Portal Access:</strong> Contact Form 7 is not installed or active. This plugin depends on it to function.</p></div>';
+    }
+
+    /**
+     * Intercept the treasury_portal shortcode output to enforce access control.
+     * If the user lacks portal access, show the standard access required message
+     * instead of the portal content.
+     */
+    public function intercept_portal_shortcode($output, $tag, $attr, $m) {
+        if ($tag === 'treasury_portal') {
+            if ($this->has_portal_access()) {
+                return $output;
+            }
+
+            return $this->render_access_required_message();
+        }
+
+        return $output;
     }
 }
 

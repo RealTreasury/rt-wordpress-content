@@ -217,9 +217,9 @@
             
             <!-- Simplified Hero CTAs - Just 2 clear options -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <button class="open-video-modal">
+                <a href="https://realtreasury.com/treasury-tech-portal/" class="tpa-btn-ready">
                     🎥 Explore the Treasury Tech Portal
-                </button>
+                </a>
                 <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled"
                    target="_blank"
                    class="cta-secondary">
@@ -543,9 +543,9 @@
                     <div class="text-4xl mb-4">🎥</div>
                     <h3 class="text-xl font-bold mb-4">Explore the Portal</h3>
                     <p class="text-gray-600 mb-6 text-sm">Access and compare 27+ vendors and videos</p>
-                    <button class="open-video-modal w-full text-center block cta-secondary">
+                    <a href="https://realtreasury.com/treasury-tech-portal/" class="w-full text-center block cta-secondary tpa-btn-ready">
                         Access Tech Portal
-                    </button>
+                    </a>
                 </div>
 
                 <!-- Option 2: Workshop -->
@@ -592,39 +592,8 @@
             });
         });
 
-        // Video Modal Functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('ERR NOT page loaded - Setting up modal triggers');
-            
-            // Handle video modal button clicks
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('open-video-modal') || 
-                    e.target.closest('.open-video-modal')) {
-                    e.preventDefault();
-                    console.log('Video modal triggered');
-                    
-                    // Try to trigger the WordPress modal system
-                    if (window.parent && window.parent !== window) {
-                        // We're in an iframe, send message to parent
-                        window.parent.postMessage({
-                            action: 'openPortalModal',
-                            source: 'err-not-page'
-                        }, '*');
-                    } else {
-                        // We're in main window, look for modal
-                        const modalTrigger = document.querySelector('a[href="#openPortalModal"]');
-                        if (modalTrigger) {
-                            modalTrigger.click();
-                        } else {
-                            console.log('No modal system found');
-                        }
-                    }
-                }
-            });
-        });
-
         // Analytics tracking for CTAs
-        document.querySelectorAll('.open-video-modal, a[href*="book"], a[href*="mailto"]').forEach(button => {
+        document.querySelectorAll('a[href*="book"], a[href*="mailto"]').forEach(button => {
             button.addEventListener('click', function() {
                 console.log('CTA clicked:', this.textContent.trim());
                 // Add your analytics tracking code here

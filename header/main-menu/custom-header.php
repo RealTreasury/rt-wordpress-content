@@ -45,7 +45,7 @@ function add_my_custom_header_html() {
                                 <div class="rt-main-menu-column rt-topics-column">
                                     <h3>Topics</h3>
                                     <div class="rt-main-menu-links">
-                                        <a href="#openPortalModal" class="rt-main-menu-link">Treasury Tech Portal</a>
+                                        <a href="https://realtreasury.com/treasury-tech-portal/" class="rt-main-menu-link tpa-btn-ready">Treasury Tech Portal</a>
                                         <a href="https://realtreasury.com/errnot/" class="rt-main-menu-link">ERR NOT Method</a>
                                         <a href="https://realtreasury.com/treasury-tech-market/" class="rt-main-menu-link">Treasury Tech Market</a>
                                         <a href="https://realtreasury.com/posts/" class="rt-main-menu-link">All Insights</a>
@@ -98,7 +98,7 @@ function add_my_custom_header_html() {
                                     <div class="rt-service-item">
                                         <div class="rt-service-title">Treasury Tech Portal</div>
                                         <div class="rt-service-desc">Access curated treasury tech stack demos and solution overviews.</div>
-                                        <a href="#openPortalModal" class="rt-service-cta">Request Access</a>
+                                        <a href="https://realtreasury.com/treasury-tech-portal/" class="rt-service-cta tpa-btn-ready">Request Access</a>
                                     </div>
                                     <div class="rt-service-item">
                                         <div class="rt-service-title">Treasury Insights Workshop</div>
@@ -133,7 +133,7 @@ function add_my_custom_header_html() {
                 </div>
                 <!-- View Portal -->
                 <div class="rt-nav-item">
-                    <a href="#openPortalModal" class="rt-cta-button tpa-btn-loading" id="portalAccessBtn">VIEW PORTAL</a>
+                    <a href="https://realtreasury.com/treasury-tech-portal/" class="rt-cta-button tpa-btn-ready" id="portalAccessBtn">VIEW PORTAL</a>
                 </div>
             </div>
         </div>

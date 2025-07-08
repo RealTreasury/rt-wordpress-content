@@ -3817,9 +3817,9 @@ a[href="#openportalmodal"] {
 /* Enhanced Services Dropdown Container */
 .rt-services-enhanced {
     display: grid;
-    grid-template-columns: 260px 1fr 220px;
+    grid-template-columns: 260px 1fr 280px;
     gap: 2rem;
-    max-width: 1000px;
+    max-width: 1080px;
     margin: 0 auto;
     min-height: 420px; /* Reduced from 480px */
 }

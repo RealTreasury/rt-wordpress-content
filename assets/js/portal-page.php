@@ -1,212 +1,149 @@
-// Portal Page FOUC Prevention - Inline JavaScript
-add_action('wp_footer', 'add_portal_page_fouc_script', 5);
-function add_portal_page_fouc_script() {
-    // Only run on treasury portal page
-    if (!is_page('treasury-tech-portal') && 
-        strpos($_SERVER['REQUEST_URI'], 'treasury-tech-portal') === false) {
-        return;
-    }
-    ?>
-    <script>
-    // Portal Page FOUC Prevention Script - Enhanced Version
-    document.addEventListener('DOMContentLoaded', function() {
-        
-        // Only run on treasury portal page
-        if (!window.location.pathname.includes('treasury-tech-portal')) {
-            return;
-        }
-        
-        console.log('🏛️ Treasury Portal: Initializing FOUC prevention...');
-        
-        // Add loading class immediately if not already added
-        if (!document.body.classList.contains('treasury-portal-loading')) {
-            document.body.classList.add('treasury-portal-loading');
-        }
-        
-        // Create and show loading screen
-        let loader = document.querySelector('.treasury-portal-loader');
-        if (!loader) {
-            loader = document.createElement('div');
-            loader.className = 'treasury-portal-loader';
-            loader.innerHTML = \`
-                <div class="loader-content">
-                    <div class="loader-icon">🏛️</div>
-                    <h3>Treasury Portal</h3>
-                    <p>Verifying access and loading content...</p>
-                    <div class="treasury-portal-spinner"></div>
-                </div>
-            \`;
-            document.body.appendChild(loader);
-        }
-        
-        // Function to hide loader and show content
-        function showPortalContent() {
-            console.log('✅ Treasury Portal: Showing content');
-            
-            // Hide loader
-            if (loader) {
-                loader.classList.add('hidden');
-            }
-            
-            // Show portal content
-            document.body.classList.remove('treasury-portal-loading');
-            document.body.classList.add('treasury-portal-ready');
-            
-            // Notify TPA if available
-            if (window.TPA && typeof window.TPA.onPortalReady === 'function') {
-                window.TPA.onPortalReady();
-            }
-            
-            // Remove loader after animation
-            setTimeout(() => {
-                if (loader && loader.parentNode) {
-                    loader.parentNode.removeChild(loader);
-                }
-            }, 500);
-        }
-        
-        // Check if user has access and content is ready
-        let accessVerified = false;
-        let contentReady = false;
-        
-        function checkReadyState() {
-            if (accessVerified && contentReady) {
-                showPortalContent();
-            }
-        }
-        
-        // Verify access (check for cookie or TPA instance)
-        function verifyAccess() {
-            // Check cookie first
-            if (document.cookie.includes('portal_access_token=')) {
-                console.log('✅ Portal access cookie found');
-                accessVerified = true;
-                checkReadyState();
-                return;
-            }
-            
-            // Check TPA instance
-            if (window.TPA && typeof window.TPA.has_portal_access === 'function') {
-                if (window.TPA.has_portal_access()) {
-                    console.log('✅ Portal access verified via TPA');
-                    accessVerified = true;
-                    checkReadyState();
-                    return;
-                }
-            }
-            
-            // Check localStorage backup
-            const localData = localStorage.getItem('tpa_access_token');
-            if (localData) {
-                try {
-                    const storedData = JSON.parse(localData);
-                    const duration = 180 * 24 * 60 * 60; // 180 days in seconds
-                    if (storedData && storedData.email && (Date.now()/1000 - storedData.timestamp) < duration) {
-                        console.log('✅ Portal access found in localStorage');
-                        accessVerified = true;
-                        checkReadyState();
-                        return;
-                    }
-                } catch (e) {
-                    console.log('❌ Error parsing localStorage access data');
-                }
-            }
-            
-            // No access found - redirect or show access required
-            console.log('❌ No portal access found');
-            setTimeout(() => {
-                // Update loader to show access required message
-                if (loader) {
-                    loader.innerHTML = \`
-                        <div class="loader-content">
-                            <div class="loader-icon">🔐</div>
-                            <h3>Access Required</h3>
-                            <p>Redirecting to access form...</p>
-                            <div class="treasury-portal-spinner"></div>
-                        </div>
-                    \`;
-                }
-                
-                // Redirect after a moment
-                setTimeout(() => {
-                    window.location.href = '/?portal_access_required=1&t=' + Date.now();
-                }, 2000);
-            }, 1000);
-        }
-        
-        // Check if content is loaded
-        function checkContentReady() {
-            // Wait for critical elements to be present
-            const portalContainer = document.querySelector('.treasury-portal');
-            const navigation = document.querySelector('.rt-nav-container');
-            
-            if (portalContainer && navigation) {
-                // Wait a bit more for full initialization
-                setTimeout(() => {
-                    console.log('✅ Portal content ready');
-                    contentReady = true;
-                    checkReadyState();
-                }, 500);
-            } else {
-                // Keep checking
-                setTimeout(checkContentReady, 100);
-            }
-        }
-        
-        // Start verification processes
-        setTimeout(() => {
-            verifyAccess();
-            checkContentReady();
-        }, 300);
-        
-        // Fallback: Show content after maximum wait time
-        setTimeout(() => {
-            if (!accessVerified || !contentReady) {
-                console.log('⚠️ Portal: Fallback timeout reached, showing content');
-                showPortalContent();
-            }
-        }, 5000);
-        
-        // Handle access granted parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('access_granted') === '1') {
-            console.log('🎉 Portal: Access just granted, expediting content display');
-            accessVerified = true;
-            // Shorter wait time for newly granted access
-            setTimeout(() => {
-                if (!contentReady) {
-                    contentReady = true;
-                    checkReadyState();
-                }
-            }, 1000);
-        }
-        
-        // Expose functions for TPA integration
-        window.PortalPage = {
-            showContent: showPortalContent,
-            verifyAccess: verifyAccess,
-            isReady: () => accessVerified && contentReady
-        };
-    });
-    </script>
-    <?php
-}
-
-// Add critical inline script to head to prevent FOUC immediately
-add_action('wp_head', 'add_critical_portal_fouc_prevention', 1);
-function add_critical_portal_fouc_prevention() {
+// AGGRESSIVE FOUC Prevention - Treasury Portal
+add_action('wp_head', 'treasury_portal_immediate_fouc_prevention', 1);
+function treasury_portal_immediate_fouc_prevention() {
     if (is_page('treasury-tech-portal') || 
         strpos($_SERVER['REQUEST_URI'], 'treasury-tech-portal') !== false) {
         ?>
-        <script>
-        // Immediate FOUC prevention
-        if (document.body) {
-            document.body.classList.add('treasury-portal-loading');
-        } else {
-            document.addEventListener('DOMContentLoaded', function() {
-                document.body.classList.add('treasury-portal-loading');
-            });
+        <style>
+        /* IMMEDIATE FOUC PREVENTION - HIGHEST PRIORITY */
+        body.treasury-portal-page,
+        body[class*="treasury-tech-portal"],
+        .treasury-portal,
+        .entry-content {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: none !important;
         }
+        
+        /* Loading screen shows immediately */
+        .treasury-portal-loader {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            background: linear-gradient(135deg, rgba(40, 19, 69, 0.95), rgba(114, 22, 244, 0.9)) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 999999 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .treasury-portal-loader .loader-content {
+            background: white !important;
+            padding: 40px !important;
+            border-radius: 20px !important;
+            text-align: center !important;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+        }
+        
+        .treasury-portal-spinner {
+            width: 40px !important;
+            height: 40px !important;
+            margin: 20px auto !important;
+            border: 4px solid #7216f4 !important;
+            border-top: 4px solid transparent !important;
+            border-radius: 50% !important;
+            animation: portal-spin 1s linear infinite !important;
+        }
+        
+        @keyframes portal-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Show content only when ready */
+        body.treasury-portal-ready .treasury-portal,
+        body.treasury-portal-ready .entry-content {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transition: opacity 0.3s ease !important;
+        }
+        
+        body.treasury-portal-ready .treasury-portal-loader {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+        </style>
+        
+        <script>
+        // IMMEDIATE execution - no waiting
+        (function() {
+            // Add body classes immediately
+            document.documentElement.classList.add('treasury-portal-loading');
+            
+            // Create loader immediately
+            var loader = document.createElement('div');
+            loader.className = 'treasury-portal-loader';
+            loader.innerHTML = '<div class="loader-content"><div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div><h3 style="color: #7216f4; margin: 0 0 15px 0;">Treasury Portal</h3><p style="color: #666; margin: 0 0 20px 0;">Verifying access...</p><div class="treasury-portal-spinner"></div></div>';
+            
+            // Add to page immediately
+            if (document.body) {
+                document.body.appendChild(loader);
+                document.body.classList.add('treasury-portal-loading');
+            } else {
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.body.appendChild(loader);
+                    document.body.classList.add('treasury-portal-loading');
+                });
+            }
+            
+            // Access verification
+            function verifyAndShow() {
+                var hasAccess = false;
+                
+                // Check cookie
+                if (document.cookie.includes('portal_access_token=')) {
+                    hasAccess = true;
+                    console.log('✅ Portal access found');
+                }
+                
+                // Check localStorage
+                if (!hasAccess) {
+                    try {
+                        var localData = localStorage.getItem('tpa_access_token');
+                        if (localData) {
+                            var storedData = JSON.parse(localData);
+                            var duration = 180 * 24 * 60 * 60;
+                            if (storedData && storedData.email && (Date.now()/1000 - storedData.timestamp) < duration) {
+                                hasAccess = true;
+                                console.log('✅ Portal access found in localStorage');
+                            }
+                        }
+                    } catch (e) {}
+                }
+                
+                if (hasAccess) {
+                    // Show content
+                    setTimeout(function() {
+                        document.body.classList.remove('treasury-portal-loading');
+                        document.body.classList.add('treasury-portal-ready');
+                        console.log('✅ Portal content shown');
+                    }, 800);
+                } else {
+                    // Redirect to access form
+                    console.log('❌ No access - redirecting');
+                    setTimeout(function() {
+                        window.location.href = '/?portal_access_required=1&t=' + Date.now();
+                    }, 1500);
+                }
+            }
+            
+            // Run verification after short delay
+            setTimeout(verifyAndShow, 500);
+            
+            // Fallback
+            setTimeout(function() {
+                if (!document.body.classList.contains('treasury-portal-ready')) {
+                    console.log('⚠️ Fallback: Showing content');
+                    document.body.classList.remove('treasury-portal-loading');
+                    document.body.classList.add('treasury-portal-ready');
+                }
+            }, 4000);
+        })();
         </script>
         <?php
     }

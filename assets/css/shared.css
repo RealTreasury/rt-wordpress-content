@@ -1618,6 +1618,12 @@ body.banner-closed {
     border: 1px solid rgba(114, 22, 244, 0.2);
 }
 
+/* Ensure overlay positions relative to the explore image link */
+.rt-explore-link {
+    position: relative;
+    display: block;
+}
+
 /* Overlay title used in the Insights dropdown image */
 .chart-title-overlay {
     position: absolute;

@@ -31,8 +31,7 @@ function add_my_custom_header_html() {
                         <div class="rt-dropdown-inner">
                             <div class="rt-main-menu">
                                 <div class="rt-main-menu-column">
-                                    <h3>Explore</h3>
-                                    <a href="https://realtreasury.com/treasury-tech-market/">
+                                    <a href="https://realtreasury.com/treasury-tech-market/" class="rt-explore-link">
                                         <div class="chart-title-overlay">
                                             <h3>Treasury &amp; Risk Management Systems</h3>
                                             <p>North America</p>

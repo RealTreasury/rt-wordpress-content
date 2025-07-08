@@ -223,6 +223,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         "websiteUrl": "https://treasurycube.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
                         "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Cube.png"
                     },
+                    {
+                        "name": "Openlink",
+                        "category": "TRMS",
+                        "desc": "Integrated trading, treasury, and risk management platform for energy and commodity businesses, providing real-time analytics and comprehensive compliance controls.",
+                        "features": ["Commodity trading", "Treasury management", "Derivatives valuation", "Risk analytics", "Hedge management", "Regulatory compliance"],
+                        "target": "Energy and commodity firms plus large corporates with complex trading and treasury operations",
+                        "websiteUrl": "https://iongroup.com/products/treasury/openlink/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/Openlink.png"
+                    },
 
                     // CASH
                     {

@@ -1,6 +1,6 @@
 # Treasury Logo Carousel Widget
 
-A clean, responsive logo carousel showcasing all 27 treasury technology vendors from the RealTreasury portal with a professional header.
+A clean, responsive logo carousel showcasing all 28 treasury technology vendors from the RealTreasury portal with a professional header.
 
 - **Professional Header**: Displays "North American Treasury Tech Vendors" heading with vendor count
 - **True Infinite Scroll**: Seamless continuous loop with no visible jumps or resets
@@ -24,7 +24,7 @@ Simply embed the `index.html` file into any webpage or use as an iframe:
 - Customize header text and styling in the widget-header section
 
 ### Vendor Data
-Contains 27 treasury vendors with proper UTM tracking for analytics.
+Contains data for 28 treasury technology vendors with proper UTM tracking for analytics.
 
 ## Integration Options
 The widget can be embedded in several ways:

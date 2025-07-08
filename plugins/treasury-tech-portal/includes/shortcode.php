@@ -31,7 +31,7 @@ if (!defined("ABSPATH")) exit;
 
                     <div class="stats-bar">
                         <div class="stat-card">
-                            <div class="stat-number" id="totalTools">27</div>
+                            <div class="stat-number" id="totalTools">28</div>
                             <div class="stat-label">Tools</div>
                         </div>
                         <div class="stat-card">

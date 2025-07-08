@@ -1504,6 +1504,15 @@ body.banner-closed {
     --nav-height: 80px;
     --banner-height: 80px;
     --banner-height-minimized: 60px;
+    --dropdown-bg: linear-gradient(135deg,
+        hsla(0, 0%, 100%, .55),
+        hsla(0, 0%, 97%, .6) 50%,
+        hsla(0, 0%, 100%, .55));
+    --dropdown-inner-bg: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.15),
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.15));
+    --dropdown-border-color: rgba(199, 125, 255, .35);
 }
 
 /* Main Header Container */
@@ -1651,13 +1660,10 @@ body.banner-closed {
     justify-content: center;
 
     /* Enhanced glassmorphism background for better contrast */
-    background: linear-gradient(135deg,
-        hsla(0, 0%, 100%, .35),
-        hsla(0, 0%, 97%, .4) 50%,
-        hsla(0, 0%, 100%, .35)) !important;
+    background: var(--dropdown-bg) !important;
     backdrop-filter: blur(50px) saturate(160%) brightness(1.1) !important;
     -webkit-backdrop-filter: blur(50px) saturate(160%) brightness(1.1) !important;
-    border: 1px solid rgba(199, 125, 255, .25) !important;
+    border: 1px solid var(--dropdown-border-color) !important;
     border-top: none !important;
     box-shadow: 0 8px 32px rgba(114, 22, 244, .08), 0 0 0 1px rgba(255, 255, 255, .3) inset !important;
     border-radius: 0 !important;
@@ -1695,10 +1701,7 @@ body.banner-closed {
     right: auto !important;
     transform: none !important;
     /* Add subtle inner background for better text contrast */
-    background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.08),
-        rgba(255, 255, 255, 0.04) 50%,
-        rgba(255, 255, 255, 0.08)) !important;
+    background: var(--dropdown-inner-bg) !important;
     border-radius: 8px !important;
 }
 

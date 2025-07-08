@@ -1700,8 +1700,8 @@ body.banner-closed {
     padding: 8px 14px;
 }
 .rt-main-menu .chart-title-overlay h3 {
-    font-size: 0.75rem;
-    white-space: normal;
+    font-size: 0.6rem;
+    white-space: nowrap;
 }
 .rt-main-menu .chart-title-overlay p {
     font-size: 0.75rem;

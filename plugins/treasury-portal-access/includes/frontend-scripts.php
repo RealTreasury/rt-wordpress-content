@@ -187,6 +187,7 @@ body.modal-open {
         accessDuration: <?php echo (int) get_option('tpa_access_duration', 180) * 86400; ?>,
         redirectUrl: '<?php echo esc_js(get_option('tpa_redirect_url', home_url('/treasury-tech-portal/'))); ?>',
         isRedirecting: false,
+        shouldAutoOpen: false,
         
         init: function() {
             this.modal = document.getElementById('portalModal');
@@ -194,6 +195,9 @@ body.modal-open {
                 console.error('TPA Error: Modal element #portalModal not found.');
                 return;
             }
+
+            // Check if we should auto-open modal for direct URL visits
+            this.checkAutoOpen();
 
             // Immediate access check
             this.quickAccessCheck();
@@ -203,6 +207,11 @@ body.modal-open {
                 this.updateHeaderButton();
                 this.addEventListeners();
                 this.showButtons();
+
+                // Handle auto-open after DOM is ready
+                if (this.shouldAutoOpen) {
+                    setTimeout(() => this.openModal(), 500);
+                }
             });
         },
 
@@ -221,6 +230,39 @@ body.modal-open {
                     console.log('TPA: Error parsing stored access data');
                 }
             }
+        },
+
+        checkAutoOpen: function() {
+            const portalUrl = this.redirectUrl.replace(/\/$/, '');
+            const currentUrl = window.location.href.replace(/\/$/, '');
+            const isPortalUrl = currentUrl === portalUrl ||
+                               currentUrl === portalUrl + '/' ||
+                               window.location.pathname === '/treasury-tech-portal/' ||
+                               window.location.pathname === '/treasury-tech-portal';
+
+            if (isPortalUrl) {
+                const hasCookie = document.cookie.includes('portal_access_token=');
+                const hasLocalStorage = this.checkLocalStorageAccess();
+
+                if (!hasCookie && !hasLocalStorage) {
+                    this.shouldAutoOpen = true;
+                    console.log('TPA: Will auto-open modal for portal URL without access');
+                }
+            }
+        },
+
+        checkLocalStorageAccess: function() {
+            try {
+                const localData = localStorage.getItem('tpa_access_token');
+                if (localData) {
+                    const storedData = JSON.parse(localData);
+                    return storedData && storedData.email &&
+                           (Date.now()/1000 - storedData.timestamp) < this.accessDuration;
+                }
+            } catch (e) {
+                console.log('TPA: Error checking localStorage access');
+            }
+            return false;
         },
 
         preUpdateButtons: function() {
@@ -347,7 +389,33 @@ body.modal-open {
         }
     };
 
-    window.TPA.init();
+window.TPA.init();
 
 })();
+</script>
+<script>
+// Emergency fallback for direct portal URL visits
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we're on the portal page without access
+    const isPortalPage = window.location.pathname.includes('treasury-tech-portal');
+    const hasAccess = document.cookie.includes('portal_access_token=');
+
+    if (isPortalPage && !hasAccess) {
+        console.log('TPA Emergency: Portal page without access detected');
+
+        // Wait for TPA to load, then open modal
+        let attempts = 0;
+        const checkAndOpen = setInterval(function() {
+            attempts++;
+            if (window.TPA && window.TPA.openModal) {
+                console.log('TPA Emergency: Opening modal');
+                window.TPA.openModal();
+                clearInterval(checkAndOpen);
+            } else if (attempts > 10) {
+                console.log('TPA Emergency: Could not find TPA object after 10 attempts');
+                clearInterval(checkAndOpen);
+            }
+        }, 500);
+    }
+});
 </script>

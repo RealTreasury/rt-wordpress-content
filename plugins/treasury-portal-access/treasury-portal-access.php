@@ -233,7 +233,8 @@ final class Treasury_Portal_Access {
             'path'     => COOKIEPATH,
             'domain'   => COOKIE_DOMAIN,
             'secure'   => is_ssl(),
-            'httponly' => true,
+            // Frontend scripts need to read this cookie to update buttons
+            'httponly' => false,
             'samesite' => 'Lax'
         ];
         setcookie('portal_access_token', $access_token, $options);

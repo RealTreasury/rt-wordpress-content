@@ -355,6 +355,12 @@ if (empty($form_id)) {
                     e.preventDefault();
                     this.closeModal();
                 }
+
+                const btn = e.target.closest('[data-href]');
+                if (btn && !btn.classList.contains('open-portal-modal')) {
+                    e.preventDefault();
+                    window.location.href = btn.getAttribute('data-href');
+                }
             });
 
             document.addEventListener('keydown', e => {

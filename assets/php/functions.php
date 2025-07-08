@@ -1256,8 +1256,16 @@ function tpa_basic_fallback_gate() {
     }
 }
 
-add_action('wpcf7_mail_sent', 'tpa_enhanced_cookie_handler', 10, 1);
+// Skip fallback handler when official plugin is active
+if ( ! class_exists( 'Treasury_Portal_Access' ) ) {
+    add_action( 'wpcf7_mail_sent', 'tpa_enhanced_cookie_handler', 10, 1 );
+}
 function tpa_enhanced_cookie_handler($contact_form) {
+    // Skip fallback cookie when official plugin handles access
+    if ( class_exists( 'Treasury_Portal_Access' ) ) {
+        return;
+    }
+
     $portal_form_id = get_option('tpa_form_id');
 
     // Auto-detect the form if no ID configured

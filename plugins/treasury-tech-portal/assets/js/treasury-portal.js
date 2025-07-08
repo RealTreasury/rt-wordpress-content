@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "target": "Financial institutions and corporations with complex derivative portfolios",
                         "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/reval/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
-                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/Reval.png"
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Reval.png"
                     }, {
                         "name": "Quantum",
                         "category": "TRMS",
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "target": "Large banks and corporations requiring full-scale treasury operations",
                         "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/wallstreet-suite/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
-                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/Openlink.png"
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Openlink.png"
                     }, {
                         "name": "ATOM",
                         "category": "TRMS",
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "target": "Large enterprises seeking integrated treasury technology solutions",
                         "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/it2/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
-                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/IT2.png"
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/IT2.png"
                     }, {
                         "name": "Datalog",
                         "category": "TRMS",
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "target": "Mid-market companies seeking accessible treasury management solutions",
                         "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/treasura/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
-                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/Treasura.png"
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Treasura.png"
                     }, {
                         "name": "Treasury Curve",
                         "category": "LITE",
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "target": "Mid-market companies seeking practical and growth-oriented solutions",
                         "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/city-financials/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
-                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/City-Financials.png"
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/City-Financials.png"
                     }, {
                         "name": "HighRadius",
                         "category": "LITE",

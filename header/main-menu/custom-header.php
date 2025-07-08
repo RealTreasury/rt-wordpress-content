@@ -120,8 +120,8 @@ function add_my_custom_header_html() {
                                 <!-- Services Main (Center Column) -->
                                 <div class="rt-services-main">
                                     <div class="rt-services-header">
-                                        <h3>Treasury Technology Solutions</h3>
-                                        <div class="rt-services-subtitle">Independent guidance for smarter treasury decisions</div>
+                                        <h3>Treasury Technology Selection</h3>
+                                        <div class="rt-services-subtitle">Independent guidance for smarter technology decisions</div>
                                     </div>
 
                                     <div class="rt-services-grid">

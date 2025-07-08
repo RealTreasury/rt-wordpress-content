@@ -1300,6 +1300,25 @@ body.modal-open {
     padding: 0 !important;
 }
 
+/* Ensure nav items don't constrain dropdown width */
+.rt-nav-item {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Allow overflow for full-width dropdowns */
+    overflow: visible !important;
+}
+
+/* Ensure nav container allows overflow */
+.rt-nav-container,
+.rt-nav-wrapper,
+.rt-nav {
+    overflow: visible !important;
+}
+
 /* Override any banner-specific nav positioning that might interfere */
 body.banner-present .rt-nav-container,
 body.banner-minimized .rt-nav-container,
@@ -1409,15 +1428,17 @@ body.banner-closed {
  * gap when the dropdown was positioned absolutely.
  */
 
-/* Dropdown Menu - FIXED VERSION */
+/* Dropdown Menu - FULL WIDTH WITHOUT GAP */
 .rt-dropdown {
-    /* Use fixed positioning for true full-width */
-    position: fixed !important;
-    top: 80px !important; /* Height of nav bar */
+    /* Absolute positioning to maintain connection with nav */
+    position: absolute !important;
+    top: 100% !important;
     left: 0 !important;
     right: 0 !important;
+
+    /* Full viewport width using viewport-based positioning */
     width: 100vw !important;
-    max-width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
 
     /* Style properties */
     background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9)) !important;
@@ -1432,42 +1453,23 @@ body.banner-closed {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-
-    /* Simple transition - only opacity */
     transition: opacity 0.2s ease, visibility 0.2s ease !important;
 
     z-index: 1000000;
     overflow: hidden;
-
-    /* Remove all margins, padding that could create space */
-    margin: 0 !important;
     padding: 0 !important;
 }
 
-
-/* Adjust dropdown position based on banner state */
-body.banner-present .rt-dropdown {
-    top: 160px !important; /* 80px banner + 80px nav */
-}
-
-body.banner-minimized .rt-dropdown {
-    top: 140px !important; /* 60px minimized banner + 80px nav */
-}
-
-body.banner-closed .rt-dropdown {
-    top: 80px !important; /* Just nav height */
-}
-
-@media (max-width: 992px) {
-    .rt-dropdown {
-        top: 70px !important; /* Mobile nav height */
-    }
-    body.banner-present .rt-dropdown {
-        top: 150px !important;
-    }
-    body.banner-minimized .rt-dropdown {
-        top: 130px !important;
-    }
+/* Ensure seamless dropdown connection */
+.rt-dropdown::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: inherit;
+    z-index: 1;
 }
 
 
@@ -1501,11 +1503,13 @@ body.banner-closed .rt-dropdown {
     z-index: 1000001;
 }
 
-/* Force dropdown to start exactly at nav bottom */
-.rt-nav-item.active .rt-dropdown {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-}
+/*
+ * .rt-nav-item.active .rt-dropdown {
+ *     margin-top: 0 !important;
+ *     padding-top: 0 !important;
+ *     top: calc(100% + 0px) !important;
+ * }
+ */
 
 /* Remove any potential spacing from dropdown container */
 .rt-dropdown-inner {

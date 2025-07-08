@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            
+
             const navItem = this.closest('.rt-nav-item');
             const isActive = navItem.classList.contains('active');
             
@@ -76,6 +76,31 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 navItem.classList.remove('active');
             }
+
+            // After toggling active class, position the dropdown
+            if (navItem.classList.contains('active')) {
+                positionDropdown(navItem);
+            }
+        });
+    });
+
+    // Calculate and set dropdown position for full width
+    function positionDropdown(navItem) {
+        const dropdown = navItem.querySelector('.rt-dropdown');
+        if (!dropdown) return;
+
+        const navItemRect = navItem.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+
+        const leftOffset = -navItemRect.left;
+        dropdown.style.setProperty('margin-left', `${leftOffset}px`, 'important');
+        dropdown.style.setProperty('width', `${viewportWidth}px`, 'important');
+    }
+
+    // Recalculate on window resize
+    window.addEventListener('resize', function() {
+        document.querySelectorAll('.rt-nav-item.active').forEach(navItem => {
+            positionDropdown(navItem);
         });
     });
     
@@ -118,27 +143,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Enhanced dropdown positioning fix
-    function fixDropdownPositioning() {
-        const activeDropdowns = document.querySelectorAll('.rt-nav-item.active .rt-dropdown');
-        activeDropdowns.forEach(dropdown => {
-            dropdown.style.transform = 'translateY(0)';
-            dropdown.style.top = 'calc(100% - 1px)';
-        });
-    }
-
-    const dropdownObserver = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const target = mutation.target;
-                if (target.classList.contains('rt-nav-item') && target.classList.contains('active')) {
-                    setTimeout(fixDropdownPositioning, 10);
-                }
-            }
-        });
-    });
-
-    document.querySelectorAll('.rt-nav-item').forEach(item => {
-        dropdownObserver.observe(item, { attributes: true });
-    });
 });

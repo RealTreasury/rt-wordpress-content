@@ -122,10 +122,70 @@ function add_my_custom_header_html() {
                     </a>
                     <div class="rt-dropdown">
                         <div class="rt-dropdown-inner">
-                            <div class="rt-about-menu">
-                                <div class="rt-main-menu-links">
-                                    <a href="https://realtreasury.com/about/" class="rt-main-menu-link">About Us</a>
-                                    <a href="https://realtreasury.com/team/" class="rt-main-menu-link">Team</a>
+                            <div class="rt-about-enhanced">
+                                <!-- Company Story -->
+                                <div class="rt-about-story">
+                                    <h3>Our Mission</h3>
+                                    <p>Independent. Unbiased. Built for Treasury Teams.</p>
+                                    <div class="rt-about-description">
+                                        <p>We help finance leaders select treasury technology faster—with confidence, clarity, and zero vendor bias.</p>
+                                        <p>Founded by former enterprise treasury practitioners who grew tired of the traditional consulting model.</p>
+                                    </div>
+                                    <div class="rt-about-links">
+                                        <a href="https://realtreasury.com/about/" class="rt-about-link">Our Story</a>
+                                        <a href="https://realtreasury.com/errnot/" class="rt-about-link">Our Method</a>
+                                    </div>
+                                </div>
+
+                                <!-- Team Preview -->
+                                <div class="rt-about-team">
+                                    <h3>Meet the Founders</h3>
+                                    <div class="rt-founders-grid">
+                                        <div class="rt-founder-card">
+                                            <div class="rt-founder-image">
+                                                <img src="https://realtreasury.com/wp-content/uploads/2025/06/Tim-Schultz-website-headshot_046.jpg" 
+                                                     alt="Tim Schultz" loading="lazy">
+                                            </div>
+                                            <div class="rt-founder-info">
+                                                <div class="rt-founder-name">Tim</div>
+                                                <div class="rt-founder-role">Co-Founder</div>
+                                            </div>
+                                        </div>
+                                        <div class="rt-founder-card">
+                                            <div class="rt-founder-image">
+                                                <img src="https://realtreasury.com/wp-content/uploads/2025/06/Tracey-Headshot-Website.png" 
+                                                     alt="Tracey Knight" loading="lazy">
+                                            </div>
+                                            <div class="rt-founder-info">
+                                                <div class="rt-founder-name">Tracey</div>
+                                                <div class="rt-founder-role">Co-Founder</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="https://realtreasury.com/team/" class="rt-team-cta">Meet the Team</a>
+                                </div>
+
+                                <!-- Key Stats -->
+                                <div class="rt-about-stats">
+                                    <h3>By the Numbers</h3>
+                                    <div class="rt-stats-grid">
+                                        <div class="rt-stat-item">
+                                            <div class="rt-stat-number">45+</div>
+                                            <div class="rt-stat-label">Years Combined Experience</div>
+                                        </div>
+                                        <div class="rt-stat-item">
+                                            <div class="rt-stat-number">100+</div>
+                                            <div class="rt-stat-label">Vendors Evaluated</div>
+                                        </div>
+                                        <div class="rt-stat-item">
+                                            <div class="rt-stat-number">100%</div>
+                                            <div class="rt-stat-label">Independent & Unbiased</div>
+                                        </div>
+                                        <div class="rt-stat-item">
+                                            <div class="rt-stat-number">4-6</div>
+                                            <div class="rt-stat-label">Weeks to Selection</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

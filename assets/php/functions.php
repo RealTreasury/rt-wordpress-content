@@ -335,22 +335,7 @@ function add_sitewide_cookie_banner() {
 }
 
 
-// Add modal bridge script globally
-function add_modal_bridge_script() {
-    ?>
-    <script>
-    window.addEventListener('message', function(event) {
-        if (event.data && event.data.action === 'openPortalModal') {
-            const modalTrigger = document.querySelector('a[href="#openPortalModal"]');
-            if (modalTrigger) {
-                modalTrigger.click();
-            }
-        }
-    });
-    </script>
-    <?php
-}
-add_action('wp_footer', 'add_modal_bridge_script');
+
 
 // Tawk.to Chat Widget Integration for Real Treasury - SMALLER VERSION
 add_action('wp_footer', 'add_tawk_to_chat_widget');
@@ -1490,8 +1475,7 @@ function tpa_theme_compatibility_check() {
         }
     }
     
-    // Remove any conflicting theme functions that might duplicate plugin functionality
-    remove_action('wp_footer', 'add_modal_bridge_script', 10);
+
     
     // Ensure the theme works with plugin's cache settings
     if (strpos($_SERVER['REQUEST_URI'], 'treasury-tech-portal') !== false) {

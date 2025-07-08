@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "target": "Large banks and corporations requiring full-scale treasury operations",
                         "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/wallstreet-suite/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
-                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/Openlink.png"
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/Wallstreet-Suite.png"
                     }, {
                         "name": "ATOM",
                         "category": "TRMS",

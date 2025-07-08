@@ -39,7 +39,7 @@ Displays content only to users who have granted access. You can also specify `co
 Inserts a button that opens the access form modal.
 
 ```
-<a href="#openPortalModal" class="open-portal-modal">Access Portal</a>
+<a href="#openPortalModal">Access Portal</a>
 ```
 Manually trigger the modal from a custom link or button.
 

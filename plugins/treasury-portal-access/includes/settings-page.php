@@ -91,7 +91,7 @@ if (class_exists('WPCF7_ContactForm')) {
                     <h3 style="color: #7216f4; margin-top: 0;">Shortcode Reference</h3>
                     <p><strong>Protected Content:</strong><br><code>[protected_content]...[/protected_content]</code></p>
                     <p><strong>Portal Button:</strong><br><code>[portal_button text="Access Portal"]</code></p>
-                    <p><strong>Manual Trigger:</strong><br><code>&lt;a href="#openPortalModal" class="open-portal-modal"&gt;Open Modal&lt;/a&gt;</code></p>
+                    <p><strong>Manual Trigger:</strong><br><code>&lt;a href="#openPortalModal"&gt;Open Modal&lt;/a&gt;</code></p>
                 </div>
             </div>
         </div>

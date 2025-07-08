@@ -56,11 +56,6 @@ if (empty($form_id)) {
 
             // Full initialization on DOM ready
             document.addEventListener('DOMContentLoaded', () => {
-                // Ensure any links using the old href have the proper trigger class
-                document.querySelectorAll('a[href="#openPortalModal"]').forEach(link => {
-                    link.classList.add('open-portal-modal');
-                });
-
                 this.checkAccessPersistence();
                 this.updateHeaderButton(); // Check header button state
                 this.addEventListeners();

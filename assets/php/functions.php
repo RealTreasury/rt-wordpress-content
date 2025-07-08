@@ -1192,9 +1192,10 @@ add_action('rest_api_init', function() {
  * This function supplements the plugin's functionality by adding page-level gating
  */
 // Register the gate only when the plugin is inactive
-if (!class_exists('Treasury_Portal_Access')) {
-    add_action('wp', 'tpa_enhanced_portal_gate', 1);
-}
+// Disabled: leave plugin to manage portal access exclusively
+// if (!class_exists('Treasury_Portal_Access')) {
+//     add_action('wp', 'tpa_enhanced_portal_gate', 1);
+// }
 function tpa_enhanced_portal_gate() {
 
     // Early return if not main query, admin area, or AJAX

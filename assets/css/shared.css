@@ -858,6 +858,50 @@ body.modal-open {
         .testimonial-card:before {
             display: none !important;
         }
+
+        .testimonial-card {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.8) 0%,
+                    rgba(248, 248, 248, 0.9) 50%,
+                    rgba(255, 255, 255, 0.8) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            padding: 48px 40px;
+            border-radius: 24px;
+            border: 2px solid rgba(199, 125, 255, 0.25);
+            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(114, 22, 244, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .testimonial-quote {
+            font-size: 1.6rem;
+            font-style: italic;
+            margin-bottom: 32px;
+            line-height: 1.6;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+
+        .testimonial-author {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-purple);
+        }
+
+        .testimonial-role {
+            opacity: 0.8;
+            margin-top: 8px;
+            font-size: 1rem;
+            color: var(--gray-text);
+        }
         :root {
             --glass-purple-tint-wp-final: linear-gradient(135deg, rgba(114, 22, 244, .6), rgba(80, 15, 171, .7));
             --glass-purple-tint-hover-wp-final: linear-gradient(135deg, rgba(114, 22, 244, .7), rgba(80, 15, 171, .8));

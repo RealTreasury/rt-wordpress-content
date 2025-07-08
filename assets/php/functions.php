@@ -1193,7 +1193,10 @@ add_action('rest_api_init', function() {
  * CRITICAL: Portal access gate that works WITH the Treasury Portal Access plugin
  * This function supplements the plugin's functionality by adding page-level gating
  */
-add_action('wp', 'tpa_enhanced_portal_gate', 1);
+// Register the gate only when the plugin is inactive
+if (!class_exists('Treasury_Portal_Access')) {
+    add_action('wp', 'tpa_enhanced_portal_gate', 1);
+}
 function tpa_enhanced_portal_gate() {
 
     // Early return if not main query, admin area, or AJAX
@@ -1201,29 +1204,8 @@ function tpa_enhanced_portal_gate() {
         return;
     }
 
-    // Check if plugin is active
-    if (!class_exists('Treasury_Portal_Access')) {
-        return tpa_basic_fallback_gate();
-    }
-
-    // Detect portal page
-    if (!tpa_detect_portal_page()) {
-        return;
-    }
-
-    $tpa_instance = Treasury_Portal_Access::get_instance();
-    $has_access = $tpa_instance->has_portal_access();
-
-    // Fresh access indicator
-    if (!$has_access && isset($_GET['access_granted']) && $_GET['access_granted'] === '1') {
-        $has_access = true;
-    }
-
-    if ($has_access) {
-        return;
-    }
-
-    tpa_block_access();
+    // Fallback gate for when the plugin is unavailable
+    return tpa_basic_fallback_gate();
 }
 
 function tpa_detect_portal_page() {

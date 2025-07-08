@@ -1457,6 +1457,8 @@ body.banner-closed {
     left: 0 !important;
     right: 0 !important;
     width: 100vw !important;
+    display: flex;
+    justify-content: center;
 
     /* Style properties */
     background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9)) !important;
@@ -1566,7 +1568,7 @@ body.banner-closed {
     border-radius: 8px;
     display: block;
     font-size: 1.5rem !important;
-    text-align: center;
+    text-align: left;
 }
 
 .rt-main-menu-link:hover {
@@ -2354,6 +2356,7 @@ body.banner-closed {
         margin-bottom: 0.5rem !important;
         border: 1px solid rgba(199, 125, 255, 0.2) !important;
         font-size: 1.5rem !important;
+        text-align: left !important;
     }
     
     .rt-main-menu-link:hover {

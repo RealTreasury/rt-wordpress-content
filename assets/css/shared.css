@@ -438,6 +438,28 @@ input[type=submit].wpcf7-submit:hover {
         font-size: 13px !important;
     }
 }
+/* Hide banner entirely on mobile */
+@media (max-width: 768px) {
+    .workshop-banner {
+        display: none !important;
+    }
+
+    body,
+    body.banner-present,
+    body.banner-minimized,
+    body.banner-closed {
+        padding-top: 70px !important; /* Mobile nav height */
+    }
+
+    .rt-nav-container {
+        height: 70px !important;
+    }
+
+    .rt-nav-wrapper {
+        height: 70px !important;
+    }
+}
+
 
 /* Body scroll lock when modal is open */
 body.modal-open {
@@ -925,15 +947,27 @@ body.modal-open {
             display: none !important;
         }
         body {
-            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-            font-weight: 400;
-            color: #281345;
-            background: #fff;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            margin: 0 !important;
-            padding: 0 !important;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f8f8f8, #fff);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            /* Default padding that gets overridden by banner states */
+            padding-top: 80px;
         }
+body.banner-present {
+    padding-top: 160px !important; /* 80px banner + 80px nav */
+}
+
+body.banner-minimized {
+    padding-top: 140px !important; /* 60px banner + 80px nav */
+}
+
+body.banner-closed {
+    padding-top: 80px !important;
+}
+
         .frosted-glass {
             background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9));
             backdrop-filter: blur(20px) saturate(130%);
@@ -1301,10 +1335,16 @@ body.modal-open {
 }
 
 /* Override any banner-specific nav positioning that might interfere */
-body.banner-present .rt-nav-container,
-body.banner-minimized .rt-nav-container,
+body.banner-present .rt-nav-container {
+    top: 80px !important;
+}
+
+body.banner-minimized .rt-nav-container {
+    top: 60px !important;
+}
+
 body.banner-closed .rt-nav-container {
-    /* Let the banner JavaScript handle positioning, don't override here */
+    top: 0 !important;
 }
 
 body.banner-closed {

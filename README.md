@@ -35,7 +35,7 @@ The repository includes the **Treasury Portal Access** plugin (`plugins/treasury
 
 1. Install and activate **Contact Form 7** and **Treasury Portal Access** in WordPress.
 2. Go to **Portal Access → Settings** and choose the Contact Form 7 form that will grant portal access (this stores the form ID used by the plugin).
-3. Place the `[portal_button]` shortcode on the portal page (and wrap protected sections in `[protected_content]...[/protected_content]`).
+3. Place the `[portal_button]` shortcode on the portal page (and wrap protected sections in `[protected_content]...[/protected_content]`). Alternatively link directly to the modal with `<a href="#openPortalModal">Access Portal</a>` (case sensitive; a lowercase alias `#openportalmodal` also works).
 4. If you rely on the fallback gate instead of the plugin, edit `assets/php/functions.php` and replace `YOUR_FORM_ID_HERE` with your form ID.
 
 ### Testing

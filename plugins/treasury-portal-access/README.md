@@ -41,6 +41,6 @@ Inserts a button that opens the access form modal.
 ```
 <a href="#openPortalModal">Access Portal</a>
 ```
-Manually trigger the modal from a custom link or button.
+Manually trigger the modal from a custom link or button. The ID is case sensitive so use `#openPortalModal` exactly (or the lowercase `#openportalmodal` alias added for convenience).
 
 Once a visitor completes the form they are redirected to your chosen page and can view any content wrapped in `protected_content` for the configured number of days.

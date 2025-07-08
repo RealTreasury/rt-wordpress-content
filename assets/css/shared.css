@@ -1695,14 +1695,16 @@ body.banner-closed {
 
 /* Smaller overlay text inside the main menu dropdown */
 .rt-main-menu .chart-title-overlay {
-    min-width: 260px;
+    min-width: 0;
+    max-width: 100%;
     padding: 8px 14px;
 }
 .rt-main-menu .chart-title-overlay h3 {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+    white-space: normal;
 }
 .rt-main-menu .chart-title-overlay p {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
 }
 
 /* Insights Widget */

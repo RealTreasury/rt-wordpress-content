@@ -84,17 +84,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Calculate and set dropdown position for full width
+    // Calculate and set dropdown position for full width - SEAMLESS VERSION
     function positionDropdown(navItem) {
         const dropdown = navItem.querySelector('.rt-dropdown');
         if (!dropdown) return;
 
+        const navContainer = document.querySelector('.rt-nav-container');
+        if (!navContainer) return;
+
+        const navContainerRect = navContainer.getBoundingClientRect();
         const navItemRect = navItem.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
 
+        // Calculate the offset needed to make dropdown full width
         const leftOffset = -navItemRect.left;
+
+        // Apply positioning styles directly - override any CSS conflicts
         dropdown.style.setProperty('margin-left', `${leftOffset}px`, 'important');
         dropdown.style.setProperty('width', `${viewportWidth}px`, 'important');
+        dropdown.style.setProperty('left', '0', 'important');
+        dropdown.style.setProperty('right', 'auto', 'important');
+        dropdown.style.setProperty('transform', 'none', 'important');
+
+        // Ensure seamless connection
+        dropdown.style.setProperty('top', 'calc(100% - 1px)', 'important');
+        dropdown.style.setProperty('border-top', 'none', 'important');
+        dropdown.style.setProperty('margin-top', '0', 'important');
+        dropdown.style.setProperty('padding-top', '0', 'important');
     }
 
     // Recalculate on window resize

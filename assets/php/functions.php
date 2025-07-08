@@ -1183,8 +1183,6 @@ add_action('rest_api_init', function() {
     ));
 });
 
-?>
-<?php
 // ===============================================================
 // ENHANCED PORTAL ACCESS GATE - PLUGIN COMPATIBLE VERSION
 // ===============================================================
@@ -1275,9 +1273,6 @@ function tpa_enhanced_cookie_handler($contact_form) {
     $_COOKIE['portal_access_token'] = 'basic_' . time();
 }
 
-/**
- * Modal trigger that integrates with the plugin's modal system
- */
 /**
  * Modal trigger that integrates with the plugin's modal system - FOUC FIXED
  */
@@ -1492,8 +1487,6 @@ function tpa_theme_compatibility_check() {
         }
     }
     
-
-    
     // Ensure the theme works with plugin's cache settings
     if (strpos($_SERVER['REQUEST_URI'], 'treasury-tech-portal') !== false) {
         // Let plugin handle its own caching, but add theme-level cache prevention
@@ -1576,6 +1569,70 @@ if (isset($_GET['tpa_debug']) && current_user_can('manage_options')) {
             Redirect URL: <?php echo get_option('tpa_redirect_url', 'Not set'); ?><br>
             Theme Gate: <?php echo function_exists('tpa_enhanced_portal_gate') ? 'Loaded' : 'Missing'; ?>
         </div>
+        <?php
+    }
+}
+
+/**
+ * TREASURY PORTAL ACCESS - JQUERY FIXES
+ * Fix jQuery loading issues for Treasury Portal Access
+ */
+add_action('wp_enqueue_scripts', 'tpa_ensure_jquery_loaded', 5);
+function tpa_ensure_jquery_loaded() {
+    // Ensure jQuery is loaded on all pages
+    if (!wp_script_is('jquery', 'enqueued')) {
+        wp_enqueue_script('jquery');
+    }
+    
+    // Fix jQuery noConflict issues
+    wp_add_inline_script('jquery', '
+        // Ensure jQuery is available globally
+        if (typeof window.jQuery === "undefined" && typeof $ !== "undefined") {
+            window.jQuery = $;
+        }
+        
+        // Fix common jQuery conflicts
+        if (typeof window.jQuery !== "undefined") {
+            window.$ = window.jQuery;
+        }
+    ');
+}
+
+/**
+ * Ensure scripts load in correct order for TPA
+ */
+add_action('wp_enqueue_scripts', 'tpa_fix_script_dependencies', 10);
+function tpa_fix_script_dependencies() {
+    // Remove any conflicting jQuery versions
+    wp_deregister_script('jquery-slim');
+    
+    // Ensure jQuery loads in footer with proper dependencies
+    wp_script_add_data('jquery-core', 'group', 1);
+    wp_script_add_data('jquery-migrate', 'group', 1);
+}
+
+/**
+ * Enhanced debug script loading - Add ?debug_jquery=1 to any URL to see debug info
+ * Remove this function after confirming jQuery is working
+ */
+add_action('wp_footer', 'tpa_debug_jquery_loading', 999);
+function tpa_debug_jquery_loading() {
+    if (current_user_can('manage_options') && isset($_GET['debug_jquery'])) {
+        ?>
+        <script>
+        console.log('=== TPA jQuery Debug Info ===');
+        console.log('jQuery loaded:', typeof jQuery !== 'undefined');
+        console.log('$ available:', typeof $ !== 'undefined');
+        console.log('jQuery version:', typeof jQuery !== 'undefined' ? jQuery.fn.jquery : 'Not loaded');
+        console.log('TPA available:', typeof window.TPA !== 'undefined');
+        console.log('TPA Modal exists:', document.getElementById('portalModal') ? 'YES' : 'NO');
+        
+        if (typeof jQuery === 'undefined') {
+            console.error('❌ jQuery is not loaded properly!');
+        } else {
+            console.log('✅ jQuery is working');
+        }
+        </script>
         <?php
     }
 }

@@ -677,79 +677,149 @@
             border-color: #005885 !important;
         }
 
-        /* Testimonials Section */
-        .testimonials {
-            background: linear-gradient(135deg, 
-                rgba(114, 22, 244, 0.15) 0%, 
-                rgba(143, 71, 246, 0.12) 50%,
-                rgba(199, 125, 255, 0.1) 100%);
-            backdrop-filter: blur(25px) saturate(120%);
-            -webkit-backdrop-filter: blur(25px) saturate(120%);
-            padding: 80px 0;
-            color: var(--dark-text);
-            text-align: center;
+        /* Testimonials Section - Updated */
+        .testimonials-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
             position: relative;
             overflow: hidden;
-            border-top: 1px solid rgba(199, 125, 255, 0.2);
-            border-bottom: 1px solid rgba(199, 125, 255, 0.2);
         }
 
-        .testimonials::before {
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .testimonials-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .testimonials-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray-text);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        .testimonial-card {
+            background: #ffffff;
+            border: 1px solid rgba(199, 125, 255, 0.15);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow:
+                0 4px 24px rgba(114, 22, 244, 0.08),
+                0 1px 4px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 50%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
-            pointer-events: none;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 16px 16px 0 0;
         }
 
-        .testimonial-card { 
-            max-width: 900px; 
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.8) 0%, 
-                rgba(248, 248, 248, 0.9) 50%,
-                rgba(255, 255, 255, 0.8) 100%);
-            backdrop-filter: blur(20px) saturate(130%);
-            -webkit-backdrop-filter: blur(20px) saturate(130%);
-            padding: 48px 40px;
-            border-radius: 24px;
-            border: 2px solid rgba(199, 125, 255, 0.25);
-            box-shadow: 
-                0 12px 40px rgba(114, 22, 244, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            transition: all 0.4s ease;
-        }
-        
         .testimonial-card:hover {
             transform: translateY(-4px);
-            box-shadow: 
-                0 20px 50px rgba(114, 22, 244, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            box-shadow:
+                0 12px 40px rgba(114, 22, 244, 0.15),
+                0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: rgba(199, 125, 255, 0.25);
+        }
+
+        .testimonial-content {
+            margin-bottom: 24px;
+        }
+
+        .quote-icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .quote-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--primary-purple);
         }
 
         .testimonial-quote {
-            font-size: 1.6rem;
-            font-style: italic;
-            margin-bottom: 32px;
+            font-size: 1.1rem;
             line-height: 1.6;
+            color: var(--dark-text);
+            font-style: normal;
+            margin: 0;
+            font-weight: 400;
+            position: relative;
+        }
+
+        .testimonial-quote::before,
+        .testimonial-quote::after {
+            display: none;
+        }
+
+        .testimonial-author {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-top: 20px;
+            border-top: 1px solid rgba(199, 125, 255, 0.1);
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .author-title {
+            font-size: 0.9rem;
             font-weight: 500;
             color: var(--dark-text);
+            margin-bottom: 2px;
+            line-height: 1.3;
         }
 
-        .testimonial-author { 
-            font-weight: 700; 
-            font-size: 1.2rem;
-            color: var(--primary-purple);
-        }
-
-        .testimonial-role { 
-            opacity: 0.8; 
-            margin-top: 8px;
-            font-size: 1rem;
+        .author-company {
+            font-size: 0.85rem;
             color: var(--gray-text);
+            line-height: 1.3;
+        }
+
+        .author-rating {
+            flex-shrink: 0;
+            margin-left: 16px;
         }
 
         /* CTA Section */
@@ -866,15 +936,36 @@
                 gap: 40px; 
             }
             
-            .btn { 
-                padding: 16px 28px; 
+            .btn {
+                padding: 16px 28px;
                 font-size: 0.95rem;
                 width: 100%;
                 max-width: 300px;
             }
-            
-            .testimonial-quote { 
-                font-size: 1.4rem; 
+
+            .testimonials-section {
+                padding: 60px 0;
+            }
+
+            .testimonials-header h2 {
+                font-size: 2rem;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .testimonial-card {
+                padding: 24px;
+            }
+
+            .testimonial-quote {
+                font-size: 1rem;
+            }
+
+            .testimonials-container {
+                padding: 0 20px;
             }
             
             .feature-card, .team-card {
@@ -902,7 +993,7 @@
             }
         }
 
-        @media (max-width: 480px) {
+@media (max-width: 480px) {
             h1 { font-size: 2.2rem; }
             h2 { font-size: 1.8rem; }
             
@@ -911,22 +1002,36 @@
                 gap: 30px;
             }
             
-            .feature-card, .team-card { 
-                padding: 32px 24px; 
+            .feature-card, .team-card {
+                padding: 32px 24px;
             }
 
             .team-image {
                 width: 140px;
                 height: 140px;
             }
-            
-            .hero-buttons { 
+
+            .hero-buttons {
                 width: 100%;
             }
-            
-            .btn { 
+
+            .btn {
                 width: 100%;
                 max-width: none;
+            }
+
+            .testimonial-card {
+                padding: 20px;
+            }
+
+            .testimonials-header {
+                margin-bottom: 40px;
+            }
+
+            .quote-icon {
+                width: 24px;
+                height: 24px;
+                margin-bottom: 12px;
             }
         }
 
@@ -1118,19 +1223,53 @@
     </section>
 
     <!-- Testimonial Section -->
-    <section class="testimonials full-bg-section">
-        <div class="container">
-            <div class="testimonial-card">
-                <div class="testimonial-quote">
-                    "𝘈 𝘵𝘩𝘰𝘶𝘨𝘩𝘵𝘧𝘶𝘭, 𝘴𝘵𝘳𝘶𝘤𝘵𝘶𝘳𝘦𝘥 𝘱𝘳𝘰𝘤𝘦𝘴𝘴 𝘧𝘰𝘳 𝘴𝘦𝘭𝘦𝘤𝘵𝘪𝘯𝘨 𝘵𝘦𝘤𝘩𝘯𝘰𝘭𝘰𝘨𝘺..."
-                </div>
-                <div class="testimonial-author">Tony Vu</div>
-                <div class="testimonial-role">Treasurer, Broward Health</div>
+    <section class="testimonials-section">
+        <div class="testimonials-container">
+            <div class="testimonials-header">
+                <h2>Trusted by Treasury Leaders</h2>
+                <p class="testimonials-subtitle">See what treasury professionals say about our selection process</p>
             </div>
-            <div class="testimonial-card">
-                <div class="testimonial-quote">“They brought strategic insights we hadn’t considered—highlighting key features, gaps, and opportunities.”</div>
-                <div class="testimonial-author">Thi Pham</div>
-                <div class="testimonial-role">CFO, Vie Management</div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="quote-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14,17H17L19,13V7H13V13H16M6,17H9L11,13V7H5V13H8L6,17Z" />
+                            </svg>
+                        </div>
+                        <blockquote class="testimonial-quote">
+                            A thoughtful, structured process for selecting technology that actually fits our needs and budget.
+                        </blockquote>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-info">
+                            <div class="author-name">Tony Vu</div>
+                            <div class="author-title">Treasurer</div>
+                            <div class="author-company">Broward Health</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="quote-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14,17H17L19,13V7H13V13H16M6,17H9L11,13V7H5V13H8L6,17Z" />
+                            </svg>
+                        </div>
+                        <blockquote class="testimonial-quote">
+                            They brought strategic insights we hadn't considered—highlighting key features, gaps, and opportunities.
+                        </blockquote>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-info">
+                            <div class="author-name">Thi Pham</div>
+                            <div class="author-title">CFO</div>
+                            <div class="author-company">Vie Management</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

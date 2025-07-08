@@ -1488,11 +1488,16 @@ body.banner-closed {
 }
 
 .rt-dropdown-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2.5rem 2rem;
-    margin-top: 0 !important;
-    padding-top: 2.5rem !important;
+    max-width: 1200px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 2.5rem 2rem !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
 }
 
 /* =================================================================== */
@@ -2012,7 +2017,16 @@ body.banner-closed {
     }
     
     .rt-dropdown-inner {
-        padding: 1rem !important;
+        max-width: 1200px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 2.5rem 2rem !important;
+        box-sizing: border-box !important;
+        display: block !important;
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
     }
     
     .rt-main-menu {

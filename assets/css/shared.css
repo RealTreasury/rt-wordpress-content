@@ -3972,8 +3972,8 @@ a[href="#openportalmodal"] {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(8px);
     border-radius: 10px;
-    padding: 0.75rem; /* Reduce from 1rem */
-    margin-bottom: 0.5rem; /* Reduce spacing between cards */
+    padding: 0.6rem; /* Further reduce from 0.75rem */
+    margin-bottom: 0.4rem; /* Tighter spacing between cards */
     border: 1px solid rgba(114, 22, 244, 0.1);
     transition: all 0.25s ease;
     position: relative;
@@ -4041,7 +4041,7 @@ a[href="#openportalmodal"] {
 .rt-service-features {
     display: flex;
     gap: 0.25rem; /* Reduce from 0.375rem */
-    margin-bottom: 0.5rem; /* Reduce from 0.75rem */
+    margin-bottom: 0.5rem; /* Consistent spacing below features */
     flex-wrap: wrap;
 }
 
@@ -4069,6 +4069,7 @@ a[href="#openportalmodal"] {
     transition: all 0.25s ease;
     text-transform: none; /* Remove uppercase */
     letter-spacing: normal; /* Remove 0.3px spacing */
+    margin-top: 0.5rem; /* Space below feature tags */
 }
 
 .rt-services-enhanced .rt-service-cta:hover {

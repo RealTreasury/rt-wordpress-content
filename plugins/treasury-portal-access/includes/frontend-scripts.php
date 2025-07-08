@@ -419,3 +419,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<script>
+// Theme integration fix
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.TPA && !window.TPA.checkAccessPersistence) {
+        console.log('🔧 TPA: Fixing incomplete object...');
+
+        window.TPA.checkAccessPersistence = function() {
+            console.log('TPA: Access persistence check');
+            return this.checkLocalStorageAccess();
+        };
+
+        window.TPA.syncToLocal = function() {
+            console.log('TPA: Syncing to localStorage');
+        };
+
+        window.TPA.executeRedirect = function() {
+            if (this.isRedirecting) return;
+            this.isRedirecting = true;
+            setTimeout(() => {
+                window.location.href = this.redirectUrl;
+            }, 2000);
+        };
+    }
+
+    const originalLog = console.log;
+    console.log = function(...args) {
+        if (args[0] && args[0].includes('Portal access blocked by theme gate')) {
+            console.log('🔧 TPA: Theme gate detected - using plugin modal instead');
+            setTimeout(function() {
+                if (window.TPA && window.TPA.openModal) {
+                    window.TPA.openModal();
+                }
+            }, 1000);
+            return;
+        }
+        originalLog.apply(console, args);
+    };
+});
+</script>

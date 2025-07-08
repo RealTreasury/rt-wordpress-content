@@ -47,6 +47,10 @@ final class Treasury_Portal_Access {
         // Register hooks
         add_action('init', array($this, 'init'));
         add_action('wp_footer', array($this, 'add_frontend_scripts'));
+
+        // Override any conflicting theme gates early
+        add_action('init', array($this, 'override_theme_gate'), 1);
+        add_action('template_redirect', array($this, 'prevent_theme_redirects'), 1);
         
         // Activation/deactivation
         register_activation_hook(TPA_PLUGIN_FILE, array($this, 'activate'));
@@ -576,6 +580,48 @@ final class Treasury_Portal_Access {
         $atts = shortcode_atts(['text' => 'Access Portal', 'class' => ''], $atts, 'portal_button');
         $classes = 'tpa-btn tpa-btn-primary open-portal-modal tpa-btn-loading ' . esc_attr($atts['class']);
         return '<button class="' . trim($classes) . '">' . esc_html($atts['text']) . '</button>';
+    }
+
+    /**
+     * Override theme access gate
+     */
+    public function override_theme_gate() {
+        remove_all_actions('template_redirect', 10);
+        remove_all_filters('template_redirect');
+
+        if (isset($_GET['portal_access_required'])) {
+            $clean_url = remove_query_arg(['portal_access_required', 't']);
+            wp_redirect(home_url($clean_url));
+            exit;
+        }
+    }
+
+    /**
+     * Prevent theme redirects for portal page
+     */
+    public function prevent_theme_redirects() {
+        $portal_url  = get_option('tpa_redirect_url', home_url('/treasury-tech-portal/'));
+        $current_url = home_url($_SERVER['REQUEST_URI']);
+
+        if (rtrim($current_url, '/') === rtrim($portal_url, '/')) {
+            remove_all_actions('wp_redirect');
+            remove_all_actions('template_redirect');
+
+            if (!$this->has_portal_access()) {
+                add_action('wp_footer', function() {
+                    echo '<script>
+                    console.log("🔧 TPA: Forcing modal open (theme override)");
+                    document.addEventListener("DOMContentLoaded", function() {
+                        setTimeout(function() {
+                            if (window.TPA && window.TPA.openModal) {
+                                window.TPA.openModal();
+                            }
+                        }, 500);
+                    });
+                    </script>';
+                }, 999);
+            }
+        }
     }
     
     /**

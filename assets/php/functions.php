@@ -1296,15 +1296,16 @@ function tpa_enhanced_cookie_handler($contact_form) {
 /**
  * Modal trigger that integrates with the plugin's modal system
  */
+/**
+ * Modal trigger that integrates with the plugin's modal system - FOUC FIXED
+ */
 add_action('wp_footer', 'tpa_theme_modal_trigger');
 function tpa_theme_modal_trigger() {
-    
-    // Only trigger if redirected here for portal access
+
     if (!isset($_GET['portal_access_required'])) {
         return;
     }
-    
-    // Only if plugin is active
+
     if (!class_exists('Treasury_Portal_Access')) {
         ?>
         <div style="position: fixed; top: 0; left: 0; right: 0; background: #d73502; color: white; padding: 15px; text-align: center; z-index: 99999;">
@@ -1313,8 +1314,7 @@ function tpa_theme_modal_trigger() {
         <?php
         return;
     }
-    
-    // Check if plugin has a form configured
+
     $form_id = get_option('tpa_form_id');
     if (!$form_id) {
         ?>
@@ -1324,132 +1324,167 @@ function tpa_theme_modal_trigger() {
         <?php
         return;
     }
-    
+
     ?>
-    <!-- Portal Access Required Modal Trigger - Plugin Compatible -->
+    <!-- FIXED: Improved loading screen to prevent FOUC -->
+    <style>
+    /* Immediate loading screen styles to prevent FOUC */
+    #portal-theme-gate-loading {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: rgba(40, 19, 69, 0.98) !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transition: opacity 0.3s ease !important;
+    }
+
+    #portal-theme-gate-loading .loading-content {
+        background: white !important;
+        padding: 40px !important;
+        border-radius: 20px !important;
+        text-align: center !important;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+        max-width: 400px !important;
+        margin: 20px !important;
+        transform: scale(1) !important;
+        opacity: 1 !important;
+    }
+
+    @keyframes portal-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .portal-spinner {
+        width: 40px !important;
+        height: 40px !important;
+        margin: 0 auto !important;
+        border: 4px solid #7216f4 !important;
+        border-top: 4px solid transparent !important;
+        border-radius: 50% !important;
+        animation: portal-spin 1s linear infinite !important;
+    }
+    </style>
+
+    <div id="portal-theme-gate-loading">
+        <div class="loading-content">
+            <div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div>
+            <h3 style="color: #7216f4; margin: 0 0 15px 0; font-size: 24px;">Portal Access Required</h3>
+            <p style="color: #666; margin: 0 0 20px 0;">Loading access form...</p>
+            <div class="portal-spinner"></div>
+        </div>
+    </div>
+
     <script>
+    // FIXED: Improved portal integration to prevent FOUC
     console.log('🚫 Portal access blocked by theme gate - integrating with plugin modal...');
-    
+
     document.addEventListener('DOMContentLoaded', function() {
-        
-        // Show loading indicator while waiting for plugin modal system
-        const loadingDiv = document.createElement('div');
-        loadingDiv.id = 'portal-theme-gate-loading';
-        loadingDiv.innerHTML = `
-            <div style="
-                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(40, 19, 69, 0.95); z-index: 99998;
-                display: flex; align-items: center; justify-content: center;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            ">
-                <div style="
-                    background: white; padding: 40px; border-radius: 20px;
-                    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                    max-width: 400px; margin: 20px;
-                ">
-                    <div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div>
-                    <h3 style="color: #7216f4; margin: 0 0 15px 0; font-size: 24px;">Portal Access Required</h3>
-                    <p style="color: #666; margin: 0 0 20px 0;">Loading access form...</p>
-                    <div style="
-                        width: 40px; height: 40px; margin: 0 auto;
-                        border: 4px solid #7216f4; border-top: 4px solid transparent;
-                        border-radius: 50%; animation: spin 1s linear infinite;
-                    "></div>
-                </div>
-            </div>
-            <style>
-            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-            </style>
-        `;
-        document.body.appendChild(loadingDiv);
-        
-        // Try to integrate with plugin's modal system
+
+        const loadingScreen = document.getElementById('portal-theme-gate-loading');
+        if (!loadingScreen) return;
+
         let attempts = 0;
-        const maxAttempts = 20; // More attempts since we're waiting for plugin
-        
+        const maxAttempts = 15;
+
         function attemptPluginModalOpen() {
             attempts++;
             console.log(`🔄 Plugin integration attempt ${attempts}/${maxAttempts}`);
-            
-            // PRIORITY 1: Use plugin's native TPA modal system
-            if (window.TPA && typeof window.TPA.openModal === 'function') {
+
+            // Wait for TPA to be fully loaded
+            if (window.TPA && typeof window.TPA.openModal === 'function' && window.TPA.modal) {
                 console.log('✅ Opening via plugin TPA.openModal()');
-                document.getElementById('portal-theme-gate-loading').remove();
-                window.TPA.openModal();
+
+                // Smooth transition from loading to modal
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.remove();
+                    window.TPA.openModal();
+                }, 300);
                 return;
             }
-            
-            // PRIORITY 2: Look for plugin's modal element
+
+            // Check for plugin modal element
             const pluginModal = document.getElementById('portalModal');
-            if (pluginModal) {
+            if (pluginModal && window.TPA) {
                 console.log('✅ Opening plugin modal directly');
-                document.getElementById('portal-theme-gate-loading').remove();
-                pluginModal.style.display = 'flex';
-                setTimeout(() => pluginModal.classList.add('show'), 10);
-                document.body.classList.add('modal-open');
+
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.remove();
+                    pluginModal.style.display = 'flex';
+                    setTimeout(() => {
+                        pluginModal.style.opacity = '1';
+                        pluginModal.style.visibility = 'visible';
+                        pluginModal.classList.add('show');
+                    }, 10);
+                    document.body.classList.add('modal-open');
+                }, 300);
                 return;
             }
-            
-            // PRIORITY 3: Click any plugin portal trigger button
+
+            // Look for plugin trigger buttons
             const portalTriggers = [
                 'a[href="#openPortalModal"]',
                 '.open-portal-modal',
                 '#portalAccessBtn',
-                '.tpa-btn',
-                '[data-target="#portalModal"]'
+                '.tpa-btn'
             ];
-            
+
             for (let selector of portalTriggers) {
                 const trigger = document.querySelector(selector);
-                if (trigger) {
+                if (trigger && window.TPA) {
                     console.log('✅ Opening via plugin trigger: ' + selector);
-                    document.getElementById('portal-theme-gate-loading').remove();
-                    trigger.click();
+
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.remove();
+                        trigger.click();
+                    }, 300);
                     return;
                 }
             }
-            
-            // Keep trying or show fallback
+
+            // Continue trying or show fallback
             if (attempts < maxAttempts) {
-                setTimeout(attemptPluginModalOpen, 500);
+                setTimeout(attemptPluginModalOpen, 400);
             } else {
                 console.log('❌ Plugin modal integration failed - showing fallback');
-                // Keep the loading screen but change message
-                document.getElementById('portal-theme-gate-loading').innerHTML = `
-                    <div style="
-                        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                        background: rgba(40, 19, 69, 0.95); z-index: 99998;
-                        display: flex; align-items: center; justify-content: center;
-                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                    ">
-                        <div style="
-                            background: white; padding: 40px; border-radius: 20px;
-                            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                            max-width: 500px; margin: 20px;
-                        ">
-                            <div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div>
-                            <h3 style="color: #7216f4; margin: 0 0 15px 0;">Portal Access Required</h3>
-                            <p style="color: #666; margin: 0 0 25px 0;">
-                                Please complete our access form to view exclusive Treasury Portal content.
-                            </p>
-                            <a href="mailto:hello@realtreasury.com?subject=Portal Access Request" 
-                               style="
-                                   background: #7216f4; color: white; padding: 12px 24px;
-                                   border-radius: 8px; text-decoration: none; font-weight: 600;
-                                   display: inline-block; margin-right: 10px;
-                               ">Contact Support</a>
-                            <button onclick="window.location.reload()" style="
-                                background: transparent; border: 2px solid #7216f4; color: #7216f4;
-                                padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;
-                            ">Try Again</button>
-                        </div>
-                    </div>
-                `;
+
+                // Update loading screen with fallback options
+                const loadingContent = loadingScreen.querySelector('.loading-content');
+                if (loadingContent) {
+                    loadingContent.innerHTML = `
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div>
+                        <h3 style="color: #7216f4; margin: 0 0 15px 0;">Portal Access Required</h3>
+                        <p style="color: #666; margin: 0 0 25px 0;">
+                            Please complete our access form to view exclusive Treasury Portal content.
+                        </p>
+                        <a href="mailto:hello@realtreasury.com?subject=Portal Access Request" 
+                           style="
+                               background: #7216f4; color: white; padding: 12px 24px;
+                               border-radius: 8px; text-decoration: none; font-weight: 600;
+                               display: inline-block; margin-right: 10px;
+                           ">Contact Support</a>
+                        <button onclick="window.location.reload()" style="
+                            background: transparent; border: 2px solid #7216f4; color: #7216f4;
+                            padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;
+                        ">Try Again</button>
+                    `;
+                }
             }
         }
-        
-        // Start attempting after delay to let plugin load
-        setTimeout(attemptPluginModalOpen, 1000);
+
+        // Start attempting integration after a brief delay
+        setTimeout(attemptPluginModalOpen, 800);
     });
     </script>
     <?php

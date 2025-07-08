@@ -70,6 +70,9 @@ final class Treasury_Portal_Access {
 
         add_action('tpa_send_welcome_email', array($this, 'send_welcome_email'));
         add_action('shutdown', array($this, 'process_pending_emails'));
+
+        // Handle direct visits to the portal URL
+        add_action('template_redirect', array($this, 'check_portal_url_access'));
         
         // Shortcodes
         add_shortcode('protected_content', array($this, 'protected_content_shortcode'));
@@ -88,6 +91,7 @@ final class Treasury_Portal_Access {
     public function activate() {
         $this->create_database_table();
         $this->set_default_options();
+        $this->ensure_portal_page_exists();
         flush_rewrite_rules();
         update_option('tpa_activated', true);
         error_log('✅ Treasury Portal Access Plugin activated');
@@ -134,6 +138,59 @@ final class Treasury_Portal_Access {
         foreach ($defaults as $key => $value) {
             if (false === get_option($key)) {
                 update_option($key, $value);
+            }
+        }
+    }
+
+    /**
+     * Ensure portal page exists with proper content
+     */
+    public function ensure_portal_page_exists() {
+        $portal_url = get_option('tpa_redirect_url', home_url('/treasury-tech-portal/'));
+        $slug = basename(parse_url($portal_url, PHP_URL_PATH));
+
+        // Check if page exists
+        $existing_page = get_page_by_path($slug);
+
+        if (!$existing_page) {
+            // Create the page
+            $page_data = array(
+                'post_title'   => 'Treasury Tech Portal',
+                'post_name'    => $slug,
+                'post_content' => '[protected_content]
+<h2>Welcome to the Treasury Tech Portal!</h2>
+<p>You now have access to our exclusive content and resources.</p>
+
+<div class="portal-sections">
+    <div class="portal-section">
+        <h3>📊 Market Analysis</h3>
+        <p>Access our latest market insights and treasury analysis.</p>
+    </div>
+
+    <div class="portal-section">
+        <h3>🎯 Investment Strategies</h3>
+        <p>Discover proven investment strategies for treasury management.</p>
+    </div>
+
+    <div class="portal-section">
+        <h3>📈 Performance Tracking</h3>
+        <p>Tools and resources for tracking your treasury performance.</p>
+    </div>
+</div>
+[/protected_content]',
+                'post_status'  => 'publish',
+                'post_type'    => 'page',
+                'post_author'  => 1,
+                'meta_input'   => array(
+                    '_tpa_auto_created' => true
+                )
+            );
+
+            $page_id = wp_insert_post($page_data);
+
+            if ($page_id && !is_wp_error($page_id)) {
+                update_option('tpa_portal_page_id', $page_id);
+                error_log("✅ TPA: Created portal page with ID: $page_id");
             }
         }
     }
@@ -268,8 +325,11 @@ final class Treasury_Portal_Access {
     
     public function has_portal_access() {
         if (isset($_COOKIE['portal_access_token'])) {
-            return $this->verify_access_token($_COOKIE['portal_access_token']);
+            $has_access = $this->verify_access_token($_COOKIE['portal_access_token']);
+            error_log("TPA Debug: Access check for token: " . substr($_COOKIE['portal_access_token'], 0, 10) . "... Result: " . ($has_access ? 'YES' : 'NO'));
+            return $has_access;
         }
+        error_log("TPA Debug: No access token cookie found");
         return false;
     }
     
@@ -381,6 +441,53 @@ final class Treasury_Portal_Access {
     private function get_current_user_info() {
         $token = sanitize_text_field($_COOKIE['portal_access_token'] ?? '');
         return !empty($token) ? $this->get_user_by_token($token) : null;
+    }
+
+    /**
+     * Check if user is visiting portal URL and handle access
+     */
+    public function check_portal_url_access() {
+        // Only run on frontend, not admin
+        if (is_admin()) {
+            return;
+        }
+
+        // Get the redirect URL from settings
+        $portal_url   = get_option('tpa_redirect_url', home_url('/treasury-tech-portal/'));
+        $current_url  = home_url($_SERVER['REQUEST_URI']);
+
+        // Check if user is visiting the portal URL
+        if (rtrim($current_url, '/') === rtrim($portal_url, '/')) {
+            // Check if user has access
+            if (!$this->has_portal_access()) {
+                // User doesn't have access, add auto-open modal script
+                add_action('wp_footer', array($this, 'add_auto_open_script'));
+            }
+        }
+    }
+
+    /**
+     * Add script to auto-open modal when user lacks access
+     */
+    public function add_auto_open_script() {
+        echo '<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.TPA && window.TPA.openModal) {
+                // Small delay to ensure everything is loaded
+                setTimeout(function() {
+                    console.log("TPA: Auto-opening modal for portal access");
+                    window.TPA.openModal();
+                }, 1000);
+            } else {
+                console.log("TPA: Modal not available, retrying...");
+                setTimeout(function() {
+                    if (window.TPA && window.TPA.openModal) {
+                        window.TPA.openModal();
+                    }
+                }, 2000);
+            }
+        });
+        </script>';
     }
     
     private function get_access_time_remaining_string() {

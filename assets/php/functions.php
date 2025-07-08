@@ -1258,21 +1258,41 @@ function tpa_basic_fallback_gate() {
 
 add_action('wpcf7_mail_sent', 'tpa_enhanced_cookie_handler', 10, 1);
 function tpa_enhanced_cookie_handler($contact_form) {
-    $selected_id = get_option('tpa_form_id');
-    if (!$selected_id || $contact_form->id() != $selected_id) {
+    $portal_form_id = get_option('tpa_form_id');
+
+    // Auto-detect the form if no ID configured
+    if (!$portal_form_id && class_exists('WPCF7_ContactForm')) {
+        $forms = WPCF7_ContactForm::find();
+        if ($forms) {
+            if (count($forms) === 1) {
+                $portal_form_id = $forms[0]->id();
+            } else {
+                foreach ($forms as $form) {
+                    if (stripos($form->title(), 'portal access') !== false) {
+                        $portal_form_id = $form->id();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // If we still don't have a form ID or this isn't the portal form, bail
+    if (!$portal_form_id || $contact_form->id() != $portal_form_id) {
         return;
     }
 
     $expiry = time() + (180 * 24 * 60 * 60);
     $domain = '.' . str_replace('www.', '', $_SERVER['HTTP_HOST']);
+    $timestamp = time();
 
     setcookie('basic_portal_access', 'granted', $expiry, '/', $domain, is_ssl(), false);
-    setcookie('rt_portal_access', time(), $expiry, '/', $domain, is_ssl(), false);
-    setcookie('portal_access_token', 'basic_' . time(), $expiry, '/', '', is_ssl(), false);
+    setcookie('rt_portal_access', $timestamp, $expiry, '/', $domain, is_ssl(), false);
+    setcookie('portal_access_token', 'basic_' . $timestamp, $expiry, '/', '', is_ssl(), false);
 
     $_COOKIE['basic_portal_access'] = 'granted';
-    $_COOKIE['rt_portal_access'] = time();
-    $_COOKIE['portal_access_token'] = 'basic_' . time();
+    $_COOKIE['rt_portal_access'] = $timestamp;
+    $_COOKIE['portal_access_token'] = 'basic_' . $timestamp;
 }
 
 /**
@@ -1285,16 +1305,76 @@ function tpa_theme_modal_trigger() {
         return;
     }
 
+    $form_id = get_option('tpa_form_id');
+
+    // Auto-detect form if none configured
+    if (!$form_id && class_exists('WPCF7_ContactForm')) {
+        $forms = WPCF7_ContactForm::find();
+        if ($forms) {
+            if (count($forms) === 1) {
+                $form_id = $forms[0]->id();
+            } else {
+                foreach ($forms as $form) {
+                    if (stripos($form->title(), 'portal access') !== false) {
+                        $form_id = $form->id();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // Handle plugin inactive state with a standalone form
     if (!class_exists('Treasury_Portal_Access')) {
+        if (!$form_id) {
+            echo '<div style="position: fixed; top: 0; left: 0; right: 0; background: #d73502; color: white; padding: 15px; text-align: center; z-index: 99999;">';
+            echo '<strong>Configuration Error:</strong> Portal access form not found.';
+            echo '</div>';
+            return;
+        }
+
         ?>
-        <div style="position: fixed; top: 0; left: 0; right: 0; background: #d73502; color: white; padding: 15px; text-align: center; z-index: 99999;">
-            <strong>Portal Access Plugin Error:</strong> Treasury Portal Access plugin is required but not active.
+        <style>
+            .tpa-fallback-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(40, 19, 69, 0.98);
+                z-index: 99999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            }
+            .tpa-fallback-inner {
+                background: #fff;
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                max-width: 500px;
+                width: 100%;
+            }
+        </style>
+        <div class="tpa-fallback-container">
+            <div class="tpa-fallback-inner">
+                <h3 style="color:#7216f4; margin-top:0;">Portal Access Required</h3>
+                <p>Please complete the form below to continue.</p>
+                <?php echo do_shortcode('[contact-form-7 id="' . esc_attr($form_id) . '"]'); ?>
+            </div>
         </div>
+        <script>
+        document.addEventListener('wpcf7mailsent', function(event) {
+            if (event.detail.contactFormId == <?php echo (int) $form_id; ?>) {
+                window.location.href = "/treasury-tech-portal/";
+            }
+        }, false);
+        </script>
         <?php
         return;
     }
 
-    $form_id = get_option('tpa_form_id');
     if (!$form_id) {
         ?>
         <div style="position: fixed; top: 0; left: 0; right: 0; background: #d73502; color: white; padding: 15px; text-align: center; z-index: 99999;">

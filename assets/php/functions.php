@@ -8,22 +8,8 @@
  * @since 1.0.0
  */
 if ( ! defined( 'ABSPATH' ) ) {
-        exit; // Exit if accessed directly.
+	exit; // Exit if accessed directly.
 }
-
-// Fix jQuery loading for Contact Form 7 and Treasury Portal Access
-add_action('wp_enqueue_scripts', function() {
-    if (!wp_script_is('jquery', 'enqueued')) {
-        wp_enqueue_script('jquery');
-    }
-}, 1);
-
-// Ensure jQuery loads before Contact Form 7
-add_action('wp_enqueue_scripts', function() {
-    if (wp_script_is('contact-form-7', 'registered')) {
-        wp_script_add_data('contact-form-7', 'data', 'jQuery');
-    }
-}, 5);
 /**
  * Define Constants
  */

@@ -1825,7 +1825,12 @@
             resize:vertical;
         }
 
-        .treasury-portal .shortlist-card-title-wrapper { display:flex; align-items:center; gap:4px; }
+        .treasury-portal .shortlist-card-title-wrapper {
+            display:flex;
+            align-items:center;
+            gap:8px;
+            flex-wrap:wrap;
+        }
         .treasury-portal .shortlist-logo {
             width: 36px;
             height: 36px;
@@ -1833,23 +1838,22 @@
         }
         .treasury-portal .shortlist-card-title { font-size:0.9rem; font-weight:600; color:#281345; }
         .treasury-portal .shortlist-card-link {
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            width:24px;
-            height:24px;
-            font-size:1.2rem;
-            background:#7216f4;
-            color:#fff;
-            text-decoration:none;
-            margin-left:4px;
-            border-radius:4px;
+            display:inline-block;
+            padding:4px 8px;
+            margin-left:auto;
             font-weight:600;
-            line-height:1;
+            font-size:12px;
+            line-height:1.4;
+            color:#7216f4;
+            background:rgba(114, 22, 244, 0.1);
+            border-radius:6px;
+            text-align:center;
+            text-decoration:none;
+            white-space:nowrap;
         }
         .treasury-portal .shortlist-card-link:hover {
-            background:#8f47f6;
-            text-decoration:none;
+            background:#7216f4;
+            color:white;
         }
 
         .treasury-portal .remove-shortlist {

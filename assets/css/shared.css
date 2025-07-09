@@ -3904,6 +3904,8 @@ a[href="#openportalmodal"] {
     transition: all 0.2s ease;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(114, 22, 244, 0.05);
+    text-decoration: none;
+    color: inherit;
 }
 
 .rt-journey-step:hover {

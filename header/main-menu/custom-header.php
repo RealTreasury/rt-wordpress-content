@@ -160,26 +160,21 @@ function add_my_custom_header_html() {
                                     </div>
                                 </div>
 
-                                <!-- Stats (Right Column) -->
+                                <!-- Testimonials (Right Column) -->
                                 <div class="rt-services-stats">
                                     <h3>✨ Proven Results</h3>
-                                    <div class="rt-stats-grid">
-                                        <div class="rt-stat-item">
-                                            <div class="rt-stat-number">45+</div>
-                                            <div class="rt-stat-label">Years Combined Experience</div>
+                                    <div class="rt-services-testimonials">
+                                        <div class="rt-services-testimonial">
+                                            <div class="rt-services-testimonial-text">They brought strategic insights we hadn't considered—highlighting key features, gaps, and opportunities.</div>
+                                            <div class="rt-services-testimonial-author">Thi Pham</div>
+                                            <div class="rt-services-testimonial-title">CFO, Vie Management</div>
                                         </div>
-                                        <div class="rt-stat-item">
-                                            <div class="rt-stat-number">100+</div>
-                                            <div class="rt-stat-label">Vendors Evaluated</div>
+
+                                        <div class="rt-services-testimonial">
+                                            <div class="rt-services-testimonial-text">A thoughtful, structured process for selecting technology that actually fits our needs and budget.</div>
+                                            <div class="rt-services-testimonial-author">Tony Vu</div>
+                                            <div class="rt-services-testimonial-title">Treasurer, Broward Health</div>
                                         </div>
-                                        <div class="rt-stat-item">
-                                            <div class="rt-stat-number">4-6</div>
-                                            <div class="rt-stat-label">Weeks to Selection</div>
-                                        </div>
-                                    </div>
-                                    <div class="rt-testimonial">
-                                        <div class="rt-testimonial-text">"They brought strategic insights we hadn't considered—highlighting key features, gaps, and opportunities."</div>
-                                        <div class="rt-testimonial-author">— Thi Pham, CFO, Vie Management</div>
                                     </div>
                                 </div>
                             </div>

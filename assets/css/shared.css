@@ -4106,9 +4106,6 @@ a[href="#openportalmodal"] {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    text-transform: uppercase; /* Add for consistency */
-    letter-spacing: 0.5px; /* Add for consistency */
-    opacity: 0.9; /* Add for consistency */
 }
 
 .rt-stats-grid {

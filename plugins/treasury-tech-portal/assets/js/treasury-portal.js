@@ -1744,13 +1744,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.textContent = 'Select a tool';
                 picker.appendChild(button);
 
+                const dropdown = document.createElement('div');
+                dropdown.className = 'tool-picker-dropdown';
+                dropdown.style.display = 'none';
+
+                const search = document.createElement('input');
+                search.type = 'text';
+                search.placeholder = 'Search tools...';
+                search.className = 'tool-picker-search';
+                dropdown.appendChild(search);
+
                 const list = document.createElement('ul');
                 list.className = 'tool-picker-options';
                 list.innerHTML = this.TREASURY_TOOLS
                     .filter(t => !this.shortlist.some(i => i.tool.name === t.name))
                     .map(t => `<li data-name="${t.name}">${t.name}</li>`)
                     .join('');
-                picker.appendChild(list);
+                dropdown.appendChild(list);
+                picker.appendChild(dropdown);
                 container.appendChild(picker);
 
                 const close = (e) => {
@@ -1760,9 +1771,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 };
 
+                const toggleDropdown = (show) => {
+                    dropdown.style.display = show ? 'block' : 'none';
+                    if (show) search.focus();
+                };
+
                 button.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    list.style.display = list.style.display === 'none' ? 'block' : 'none';
+                    toggleDropdown(dropdown.style.display === 'none');
+                });
+
+                search.addEventListener('input', () => {
+                    const term = search.value.toLowerCase();
+                    list.querySelectorAll('li').forEach(li => {
+                        li.style.display = li.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+                    });
                 });
 
                 list.querySelectorAll('li').forEach(li => {

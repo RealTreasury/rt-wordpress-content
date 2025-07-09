@@ -1754,20 +1754,34 @@
             border-color:#7216f4;
             box-shadow:0 0 0 3px rgba(114,22,244,0.1);
         }
-        .treasury-portal .tool-picker ul {
-            list-style:none;
-            margin:4px 0 0;
-            padding:0;
+        .treasury-portal .tool-picker-dropdown {
             position:absolute;
             left:0;
             right:0;
+            margin-top:4px;
+            padding:8px;
             border-radius:8px;
             background:#fff;
             border:1px solid #e5e7eb;
             box-shadow:0 4px 8px rgba(0,0,0,0.05);
+            z-index:10;
+        }
+
+        .treasury-portal .tool-picker-search {
+            width:100%;
+            padding:6px 10px;
+            margin-bottom:6px;
+            border:1px solid #e5e7eb;
+            border-radius:6px;
+            font-size:0.9rem;
+        }
+
+        .treasury-portal .tool-picker ul {
+            list-style:none;
+            margin:0;
+            padding:0;
             max-height:200px;
             overflow-y:auto;
-            z-index:10;
         }
         .treasury-portal .tool-picker ul li {
             padding:8px 12px;

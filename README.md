@@ -44,3 +44,7 @@ The repository includes the **Treasury Portal Access** plugin (`plugins/treasury
 2. Submit the access form and verify you are redirected to your portal page.
 3. Refresh the page to confirm protected content remains visible while the cookie is active.
 4. Click the original portal button again and ensure it now navigates directly to the portal instead of reopening the form.
+
+## Clean Media URLs Plugin
+
+The repository also includes the **Clean Media URLs** plugin (`plugins/clean-media-urls`). Activate it in WordPress to automatically sanitize media filenames so URLs contain only lowercase letters, numbers, and hyphens.

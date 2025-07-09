@@ -1656,6 +1656,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (this.shortlist.length === 0) {
                     container.classList.add('empty');
                     if (emptyMsg) emptyMsg.classList.remove('visually-hidden');
+                    // show the tool picker immediately when the shortlist is empty
+                    this.openToolPicker();
                 } else {
                     container.classList.remove('empty');
                     if (emptyMsg) emptyMsg.classList.add('visually-hidden');

@@ -1733,24 +1733,53 @@ document.addEventListener('DOMContentLoaded', () => {
             openToolPicker() {
                 const container = document.getElementById('shortlistContainer');
                 if (!container) return;
-                const existing = document.getElementById('toolPicker');
+                const existing = container.querySelector('.tool-picker');
                 if (existing) existing.remove();
-                const select = document.createElement('select');
-                select.id = 'toolPicker';
-                select.innerHTML = '<option value="" disabled selected>Select a tool</option>' +
-                    this.TREASURY_TOOLS.filter(t => !this.shortlist.some(i => i.tool.name === t.name))
-                        .map(t => `<option value="${t.name}">${t.name}</option>`).join('');
-                select.addEventListener('change', () => {
-                    const name = select.value;
-                    const tool = this.TREASURY_TOOLS.find(t => t.name === name);
-                    if (tool && !this.shortlist.some(i => i.tool.name === name)) {
-                        this.shortlist.push({ tool, notes: '' });
-                        this.renderShortlist();
+
+                const picker = document.createElement('div');
+                picker.className = 'tool-picker';
+
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = 'Select a tool';
+                picker.appendChild(button);
+
+                const list = document.createElement('ul');
+                list.className = 'tool-picker-options';
+                list.innerHTML = this.TREASURY_TOOLS
+                    .filter(t => !this.shortlist.some(i => i.tool.name === t.name))
+                    .map(t => `<li data-name="${t.name}">${t.name}</li>`)
+                    .join('');
+                picker.appendChild(list);
+                container.appendChild(picker);
+
+                const close = (e) => {
+                    if (!picker.contains(e.target)) {
+                        picker.remove();
+                        document.removeEventListener('click', close);
                     }
-                    select.remove();
+                };
+
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    list.style.display = list.style.display === 'none' ? 'block' : 'none';
                 });
-                container.appendChild(select);
-                select.focus();
+
+                list.querySelectorAll('li').forEach(li => {
+                    li.addEventListener('click', () => {
+                        const name = li.dataset.name;
+                        const tool = this.TREASURY_TOOLS.find(t => t.name === name);
+                        if (tool && !this.shortlist.some(i => i.tool.name === name)) {
+                            this.shortlist.push({ tool, notes: '' });
+                            this.renderShortlist();
+                        }
+                        picker.remove();
+                        document.removeEventListener('click', close);
+                    });
+                });
+
+                setTimeout(() => document.addEventListener('click', close));
+                button.focus();
             }
 
             setupBottomNav() {

@@ -4147,7 +4147,7 @@ a[href="#openportalmodal"] {
     border-radius: 10px; /* Increase from 8px to match other elements */
     border-left: 3px solid var(--success-green);
     box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08);
-    margin-top: 1.5rem; /* Increase from auto for proper spacing after stats */
+    margin-top: 2.5rem; /* Increase from 1.5rem for more separation after stats */
     border: 1px solid rgba(16, 185, 129, 0.15); /* Add consistent border like other cards */
 }
 

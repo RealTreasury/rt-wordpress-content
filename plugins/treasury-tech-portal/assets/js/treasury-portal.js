@@ -1070,8 +1070,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (noResults) noResults.style.display = hasResults ? 'none' : 'block';
 
                 const listContainer = document.getElementById('listViewContainer');
-                const ungroup = !this.groupByCategory || this.currentView === 'list' || this.searchTerm ||
-                                this.advancedFilters.features.length || this.advancedFilters.hasVideo;
+                const ungroup = !this.groupByCategory || this.searchTerm ||
+                                  this.advancedFilters.features.length || this.advancedFilters.hasVideo;
 
                 if (ungroup) {
                     categories.forEach(cat => {

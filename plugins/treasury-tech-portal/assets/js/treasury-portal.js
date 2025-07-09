@@ -1477,6 +1477,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (container) {
                     let draggedCard = null;
                     let touchDraggedCard = null;
+                    let dragPreview = null;
+                    let pointerMoveHandler = null;
                     const addHighlight = () => container.classList.add('drag-over');
                     const removeHighlight = () => container.classList.remove('drag-over');
 
@@ -1485,6 +1487,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             draggedCard = e.target;
                             e.dataTransfer.setData('text/plain', e.target.dataset.name);
                             e.dataTransfer.effectAllowed = 'move';
+                            e.dataTransfer.setDragImage(new Image(), 0, 0);
+                            dragPreview = e.target.cloneNode(true);
+                            dragPreview.classList.add('drag-preview');
+                            dragPreview.style.width = `${e.target.offsetWidth}px`;
+                            dragPreview.style.height = `${e.target.offsetHeight}px`;
+                            portalRoot.appendChild(dragPreview);
+                            pointerMoveHandler = ev => {
+                                dragPreview.style.left = `${ev.clientX}px`;
+                                dragPreview.style.top = `${ev.clientY}px`;
+                            };
+                            window.addEventListener('pointermove', pointerMoveHandler);
+                            pointerMoveHandler(e);
                         } else {
                             draggedCard = null;
                         }
@@ -1525,16 +1539,36 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
 
+                    container.addEventListener('dragend', () => {
+                        window.removeEventListener('pointermove', pointerMoveHandler);
+                        if (dragPreview) {
+                            dragPreview.remove();
+                            dragPreview = null;
+                        }
+                    });
+
                     container.addEventListener('touchstart', e => {
                         const card = e.target.closest('.shortlist-card');
                         if (card) {
                             touchDraggedCard = card;
                             addHighlight();
+                            dragPreview = card.cloneNode(true);
+                            dragPreview.classList.add('drag-preview');
+                            dragPreview.style.width = `${card.offsetWidth}px`;
+                            dragPreview.style.height = `${card.offsetHeight}px`;
+                            portalRoot.appendChild(dragPreview);
+                            const touch = e.touches[0];
+                            dragPreview.style.left = `${touch.clientX}px`;
+                            dragPreview.style.top = `${touch.clientY}px`;
                         }
                     });
                     container.addEventListener('touchmove', e => {
                         if (!touchDraggedCard) return;
                         const touch = e.touches[0];
+                        if (dragPreview) {
+                            dragPreview.style.left = `${touch.clientX}px`;
+                            dragPreview.style.top = `${touch.clientY}px`;
+                        }
                         const target = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.shortlist-card');
                         if (target && target !== touchDraggedCard) {
                             const rect = target.getBoundingClientRect();
@@ -1551,6 +1585,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             return this.shortlist.find(i => i.tool.name === name);
                         });
                         touchDraggedCard = null;
+                        if (dragPreview) {
+                            dragPreview.remove();
+                            dragPreview = null;
+                        }
                         this.renderShortlist();
                     });
 

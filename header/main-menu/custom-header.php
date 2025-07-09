@@ -185,7 +185,7 @@ function add_my_custom_header_html() {
                             <div class="rt-about-enhanced">
                                 <!-- Company Story -->
                                 <div class="rt-about-story">
-                                    <h3>Our Mission</h3>
+                                    <h3>OUR MISSION</h3>
                                     <p>Independent. Unbiased. Built for Treasury Teams.</p>
                                     <div class="rt-about-description">
                                         <p>We help finance leaders select treasury technology faster—with confidence, clarity, and zero vendor bias.</p>

@@ -516,6 +516,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     this.closeSideMenu();
                     this.closeShortlistMenu();
                 }
+                // Ensure grid layout adapts when switching between mobile and desktop
+                this.applyViewStyles();
             }
 
             init() {
@@ -1774,7 +1776,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         grid.classList.add('list-view');
                         grid.style.gridTemplateColumns = '1fr';
                     } else {
-                        grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(320px, 1fr))';
+                        if (this.isMobile()) {
+                            grid.style.gridTemplateColumns = '1fr';
+                        } else {
+                            grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(320px, 1fr))';
+                        }
                     }
                 });
             }

@@ -2507,7 +2507,18 @@ body.banner-closed {
         border-color: rgba(199, 125, 255, 0.4) !important;
         color: var(--primary-purple) !important;
     }
-    
+
+    /* Maintain readable text color when menu item is active */
+    .rt-nav-item.active .rt-nav-link {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border-color: rgba(199, 125, 255, 0.4) !important;
+        color: var(--primary-purple) !important;
+    }
+
+    .rt-nav-item.active .rt-nav-link.has-dropdown::after {
+        border-top-color: var(--primary-purple) !important;
+    }
+
     .rt-nav-link.has-dropdown::after {
         border-top-color: var(--dark-text) !important;
     }

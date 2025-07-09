@@ -1812,7 +1812,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const shortlist = document.getElementById('bottomShortlist');
 
                 if (search) {
-                    search.addEventListener('click', (e) => {
+                    const handleSearch = (e) => {
                         e.preventDefault();
                         e.stopPropagation();
 
@@ -1833,7 +1833,21 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                             }, 350); // Match the menu transition duration
                         }
+                    };
+
+                    let startX, startY;
+                    search.addEventListener('touchstart', e => {
+                        startX = e.touches[0].clientX;
+                        startY = e.touches[0].clientY;
                     });
+                    search.addEventListener('touchend', e => {
+                        const dx = Math.abs(e.changedTouches[0].clientX - startX);
+                        const dy = Math.abs(e.changedTouches[0].clientY - startY);
+                        if (dx < 10 && dy < 10) {
+                            handleSearch(e);
+                        }
+                    });
+                    search.addEventListener('click', handleSearch);
                 }
 
                 if (shortlist) {

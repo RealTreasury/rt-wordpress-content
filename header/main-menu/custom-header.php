@@ -98,22 +98,22 @@ function add_my_custom_header_html() {
                                 <div class="rt-services-journey">
                                     <h3>🗺️ Your Journey</h3>
                                     <div class="rt-journey-steps">
-                                        <div class="rt-journey-step">
+                                        <a href="https://realtreasury.com/treasury-tech-portal/" class="rt-journey-step tpa-btn-ready">
                                             <div class="rt-step-number">1</div>
                                             <div class="rt-step-text">Explore tech portal</div>
-                                        </div>
-                                        <div class="rt-journey-step">
+                                        </a>
+                                        <a href="https://realtreasury.com/treasury-insights-workshop" class="rt-journey-step">
                                             <div class="rt-step-number">2</div>
                                             <div class="rt-step-text">Join insights workshop</div>
-                                        </div>
-                                        <div class="rt-journey-step">
+                                        </a>
+                                        <a href="https://realtreasury.com/strategy-session" class="rt-journey-step" target="_blank">
                                             <div class="rt-step-number">3</div>
                                             <div class="rt-step-text">Get expert guidance</div>
-                                        </div>
-                                        <div class="rt-journey-step">
+                                        </a>
+                                        <a href="https://realtreasury.com/errnot/" class="rt-journey-step">
                                             <div class="rt-step-number">4</div>
                                             <div class="rt-step-text">Select ideal platform</div>
-                                        </div>
+                                        </a>
                                     </div>
                                 </div>
 

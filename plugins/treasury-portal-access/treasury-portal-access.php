@@ -255,9 +255,16 @@ final class Treasury_Portal_Access {
     }
     
     private function user_exists($email) {
-        global $wpdb;
-        $user_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE email = %s", $email));
-        return !is_null($user_id);
+        try {
+            global $wpdb;
+            $user_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$this->table_name} WHERE email = %s", $email));
+            $exists = !is_null($user_id);
+            error_log("TPA: user_exists check for {$email}: " . ($exists ? 'true' : 'false'));
+            return $exists;
+        } catch (Exception $e) {
+            error_log('TPA: Error in user_exists: ' . $e->getMessage());
+            return false;
+        }
     }
     
     private function send_welcome_email($user_data) {
@@ -276,64 +283,193 @@ final class Treasury_Portal_Access {
     }
     
     public function restore_access_ajax() {
-        check_ajax_referer('tpa_frontend_nonce', 'nonce');
-        $email = sanitize_email($_POST['email'] ?? '');
-        
-        if (!is_email($email)) {
-            wp_send_json_error(['message' => 'Invalid email address.'], 400);
+        // Enhanced error logging for debugging
+        error_log('TPA: restore_access_ajax called');
+        error_log('TPA: POST data: ' . print_r($_POST, true));
+        error_log('TPA: Headers: ' . print_r(getallheaders(), true));
+
+        // Check if it's an AJAX request
+        if (!wp_doing_ajax()) {
+            error_log('TPA: Not an AJAX request');
+            wp_send_json_error(['message' => 'Invalid request method.'], 400);
+            return;
         }
-        
-        if ($this->user_exists($email)) {
-            $access_token = $this->generate_access_token($email);
-            $this->update_user_token($email, $access_token);
-            $duration = (int) get_option('tpa_access_duration', 180) * DAY_IN_SECONDS;
-            $this->set_access_cookies($access_token, $email, $duration);
-            
-            error_log("✅ TPA: Access restored via localStorage for {$email}");
-            wp_send_json_success(['message' => 'Access restored.']);
-        } else {
-            error_log("❌ TPA: Restore failed - user not found: {$email}");
-            wp_send_json_error(['message' => 'User not found.'], 404);
+
+        // Verify nonce with enhanced error handling
+        $nonce = sanitize_text_field($_POST['nonce'] ?? '');
+        if (empty($nonce)) {
+            error_log('TPA: Missing nonce in restore_access_ajax');
+            wp_send_json_error(['message' => 'Missing security token.'], 400);
+            return;
+        }
+
+        if (!wp_verify_nonce($nonce, 'tpa_frontend_nonce')) {
+            error_log('TPA: Invalid nonce in restore_access_ajax: ' . $nonce);
+            wp_send_json_error(['message' => 'Invalid security token.'], 403);
+            return;
+        }
+
+        $email = sanitize_email($_POST['email'] ?? '');
+        if (empty($email)) {
+            error_log('TPA: Missing email in restore_access_ajax');
+            wp_send_json_error(['message' => 'Email address is required.'], 400);
+            return;
+        }
+
+        if (!is_email($email)) {
+            error_log('TPA: Invalid email format in restore_access_ajax: ' . $email);
+            wp_send_json_error(['message' => 'Invalid email address format.'], 400);
+            return;
+        }
+
+        try {
+            if ($this->user_exists($email)) {
+                $access_token = $this->generate_access_token($email);
+                $this->update_user_token($email, $access_token);
+                $duration = (int) get_option('tpa_access_duration', 180) * DAY_IN_SECONDS;
+                $this->set_access_cookies($access_token, $email, $duration);
+
+                error_log("✅ TPA: Access restored via localStorage for {$email}");
+                wp_send_json_success(['message' => 'Access restored successfully.']);
+            } else {
+                error_log("❌ TPA: Restore failed - user not found: {$email}");
+                wp_send_json_error(['message' => 'User not found in system.'], 404);
+            }
+        } catch (Exception $e) {
+            error_log('TPA: Exception in restore_access_ajax: ' . $e->getMessage());
+            wp_send_json_error(['message' => 'Server error occurred.'], 500);
         }
     }
     
     public function revoke_access_ajax() {
-        check_ajax_referer('tpa_frontend_nonce', 'nonce');
-        $this->clear_access_cookies();
-        error_log('🔐 TPA: Portal access revoked by user.');
-        wp_send_json_success(['message' => 'Access revoked.']);
+        error_log('TPA: revoke_access_ajax called');
+
+        if (!wp_doing_ajax()) {
+            error_log('TPA: Not an AJAX request');
+            wp_send_json_error(['message' => 'Invalid request method.'], 400);
+            return;
+        }
+
+        $nonce = sanitize_text_field($_POST['nonce'] ?? '');
+        if (empty($nonce)) {
+            error_log('TPA: Missing nonce in revoke_access_ajax');
+            wp_send_json_error(['message' => 'Missing security token.'], 400);
+            return;
+        }
+
+        if (!wp_verify_nonce($nonce, 'tpa_frontend_nonce')) {
+            error_log('TPA: Invalid nonce in revoke_access_ajax');
+            wp_send_json_error(['message' => 'Invalid security token.'], 403);
+            return;
+        }
+
+        try {
+            $this->clear_access_cookies();
+            error_log('🔐 TPA: Portal access revoked by user.');
+            wp_send_json_success(['message' => 'Access revoked successfully.']);
+        } catch (Exception $e) {
+            error_log('TPA: Exception in revoke_access_ajax: ' . $e->getMessage());
+            wp_send_json_error(['message' => 'Server error occurred.'], 500);
+        }
     }
     
     public function get_user_access_ajax() {
-        check_ajax_referer('tpa_frontend_nonce', 'nonce');
+        error_log('TPA: get_user_access_ajax called');
+
+        if (!wp_doing_ajax()) {
+            error_log('TPA: Not an AJAX request');
+            wp_send_json_error(['message' => 'Invalid request method.'], 400);
+            return;
+        }
+
+        $nonce = sanitize_text_field($_POST['nonce'] ?? '');
+        if (empty($nonce)) {
+            error_log('TPA: Missing nonce in get_user_access_ajax');
+            wp_send_json_error(['message' => 'Missing security token.'], 400);
+            return;
+        }
+
+        if (!wp_verify_nonce($nonce, 'tpa_frontend_nonce')) {
+            error_log('TPA: Invalid nonce in get_user_access_ajax');
+            wp_send_json_error(['message' => 'Invalid security token.'], 403);
+            return;
+        }
+
         $token = sanitize_text_field($_COOKIE['portal_access_token'] ?? '');
         if (empty($token)) {
+            error_log('TPA: No access token found in get_user_access_ajax');
             wp_send_json_error(['message' => 'No access token found.'], 401);
+            return;
         }
-        
-        $user = $this->get_user_by_token($token);
-        if ($user) {
-            wp_send_json_success([
-                'token'       => $user->access_token,
-                'email'       => $user->email,
-                'name'        => $user->full_name,
-                'access_time' => strtotime($user->access_granted)
-            ]);
-        } else {
-            wp_send_json_error(['message' => 'Invalid or expired token.'], 403);
+
+        try {
+            $user = $this->get_user_by_token($token);
+            if ($user) {
+                error_log('TPA: User access data retrieved successfully');
+                wp_send_json_success([
+                    'token'       => $user->access_token,
+                    'email'       => $user->email,
+                    'name'        => $user->full_name,
+                    'access_time' => strtotime($user->access_granted)
+                ]);
+            } else {
+                error_log('TPA: Invalid or expired token in get_user_access_ajax');
+                wp_send_json_error(['message' => 'Invalid or expired token.'], 403);
+            }
+        } catch (Exception $e) {
+            error_log('TPA: Exception in get_user_access_ajax: ' . $e->getMessage());
+            wp_send_json_error(['message' => 'Server error occurred.'], 500);
         }
     }
     
     private function update_user_token($email, $access_token) {
-        global $wpdb;
-        $wpdb->update($this->table_name, ['access_token' => $access_token], ['email' => $email], ['%s'], ['%s']);
+        try {
+            global $wpdb;
+            $result = $wpdb->update(
+                $this->table_name,
+                ['access_token' => $access_token],
+                ['email' => $email],
+                ['%s'],
+                ['%s']
+            );
+
+            if (false === $result) {
+                error_log('TPA: Database error updating token: ' . $wpdb->last_error);
+                throw new Exception('Database update failed');
+            }
+
+            error_log('TPA: Token updated successfully for ' . $email);
+            return true;
+        } catch (Exception $e) {
+            error_log('TPA: Error in update_user_token: ' . $e->getMessage());
+            throw $e;
+        }
     }
     
     private function clear_access_cookies() {
-        if (isset($_COOKIE['portal_access_token'])) {
-            unset($_COOKIE['portal_access_token']);
-            setcookie('portal_access_token', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN);
+        try {
+            if (isset($_COOKIE['portal_access_token'])) {
+                unset($_COOKIE['portal_access_token']);
+                setcookie('portal_access_token', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), false);
+                error_log('TPA: Access cookies cleared successfully');
+            }
+        } catch (Exception $e) {
+            error_log('TPA: Error clearing cookies: ' . $e->getMessage());
+            throw $e;
         }
+    }
+
+    // Add this method to help debug nonce issues
+    public function debug_nonce_ajax() {
+        error_log('TPA: debug_nonce_ajax called');
+        error_log('TPA: Current user ID: ' . get_current_user_id());
+        error_log('TPA: Is user logged in: ' . (is_user_logged_in() ? 'yes' : 'no'));
+        error_log('TPA: Session ID: ' . session_id());
+
+        $nonce = wp_create_nonce('tpa_frontend_nonce');
+        error_log('TPA: Generated nonce: ' . $nonce);
+
+        wp_send_json_success(['nonce' => $nonce, 'debug' => 'Nonce generated successfully']);
     }
     
     private function get_user_by_token($token) {

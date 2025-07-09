@@ -1943,7 +1943,7 @@ body.banner-closed {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem !important;
 }
 
 .rt-founder-card {
@@ -2012,7 +2012,7 @@ body.banner-closed {
     background: linear-gradient(135deg, #8f47f6, #7216f4);
     color: white !important;
     text-decoration: none !important;
-    margin-top: 4rem;
+    margin-top: 4rem !important;
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: 600;

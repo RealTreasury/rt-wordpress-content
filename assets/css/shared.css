@@ -2546,6 +2546,12 @@ body.banner-closed {
         grid-template-columns: 1fr !important;
         gap: 1.5rem !important;
     }
+
+    /* Center explore link image */
+    .rt-explore-link {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
     
     .rt-insights-widget,
     .rt-main-menu-column:last-child {

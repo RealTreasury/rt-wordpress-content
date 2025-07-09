@@ -195,7 +195,7 @@ if (!defined("ABSPATH")) exit;
                 <div class="category-header" data-category="LITE">
                     <div class="category-info">
                         <h2 class="category-title">
-                            ⚡ <span>TMS-Lite</span>
+                            ⚡ <span>Treasury Management System Lite (TMS-Lite)</span>
                             <span class="category-badge">Scalable</span>
                         </h2>
                         <p class="category-description">

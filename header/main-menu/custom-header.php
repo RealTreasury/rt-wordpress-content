@@ -189,7 +189,7 @@ function add_my_custom_header_html() {
                                     <p>Independent. Unbiased. Built for Treasury Teams.</p>
                                     <div class="rt-about-description">
                                         <p>We help finance leaders select treasury technology faster—with confidence, clarity, and zero vendor bias.</p>
-                                        <p>Founded by former enterprise treasury practitioners who grew tired of the traditional consulting model.</p>
+                                        <p>Founded by former enterprise treasury practitioners and vendor veterans who grew tired of the traditional consulting model, we make technology selection easy for practitioners.</p>
                                     </div>
                                     <div class="rt-about-links">
                                         <a href="https://realtreasury.com/about/" class="rt-about-link">Our Story</a>

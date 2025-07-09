@@ -1331,6 +1331,9 @@
             justify-content: space-between;
             background: linear-gradient(135deg, #f6f7fb 0%, #e8ecfc 100%);
             color: #281345;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
         .treasury-portal .side-menu-title {

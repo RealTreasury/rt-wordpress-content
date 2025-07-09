@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "target": "Fortune 500 companies requiring complex consolidation and reporting",
                         "videoUrl": "",
                         "websiteUrl": "https://gtreasury.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
-                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/GTreasury.png"
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/GTreasury.png"
                     }, {
                         "name": "Reval",
                         "category": "TRMS",

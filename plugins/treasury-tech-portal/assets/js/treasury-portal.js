@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         videoUrl: ""
                     },
                     LITE: {
-                        name: "TMS-Lite",
+                        name: "Treasury Management System Lite (TMS-Lite)",
                         badge: "Scalable",
                         description: "TMS-Lite solutions bridge the gap between basic Cash Tools and enterprise TRMS platforms. They build upon cash visibility by adding crucial treasury functions like multi-currency cash positioning, initiating treasury payments (wires, transfers), and managing basic financial instruments like foreign exchange contracts. These systems are ideal for growing companies whose needs have outpaced simple cash tools but do not yet require the full complexity of an enterprise system.",
                         features: [

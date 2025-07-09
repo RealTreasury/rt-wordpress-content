@@ -1,6 +1,16 @@
 <?php if (!defined('ABSPATH')) exit; ?>
 <div class="wrap">
     <h1>Treasury Tools</h1>
+    <?php $current_sort = isset($_GET['sort']) ? sanitize_text_field($_GET['sort']) : ''; ?>
+    <form method="get" style="margin-bottom:10px;">
+        <input type="hidden" name="page" value="treasury-tools">
+        <label for="ttp-sort">Sort By:</label>
+        <select name="sort" id="ttp-sort" onchange="this.form.submit()">
+            <option value="" <?php selected($current_sort, ''); ?>>Default</option>
+            <option value="name" <?php selected($current_sort, 'name'); ?>>Name</option>
+            <option value="category" <?php selected($current_sort, 'category'); ?>>Category</option>
+        </select>
+    </form>
     <?php if (!empty($_GET['updated'])): ?>
         <div class="updated notice"><p>Tool saved.</p></div>
     <?php endif; ?>

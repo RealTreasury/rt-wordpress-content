@@ -28,6 +28,18 @@ class TTP_Admin {
             return;
         }
         $tools = TTP_Data::get_all_tools();
+
+        $sort = isset($_GET['sort']) ? sanitize_text_field($_GET['sort']) : '';
+        if ($sort === 'name') {
+            usort($tools, function($a, $b) {
+                return strcasecmp($a['name'] ?? '', $b['name'] ?? '');
+            });
+        } elseif ($sort === 'category') {
+            usort($tools, function($a, $b) {
+                return strcasecmp($a['category'] ?? '', $b['category'] ?? '');
+            });
+        }
+
         include dirname(__DIR__) . '/templates/admin-page.php';
     }
 

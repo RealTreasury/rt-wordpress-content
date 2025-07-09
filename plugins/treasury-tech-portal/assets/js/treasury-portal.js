@@ -1812,7 +1812,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const shortlist = document.getElementById('bottomShortlist');
 
                 if (search) {
-                    search.addEventListener('click', (e) => {
+                    const handleSearch = (e) => {
                         e.preventDefault();
                         e.stopPropagation();
 
@@ -1833,7 +1833,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                             }, 350); // Match the menu transition duration
                         }
-                    });
+                    };
+
+                    search.addEventListener('click', handleSearch);
+                    search.addEventListener('touchend', handleSearch);
                 }
 
                 if (shortlist) {

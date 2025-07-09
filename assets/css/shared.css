@@ -4229,7 +4229,7 @@ a[href="#openportalmodal"] {
 }
 
 /* Services Dropdown Testimonials */
-.rt-stats-grid { display: none !important; }
+.rt-services-stats .rt-stats-grid { display: none !important; }
 .rt-services-testimonials { display: flex !important; flex-direction: column !important; gap: 1.5rem !important; }
 .rt-services-testimonial { background: white !important; padding: 1.25rem !important; border-radius: 10px !important; border-left: 3px solid var(--success-green) !important; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08) !important; border: 1px solid rgba(16, 185, 129, 0.15) !important; transition: all 0.3s ease !important; }
 .rt-services-testimonial:hover { transform: translateY(-2px) !important; box-shadow: 0 6px 16px rgba(16, 185, 129, 0.12) !important; }

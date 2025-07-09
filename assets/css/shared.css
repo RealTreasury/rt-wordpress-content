@@ -4376,3 +4376,95 @@ a[href="#openportalmodal"] {
 .tpa-btn-ready {
     visibility: visible;
 }
+
+/* ------------------------------------------------------------------ */
+/* Treasury Tech Categories Dropdown - Compact Styles */
+/* ------------------------------------------------------------------ */
+
+.expand-button {
+    padding: 14px 20px;
+}
+
+.expand-button .expand-text {
+    font-size: 14px;
+    column-gap: 6px;
+}
+
+.expand-button .expand-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+}
+
+.expand-section.expanded {
+    margin-top: 16px;
+    max-height: 600px;
+}
+
+.expand-section .expand-label {
+    font-size: 11px;
+    margin-bottom: 12px;
+}
+
+.additional-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.feature-item {
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    gap: 8px;
+}
+
+.feature-item .emoji {
+    font-size: 12px;
+}
+
+.expand-note {
+    font-size: 14px;
+    padding: 16px 20px;
+    border-radius: 8px;
+}
+
+.expand-note .emoji {
+    font-size: 14px;
+    margin-right: 4px;
+    position: relative;
+    top: -1px;
+}
+
+@media (max-width: 768px) {
+    .expand-button {
+        padding: 12px 16px;
+    }
+    .expand-button .expand-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 9px;
+    }
+    .expand-section.expanded {
+        margin-top: 12px;
+        max-height: 500px;
+    }
+    .additional-features-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 6px;
+        padding: 8px;
+    }
+    .feature-item {
+        padding: 6px 10px;
+        font-size: 12px;
+        gap: 6px;
+    }
+    .expand-note {
+        padding: 12px 16px;
+        font-size: 13px;
+        border-radius: 6px;
+    }
+}
+

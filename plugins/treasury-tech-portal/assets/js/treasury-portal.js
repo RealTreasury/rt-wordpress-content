@@ -1153,13 +1153,13 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <div class="tool-name">
                                     <div class="tool-name-group">
                                         <span class="tool-name-title">${tool.name}</span>
-                                        ${tool.videoUrl ? '<button type="button" class="video-indicator">\u25B6 Demo</button>' : ''}
                                     </div>
-                                    ${tool.logoUrl ? `<a href="${tool.websiteUrl || '#'}" target="_blank" rel="noopener noreferrer" class="tool-logo-link" ${!tool.websiteUrl ? 'style="pointer-events: none; cursor: default;"' : ''}><img class="tool-logo-inline${tool.videoUrl ? '' : ' no-video'}" src="${tool.logoUrl}" alt="${tool.name} logo"></a>` : ''}
+                                    ${tool.logoUrl ? `<a href="${tool.websiteUrl || '#'}" target="_blank" rel="noopener noreferrer" class="tool-logo-link" ${!tool.websiteUrl ? 'style="pointer-events: none; cursor: default;"' : ''}><img class="tool-logo-inline" src="${tool.logoUrl}" alt="${tool.name} logo"></a>` : ''}
                                     <div class="tool-actions">
                                         <div class="tool-icon">${iconMap[tool.category]}</div>
                                     </div>
                                 </div>
+                                ${tool.videoUrl ? '<button type="button" class="video-indicator">\u25B6 Demo</button>' : ''}
                                 <div class="tool-type">${tool.category === 'CASH' ? 'Cash Tools' : tool.category === 'LITE' ? 'TMS-Lite' : tool.category}</div>
                             </div>
                         </div>

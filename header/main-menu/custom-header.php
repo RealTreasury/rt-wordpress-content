@@ -125,38 +125,32 @@ function add_my_custom_header_html() {
                                     </div>
 
                                     <div class="rt-services-grid">
-                                        <div class="rt-service-item">
+                                        <a href="https://realtreasury.com/treasury-tech-portal/" class="rt-service-item tpa-btn-ready">
                                             <div class="rt-service-header">
                                                 <div class="rt-service-icon">🔍</div>
                                                 <div class="rt-service-title">Treasury Tech Portal</div>
                                             </div>
                                             <div class="rt-service-desc">Access curated treasury tech stack demos and solution overviews from 100+ evaluated vendors.</div>
-                                            <a href="https://realtreasury.com/treasury-tech-portal/" class="rt-service-cta tpa-btn-ready">
-                                                Request Access →
-                                            </a>
-                                        </div>
+                                            <span class="rt-service-cta">Request Access →</span>
+                                        </a>
 
-                                        <div class="rt-service-item">
+                                        <a href="https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration" target="_blank" class="rt-service-item">
                                             <div class="rt-service-header">
                                                 <div class="rt-service-icon">💡</div>
                                                 <div class="rt-service-title">Treasury Insights Workshop</div>
                                             </div>
                                             <div class="rt-service-desc">25-minute deep dive sharing real-world insights and best practices from industry experts.</div>
-                                            <a href="https://us06web.zoom.us/meeting/register/fnF_UW-WT-SLztDpcVWU6Q#/registration" target="_blank" class="rt-service-cta">
-                                                Join Workshop →
-                                            </a>
-                                        </div>
+                                            <span class="rt-service-cta">Join Workshop →</span>
+                                        </a>
 
-                                        <div class="rt-service-item">
+                                        <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="rt-service-item">
                                             <div class="rt-service-header">
                                                 <div class="rt-service-icon">🎯</div>
                                                 <div class="rt-service-title">Technology Selection</div>
                                             </div>
                                             <div class="rt-service-desc">Expert-guided evaluation to find your ideal treasury platform in 4-6 weeks, not months.</div>
-                                            <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="rt-service-cta">
-                                                Start Assessment →
-                                            </a>
-                                        </div>
+                                            <span class="rt-service-cta">Start Assessment →</span>
+                                        </a>
                                     </div>
                                 </div>
 

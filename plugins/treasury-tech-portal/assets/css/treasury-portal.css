@@ -1781,6 +1781,13 @@
             cursor:move;
         }
 
+        .treasury-portal .drag-preview {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            opacity: 0.8;
+        }
+
         .treasury-portal .shortlist-card-header {
             display:flex;
             justify-content:space-between;

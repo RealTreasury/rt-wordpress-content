@@ -557,7 +557,7 @@
             letter-spacing: 0.5px;
         }
 
-        .treasury-portal .tool-name-title {
+.treasury-portal .tool-name-title {
             flex: 1;
             min-width: 0;
             word-break: normal;
@@ -566,7 +566,7 @@
             line-height: 1.25;
             margin-right: 0;
             align-self: flex-start;
-            max-width: 200px; /* Encourage wrapping at reasonable width */
+            max-width: 220px; /* Allow slightly wider names */
         }
         .treasury-portal .tool-logo {
             width: 100px;
@@ -695,13 +695,13 @@
         }
 
         .treasury-portal .tool-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 14px;
             flex-shrink: 0;
             color: white;
         }
@@ -1092,7 +1092,7 @@
             }
 
             .treasury-portal .tool-name-title {
-                max-width: 120px;
+                max-width: 170px;
             }
         }
 
@@ -1190,7 +1190,7 @@
             }
 
             .treasury-portal .tool-name-title {
-                max-width: 150px;
+                max-width: 200px;
                 line-height: 1.2;
             }
 

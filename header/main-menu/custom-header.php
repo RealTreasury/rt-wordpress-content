@@ -102,11 +102,11 @@ function add_my_custom_header_html() {
                                             <div class="rt-step-number">1</div>
                                             <div class="rt-step-text">Explore tech portal</div>
                                         </a>
-                                        <a href="https://realtreasury.com/treasury-insights-workshop" class="rt-journey-step">
+                                        <a href="https://realtreasury.com/tech-selection-workshop/" class="rt-journey-step">
                                             <div class="rt-step-number">2</div>
                                             <div class="rt-step-text">Join insights workshop</div>
                                         </a>
-                                        <a href="https://realtreasury.com/strategy-session" class="rt-journey-step" target="_blank">
+                                        <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" class="rt-journey-step" target="_blank">
                                             <div class="rt-step-number">3</div>
                                             <div class="rt-step-text">Get expert guidance</div>
                                         </a>

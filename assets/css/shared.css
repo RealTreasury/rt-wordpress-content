@@ -2806,7 +2806,13 @@ body.menu-open {
 }
 
 .contact-info {
-    margin-bottom: 25px;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px 0;
+}
+
+.contact-info li {
+    margin-bottom: 12px;
 }
 
 .contact-email a {

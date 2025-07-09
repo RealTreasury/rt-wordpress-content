@@ -1451,109 +1451,159 @@ function tpa_theme_modal_trigger() {
     </div>
 
     <script>
-    // FIXED: Improved portal integration to prevent FOUC
-    console.log('🚫 Portal access blocked by theme gate - integrating with plugin modal...');
-
-    document.addEventListener('DOMContentLoaded', function() {
+    /**
+     * OPTIMIZED Treasury Portal Access Integration
+     * Replaces slow 15-attempt integration with fast 3-attempt system
+     */
+    (function() {
+        'use strict';
 
         const loadingScreen = document.getElementById('portal-theme-gate-loading');
         if (!loadingScreen) return;
+        console.log('🚫 Portal access blocked by theme gate - integrating with plugin modal...');
 
-        let attempts = 0;
-        const maxAttempts = 15;
+        let integrationAttempts = 0;
+        let maxAttempts = 3; // Reduced from 15
+        let integrationComplete = false;
 
-        function attemptPluginModalOpen() {
-            attempts++;
-            console.log(`🔄 Plugin integration attempt ${attempts}/${maxAttempts}`);
+        function checkTPAReadiness() {
+            integrationAttempts++;
 
-            // Wait for TPA to be fully loaded
-            if (window.TPA && typeof window.TPA.openModal === 'function' && window.TPA.modal) {
+            // Check multiple ways the plugin might be available
+            if (window.TPA && window.TPA.isReady && window.TPA.isReady()) {
+                console.log('✅ TPA Plugin ready on attempt', integrationAttempts);
+                integrationComplete = true;
+                integrateWithTPA();
+                return true;
+            }
+
+            if (window.TPAReady && window.TPAInstance) {
+                console.log('✅ TPA Plugin ready via TPAReady flag on attempt', integrationAttempts);
+                integrationComplete = true;
+                integrateWithTPA();
+                return true;
+            }
+
+            if (integrationAttempts >= maxAttempts) {
+                console.log('❌ TPA Plugin not found after', maxAttempts, 'attempts, using fallback');
+                integrationComplete = true;
+                useFallbackIntegration();
+                return false;
+            }
+
+            console.log('🔄 Plugin integration attempt', integrationAttempts + '/' + maxAttempts);
+
+            // Much faster retry interval
+            setTimeout(checkTPAReadiness, 50); // Reduced from 200ms+ to 50ms
+            return false;
+        }
+
+        function integrateWithTPA() {
+            if (integrationComplete && window.TPA) {
                 console.log('✅ Opening via plugin TPA.openModal()');
 
                 // Smooth transition from loading to modal
                 loadingScreen.style.opacity = '0';
                 setTimeout(() => {
                     loadingScreen.remove();
-                    window.TPA.openModal();
+                    if (window.TPA.quickOpen && window.TPA.quickOpen()) {
+                        console.log('✅ Portal opened via TPA');
+                    } else if (window.TPA.openModal) {
+                        window.TPA.openModal();
+                    }
                 }, 300);
-                return;
-            }
 
-            // Check for plugin modal element
-            const pluginModal = document.getElementById('portalModal');
-            if (pluginModal && window.TPA) {
-                console.log('✅ Opening plugin modal directly');
+                // Preserve existing button triggers
+                const portalTriggers = [
+                    'a[href="#openPortalModal"]',
+                    'a[href="#openportalmodal"]',
+                    '.open-portal-modal',
+                    '#portalAccessBtn',
+                    '.tpa-btn'
+                ];
 
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.remove();
-                    pluginModal.style.display = 'flex';
-                    setTimeout(() => {
-                        pluginModal.style.opacity = '1';
-                        pluginModal.style.visibility = 'visible';
-                        pluginModal.classList.add('show');
-                    }, 10);
-                    document.body.classList.add('modal-open');
-                }, 300);
-                return;
-            }
-
-            // Look for plugin trigger buttons
-            const portalTriggers = [
-                'a[href="#openPortalModal"]',
-                'a[href="#openportalmodal"]',
-                '.open-portal-modal',
-                '#portalAccessBtn',
-                '.tpa-btn'
-            ];
-
-            for (let selector of portalTriggers) {
-                const trigger = document.querySelector(selector);
-                if (trigger && window.TPA) {
-                    console.log('✅ Opening via plugin trigger: ' + selector);
-
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        loadingScreen.remove();
-                        trigger.click();
-                    }, 300);
-                    return;
-                }
-            }
-
-            // Continue trying or show fallback
-            if (attempts < maxAttempts) {
-                setTimeout(attemptPluginModalOpen, 400);
-            } else {
-                console.log('❌ Plugin modal integration failed - showing fallback');
-
-                // Update loading screen with fallback options
-                const loadingContent = loadingScreen.querySelector('.loading-content');
-                if (loadingContent) {
-                    loadingContent.innerHTML = `
-                        <div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div>
-                        <h3 style="color: #7216f4; margin: 0 0 15px 0;">Portal Access Required</h3>
-                        <p style="color: #666; margin: 0 0 25px 0;">
-                            Please complete our access form to view exclusive Treasury Portal content.
-                        </p>
-                        <a href="mailto:hello@realtreasury.com?subject=Portal Access Request" 
-                           style="
-                               background: #7216f4; color: white; padding: 12px 24px;
-                               border-radius: 8px; text-decoration: none; font-weight: 600;
-                               display: inline-block; margin-right: 10px;
-                           ">Contact Support</a>
-                        <button onclick="window.location.reload()" style="
-                            background: transparent; border: 2px solid #7216f4; color: #7216f4;
-                            padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;
-                        ">Try Again</button>
-                    `;
-                }
+                document.querySelectorAll(portalTriggers.join(',')).forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (window.TPA.quickOpen && window.TPA.quickOpen()) {
+                            console.log('✅ Portal opened via TPA');
+                        } else if (window.TPA.openModal) {
+                            window.TPA.openModal();
+                        }
+                    });
+                });
             }
         }
 
-        // Start attempting integration after a brief delay
-        setTimeout(attemptPluginModalOpen, 800);
-    });
+        function useFallbackIntegration() {
+            console.log('🔄 Using fallback integration (no TPA plugin detected)');
+            const loadingContent = loadingScreen.querySelector('.loading-content');
+            if (loadingContent) {
+                loadingContent.innerHTML = `
+                    <div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div>
+                    <h3 style="color: #7216f4; margin: 0 0 15px 0;">Portal Access Required</h3>
+                    <p style="color: #666; margin: 0 0 25px 0;">
+                        Please complete our access form to view exclusive Treasury Portal content.
+                    </p>
+                    <a href="mailto:hello@realtreasury.com?subject=Portal Access Request"
+                       style="
+                           background: #7216f4; color: white; padding: 12px 24px;
+                           border-radius: 8px; text-decoration: none; font-weight: 600;
+                           display: inline-block; margin-right: 10px;
+                       ">Contact Support</a>
+                    <button onclick="window.location.reload()" style="
+                        background: transparent; border: 2px solid #7216f4; color: #7216f4;
+                        padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;
+                    ">Try Again</button>
+                `;
+            }
+        }
+
+        window.addEventListener('TPAReady', function() {
+            if (!integrationComplete) {
+                console.log('🎉 TPAReady event received, stopping retries');
+                integrationComplete = true;
+                integrateWithTPA();
+            }
+        });
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkTPAReadiness);
+        } else {
+            setTimeout(checkTPAReadiness, 10);
+        }
+
+    })();
+
+    /**
+     * INSTANT DETECTION using MutationObserver
+     * Detects plugin the moment it's added to DOM
+     */
+    (function() {
+        'use strict';
+
+        if (window.TPAIntegrationDone) return;
+
+        const observer = new MutationObserver(function() {
+            if (document.getElementById('portalModal') && window.TPA) {
+                console.log('🚀 TPA detected via MutationObserver - instant integration');
+                window.TPAIntegrationDone = true;
+                observer.disconnect();
+
+                if (window.TPA.isReady && window.TPA.isReady()) {
+                    console.log('✅ Instant integration complete');
+                }
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        setTimeout(() => observer.disconnect(), 5000);
+
+    })();
     </script>
     <?php
 }

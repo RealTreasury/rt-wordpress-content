@@ -245,8 +245,10 @@
             return slide;
         }
 
+        let carouselTrack;
+
         function initializeCarousel() {
-            const carouselTrack = document.getElementById('carouselTrack');
+            carouselTrack = document.getElementById('carouselTrack');
 
             const slides = [];
             treasuryVendors.forEach(vendor => {
@@ -257,8 +259,10 @@
             duplicatedSlides.forEach(slide => {
                 carouselTrack.appendChild(slide);
             });
+        }
 
-            // Set scroll distance for CSS animation
+        function setScrollWidth() {
+            if (!carouselTrack) return;
             const trackWidth = carouselTrack.scrollWidth / 2;
             carouselTrack.style.setProperty('--scroll-width', trackWidth + 'px');
         }
@@ -266,6 +270,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeCarousel();
             setupDragScroll();
+            if (document.readyState === 'complete') {
+                setScrollWidth();
+            } else {
+                window.addEventListener('load', setScrollWidth);
+            }
         });
 
         function setupDragScroll() {

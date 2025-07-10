@@ -9,6 +9,7 @@ A clean, responsive logo carousel showcasing all 28 treasury technology vendors 
 - **Mobile-Optimized**: Touch support with responsive design
 - **Clickable Logos**: Direct links to vendor portal pages
 - **Auto-Resume**: Auto-scroll continues after user interaction
+- **Accurate Sizing**: Scroll width calculated after images load for smoother looping
 
 ## Usage
 Simply embed the `index.html` file into any webpage or use as an iframe:

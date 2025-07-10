@@ -1485,9 +1485,9 @@ function tpa_theme_modal_trigger() {
             }
 
             if (integrationAttempts >= maxAttempts) {
-                console.log('❌ TPA Plugin not found after', maxAttempts, 'attempts, using fallback');
+                console.log('❌ TPA Plugin not found after', maxAttempts, 'attempts.');
                 integrationComplete = true;
-                useFallbackIntegration();
+                // useFallbackIntegration(); // disabled to prevent fallback overlay
                 return false;
             }
 

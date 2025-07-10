@@ -31,9 +31,13 @@ if (empty($form_id)) {
     'use strict';
 
     // Prevent script from running twice
-    if (window.TPA) {
+    if (window.TPA_LOADED) {
+        console.log('TPA: Script already loaded');
         return;
     }
+    window.TPA_LOADED = true;
+
+    let domReadyProcessed = false;
 
     // Enhanced localStorage detection with comprehensive error handling
     function isLocalStorageAvailable() {
@@ -105,15 +109,19 @@ if (empty($form_id)) {
     }
 
     // Enhanced modal element detection with retry and timeout
-    function findModalElement(retries = 10, timeout = 100) {
+    function findModalElement(retries = 3, timeout = 50) {
         return new Promise((resolve) => {
             function attempt() {
-                const modal = document.getElementById('portalModal');
+                let modal =
+                    document.getElementById('portalModal') ||
+                    document.querySelector('.tpa-modal') ||
+                    document.querySelector('[data-portal-modal]');
+
                 if (modal) {
                     resolve(modal);
                     return;
                 }
-                
+
                 if (retries > 0) {
                     console.log('TPA: Modal not found, retrying...', retries);
                     setTimeout(() => {
@@ -121,8 +129,13 @@ if (empty($form_id)) {
                         attempt();
                     }, timeout);
                 } else {
-                    console.error('TPA: Modal element #portalModal not found after retries');
-                    resolve(null);
+                    console.error('TPA: Modal element not found after retries, creating fallback');
+                    modal = document.createElement('div');
+                    modal.id = 'portalModal';
+                    modal.className = 'tpa-modal';
+                    modal.style.display = 'none';
+                    document.body.appendChild(modal);
+                    resolve(modal);
                 }
             }
             attempt();
@@ -163,6 +176,10 @@ if (empty($form_id)) {
 
             // Enhanced DOM ready initialization
             onDOMReady(() => {
+                if (domReadyProcessed) {
+                    return;
+                }
+                domReadyProcessed = true;
                 console.log('TPA: DOM ready, full initialization');
                 this.checkAccessPersistence();
                 this.updateHeaderButton();
@@ -170,6 +187,9 @@ if (empty($form_id)) {
                 this.showButtons();
                 this.debugButtonStates();
                 this.initialized = true;
+                window.TPA_LOADED = true;
+                window.TPAInstance = this;
+                window.dispatchEvent(new Event('TPAReady'));
                 console.log('TPA: Initialization complete');
             });
             
@@ -741,6 +761,7 @@ if (empty($form_id)) {
             }
         }
     };
+    window.TPAInstance = window.TPA;
 
     // Initialize with enhanced error handling and multiple fallbacks
     async function initializeTPA() {

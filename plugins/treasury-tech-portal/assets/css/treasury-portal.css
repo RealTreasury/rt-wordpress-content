@@ -533,12 +533,13 @@
             gap: 16px;
         }
 
-        .treasury-portal .tool-info {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            gap: 2px;
-        }
+.treasury-portal .tool-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 2px;
+    align-items: flex-start; /* Avoid full-width buttons */
+}
 
         .treasury-portal .tool-name {
             font-size: 1.2rem;

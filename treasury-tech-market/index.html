@@ -283,6 +283,156 @@
             line-height: 1.4;
         }
 
+        /* Additional Features Section */
+        .additional-features-section {
+            padding: 80px 0;
+            background: #f8fafc;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 32px;
+        }
+
+        .feature-category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 36px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+
+        .feature-category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 20px 20px 0 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-category-card:nth-child(1)::before {
+            background: linear-gradient(90deg, #3b82f6, #1e40af);
+        }
+
+        .feature-category-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+        }
+
+        .feature-category-card:nth-child(3)::before {
+            background: linear-gradient(90deg, #10b981, #047857);
+        }
+
+        .feature-category-card:hover {
+            transform: translateY(-6px) scale(1.015);
+            box-shadow: 
+                0 24px 48px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(0, 0, 0, 0.06);
+        }
+
+        .feature-category-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-category-header {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .feature-category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-category-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .feature-category-subtitle {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(114, 22, 244, 0.1);
+        }
+
+        .feature-emoji {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .feature-note {
+            text-align: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 16px;
+            border: 1px solid #f59e0b;
+        }
+
+        .feature-note-emoji {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .feature-note p {
+            color: #92400e;
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 1.5;
+            margin: 0;
+        }
+
         /* CTA Section */
         .cta-section {
             padding: 80px 0;
@@ -408,6 +558,36 @@
                 padding: 28px;
             }
 
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .feature-category-card {
+                padding: 28px;
+            }
+
+            .features-list {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .feature-item {
+                padding: 10px 14px;
+            }
+
+            .feature-emoji {
+                font-size: 16px;
+            }
+
+            .feature-text {
+                font-size: 13px;
+            }
+
+            .additional-features-section {
+                padding: 60px 0;
+            }
+
 
             .cta-content h2 {
                 font-size: 32px;
@@ -434,6 +614,8 @@
             </div>
         </div>
     </section>
+
+
 
     <section class="market-section">
         <div class="container">
@@ -502,6 +684,125 @@
                     <div class="category-example">
                         <div class="example-label">Real Example</div>
                         <div class="example-text">A $5B multinational manages FX exposure across 50+ entities with automated hedging strategies</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="additional-features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Additional Optional Features</h2>
+                <p class="section-subtitle">Beyond the core requirements, each category offers additional capabilities to enhance your treasury operations as your needs evolve.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-category-card">
+                    <div class="feature-category-header">
+                        <div class="feature-category-icon" style="background: linear-gradient(135deg, #3b82f6, #1e40af); color: white;">💰</div>
+                        <h3 class="feature-category-title">Cash Tools</h3>
+                        <p class="feature-category-subtitle">Additional Features</p>
+                    </div>
+                    <div class="feature-note">
+                        <span class="feature-note-emoji">✨</span>
+                        <p>Cash Tools focus on core functionality. Additional features are available when you upgrade to TMS-Lite or TRMS categories.</p>
+                    </div>
+                </div>
+
+                <div class="feature-category-card">
+                    <div class="feature-category-header">
+                        <div class="feature-category-icon" style="background: linear-gradient(135deg, #7216f4, #8f47f6); color: white;">⚡</div>
+                        <h3 class="feature-category-title">TMS-Lite</h3>
+                        <p class="feature-category-subtitle">Additional Features</p>
+                    </div>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <span class="feature-emoji">🤖</span>
+                            <span class="feature-text">AI Forecasting</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">🔍</span>
+                            <span class="feature-text">AI Insights</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">💳</span>
+                            <span class="feature-text">AP Payments</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">🏦</span>
+                            <span class="feature-text">Bank Account Management</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">💱</span>
+                            <span class="feature-text">Basic FX (Spots, FWD)</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">📊</span>
+                            <span class="feature-text">Cash Accounting</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">💰</span>
+                            <span class="feature-text">Debt Management</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">🧮</span>
+                            <span class="feature-text">Deal Accounting</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">🏢</span>
+                            <span class="feature-text">In-House Banking</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">📈</span>
+                            <span class="feature-text">Investments</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">🌐</span>
+                            <span class="feature-text">SWIFT Connectivity</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-category-card">
+                    <div class="feature-category-header">
+                        <div class="feature-category-icon" style="background: linear-gradient(135deg, #10b981, #047857); color: white;">🏢</div>
+                        <h3 class="feature-category-title">TRMS</h3>
+                        <p class="feature-category-subtitle">Additional Features</p>
+                    </div>
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <span class="feature-emoji">💹</span>
+                            <span class="feature-text">Bank Fee Analysis</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">🛢️</span>
+                            <span class="feature-text">Commodities</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">👨‍💻</span>
+                            <span class="feature-text">Developer Portal</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">📑</span>
+                            <span class="feature-text">Excel Native Reporting</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">🛡️</span>
+                            <span class="feature-text">Hedge Management</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">🔄</span>
+                            <span class="feature-text">Multilateral Netting</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">🏭</span>
+                            <span class="feature-text">Payment Factory (POBO/ROBO)</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-emoji">⚖️</span>
+                            <span class="feature-text">Risk Management</span>
+                        </div>
                     </div>
                 </div>
             </div>

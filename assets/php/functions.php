@@ -1470,8 +1470,15 @@ function tpa_theme_modal_trigger() {
             integrationAttempts++;
 
             // Check multiple ways the plugin might be available
-            if (window.TPA && window.TPA.isReady && window.TPA.isReady()) {
+            if (window.TPA && window.TPA.initialized) {
                 console.log('✅ TPA Plugin ready on attempt', integrationAttempts);
+                integrationComplete = true;
+                integrateWithTPA();
+                return true;
+            }
+
+            if (window.TPA_LOADED && window.TPA) {
+                console.log('✅ TPA Plugin ready via global flag on attempt', integrationAttempts);
                 integrationComplete = true;
                 integrateWithTPA();
                 return true;

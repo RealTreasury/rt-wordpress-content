@@ -37,6 +37,9 @@ if (empty($form_id)) {
     }
     window.TPA_LOADED = true;
 
+    // Track DOM ready processing to avoid duplicate initialization
+    let domReadyProcessed = false;
+
     // Enhanced localStorage detection with comprehensive error handling
     function isLocalStorageAvailable() {
         try {
@@ -98,17 +101,19 @@ if (empty($form_id)) {
 
     // Enhanced DOM ready detection with multiple strategies
     function onDOMReady(callback) {
+        function wrapped() {
+            if (domReadyProcessed) return;
+            domReadyProcessed = true;
+            try { callback(); } catch (e) { console.error('TPA: DOM ready error:', e); }
+        }
+
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            // DOM is already ready
-            setTimeout(callback, 0);
+            setTimeout(wrapped, 0);
         } else if (document.readyState === 'loading') {
-            // DOM is still loading
-            document.addEventListener('DOMContentLoaded', callback);
-            // Fallback in case DOMContentLoaded doesn't fire
-            setTimeout(callback, 2000);
+            document.addEventListener('DOMContentLoaded', wrapped, { once: true });
+            setTimeout(wrapped, 2000);
         } else {
-            // Fallback for older browsers
-            setTimeout(callback, 100);
+            setTimeout(wrapped, 100);
         }
     }
 
@@ -184,6 +189,23 @@ if (empty($form_id)) {
         initialized: false,
         initializationAttempts: 0,
         maxInitAttempts: 3,
+
+        // Helper to check if plugin is fully initialized
+        isReady() {
+            return this.initialized;
+        },
+
+        // Helper used by the theme to quickly open the portal
+        quickOpen() {
+            if (!this.initialized) return false;
+            try {
+                this.openModal();
+                return true;
+            } catch (e) {
+                console.error('TPA: quickOpen failed', e);
+                return false;
+            }
+        },
         
         async init() {
             this.initializationAttempts++;
@@ -222,6 +244,16 @@ if (empty($form_id)) {
                 
                 this.initialized = true;
                 console.log('TPA: Initialization complete!');
+
+                // Expose instance for theme integration
+                window.TPAInstance = this;
+                window.TPAReady = true;
+                try {
+                    document.dispatchEvent(new Event('TPAReady'));
+                } catch (e) {
+                    console.error('TPA: Error dispatching TPAReady', e);
+                }
+
                 return true;
                 
             } catch (error) {

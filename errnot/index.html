@@ -205,6 +205,55 @@
             color: var(--gray-text);
         }
 
+        .testimonial-slider {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-slide {
+            display: none;
+        }
+
+        .testimonial-slide.active {
+            display: block;
+        }
+
+        .testimonial-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(247, 247, 247, 0.95));
+            border: 1px solid rgba(199, 125, 255, 0.2);
+            color: var(--primary-purple);
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-nav:hover {
+            background: linear-gradient(135deg, #7216f4, #8f47f6);
+            color: #fff;
+        }
+
+        .testimonial-nav.prev {
+            left: -20px;
+        }
+
+        .testimonial-nav.next {
+            right: -20px;
+        }
+
+        @media (max-width: 640px) {
+            .testimonial-nav.prev { left: 0; }
+            .testimonial-nav.next { right: 0; }
+        }
+
         .section-padding {
             padding: 80px 0;
         }
@@ -415,22 +464,31 @@
                 Real <span class="gradient-text">Results</span>
             </h2>
             
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-                <div class="testimonial-card">
-                    <div class="testimonial-quote">"𝘈 𝘵𝘩𝘰𝘶𝘨𝘩𝘵𝘧𝘶𝘭, 𝘴𝘵𝘳𝘶𝘤𝘵𝘶𝘳𝘦𝘥 𝘱𝘳𝘰𝘤𝘦𝘴𝘴 𝘧𝘰𝘳 𝘴𝘦𝘭𝘦𝘤𝘵𝘪𝘯𝘨 𝘵𝘦𝘤𝘩𝘯𝘰𝘭𝘰𝘨𝘺..."</div>
-                    <div class="testimonial-author">Tony Vu</div>
-                    <div class="testimonial-role">Treasurer, Broward Health</div>
+            <div class="testimonial-slider mb-16 relative max-w-3xl mx-auto">
+                <div class="testimonial-slide active">
+                    <div class="testimonial-card">
+                        <div class="testimonial-quote">"𝘈 𝘵𝘩𝘰𝘶𝘨𝘩𝘵𝘧𝘶𝘭, 𝘴𝘵𝘳𝘶𝘤𝘵𝘶𝘳𝘦𝘥 𝘱𝘳𝘰𝘤𝘦𝘴𝘴 𝘧𝘰𝘳 𝘴𝘦𝘭𝘦𝘤𝘵𝘪𝘯𝘨 𝘵𝘦𝘤𝘩𝘯𝘰𝘭𝘰𝘨𝘺..."</div>
+                        <div class="testimonial-author">Tony Vu</div>
+                        <div class="testimonial-role">Treasurer, Broward Health</div>
+                    </div>
                 </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-quote">"They effectively implemented treasury software that seamlessly integrates cash journal entry posting and has revolutionized our financial management, providing unparalleled efficiency and insight into our cash flow operations."</div>
-                    <div class="testimonial-author">Emily Bailey</div>
-                    <div class="testimonial-role">Accounting Manager, Carter Exchange</div>
+                <div class="testimonial-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-quote">"They effectively implemented treasury software that seamlessly integrates cash journal entry posting and has revolutionized our financial management, providing unparalleled efficiency and insight into our cash flow operations."</div>
+                        <div class="testimonial-author">Emily Bailey</div>
+                        <div class="testimonial-role">Accounting Manager, Carter Exchange</div>
+                    </div>
                 </div>
-                <div class="testimonial-card">
-                    <div class="testimonial-quote">“They brought strategic insights we hadn’t considered—highlighting key features, gaps, and opportunities.”</div>
-                    <div class="testimonial-author">Thi Pham</div>
-                    <div class="testimonial-role">CFO, Vie Management</div>
+                <div class="testimonial-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-quote">“They brought strategic insights we hadn’t considered—highlighting key features, gaps, and opportunities.”</div>
+                        <div class="testimonial-author">Thi Pham</div>
+                        <div class="testimonial-role">CFO, Vie Management</div>
+                    </div>
                 </div>
+
+                <button id="prevTestimonial" class="testimonial-nav prev" aria-label="Previous testimonial">‹</button>
+                <button id="nextTestimonial" class="testimonial-nav next" aria-label="Next testimonial">›</button>
             </div>
 
             <!-- Results Stats -->
@@ -600,6 +658,27 @@
         </div>
     </section>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.testimonial-slide');
+            const prev = document.getElementById('prevTestimonial');
+            const next = document.getElementById('nextTestimonial');
+            if (slides.length === 0) return;
+            let index = 0;
+            const show = (i) => {
+                slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+            };
+            prev.addEventListener('click', () => {
+                index = (index - 1 + slides.length) % slides.length;
+                show(index);
+            });
+            next.addEventListener('click', () => {
+                index = (index + 1) % slides.length;
+                show(index);
+            });
+            show(index);
+        });
+    </script>
     <script>
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

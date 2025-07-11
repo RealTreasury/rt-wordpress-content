@@ -1218,9 +1218,10 @@
                 display: none;
             }
 
+            /* Ensure toggles remain visible so mobile users can access the menus */
             .treasury-portal .external-menu-toggle,
             .treasury-portal .external-shortlist-toggle {
-                display: none !important;
+                display: flex !important;
             }
 
             .treasury-portal .container {

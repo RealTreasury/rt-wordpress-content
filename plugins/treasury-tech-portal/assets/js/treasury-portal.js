@@ -509,14 +509,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
             handleResponsive() {
                 const mobile = this.isMobile();
+
                 document.querySelectorAll('.tool-card').forEach(card => {
                     card.draggable = !mobile;
                 });
+
                 if (mobile) {
                     this.closeSideMenu();
                     this.closeShortlistMenu();
+
+                    const externalMenuToggle = document.getElementById('externalMenuToggle');
+                    const externalShortlistToggle = document.getElementById('externalShortlistToggle');
+                    if (externalMenuToggle) externalMenuToggle.style.display = 'none';
+                    if (externalShortlistToggle) externalShortlistToggle.style.display = 'none';
+
+                    const bottomNav = document.getElementById('bottomNav');
+                    if (bottomNav) bottomNav.style.display = 'flex';
+                } else {
+                    const externalMenuToggle = document.getElementById('externalMenuToggle');
+                    const externalShortlistToggle = document.getElementById('externalShortlistToggle');
+                    if (externalMenuToggle) externalMenuToggle.style.display = 'flex';
+                    if (externalShortlistToggle) externalShortlistToggle.style.display = 'flex';
+
+                    const bottomNav = document.getElementById('bottomNav');
+                    if (bottomNav) bottomNav.style.display = 'none';
                 }
-                // Ensure grid layout adapts when switching between mobile and desktop
+
                 this.applyViewStyles();
             }
 
@@ -1427,7 +1445,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 overlay?.classList.add('show');
                 toggle?.classList.add('active');
                 externalToggle?.classList.add('active');
-                portalRoot.style.overflow = 'hidden';
+                if (this.isMobile()) {
+                    document.body.style.overflow = 'hidden';
+                    document.body.style.position = 'fixed';
+                    document.body.style.width = '100%';
+                } else {
+                    portalRoot.style.overflow = 'hidden';
+                }
                 document.addEventListener('click', this.handleOutsideSideMenuClick, true);
                 this.sideMenuOpen = true;
             }
@@ -1443,7 +1467,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 toggle?.classList.remove('active');
                 externalToggle?.classList.remove('active');
                 portalRoot.classList.remove('side-menu-open');
-                portalRoot.style.overflow = '';
+                if (this.isMobile()) {
+                    document.body.style.overflow = '';
+                    document.body.style.position = '';
+                    document.body.style.width = '';
+                } else {
+                    portalRoot.style.overflow = '';
+                }
                 document.removeEventListener('click', this.handleOutsideSideMenuClick, true);
                 this.sideMenuOpen = false;
             }
@@ -1624,7 +1654,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.addEventListener('click', this.handleOutsideShortlistMenuClick);
                toggle?.classList.add('active');
                externalToggle?.classList.add('active');
-               portalRoot.style.overflow = 'hidden';
+               if (this.isMobile()) {
+                   document.body.style.overflow = 'hidden';
+                   document.body.style.position = 'fixed';
+                   document.body.style.width = '100%';
+               } else {
+                   portalRoot.style.overflow = 'hidden';
+               }
                this.shortlistMenuOpen = true;
             }
 
@@ -1640,7 +1676,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.removeEventListener('click', this.handleOutsideShortlistMenuClick);
                toggle?.classList.remove('active');
                externalToggle?.classList.remove('active');
-               portalRoot.style.overflow = '';
+               if (this.isMobile()) {
+                   document.body.style.overflow = '';
+                   document.body.style.position = '';
+                   document.body.style.width = '';
+               } else {
+                   portalRoot.style.overflow = '';
+               }
                this.shortlistMenuOpen = false;
             }
 
@@ -1816,55 +1858,51 @@ document.addEventListener('DOMContentLoaded', () => {
                         e.preventDefault();
                         e.stopPropagation();
 
+                        if (this.shortlistMenuOpen) {
+                            this.closeShortlistMenu();
+                        }
+
                         if (this.sideMenuOpen) {
                             this.closeSideMenu();
                         } else {
                             this.openSideMenu();
-
-                            // Add delay to ensure menu animation completes
                             setTimeout(() => {
                                 const input = document.getElementById('searchInput');
                                 if (input) {
                                     input.focus();
-                                    // For iOS Safari - trigger click as well
                                     if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
                                         input.click();
                                     }
                                 }
-                            }, 350); // Match the menu transition duration
+                            }, 350);
                         }
                     };
 
-                    let startX, startY;
-                    search.addEventListener('touchstart', e => {
-                        startX = e.touches[0].clientX;
-                        startY = e.touches[0].clientY;
-                    });
-                    search.addEventListener('touchend', e => {
-                        const dx = Math.abs(e.changedTouches[0].clientX - startX);
-                        const dy = Math.abs(e.changedTouches[0].clientY - startY);
-                        if (dx < 10 && dy < 10) {
-                            handleSearch(e);
-                        }
-                    });
+                    search.addEventListener('touchstart', (e) => e.preventDefault());
                     search.addEventListener('click', handleSearch);
+                    search.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        handleSearch(e);
+                    });
                 }
 
                 if (shortlist) {
-                    let startX, startY;
-                    shortlist.addEventListener('touchstart', e => {
-                        startX = e.touches[0].clientX;
-                        startY = e.touches[0].clientY;
-                    });
-                    shortlist.addEventListener('touchend', e => {
-                        const dx = Math.abs(e.changedTouches[0].clientX - startX);
-                        const dy = Math.abs(e.changedTouches[0].clientY - startY);
-                        if (dx < 10 && dy < 10) {
-                            e.preventDefault();
-                            this.toggleShortlistMenu();
+                    const handleShortlist = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        if (this.sideMenuOpen) {
+                            this.closeSideMenu();
                         }
+                        this.toggleShortlistMenu();
+                    };
+
+                    shortlist.addEventListener('touchstart', (e) => e.preventDefault());
+                    shortlist.addEventListener('click', handleShortlist);
+                    shortlist.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        handleShortlist(e);
                     });
-                    shortlist.addEventListener('click', () => this.toggleShortlistMenu());
                 }
             }
 

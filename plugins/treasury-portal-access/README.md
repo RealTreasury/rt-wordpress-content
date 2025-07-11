@@ -44,3 +44,7 @@ Inserts a button that opens the access form modal.
 Manually trigger the modal from a custom link or button. The ID is case sensitive so use `#openPortalModal` exactly (or the lowercase `#openportalmodal` alias added for convenience).
 
 Once a visitor completes the form they are redirected to your chosen page and can view any content wrapped in `protected_content` for the configured number of days.
+
+## Attempt Tracking
+
+Version 1.0.7 adds basic tracking for visitors who open the access modal but leave before completing the form. These abandoned attempts are stored in the `portal_access_attempts` database table and displayed on the plugin admin page.

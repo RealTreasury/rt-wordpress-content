@@ -6,8 +6,10 @@ if (!defined('ABSPATH')) exit;
 
 global $wpdb;
 $table_name = $wpdb->prefix . 'portal_access_users';
+$attempt_table = $wpdb->prefix . 'portal_access_attempts';
 $users = $wpdb->get_results("SELECT * FROM {$table_name} ORDER BY access_granted DESC");
 $total_users = is_array($users) ? count($users) : 0;
+$total_attempts = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$attempt_table}");
 
 // Handle CSV export
 if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' && wp_verify_nonce($_GET['_wpnonce'], 'tpa_export_nonce')) {
@@ -67,6 +69,11 @@ if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' &&
         <div style="background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);">
             <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo (int) get_option('tpa_access_duration', 180); ?></h3>
             <p style="margin: 0; opacity: 0.9;">Days Access</p>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #607D8B, #455A64); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(96, 125, 139, 0.3);">
+            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $total_attempts; ?></h3>
+            <p style="margin: 0; opacity: 0.9;">Abandoned Attempts</p>
         </div>
     </div>
 

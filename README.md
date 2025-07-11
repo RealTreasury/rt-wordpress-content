@@ -45,6 +45,10 @@ The repository includes the **Treasury Portal Access** plugin (`plugins/treasury
 3. Refresh the page to confirm protected content remains visible while the cookie is active.
 4. Click the original portal button again and ensure it now navigates directly to the portal instead of reopening the form.
 
+### Abandoned Attempt Tracking
+
+As of plugin version 1.0.7 the portal records when a visitor opens the access modal but leaves without submitting the form. These entries appear on the Portal Access admin screen so you can gauge interest in the portal.
+
 ## Clean Media URLs Plugin
 
 The repository also includes the **Clean Media URLs** plugin (`plugins/clean-media-urls`). Activate it in WordPress to automatically sanitize media filenames so URLs contain only lowercase letters, numbers, and hyphens.

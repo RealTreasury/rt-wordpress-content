@@ -3,7 +3,7 @@
  * Plugin Name: Treasury Portal Access
  * Plugin URI: https://realtreasury.com
  * Description: Complete portal access control system with Contact Form 7 integration, 6-month persistence, and localStorage backup.
- * Version: 1.0.6
+ * Version: 1.0.7
  * Author: Real Treasury
  * Author URI: https://realtreasury.com
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('TPA_VERSION', '1.0.6');
+define('TPA_VERSION', '1.0.7');
 define('TPA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('TPA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('TPA_PLUGIN_FILE', __FILE__);
@@ -31,6 +31,7 @@ final class Treasury_Portal_Access {
     
     private static $instance = null;
     private $table_name;
+    private $attempt_table;
     
     public static function get_instance() {
         if (null === self::$instance) {
@@ -42,6 +43,7 @@ final class Treasury_Portal_Access {
     private function __construct() {
         global $wpdb;
         $this->table_name = $wpdb->prefix . 'portal_access_users';
+        $this->attempt_table = $wpdb->prefix . 'portal_access_attempts';
         
         // Register hooks
         add_action('init', array($this, 'init'));
@@ -66,6 +68,8 @@ final class Treasury_Portal_Access {
         add_action('wp_ajax_nopriv_revoke_portal_access', array($this, 'revoke_access_ajax'));
         add_action('wp_ajax_get_current_user_access', array($this, 'get_user_access_ajax'));
         add_action('wp_ajax_nopriv_get_current_user_access', array($this, 'get_user_access_ajax'));
+        add_action('wp_ajax_track_portal_attempt', array($this, 'track_attempt_ajax'));
+        add_action('wp_ajax_nopriv_track_portal_attempt', array($this, 'track_attempt_ajax'));
         
         // Shortcodes
         add_shortcode('protected_content', array($this, 'protected_content_shortcode'));
@@ -116,6 +120,16 @@ final class Treasury_Portal_Access {
         ) $charset_collate;";
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
+
+        $sql_attempts = "CREATE TABLE {$this->attempt_table} (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            page_url varchar(255) DEFAULT '' NOT NULL,
+            ip_address varchar(45) DEFAULT '' NOT NULL,
+            user_agent text,
+            attempted_at datetime NOT NULL,
+            PRIMARY KEY (id)
+        ) $charset_collate;";
+        dbDelta($sql_attempts);
         update_option('tpa_db_version', TPA_VERSION);
     }
     
@@ -585,6 +599,21 @@ final class Treasury_Portal_Access {
     public function add_admin_menu() {
         add_menu_page('Portal Access', 'Portal Access', 'manage_options', 'treasury-portal-access', [$this, 'admin_page'], 'dashicons-building', 30);
         add_submenu_page('treasury-portal-access', 'Settings', 'Settings', 'manage_options', 'treasury-portal-access-settings', [$this, 'settings_page']);
+    }
+
+    public function track_attempt_ajax() {
+        check_ajax_referer('tpa_frontend_nonce', 'nonce');
+
+        global $wpdb;
+        $data = [
+            'page_url'    => esc_url_raw($_POST['page_url'] ?? ''),
+            'ip_address'  => $_SERVER['REMOTE_ADDR'] ?? '',
+            'user_agent'  => $_SERVER['HTTP_USER_AGENT'] ?? '',
+            'attempted_at'=> current_time('mysql', 1)
+        ];
+        $wpdb->insert($this->attempt_table, $data);
+
+        wp_send_json_success(['message' => 'Attempt recorded']);
     }
     
     public function admin_page() {

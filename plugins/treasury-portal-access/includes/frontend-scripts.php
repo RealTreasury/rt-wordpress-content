@@ -185,6 +185,7 @@ if (empty($form_id)) {
         accessDuration: <?php echo (int) get_option('tpa_access_duration', 180) * 86400; ?>, // seconds
         redirectUrl: '<?php echo esc_js(get_option('tpa_redirect_url', home_url('/treasury-tech-portal/'))); ?>',
         isRedirecting: false,
+        attemptStarted: false,
         localStorageAvailable: isLocalStorageAvailable(),
         initialized: false,
         initializationAttempts: 0,
@@ -240,6 +241,12 @@ if (empty($form_id)) {
                     this.showButtons();
                     this.debugButtonStates();
                     this.setupFormHandlers();
+                    window.addEventListener('beforeunload', () => {
+                        if (this.attemptStarted) {
+                            this.recordAttempt();
+                            this.attemptStarted = false;
+                        }
+                    });
                 });
                 
                 this.initialized = true;
@@ -392,6 +399,7 @@ if (empty($form_id)) {
 
         handleFormSuccess() {
             console.log('TPA: Handling form success');
+            this.attemptStarted = false;
             this.showMessage('Access granted! Redirecting to portal...', 'success');
             this.updateAllButtons();
             this.syncToLocal();
@@ -581,7 +589,9 @@ if (empty($form_id)) {
                 if (this.body) {
                     this.body.classList.add('modal-open');
                 }
-                
+
+                this.attemptStarted = true;
+
                 console.log('TPA: Modal opened successfully');
             } catch (e) {
                 console.error('TPA: Error opening modal:', e);
@@ -602,6 +612,11 @@ if (empty($form_id)) {
                         this.body.classList.remove('modal-open');
                     }
                 }, 300);
+
+                if (this.attemptStarted) {
+                    this.recordAttempt();
+                    this.attemptStarted = false;
+                }
             } catch (e) {
                 console.log('TPA: Error closing modal:', e);
             }
@@ -751,6 +766,21 @@ if (empty($form_id)) {
                 container.appendChild(messageDiv);
             } catch (e) {
                 console.log('TPA: Error in insertMessageAfterHeader:', e);
+            }
+        },
+
+        recordAttempt() {
+            try {
+                const formData = new URLSearchParams({
+                    action: 'track_portal_attempt',
+                    nonce: this.nonce,
+                    page_url: window.location.href
+                });
+                navigator.sendBeacon ?
+                    navigator.sendBeacon(this.ajaxUrl, formData) :
+                    fetch(this.ajaxUrl, { method: 'POST', body: formData, credentials: 'same-origin' });
+            } catch (e) {
+                console.log('TPA: Error recording attempt:', e);
             }
         },
 

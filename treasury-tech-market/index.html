@@ -162,9 +162,10 @@
             border-radius: 20px;
             padding: 36px;
             position: relative;
+            overflow: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border: 2px solid transparent;
-            box-shadow: 
+            box-shadow:
                 0 8px 32px rgba(0, 0, 0, 0.06),
                 0 0 0 1px rgba(0, 0, 0, 0.04);
         }
@@ -653,6 +654,22 @@
                         <div class="example-label">Real Example</div>
                         <div class="example-text">A $50M regional manufacturer consolidates 5 bank accounts and builds 13-week cash forecasts to improve visibility</div>
                     </div>
+                    <button class="expand-button" onclick="toggleExpand(this)">
+                        <span class="expand-text">
+                            <span>Show Additional Features</span>
+                        </span>
+                        <span class="expand-icon">▼</span>
+                    </button>
+
+                    <div class="expand-section">
+                        <div class="expand-label">Additional Features</div>
+                        <ul class="category-features">
+                            <div class="expand-note">
+                                <span class="emoji">✨</span>
+                                <p>Cash Tools focus on core functionality. Additional features are available when you upgrade to TMS-Lite or TRMS categories.</p>
+                            </div>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="category-card">
@@ -665,9 +682,33 @@
                         <li>Market data (FX spot rates)</li>
                         <li>Treasury payments (API workflows)</li>
                     </ul>
+
                     <div class="category-example">
                         <div class="example-label">Real Example</div>
                         <div class="example-text">A $200M retailer automates daily payments across 15 locations with structured approval workflows</div>
+                    </div>
+                    <button class="expand-button" onclick="toggleExpand(this)">
+                        <span class="expand-text">
+                            <span>Show Additional Features</span>
+                        </span>
+                        <span class="expand-icon">▼</span>
+                    </button>
+
+                    <div class="expand-section">
+                        <div class="expand-label">Optional Enhancements</div>
+                        <ul class="category-features">
+                            <li style="--item-index: 1">AI Forecasting</li>
+                            <li style="--item-index: 2">AI Insights</li>
+                            <li style="--item-index: 3">AP Payments</li>
+                            <li style="--item-index: 4">Bank Account Management</li>
+                            <li style="--item-index: 5">Basic FX (Spots, FWD)</li>
+                            <li style="--item-index: 6">Cash Accounting</li>
+                            <li style="--item-index: 7">Debt Management</li>
+                            <li style="--item-index: 8">Deal Accounting</li>
+                            <li style="--item-index: 9">In-House Banking</li>
+                            <li style="--item-index: 10">Investments</li>
+                            <li style="--item-index: 11">SWIFT Connectivity</li>
+                        </ul>
                     </div>
                 </div>
 
@@ -684,6 +725,26 @@
                     <div class="category-example">
                         <div class="example-label">Real Example</div>
                         <div class="example-text">A $5B multinational manages FX exposure across 50+ entities with automated hedging strategies</div>
+                    </div>
+                    <button class="expand-button" onclick="toggleExpand(this)">
+                        <span class="expand-text">
+                            <span>Show Additional Features</span>
+                        </span>
+                        <span class="expand-icon">▼</span>
+                    </button>
+
+                    <div class="expand-section">
+                        <div class="expand-label">Advanced Capabilities</div>
+                        <ul class="category-features">
+                            <li style="--item-index: 1">Bank Fee Analysis</li>
+                            <li style="--item-index: 2">Commodities</li>
+                            <li style="--item-index: 3">Developer Portal</li>
+                            <li style="--item-index: 4">Excel Native Reporting</li>
+                            <li style="--item-index: 5">Hedge Management</li>
+                            <li style="--item-index: 6">Multilateral Netting</li>
+                            <li style="--item-index: 7">Payment Factory (POBO/ROBO)</li>
+                            <li style="--item-index: 8">Risk Management</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -837,5 +898,55 @@
             </div>
         </div>
     </section>
+
+    <script>
+function toggleExpand(button) {
+    const card = button.closest('.category-card');
+    const expandSection = card.querySelector('.expand-section');
+    const expandText = button.querySelector('.expand-text span');
+    const isExpanded = card.classList.contains('expanded');
+
+    if (isExpanded) {
+        // Collapse
+        card.classList.remove('expanded');
+        expandSection.classList.remove('expanded');
+        expandText.textContent = 'Show Additional Features';
+
+        // Reset animations
+        const listItems = expandSection.querySelectorAll('.category-features li, .expand-note');
+        listItems.forEach(item => {
+            item.style.animation = 'none';
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+        });
+    } else {
+        // Expand
+        card.classList.add('expanded');
+        expandSection.classList.add('expanded');
+        expandText.textContent = 'Hide Additional Features';
+
+        // Trigger animations
+        setTimeout(() => {
+            const listItems = expandSection.querySelectorAll('.category-features li, .expand-note');
+            listItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.animation = '';
+                    item.style.opacity = '';
+                    item.style.transform = '';
+                }, index * 50);
+            });
+        }, 100);
+    }
+}
+
+// Initialize animations
+document.addEventListener('DOMContentLoaded', function() {
+    const listItems = document.querySelectorAll('.expand-section .category-features li, .expand-note');
+    listItems.forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(20px)';
+    });
+});
+    </script>
 </body>
 </html>

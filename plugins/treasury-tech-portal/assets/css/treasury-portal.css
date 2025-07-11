@@ -1979,3 +1979,128 @@
                 font-size: 1.2rem;
             }
         }
+
+/* MOBILE SIDE MENU FIXES */
+@media (max-width: 768px) {
+    /* Hide external toggles completely on mobile */
+    .treasury-portal .external-menu-toggle,
+    .treasury-portal .external-shortlist-toggle {
+        display: none !important;
+    }
+
+    /* Fix bottom navigation */
+    .treasury-portal .bottom-nav {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-around !important;
+        background: rgba(255,255,255,0.95) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        border-top: 1px solid rgba(255,255,255,0.3) !important;
+        box-shadow: 0 -4px 8px rgba(0,0,0,0.1) !important;
+        z-index: 1002 !important;
+        padding: 0 !important;
+    }
+
+    .treasury-portal .bottom-nav button {
+        flex: 1 !important;
+        padding: 16px 0 !important;
+        background: none !important;
+        border: none !important;
+        font-size: 0.9rem !important;
+        color: #281345 !important;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+        cursor: pointer !important;
+        transition: background-color 0.2s ease !important;
+    }
+
+    .treasury-portal .bottom-nav button:hover,
+    .treasury-portal .bottom-nav button:active {
+        background: rgba(114, 22, 244, 0.1) !important;
+        color: #7216f4 !important;
+    }
+
+    .treasury-portal .bottom-nav button .icon {
+        display: inline-block !important;
+        margin-right: 4px !important;
+        vertical-align: middle !important;
+        width: auto !important;
+        height: auto !important;
+        font-size: 1.2rem !important;
+    }
+
+    /* Fix side menu positioning */
+    .treasury-portal .side-menu {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 85% !important;
+        height: 100vh !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 0 20px 20px 0 !important;
+        z-index: 1001 !important;
+        transform: translateX(-100%) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                    opacity 0.3s ease !important;
+        overflow-y: auto !important;
+    }
+
+    .treasury-portal .side-menu.open {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .treasury-portal .shortlist-menu {
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        width: 85% !important;
+        height: 100vh !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+        border-left: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 20px 0 0 20px !important;
+        z-index: 1001 !important;
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                    opacity 0.3s ease !important;
+        overflow-y: auto !important;
+    }
+
+    .treasury-portal .shortlist-menu.open {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* Fix overlays */
+    .treasury-portal .side-menu-overlay.show,
+    .treasury-portal .shortlist-menu-overlay.show {
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        z-index: 1000 !important;
+    }
+
+    /* Add padding for bottom nav */
+    .treasury-portal .main-content {
+        padding-bottom: 80px !important;
+    }
+}

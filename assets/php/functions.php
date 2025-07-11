@@ -337,93 +337,76 @@ function add_sitewide_cookie_banner() {
 
 
 
-// Tawk.to Chat Widget Integration for Real Treasury - SMALLER VERSION
+// Optimized Tawk.to Chat Widget Integration for Real Treasury
 add_action('wp_footer', 'add_tawk_to_chat_widget');
 function add_tawk_to_chat_widget() {
     ?>
-    <!--Start of Tawk.to Script-->
+    <!--Start of Optimized Tawk.to Script for Private Browsing-->
     <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-        s1.async=true;
-        s1.src='https://embed.tawk.to/68598eb06d2be41919849c7d/1iuetaosd';
-        s1.charset='UTF-8';
-        s1.setAttribute('crossorigin','*');
-        s0.parentNode.insertBefore(s1,s0);
-    })();
-    
-    // Track if the user explicitly opened the chat
-    window.tawkOpenedByUser = false;
-
-    // Custom function to open chat from buttons
-    window.openTawkChat = function() {
-        window.tawkOpenedByUser = true;
-        if (typeof Tawk_API !== 'undefined' && Tawk_API.maximize) {
-            Tawk_API.maximize();
-            console.log('Tawk chat opened');
-        } else {
-            console.log('Tawk not loaded yet, opening fallback');
-            // Fallback to email if chat isn't loaded
-            window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry - Chat Unavailable';
+    // Detect private browsing mode quickly
+    function isPrivateBrowsing() {
+        try {
+            localStorage.setItem('test', 'test');
+            localStorage.removeItem('test');
+            return false;
+        } catch (e) {
+            return true;
         }
-    };
-    
-    // Customize chat widget behavior
-    Tawk_API.onLoad = function(){
-        console.log('Tawk.to chat loaded successfully');
+    }
 
-        // Keep the widget visible but customize its position and size
-        Tawk_API.customStyle = {
-            visibility: {
-                desktop: {
-                    position: 'br',
-                    xOffset: 15,
-                    yOffset: 15
-                },
-                mobile: {
-                    position: 'br',
-                    xOffset: 10,
-                    yOffset: 10
+    // Only load Tawk.to if not in private browsing mode
+    if (!isPrivateBrowsing()) {
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/68598eb06d2be41919849c7d/1iuetaosd';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+
+            // Add error handling to prevent hanging
+            s1.onerror = function() {
+                console.log('Tawk.to failed to load - using email fallback');
+            };
+
+            // Add timeout to prevent hanging (this is key!)
+            setTimeout(function() {
+                if (typeof Tawk_API === 'undefined' || !Tawk_API.onLoad) {
+                    console.log('Tawk.to timeout - chat widget skipped');
+                    return;
                 }
+            }, 2000); // 2 second timeout
+
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+
+        window.tawkOpenedByUser = false;
+        window.openTawkChat = function() {
+            window.tawkOpenedByUser = true;
+            if (typeof Tawk_API !== 'undefined' && Tawk_API.maximize) {
+                Tawk_API.maximize();
+            } else {
+                window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry';
             }
         };
 
-        // Prevent automatic expansion of the widget
-        if (Tawk_API.minimize) {
-            Tawk_API.minimize();
-        }
-
-        // Keep the widget minimized unless the user explicitly opened it
-        Tawk_API.onChatMaximized = function(){
-            if (!window.tawkOpenedByUser && Tawk_API.minimize) {
-                Tawk_API.minimize();
-            }
+        // Faster initialization
+        Tawk_API.onLoad = function(){
+            console.log('Tawk.to loaded successfully');
+            if (Tawk_API.minimize) Tawk_API.minimize();
         };
-
-        Tawk_API.onChatMinimized = function(){
-            window.tawkOpenedByUser = false;
+    } else {
+        // Private browsing detected - provide immediate email fallback
+        console.log('Private browsing detected - using email fallback for chat');
+        window.openTawkChat = function() {
+            window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry';
         };
-    };
-    
-    // Track when someone starts a chat
-    Tawk_API.onChatStarted = function(){
-        console.log('Chat conversation started');
-        // Optional: Add Google Analytics tracking
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'chat_started', { 'event_category': 'engagement' });
-        }
-    };
-    
-    // Track when chat ends
-    Tawk_API.onChatEnded = function(){
-        console.log('Chat conversation ended');
-    };
+    }
     </script>
-    <!--End of Tawk.to Script-->
-    
+    <!--End of Optimized Tawk.to Script-->
+
     <style>
-    /* Make Tawk.to chat widget smaller and styled */
+    /* Keep existing chat widget styles */
     #tawkchat-minified {
         width: 50px !important;
         height: 50px !important;
@@ -432,14 +415,13 @@ function add_tawk_to_chat_widget() {
         border: 2px solid rgba(199, 125, 255, 0.2) !important;
         transition: all 0.3s ease !important;
     }
-    
+
     #tawkchat-minified:hover {
         transform: translateY(-2px) scale(1.05) !important;
         box-shadow: 0 6px 16px rgba(114, 22, 244, 0.4) !important;
         border-color: rgba(199, 125, 255, 0.4) !important;
     }
-    
-    /* Style the chat bubble to match your brand colors */
+
     #tawkchat-minified .tawk-min-container {
         background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%) !important;
         width: 100% !important;
@@ -449,8 +431,7 @@ function add_tawk_to_chat_widget() {
         align-items: center !important;
         justify-content: center !important;
     }
-    
-    /* Make the chat icon smaller */
+
     #tawkchat-minified .tawk-min-container svg,
     #tawkchat-minified .tawk-min-container img {
         width: 24px !important;
@@ -458,26 +439,13 @@ function add_tawk_to_chat_widget() {
         color: white !important;
         fill: white !important;
     }
-    
-    /* Style the expanded chat panel */
-    #tawkchat-container iframe {
-        border-radius: 12px !important;
-        box-shadow: 0 8px 32px rgba(114, 22, 244, 0.2) !important;
-        border: 2px solid rgba(199, 125, 255, 0.3) !important;
-    }
-    
-    /* Hide notification badges to keep it minimal */
-    #tawkchat-minified .tawk-min-container .tawk-badge {
-        display: none !important;
-    }
-    
-    /* Responsive adjustments */
+
     @media (max-width: 768px) {
         #tawkchat-minified {
             width: 45px !important;
             height: 45px !important;
         }
-        
+
         #tawkchat-minified .tawk-min-container svg,
         #tawkchat-minified .tawk-min-container img {
             width: 20px !important;

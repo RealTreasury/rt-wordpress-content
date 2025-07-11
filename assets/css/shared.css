@@ -4381,81 +4381,28 @@ a[href="#openportalmodal"] {
 /* Treasury Tech Categories Dropdown - Compact Styles */
 /* ------------------------------------------------------------------ */
 
-.expand-button {
-    padding: 14px 20px;
-}
-
-.expand-button .expand-text {
-    font-size: 14px;
-    column-gap: 6px;
-}
-
-.expand-button .expand-icon {
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
-}
-
-.expand-section.expanded {
-    margin-top: 16px;
-    max-height: 600px;
-}
-
-.expand-section .expand-label {
-    font-size: 11px;
-    margin-bottom: 12px;
-}
-
-.additional-features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 8px;
-    padding: 12px;
-    border-radius: 8px;
-}
-
-.feature-item {
-    padding: 8px 12px;
-    font-size: 13px;
-    border-radius: 6px;
-    gap: 8px;
-}
-
-.feature-item .emoji {
-    font-size: 12px;
-}
-
-.expand-note {
-    font-size: 14px;
-    padding: 16px 20px;
-    border-radius: 8px;
-}
-
-.expand-note .emoji {
-    font-size: 14px;
-    margin-right: 4px;
-    position: relative;
-    top: -1px;
-}
-
-/* Expand Button */
+/* ENHANCED EXPAND BUTTON */
 .expand-button {
     width: 100%;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border: none;
-    border-top: 1px solid #e2e8f0;
-    padding: 20px 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 20px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: space-between;
     font-family: inherit;
     position: relative;
     overflow: hidden;
-    margin: 20px -36px 0;
-    border-radius: 0 0 20px 20px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+/* Remove bottom margin when expanded */
+.category-card.expanded .expand-button {
+    margin-bottom: 0;
 }
 
 .expand-button::before {
@@ -4465,8 +4412,8 @@ a[href="#openportalmodal"] {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(114, 22, 244, 0.05), transparent);
-    transition: left 0.5s ease;
+    background: linear-gradient(90deg, transparent, rgba(114, 22, 244, 0.03), transparent);
+    transition: left 0.6s ease;
 }
 
 .expand-button:hover::before {
@@ -4475,17 +4422,26 @@ a[href="#openportalmodal"] {
 
 .expand-button:hover {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border-color: var(--primary);
-    color: var(--primary);
+    border-color: #cbd5e1;
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.expand-button:active {
+    transform: translateY(0);
+    transition: transform 0.1s ease;
+}
+
+.expand-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
 }
 
 .expand-text {
     font-weight: 600;
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 14px;
     color: var(--text);
     transition: color 0.3s ease;
 }
@@ -4494,88 +4450,122 @@ a[href="#openportalmodal"] {
     color: var(--primary);
 }
 
+/* ENHANCED EXPAND ICON */
 .expand-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     background: var(--primary);
-    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-weight: bold;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(114, 22, 244, 0.2);
+}
+
+.expand-icon::before,
+.expand-icon::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 1px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Horizontal line */
+.expand-icon::before {
+    width: 14px;
+    height: 2px;
+}
+
+/* Vertical line */
+.expand-icon::after {
+    width: 2px;
+    height: 14px;
 }
 
 .expand-button:hover .expand-icon {
     background: var(--primary-light);
-    transform: scale(1.1);
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(114, 22, 244, 0.3);
+}
+
+/* When expanded, hide vertical line to create minus sign */
+.category-card.expanded .expand-icon::after {
+    opacity: 0;
+    transform: rotate(90deg);
 }
 
 .category-card.expanded .expand-icon {
-    transform: rotate(180deg);
-    background: #10b981;
+    background: var(--success);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
 }
 
 .category-card.expanded .expand-button:hover .expand-icon {
     background: #047857;
-    transform: rotate(180deg) scale(1.1);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
 }
 
-.category-card.expanded .expand-button {
-    border-radius: 0;
+.category-card.expanded .expand-text {
+    color: var(--success);
 }
 
-/* Expandable Section */
+.category-card.expanded .expand-button:hover .expand-text {
+    color: #047857;
+}
+
+/* EXPANDABLE SECTION */
 .expand-section {
     max-height: 0;
     overflow: hidden;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
-    background: white;
+    background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
+    border-radius: 0 0 12px 12px;
     margin: 0 -36px -36px;
     padding: 0;
+    border-top: 1px solid #e2e8f0;
 }
 
 .expand-section.expanded {
     max-height: 800px;
     opacity: 1;
-    padding: 20px 36px 36px;
+    padding: 24px 36px 36px;
+    margin-top: 16px;
 }
 
-.expand-label {
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 16px;
-    text-align: center;
-    padding: 0 36px;
-}
-
-/* Additional styles for expandable features animation */
-.expand-section .category-features {
-    margin-bottom: 0;
-}
-
+/* Animation for list items - SIMPLIFIED */
 .expand-section .category-features li {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+/* Only hide when section is collapsed */
+.expand-section:not(.expanded) .category-features li {
     opacity: 0;
     transform: translateY(20px);
-    animation: slideInUp 0.4s ease forwards;
 }
 
-.category-card.expanded .category-features li {
-    animation-delay: calc(var(--item-index) * 0.05s);
+/* Show immediately when expanded */
+.expand-section.expanded .category-features li {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-@keyframes slideInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* Staggered animation for visual appeal */
+.expand-section.expanded .category-features li:nth-child(1) { transition-delay: 0.05s; }
+.expand-section.expanded .category-features li:nth-child(2) { transition-delay: 0.1s; }
+.expand-section.expanded .category-features li:nth-child(3) { transition-delay: 0.15s; }
+.expand-section.expanded .category-features li:nth-child(4) { transition-delay: 0.2s; }
+.expand-section.expanded .category-features li:nth-child(5) { transition-delay: 0.25s; }
+.expand-section.expanded .category-features li:nth-child(6) { transition-delay: 0.3s; }
+.expand-section.expanded .category-features li:nth-child(7) { transition-delay: 0.35s; }
+.expand-section.expanded .category-features li:nth-child(8) { transition-delay: 0.4s; }
+.expand-section.expanded .category-features li:nth-child(9) { transition-delay: 0.45s; }
+.expand-section.expanded .category-features li:nth-child(10) { transition-delay: 0.5s; }
+.expand-section.expanded .category-features li:nth-child(11) { transition-delay: 0.55s; }
 
 .expand-note {
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
@@ -4583,21 +4573,9 @@ a[href="#openportalmodal"] {
     border-radius: 12px;
     padding: 20px 24px;
     text-align: center;
-    animation: fadeInScale 0.4s ease forwards;
-    opacity: 0;
-    transform: scale(0.95);
+    opacity: 1;
+    transform: scale(1);
     margin-bottom: 0;
-}
-
-.category-card.expanded .expand-note {
-    animation-delay: 0.2s;
-}
-
-@keyframes fadeInScale {
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
 
 .expand-note .emoji {
@@ -4619,7 +4597,7 @@ a[href="#openportalmodal"] {
     .category-card {
         overflow: hidden;
     }
-    
+
     .expand-button {
         margin: 20px -28px 0;
         padding: 16px 20px;
@@ -4635,10 +4613,9 @@ a[href="#openportalmodal"] {
     .expand-button {
         padding: 12px 16px;
     }
-    .expand-button .expand-icon {
+    .expand-icon {
         width: 18px;
         height: 18px;
-        font-size: 9px;
     }
     .expand-section.expanded {
         margin-top: 12px;

@@ -337,76 +337,174 @@ function add_sitewide_cookie_banner() {
 
 
 
-// Optimized Tawk.to Chat Widget Integration for Real Treasury
+// Ultra-Robust Tawk.to Chat Widget Integration for Real Treasury
 add_action('wp_footer', 'add_tawk_to_chat_widget');
 function add_tawk_to_chat_widget() {
     ?>
-    <!--Start of Optimized Tawk.to Script for Private Browsing-->
+    <!--Start of Ultra-Robust Tawk.to Script for Private Browsing-->
     <script type="text/javascript">
-    // Detect private browsing mode quickly
+    // MULTIPLE PRIVATE BROWSING DETECTION METHODS
     function isPrivateBrowsing() {
+        // Method 1: localStorage test
         try {
-            localStorage.setItem('test', 'test');
-            localStorage.removeItem('test');
-            return false;
+            localStorage.setItem('__pb_test__', 'test');
+            localStorage.removeItem('__pb_test__');
         } catch (e) {
+            console.log('Private browsing detected via localStorage test');
             return true;
         }
+
+        // Method 2: indexedDB test (more reliable for Edge)
+        try {
+            if (!window.indexedDB) {
+                console.log('Private browsing detected - indexedDB unavailable');
+                return true;
+            }
+        } catch (e) {
+            console.log('Private browsing detected via indexedDB test');
+            return true;
+        }
+
+        // Method 3: Check for specific private browsing indicators
+        if (navigator.userAgent.includes('Edge') || navigator.userAgent.includes('Edg/')) {
+            try {
+                // Edge-specific private browsing detection
+                const testRequest = indexedDB.open('test', 1);
+                testRequest.onerror = function() {
+                    console.log('Private browsing detected in Edge');
+                    return true;
+                };
+            } catch (e) {
+                console.log('Private browsing detected in Edge via exception');
+                return true;
+            }
+        }
+
+        // Method 4: Check session storage
+        try {
+            sessionStorage.setItem('__pb_test__', 'test');
+            sessionStorage.removeItem('__pb_test__');
+        } catch (e) {
+            console.log('Private browsing detected via sessionStorage test');
+            return true;
+        }
+
+        console.log('Normal browsing mode detected');
+        return false;
     }
 
-    // Only load Tawk.to if not in private browsing mode
-    if (!isPrivateBrowsing()) {
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-        (function(){
-            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-            s1.async=true;
-            s1.src='https://embed.tawk.to/68598eb06d2be41919849c7d/1iuetaosd';
-            s1.charset='UTF-8';
-            s1.setAttribute('crossorigin','*');
+    // IMMEDIATE DETECTION - Run before anything else
+    const privateBrowsingDetected = isPrivateBrowsing();
 
-            // Add error handling to prevent hanging
-            s1.onerror = function() {
-                console.log('Tawk.to failed to load - using email fallback');
-            };
+    // Store detection result globally
+    window.RT_PRIVATE_BROWSING = privateBrowsingDetected;
 
-            // Add timeout to prevent hanging (this is key!)
-            setTimeout(function() {
-                if (typeof Tawk_API === 'undefined' || !Tawk_API.onLoad) {
-                    console.log('Tawk.to timeout - chat widget skipped');
-                    return;
-                }
-            }, 2000); // 2 second timeout
+    if (privateBrowsingDetected) {
+        console.log('🔒 PRIVATE BROWSING DETECTED - Skipping Tawk.to entirely');
 
-            s0.parentNode.insertBefore(s1,s0);
-        })();
-
-        window.tawkOpenedByUser = false;
+        // Provide immediate email fallback
         window.openTawkChat = function() {
-            window.tawkOpenedByUser = true;
+            console.log('Opening email fallback for private browsing');
+            window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry - Private Browsing';
+        };
+
+        // Don't load ANY Tawk.to scripts
+        return;
+    }
+
+    console.log('✅ Normal browsing detected - Loading Tawk.to with safeguards');
+
+    // ONLY LOAD TAWK.TO IN NORMAL BROWSING MODE
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+
+    // Set strict timeout BEFORE loading script
+    let tawkTimeout = setTimeout(function() {
+        console.log('🚨 Tawk.to loading timeout - preventing hang');
+        if (typeof Tawk_API === 'undefined' || !Tawk_API.onLoad) {
+            console.log('Tawk.to failed to load within timeout, using email fallback');
+            window.openTawkChat = function() {
+                window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry - Timeout';
+            };
+        }
+    }, 1500); // Even shorter timeout: 1.5 seconds
+
+    (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/68598eb06d2be41919849c7d/1iuetaosd';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+
+        // ENHANCED ERROR HANDLING
+        s1.onerror = function(error) {
+            console.log('🚨 Tawk.to script failed to load:', error);
+            clearTimeout(tawkTimeout);
+            window.openTawkChat = function() {
+                window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry - Script Error';
+            };
+        };
+
+        // SUCCESS HANDLER
+        s1.onload = function() {
+            console.log('✅ Tawk.to script loaded successfully');
+            clearTimeout(tawkTimeout);
+        };
+
+        s0.parentNode.insertBefore(s1,s0);
+    })();
+
+    // CHAT FUNCTIONS WITH FALLBACKS
+    window.tawkOpenedByUser = false;
+
+    window.openTawkChat = function() {
+        window.tawkOpenedByUser = true;
+        try {
             if (typeof Tawk_API !== 'undefined' && Tawk_API.maximize) {
                 Tawk_API.maximize();
+                console.log('✅ Tawk.to chat opened successfully');
             } else {
-                window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry';
+                throw new Error('Tawk_API not available');
             }
-        };
+        } catch (error) {
+            console.log('🚨 Tawk.to chat failed, using email fallback:', error);
+            window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry - Chat Unavailable';
+        }
+    };
 
-        // Faster initialization
-        Tawk_API.onLoad = function(){
-            console.log('Tawk.to loaded successfully');
-            if (Tawk_API.minimize) Tawk_API.minimize();
-        };
-    } else {
-        // Private browsing detected - provide immediate email fallback
-        console.log('Private browsing detected - using email fallback for chat');
+    // TAWK.TO EVENT HANDLERS WITH ERROR PROTECTION
+    Tawk_API.onLoad = function(){
+        try {
+            console.log('✅ Tawk.to loaded and ready');
+            clearTimeout(tawkTimeout);
+
+            // Configure chat widget
+            Tawk_API.customStyle = {
+                visibility: {
+                    desktop: { position: 'br', xOffset: 15, yOffset: 15 },
+                    mobile: { position: 'br', xOffset: 10, yOffset: 10 }
+                }
+            };
+
+            if (Tawk_API.minimize) {
+                Tawk_API.minimize();
+            }
+        } catch (error) {
+            console.log('🚨 Tawk.to onLoad error:', error);
+        }
+    };
+
+    // ERROR RECOVERY
+    Tawk_API.onError = function(error) {
+        console.log('🚨 Tawk.to runtime error:', error);
         window.openTawkChat = function() {
-            window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry';
+            window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry - Runtime Error';
         };
-    }
+    };
     </script>
-    <!--End of Optimized Tawk.to Script-->
+    <!--End of Ultra-Robust Tawk.to Script-->
 
     <style>
-    /* Keep existing chat widget styles */
+    /* Existing chat widget styles */
     #tawkchat-minified {
         width: 50px !important;
         height: 50px !important;
@@ -452,7 +550,22 @@ function add_tawk_to_chat_widget() {
             height: 20px !important;
         }
     }
+
+    /* Hide Tawk.to elements completely in private browsing */
+    body.private-browsing #tawkchat-minified,
+    body.private-browsing .tawk-min-container {
+        display: none !important;
+        visibility: hidden !important;
+    }
     </style>
+
+    <script>
+    // Apply private browsing class if detected
+    if (window.RT_PRIVATE_BROWSING) {
+        document.body.classList.add('private-browsing');
+        console.log('🔒 Private browsing class applied to body');
+    }
+    </script>
     <?php
 }
 

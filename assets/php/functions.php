@@ -181,31 +181,44 @@ add_action('wp_footer', 'add_sitewide_cookie_banner');
 function add_sitewide_cookie_banner() {
     ?>
     <script>
-    // Site-Wide Cookie Management
+    // FAST COOKIE MANAGEMENT WITH PRIVATE BROWSING OPTIMIZATION
     document.addEventListener('DOMContentLoaded', function() {
-        
-        // Check if user has already made a choice
+
+        // Quick private browsing check
+        let isPrivateBrowsing = false;
+        try {
+            localStorage.setItem('__pb_test__', 'test');
+            localStorage.removeItem('__pb_test__');
+        } catch (e) {
+            isPrivateBrowsing = true;
+            console.log('🔒 Private browsing detected - using minimal cookie handling');
+        }
+
+        // Skip complex cookie management in private browsing
+        if (isPrivateBrowsing) {
+            console.log('Skipping cookie banner for private browsing');
+            return;
+        }
+
         function checkCookieConsent() {
-            const consent = localStorage.getItem('cookie_consent');
-            if (!consent) {
-                showCookieBanner();
-            } else {
-                // Apply existing preferences
-                const consentData = JSON.parse(consent);
-                if (consentData.preferences && consentData.preferences.analytics) {
-                    loadGoogleAnalytics();
+            try {
+                const consent = localStorage.getItem('cookie_consent');
+                if (!consent) {
+                    showCookieBanner();
+                } else {
+                    const consentData = JSON.parse(consent);
+                    if (consentData.preferences && consentData.preferences.analytics) {
+                        loadGoogleAnalytics();
+                    }
                 }
+            } catch (e) {
+                console.log('Cookie consent check failed:', e);
             }
         }
-        
-        // Show cookie banner
+
         function showCookieBanner() {
-            // Don't show if banner already exists
-            if (document.getElementById('cookieBanner')) {
-                return;
-            }
-            
-            // Create banner
+            if (document.getElementById('cookieBanner')) return;
+
             const banner = document.createElement('div');
             banner.id = 'cookieBanner';
             banner.className = 'cookie-banner';
@@ -213,7 +226,7 @@ function add_sitewide_cookie_banner() {
                 <div class="banner-content">
                     <div class="banner-text">
                         <strong>🍪 We use cookies to enhance your experience</strong>
-                        This website uses cookies to provide you with a personalized browsing experience and to analyze our website traffic.
+                        This website uses cookies to provide you with a personalized browsing experience.
                     </div>
                     <div class="banner-buttons">
                         <button class="cookie-btn cookie-btn-accept" onclick="acceptAllCookies()">Accept All</button>
@@ -222,59 +235,57 @@ function add_sitewide_cookie_banner() {
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(banner);
-            
-            // Show with animation
-            setTimeout(() => {
-                banner.classList.add('show');
-            }, 100);
+            setTimeout(() => banner.classList.add('show'), 100);
         }
-        
-        // Accept all cookies
+
         window.acceptAllCookies = function() {
-            const preferences = {
-                essential: true,
-                analytics: true,
-                marketing: true,
-                preference: true
-            };
-            
-            localStorage.setItem('cookie_consent', JSON.stringify({
-                timestamp: new Date().toISOString(),
-                preferences: preferences
-            }));
-            
-            hideCookieBanner();
-            loadGoogleAnalytics();
-            
-            // Optional: Show confirmation
-            console.log('✅ All cookies accepted');
+            try {
+                const preferences = {
+                    essential: true,
+                    analytics: true,
+                    marketing: true,
+                    preference: true
+                };
+
+                localStorage.setItem('cookie_consent', JSON.stringify({
+                    timestamp: new Date().toISOString(),
+                    preferences: preferences
+                }));
+
+                hideCookieBanner();
+                loadGoogleAnalytics();
+                console.log('✅ All cookies accepted');
+            } catch (e) {
+                console.log('Error accepting cookies:', e);
+                hideCookieBanner();
+            }
         }
-        
-        // Decline all cookies
+
         window.declineAllCookies = function() {
-            const preferences = {
-                essential: true,
-                analytics: false,
-                marketing: false,
-                preference: false
-            };
-            
-            localStorage.setItem('cookie_consent', JSON.stringify({
-                timestamp: new Date().toISOString(),
-                preferences: preferences
-            }));
-            
-            hideCookieBanner();
-            
-            // Remove any existing analytics cookies
-            removeCookiesByPattern('_ga');
-            
-            console.log('❌ Non-essential cookies declined');
+            try {
+                const preferences = {
+                    essential: true,
+                    analytics: false,
+                    marketing: false,
+                    preference: false
+                };
+
+                localStorage.setItem('cookie_consent', JSON.stringify({
+                    timestamp: new Date().toISOString(),
+                    preferences: preferences
+                }));
+
+                hideCookieBanner();
+                removeCookiesByPattern('_ga');
+                console.log('❌ Non-essential cookies declined');
+            } catch (e) {
+                console.log('Error declining cookies:', e);
+                hideCookieBanner();
+            }
         }
-        
-        // Hide banner
+
         function hideCookieBanner() {
             const banner = document.getElementById('cookieBanner');
             if (banner) {
@@ -286,48 +297,57 @@ function add_sitewide_cookie_banner() {
                 }, 300);
             }
         }
-        
-        // Load Google Analytics
+
         function loadGoogleAnalytics() {
-            // Prevent loading multiple times
-            if (typeof gtag !== 'undefined') {
+            // Skip GA in private browsing or if already loaded
+            if (isPrivateBrowsing || typeof gtag !== 'undefined') {
                 return;
             }
-            
-            // Load GA4 script
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = 'https://www.googletagmanager.com/gtag/js?id=G-6KLBPGHTSM';
-            document.head.appendChild(script);
-            
-            // Initialize GA4
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-6KLBPGHTSM', {
-                'anonymize_ip': true,
-                'cookie_flags': 'max-age=7200;secure;samesite=none'
-            });
-            
-            console.log('📊 Google Analytics loaded');
+
+            try {
+                const script = document.createElement('script');
+                script.async = true;
+                script.src = 'https://www.googletagmanager.com/gtag/js?id=G-6KLBPGHTSM';
+
+                // Add timeout for GA loading
+                script.onerror = function() {
+                    console.log('Google Analytics failed to load');
+                };
+
+                document.head.appendChild(script);
+
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-6KLBPGHTSM', {
+                    'anonymize_ip': true,
+                    'cookie_flags': 'max-age=7200;secure;samesite=none'
+                });
+
+                console.log('📊 Google Analytics loaded');
+            } catch (e) {
+                console.log('Error loading Google Analytics:', e);
+            }
         }
-        
-        // Remove cookies by pattern
+
         function removeCookiesByPattern(pattern) {
-            const cookies = document.cookie.split(';');
-            cookies.forEach(cookie => {
-                const [name] = cookie.trim().split('=');
-                if (name.includes(pattern)) {
-                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${window.location.hostname}`;
-                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
-                }
-            });
+            try {
+                const cookies = document.cookie.split(';');
+                cookies.forEach(cookie => {
+                    const [name] = cookie.trim().split('=');
+                    if (name.includes(pattern)) {
+                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${window.location.hostname}`;
+                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+                    }
+                });
+            } catch (e) {
+                console.log('Error removing cookies:', e);
+            }
         }
-        
+
         // Initialize cookie management
         checkCookieConsent();
-        
-        // Global function to show banner (for manage preferences button)
+
         window.showCookieBanner = showCookieBanner;
     });
     </script>

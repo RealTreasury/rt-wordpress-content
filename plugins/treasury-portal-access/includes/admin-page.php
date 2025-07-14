@@ -26,6 +26,10 @@ $previous_completions = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table_name}
 $previous_total = $previous_attempts + $previous_completions;
 $previous_abandon_rate = $previous_total > 0 ? round(($previous_attempts / $previous_total) * 100) : 0;
 
+// Weekly user counts
+$current_week_users = $current_completions;
+$previous_week_users = $previous_completions;
+
 // Handle CSV export
 if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' && wp_verify_nonce($_GET['_wpnonce'], 'tpa_export_nonce')) {
     if (current_user_can('manage_options')) {
@@ -70,9 +74,9 @@ if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' &&
         </div>
         
         <div style="background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);">
-            <?php $recent_users = $wpdb->get_var("SELECT COUNT(*) FROM {$table_name} WHERE access_granted >= DATE_SUB(NOW(), INTERVAL 7 DAY)"); ?>
-            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo (int) $recent_users; ?></h3>
-            <p style="margin: 0; opacity: 0.9;">This Week</p>
+            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo (int) $current_week_users; ?></h3>
+            <p style="margin: 0; opacity: 0.9;">Accesses (This Week)</p>
+            <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">Last Week: <?php echo (int) $previous_week_users; ?></p>
         </div>
         
         <!-- Removed Terms Acceptance and Days Access metrics -->

@@ -48,3 +48,5 @@ Once a visitor completes the form they are redirected to your chosen page and ca
 ## Attempt Tracking
 
 Version 1.0.8 adds percentage metrics to the admin dashboard. The plugin now shows how many visitors abandon the form versus how many complete it. Abandoned attempts continue to be stored in the `portal_access_attempts` database table.
+
+Version 1.0.9 extends these stats with weekly abandonment rates for the current and previous week.

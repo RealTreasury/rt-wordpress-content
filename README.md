@@ -49,6 +49,8 @@ The repository includes the **Treasury Portal Access** plugin (`plugins/treasury
 
 As of plugin version 1.0.7 the portal records when a visitor opens the access modal but leaves without submitting the form. These entries appear on the Portal Access admin screen so you can gauge interest in the portal.
 
+Version 1.0.9 adds weekly metrics showing the abandonment rate for both the current and previous week.
+
 ## Clean Media URLs Plugin
 
 The repository also includes the **Clean Media URLs** plugin (`plugins/clean-media-urls`). Activate it in WordPress to automatically sanitize media filenames so URLs contain only lowercase letters, numbers, and hyphens.

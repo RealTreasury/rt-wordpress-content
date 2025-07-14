@@ -47,4 +47,4 @@ Once a visitor completes the form they are redirected to your chosen page and ca
 
 ## Attempt Tracking
 
-Version 1.0.7 adds basic tracking for visitors who open the access modal but leave before completing the form. These abandoned attempts are stored in the `portal_access_attempts` database table and displayed on the plugin admin page.
+Version 1.0.8 adds percentage metrics to the admin dashboard. The plugin now shows how many visitors abandon the form versus how many complete it. Abandoned attempts continue to be stored in the `portal_access_attempts` database table.

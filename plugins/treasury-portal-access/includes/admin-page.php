@@ -61,19 +61,7 @@ if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' &&
             <p style="margin: 0; opacity: 0.9;">This Week</p>
         </div>
         
-        <div style="background: linear-gradient(135deg, #FF9800, #F57C00); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);">
-            <?php 
-            $terms_agreed = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table_name} WHERE terms_agreement = 'yes'");
-            $percentage = $total_users > 0 ? round(($terms_agreed / $total_users) * 100) : 0;
-            ?>
-            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $percentage; ?>%</h3>
-            <p style="margin: 0; opacity: 0.9;">Terms Acceptance</p>
-        </div>
-        
-        <div style="background: linear-gradient(135deg, #9C27B0, #7B1FA2); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(156, 39, 176, 0.3);">
-            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo (int) get_option('tpa_access_duration', 180); ?></h3>
-            <p style="margin: 0; opacity: 0.9;">Days Access</p>
-        </div>
+        <!-- Removed Terms Acceptance and Days Access metrics -->
 
         <div style="background: linear-gradient(135deg, #607D8B, #455A64); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(96, 125, 139, 0.3);">
             <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $total_attempts; ?></h3>

@@ -207,51 +207,93 @@
 
         .testimonial-slider {
             position: relative;
+            padding: 0 60px;
+        }
+
+        .testimonial-container {
             overflow: hidden;
         }
 
-        .testimonial-slide {
-            display: none;
+        .testimonial-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .testimonial-slide.active {
-            display: block;
+        .testimonial-slide {
+            flex: 0 0 100%;
         }
 
         .testimonial-nav {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(247, 247, 247, 0.95));
+            width: 50px;
+            height: 50px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(199, 125, 255, 0.2);
             color: var(--primary-purple);
-            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.1);
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            z-index: 2;
         }
 
-        .testimonial-nav:hover {
-            background: linear-gradient(135deg, #7216f4, #8f47f6);
-            color: #fff;
+        .testimonial-nav:hover:not(:disabled) {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 8px 24px rgba(114, 22, 244, 0.25);
+        }
+
+        .testimonial-nav:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .testimonial-nav.prev {
-            left: -20px;
+            left: 0;
         }
 
         .testimonial-nav.next {
-            right: -20px;
+            right: 0;
         }
 
+        .testimonial-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        .testimonial-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 9999px;
+            background: rgba(114, 22, 244, 0.3);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .testimonial-dot.active {
+            background: var(--primary-purple);
+        }
+
+        .testimonial-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 0;
+            background: var(--primary-purple);
+        }
+
+
         @media (max-width: 640px) {
-            .testimonial-nav.prev { left: 0; }
-            .testimonial-nav.next { right: 0; }
+            .testimonial-slider { padding: 0 40px; }
         }
 
         .section-padding {
@@ -271,7 +313,6 @@
                 margin-bottom: 1rem;
             }
         }
-
     </style>
 </head>
 
@@ -464,31 +505,37 @@
                 Real <span class="gradient-text">Results</span>
             </h2>
             
-            <div class="testimonial-slider mb-16 relative max-w-3xl mx-auto">
-                <div class="testimonial-slide active">
-                    <div class="testimonial-card">
-                        <div class="testimonial-quote">"𝘈 𝘵𝘩𝘰𝘶𝘨𝘩𝘵𝘧𝘶𝘭, 𝘴𝘵𝘳𝘶𝘤𝘵𝘶𝘳𝘦𝘥 𝘱𝘳𝘰𝘤𝘦𝘴𝘴 𝘧𝘰𝘳 𝘴𝘦𝘭𝘦𝘤𝘵𝘪𝘯𝘨 𝘵𝘦𝘤𝘩𝘯𝘰𝘭𝘰𝘨𝘺..."</div>
-                        <div class="testimonial-author">Tony Vu</div>
-                        <div class="testimonial-role">Treasurer, Broward Health</div>
-                    </div>
-                </div>
-                <div class="testimonial-slide">
-                    <div class="testimonial-card">
-                        <div class="testimonial-quote">"They effectively implemented treasury software that seamlessly integrates cash journal entry posting and has revolutionized our financial management, providing unparalleled efficiency and insight into our cash flow operations."</div>
-                        <div class="testimonial-author">Emily Bailey</div>
-                        <div class="testimonial-role">Accounting Manager, Carter Exchange</div>
-                    </div>
-                </div>
-                <div class="testimonial-slide">
-                    <div class="testimonial-card">
-                        <div class="testimonial-quote">“They brought strategic insights we hadn’t considered—highlighting key features, gaps, and opportunities.”</div>
-                        <div class="testimonial-author">Thi Pham</div>
-                        <div class="testimonial-role">CFO, Vie Management</div>
+            <div class="testimonial-slider mb-16 relative max-w-3xl mx-auto" tabindex="0">
+                <div class="testimonial-container">
+                    <div class="testimonial-track">
+                        <div class="testimonial-slide">
+                            <div class="testimonial-card">
+                                <div class="testimonial-quote">"𝘈 𝘵𝘩𝘰𝘶𝘨𝘩𝘵𝘧𝘶𝘭, 𝘴𝘵𝘳𝘶𝘤𝘵𝘶𝘳𝘦𝘥 𝘱𝘳𝘰𝘤𝘦𝘴𝘴 𝘧𝘰𝘳 𝘴𝘦𝘭𝘦𝘤𝘵𝘪𝘯𝘨 𝘵𝘦𝘤𝘩𝘯𝘰𝘭𝘰𝘨𝘺..."</div>
+                                <div class="testimonial-author">Tony Vu</div>
+                                <div class="testimonial-role">Treasurer, Broward Health</div>
+                            </div>
+                        </div>
+                        <div class="testimonial-slide">
+                            <div class="testimonial-card">
+                                <div class="testimonial-quote">"They effectively implemented treasury software that seamlessly integrates cash journal entry posting and has revolutionized our financial management, providing unparalleled efficiency and insight into our cash flow operations."</div>
+                                <div class="testimonial-author">Emily Bailey</div>
+                                <div class="testimonial-role">Accounting Manager, Carter Exchange</div>
+                            </div>
+                        </div>
+                        <div class="testimonial-slide">
+                            <div class="testimonial-card">
+                                <div class="testimonial-quote">“They brought strategic insights we hadn’t considered—highlighting key features, gaps, and opportunities.”</div>
+                                <div class="testimonial-author">Thi Pham</div>
+                                <div class="testimonial-role">CFO, Vie Management</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <button id="prevTestimonial" class="testimonial-nav prev" aria-label="Previous testimonial">‹</button>
                 <button id="nextTestimonial" class="testimonial-nav next" aria-label="Next testimonial">›</button>
+                <div class="testimonial-progress"></div>
+                <div class="testimonial-dots"></div>
             </div>
 
             <!-- Results Stats -->
@@ -660,23 +707,113 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const slides = document.querySelectorAll('.testimonial-slide');
+            const slider = document.querySelector('.testimonial-slider');
+            const track = slider.querySelector('.testimonial-track');
+            const slides = Array.from(track.children);
             const prev = document.getElementById('prevTestimonial');
             const next = document.getElementById('nextTestimonial');
-            if (slides.length === 0) return;
+            const dotsContainer = slider.querySelector('.testimonial-dots');
+            const progress = slider.querySelector('.testimonial-progress');
+            const delay = 5000;
             let index = 0;
-            const show = (i) => {
-                slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
-            };
+            let autoplayId;
+
+            // Create dots
+            slides.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'testimonial-dot';
+                dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+                dot.addEventListener('click', () => {
+                    goTo(i);
+                    resetAutoplay();
+                });
+                dotsContainer.appendChild(dot);
+            });
+            const dots = Array.from(dotsContainer.children);
+
+            function updateDots() {
+                dots.forEach((d, i) => d.classList.toggle('active', i === index));
+            }
+
+            function goTo(i, { wrap = false } = {}) {
+                if (wrap) {
+                    index = (i + slides.length) % slides.length;
+                } else {
+                    index = Math.max(0, Math.min(i, slides.length - 1));
+                }
+                track.style.transform = `translateX(-${index * 100}%)`;
+                updateDots();
+                prev.disabled = index === 0;
+                next.disabled = index === slides.length - 1;
+            }
+
+            function startProgress() {
+                progress.style.transition = 'none';
+                progress.style.width = '0%';
+                requestAnimationFrame(() => {
+                    progress.style.transition = `width ${delay}ms linear`;
+                    progress.style.width = '100%';
+                });
+            }
+
+            function startAutoplay() {
+                startProgress();
+                autoplayId = setInterval(() => {
+                    goTo(index + 1, { wrap: true });
+                    startProgress();
+                }, delay);
+            }
+
+            function stopAutoplay() {
+                clearInterval(autoplayId);
+                progress.style.transition = 'none';
+                progress.style.width = '0%';
+                autoplayId = null;
+            }
+
+            function resetAutoplay() {
+                stopAutoplay();
+                startAutoplay();
+            }
+
             prev.addEventListener('click', () => {
-                index = (index - 1 + slides.length) % slides.length;
-                show(index);
+                goTo(index - 1);
+                resetAutoplay();
             });
             next.addEventListener('click', () => {
-                index = (index + 1) % slides.length;
-                show(index);
+                goTo(index + 1, { wrap: true });
+                resetAutoplay();
             });
-            show(index);
+
+            // Pause on hover
+            slider.addEventListener('mouseenter', stopAutoplay);
+            slider.addEventListener('mouseleave', () => {
+                if (!autoplayId) startAutoplay();
+            });
+
+            // Keyboard navigation
+            slider.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    prev.click();
+                } else if (e.key === 'ArrowRight') {
+                    next.click();
+                }
+            });
+
+            // Touch support
+            let startX = 0;
+            track.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            });
+            track.addEventListener('touchend', (e) => {
+                const diff = e.changedTouches[0].clientX - startX;
+                if (Math.abs(diff) > 50) {
+                    diff > 0 ? prev.click() : next.click();
+                }
+            });
+
+            goTo(0);
+            startAutoplay();
         });
     </script>
     <script>

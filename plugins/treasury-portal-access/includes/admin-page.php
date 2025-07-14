@@ -11,6 +11,10 @@ $users = $wpdb->get_results("SELECT * FROM {$table_name} ORDER BY access_granted
 $total_users = is_array($users) ? count($users) : 0;
 $total_attempts = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$attempt_table}");
 
+$total_interactions = $total_users + $total_attempts;
+$completion_rate = $total_interactions > 0 ? round(($total_users / $total_interactions) * 100) : 0;
+$abandon_rate = $total_interactions > 0 ? round(($total_attempts / $total_interactions) * 100) : 0;
+
 // Handle CSV export
 if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' && wp_verify_nonce($_GET['_wpnonce'], 'tpa_export_nonce')) {
     if (current_user_can('manage_options')) {
@@ -74,6 +78,16 @@ if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' &&
         <div style="background: linear-gradient(135deg, #607D8B, #455A64); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(96, 125, 139, 0.3);">
             <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $total_attempts; ?></h3>
             <p style="margin: 0; opacity: 0.9;">Abandoned Attempts</p>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #2196F3, #1E88E5); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);">
+            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $completion_rate; ?>%</h3>
+            <p style="margin: 0; opacity: 0.9;">Completion Rate</p>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #f44336, #d32f2f); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);">
+            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $abandon_rate; ?>%</h3>
+            <p style="margin: 0; opacity: 0.9;">Abandon Rate</p>
         </div>
     </div>
 

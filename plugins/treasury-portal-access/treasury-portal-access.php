@@ -3,7 +3,7 @@
  * Plugin Name: Treasury Portal Access
  * Plugin URI: https://realtreasury.com
  * Description: Complete portal access control system with Contact Form 7 integration, 6-month persistence, and localStorage backup.
- * Version: 1.0.7
+ * Version: 1.0.8
  * Author: Real Treasury
  * Author URI: https://realtreasury.com
  * License: GPL v2 or later
@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('TPA_VERSION', '1.0.7');
+define('TPA_VERSION', '1.0.8');
 define('TPA_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('TPA_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('TPA_PLUGIN_FILE', __FILE__);

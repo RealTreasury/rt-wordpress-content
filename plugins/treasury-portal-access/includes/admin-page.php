@@ -26,12 +26,15 @@ if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' &&
         
         if ($users) {
             foreach ($users as $user) {
+                $time = new DateTime($user->access_granted, new DateTimeZone('UTC'));
+                $time->setTimeZone(new DateTimeZone('America/New_York'));
+                $formatted = $time->format('M j, Y, g:i A') . ' ET';
                 fputcsv($output, [
                     $user->full_name,
                     $user->email,
                     $user->company ?: 'N/A',
                     ($user->terms_agreement === 'yes' ? 'Yes' : 'No'),
-                    $user->access_granted,
+                    $formatted,
                     $user->ip_address
                 ]);
             }
@@ -102,7 +105,13 @@ if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' &&
                         <span class="terms-no">❌ Not Accepted</span>
                     <?php endif; ?>
                 </td>
-                <td><?php echo date('M j, Y, g:i A', strtotime($user->access_granted)); ?></td>
+                <td>
+                    <?php
+                        $time = new DateTime($user->access_granted, new DateTimeZone('UTC'));
+                        $time->setTimeZone(new DateTimeZone('America/New_York'));
+                        echo $time->format('M j, Y, g:i A') . ' ET';
+                    ?>
+                </td>
             </tr>
             <?php endforeach; ?>
         </tbody>

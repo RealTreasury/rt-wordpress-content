@@ -19,16 +19,25 @@ $abandon_rate = $total_interactions > 0 ? round(($total_attempts / $total_intera
 $current_attempts = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$attempt_table} WHERE attempted_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
 $current_completions = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table_name} WHERE access_granted >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
 $current_total = $current_attempts + $current_completions;
+$current_completion_rate = $current_total > 0 ? round(($current_completions / $current_total) * 100) : 0;
 $current_abandon_rate = $current_total > 0 ? round(($current_attempts / $current_total) * 100) : 0;
 
 $previous_attempts = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$attempt_table} WHERE attempted_at >= DATE_SUB(NOW(), INTERVAL 14 DAY) AND attempted_at < DATE_SUB(NOW(), INTERVAL 7 DAY)");
 $previous_completions = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table_name} WHERE access_granted >= DATE_SUB(NOW(), INTERVAL 14 DAY) AND access_granted < DATE_SUB(NOW(), INTERVAL 7 DAY)");
 $previous_total = $previous_attempts + $previous_completions;
+$previous_completion_rate = $previous_total > 0 ? round(($previous_completions / $previous_total) * 100) : 0;
 $previous_abandon_rate = $previous_total > 0 ? round(($previous_attempts / $previous_total) * 100) : 0;
+
+$two_weeks_attempts = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$attempt_table} WHERE attempted_at >= DATE_SUB(NOW(), INTERVAL 21 DAY) AND attempted_at < DATE_SUB(NOW(), INTERVAL 14 DAY)");
+$two_weeks_completions = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table_name} WHERE access_granted >= DATE_SUB(NOW(), INTERVAL 21 DAY) AND access_granted < DATE_SUB(NOW(), INTERVAL 14 DAY)");
+$two_weeks_total = $two_weeks_attempts + $two_weeks_completions;
+$two_weeks_completion_rate = $two_weeks_total > 0 ? round(($two_weeks_completions / $two_weeks_total) * 100) : 0;
+$two_weeks_abandon_rate = $two_weeks_total > 0 ? round(($two_weeks_attempts / $two_weeks_total) * 100) : 0;
 
 // Weekly user counts
 $current_week_users = $current_completions;
 $previous_week_users = $previous_completions;
+$two_weeks_week_users = $two_weeks_completions;
 
 // Handle CSV export
 if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' && wp_verify_nonce($_GET['_wpnonce'], 'tpa_export_nonce')) {
@@ -77,24 +86,30 @@ if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' &&
             <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo (int) $current_week_users; ?></h3>
             <p style="margin: 0; opacity: 0.9;">Accesses (This Week)</p>
             <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">Last Week: <?php echo (int) $previous_week_users; ?></p>
+            <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">2 Weeks Ago: <?php echo (int) $two_weeks_week_users; ?></p>
         </div>
         
         <!-- Removed Terms Acceptance and Days Access metrics -->
 
         <div style="background: linear-gradient(135deg, #607D8B, #455A64); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(96, 125, 139, 0.3);">
-            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $total_attempts; ?></h3>
-            <p style="margin: 0; opacity: 0.9;">Abandoned Attempts</p>
+            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo (int) $current_attempts; ?></h3>
+            <p style="margin: 0; opacity: 0.9;">Abandoned Attempts (This Week)</p>
+            <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">Last Week: <?php echo (int) $previous_attempts; ?></p>
+            <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">2 Weeks Ago: <?php echo (int) $two_weeks_attempts; ?></p>
         </div>
 
         <div style="background: linear-gradient(135deg, #2196F3, #1E88E5); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);">
-            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $completion_rate; ?>%</h3>
-            <p style="margin: 0; opacity: 0.9;">Completion Rate</p>
+            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $current_completion_rate; ?>%</h3>
+            <p style="margin: 0; opacity: 0.9;">Completion Rate (This Week)</p>
+            <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">Last Week: <?php echo $previous_completion_rate; ?>%</p>
+            <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">2 Weeks Ago: <?php echo $two_weeks_completion_rate; ?>%</p>
         </div>
 
         <div style="background: linear-gradient(135deg, #f44336, #d32f2f); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);">
             <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $current_abandon_rate; ?>%</h3>
             <p style="margin: 0; opacity: 0.9;">Abandon Rate (This Week)</p>
             <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">Last Week: <?php echo $previous_abandon_rate; ?>%</p>
+            <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">2 Weeks Ago: <?php echo $two_weeks_abandon_rate; ?>%</p>
         </div>
     </div>
 

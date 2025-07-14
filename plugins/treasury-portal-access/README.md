@@ -52,3 +52,5 @@ Version 1.0.8 adds percentage metrics to the admin dashboard. The plugin now sho
 Version 1.0.9 extends these stats with weekly abandonment rates for the current and previous week.
 
 Version 1.0.10 displays weekly user counts for the current and prior week.
+
+Version 1.0.11 adds weekly breakdowns for abandoned attempts and completion rate and shows metrics from two weeks ago across all stat cards.

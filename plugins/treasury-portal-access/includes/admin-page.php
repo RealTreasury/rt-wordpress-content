@@ -15,6 +15,17 @@ $total_interactions = $total_users + $total_attempts;
 $completion_rate = $total_interactions > 0 ? round(($total_users / $total_interactions) * 100) : 0;
 $abandon_rate = $total_interactions > 0 ? round(($total_attempts / $total_interactions) * 100) : 0;
 
+// Weekly abandonment rates
+$current_attempts = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$attempt_table} WHERE attempted_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
+$current_completions = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table_name} WHERE access_granted >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
+$current_total = $current_attempts + $current_completions;
+$current_abandon_rate = $current_total > 0 ? round(($current_attempts / $current_total) * 100) : 0;
+
+$previous_attempts = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$attempt_table} WHERE attempted_at >= DATE_SUB(NOW(), INTERVAL 14 DAY) AND attempted_at < DATE_SUB(NOW(), INTERVAL 7 DAY)");
+$previous_completions = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table_name} WHERE access_granted >= DATE_SUB(NOW(), INTERVAL 14 DAY) AND access_granted < DATE_SUB(NOW(), INTERVAL 7 DAY)");
+$previous_total = $previous_attempts + $previous_completions;
+$previous_abandon_rate = $previous_total > 0 ? round(($previous_attempts / $previous_total) * 100) : 0;
+
 // Handle CSV export
 if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' && wp_verify_nonce($_GET['_wpnonce'], 'tpa_export_nonce')) {
     if (current_user_can('manage_options')) {
@@ -77,8 +88,9 @@ if (isset($_GET['action'], $_GET['_wpnonce']) && $_GET['action'] === 'export' &&
         </div>
 
         <div style="background: linear-gradient(135deg, #f44336, #d32f2f); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);">
-            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $abandon_rate; ?>%</h3>
-            <p style="margin: 0; opacity: 0.9;">Abandon Rate</p>
+            <h3 style="margin: 0 0 10px; font-size: 2rem; color: white;"><?php echo $current_abandon_rate; ?>%</h3>
+            <p style="margin: 0; opacity: 0.9;">Abandon Rate (This Week)</p>
+            <p style="margin: 0; opacity: 0.7; font-size: 0.9rem;">Last Week: <?php echo $previous_abandon_rate; ?>%</p>
         </div>
     </div>
 

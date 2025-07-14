@@ -159,6 +159,8 @@
         }
 
         .category-card {
+            display: flex;
+            flex-direction: column;
             background: white;
             border-radius: 20px;
             padding: 36px;
@@ -234,7 +236,8 @@
 
         .category-features {
             list-style: none;
-            margin-bottom: 28px;
+            flex-grow: 1;
+            margin-bottom: 24px;
         }
 
         .category-features li {
@@ -267,6 +270,7 @@
             border-radius: 12px;
             padding: 20px;
             border-left: 3px solid var(--primary);
+            margin-bottom: 24px;
         }
 
         .example-label {
@@ -300,7 +304,7 @@
             font-family: inherit;
             position: relative;
             overflow: hidden;
-            margin-top: 16px;
+            margin-top: auto;
             margin-bottom: 16px;
         }
 

@@ -490,6 +490,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 this.init();
 
+                // Swipe gesture tracking
+                this.swipeStart = null;
+                this.swipeThreshold = 100; // Minimum distance for a swipe
+                this.swipeVelocityThreshold = 0.3; // Minimum velocity
+
                 window.addEventListener('message', (e) => {
                     if (e.origin.includes('youtube.com') && typeof e.data === 'string') {
                         try {
@@ -558,6 +563,86 @@ document.addEventListener('DOMContentLoaded', () => {
                     const loading = document.getElementById('loadingScreen');
                     if (loading) loading.style.display = 'none';
                 }, 800);
+            }
+
+            // Swipe detection utility methods
+            handleTouchStart(e, element) {
+                if (!this.isMobile()) return;
+
+                this.swipeStart = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY,
+                    time: Date.now(),
+                    element: element
+                };
+            }
+
+            handleTouchMove(e, element) {
+                if (!this.swipeStart || !this.isMobile()) return;
+
+                // Prevent default scrolling during potential swipe
+                const deltaX = Math.abs(e.touches[0].clientX - this.swipeStart.x);
+                const deltaY = Math.abs(e.touches[0].clientY - this.swipeStart.y);
+
+                // If moving more horizontally than vertically, prevent vertical scroll
+                if (deltaX > deltaY && deltaX > 10) {
+                    e.preventDefault();
+                }
+            }
+
+            handleTouchEnd(e, element, closeCallback) {
+                if (!this.swipeStart || !this.isMobile()) return;
+
+                const endX = e.changedTouches[0].clientX;
+                const endY = e.changedTouches[0].clientY;
+                const deltaX = endX - this.swipeStart.x;
+                const deltaY = endY - this.swipeStart.y;
+                const deltaTime = Date.now() - this.swipeStart.time;
+                const distanceX = Math.abs(deltaX);
+                const distanceY = Math.abs(deltaY);
+                const velocity = Math.max(distanceX, distanceY) / deltaTime;
+
+                // Check if this qualifies as a swipe
+                if (velocity > this.swipeVelocityThreshold && deltaTime < 1000) {
+                    let shouldClose = false;
+
+                    if (element === 'sideMenu' && deltaX < -this.swipeThreshold) {
+                        // Swipe left to close left side menu
+                        shouldClose = true;
+                    } else if (element === 'shortlistMenu' && deltaX > this.swipeThreshold) {
+                        // Swipe right to close right shortlist menu
+                        shouldClose = true;
+                    } else if ((element === 'toolModal' || element === 'categoryModal') && deltaY > this.swipeThreshold) {
+                        // Swipe down to close modals
+                        shouldClose = true;
+                    }
+
+                    if (shouldClose && closeCallback) {
+                        closeCallback();
+                    }
+                }
+
+                this.swipeStart = null;
+            }
+
+            setupSwipeToClose(elementId, elementType, closeCallback) {
+                const element = document.getElementById(elementId);
+                if (!element) return;
+
+                const touchStartHandler = (e) => this.handleTouchStart(e, elementType);
+                const touchMoveHandler = (e) => this.handleTouchMove(e, elementType);
+                const touchEndHandler = (e) => this.handleTouchEnd(e, elementType, closeCallback);
+
+                element.addEventListener('touchstart', touchStartHandler, { passive: false });
+                element.addEventListener('touchmove', touchMoveHandler, { passive: false });
+                element.addEventListener('touchend', touchEndHandler, { passive: false });
+
+                // Store handlers for cleanup if needed
+                element._swipeHandlers = {
+                    touchstart: touchStartHandler,
+                    touchmove: touchMoveHandler,
+                    touchend: touchEndHandler
+                };
             }
 
             assignTags() {
@@ -745,6 +830,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (e.target.closest('.ttp-modal-content') === null) this.closeModal('categoryModal');
                     });
                 }
+
+                // Setup swipe-to-close for tool modal
+                this.setupSwipeToClose('toolModal', 'toolModal', () => this.closeModal('toolModal'));
+
+                // Setup swipe-to-close for category modal
+                this.setupSwipeToClose('categoryModal', 'categoryModal', () => this.closeModal('categoryModal'));
 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') {
@@ -1339,6 +1430,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
+                // Setup swipe-to-close for side menu
+                this.setupSwipeToClose('sideMenu', 'sideMenu', () => this.closeSideMenu());
+
                 this.setupAdvancedFilters();
                 this.setupViewOptions();
                 this.setupQuickActions();
@@ -1493,6 +1587,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     overlay.addEventListener('dragover', e => e.preventDefault());
                     overlay.addEventListener('drop', e => e.preventDefault());
                 }
+
+                // Setup swipe-to-close for shortlist menu
+                this.setupSwipeToClose('shortlistMenu', 'shortlistMenu', () => this.closeShortlistMenu());
                 const shortlistMenu = document.getElementById('shortlistMenu');
                 if (shortlistMenu) shortlistMenu.addEventListener('click', (e) => {
                     if (this.isMobile()) return;

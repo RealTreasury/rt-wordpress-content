@@ -291,24 +291,6 @@
             background: var(--primary-purple);
         }
 
-        .testimonial-toggle {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 32px;
-            height: 32px;
-            border-radius: 9999px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(199, 125, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-purple);
-            cursor: pointer;
-            z-index: 2;
-        }
 
         @media (max-width: 640px) {
             .testimonial-slider { padding: 0 40px; }
@@ -552,7 +534,6 @@
 
                 <button id="prevTestimonial" class="testimonial-nav prev" aria-label="Previous testimonial">‹</button>
                 <button id="nextTestimonial" class="testimonial-nav next" aria-label="Next testimonial">›</button>
-                <button id="toggleAutoplay" class="testimonial-toggle" aria-label="Pause slideshow">❚❚</button>
                 <div class="testimonial-progress"></div>
                 <div class="testimonial-dots"></div>
             </div>
@@ -733,7 +714,6 @@
             const next = document.getElementById('nextTestimonial');
             const dotsContainer = slider.querySelector('.testimonial-dots');
             const progress = slider.querySelector('.testimonial-progress');
-            const toggle = document.getElementById('toggleAutoplay');
             const delay = 5000;
             let index = 0;
             let autoplayId;
@@ -782,16 +762,13 @@
                     goTo(index + 1, { wrap: true });
                     startProgress();
                 }, delay);
-                toggle.textContent = '❚❚';
-                toggle.setAttribute('aria-label', 'Pause slideshow');
             }
 
             function stopAutoplay() {
                 clearInterval(autoplayId);
                 progress.style.transition = 'none';
                 progress.style.width = '0%';
-                toggle.textContent = '▶';
-                toggle.setAttribute('aria-label', 'Play slideshow');
+                autoplayId = null;
             }
 
             function resetAutoplay() {
@@ -806,14 +783,6 @@
             next.addEventListener('click', () => {
                 goTo(index + 1);
                 resetAutoplay();
-            });
-            toggle.addEventListener('click', () => {
-                if (autoplayId) {
-                    stopAutoplay();
-                    autoplayId = null;
-                } else {
-                    startAutoplay();
-                }
             });
 
             // Pause on hover

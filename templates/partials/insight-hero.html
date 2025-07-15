@@ -3,6 +3,7 @@
 <% var subtitle = typeof subtitle === 'undefined' ? '' : subtitle; %>
 <% var metadata = Array.isArray(metadata) ? metadata : (metadata ? [metadata] : []); %>
 <% var showShare = typeof showShare === 'undefined' ? false : showShare; %>
+<% var cls = typeof containerClass === 'undefined' ? 'container' : containerClass; %>
 <section class="insight-hero">
   <% if (heroContent) { %>
     <%- heroContent %>

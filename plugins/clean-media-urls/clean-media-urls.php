@@ -102,31 +102,39 @@ function cmu_direct_request_handler() {
     $request_uri = strtok($_SERVER['REQUEST_URI'], '?');
 
     // Check if the request is for our /downloads/ URL structure.
-    // This regex handles an optional trailing slash.
     if (preg_match('#^/downloads/([^/]+)/?$#', $request_uri, $matches)) {
         $requested_filename = $matches[1];
+
+        // DEBUG: Log what we're looking for
+        error_log('Clean Media URLs: Looking for file: ' . $requested_filename);
+        error_log('Clean Media URLs: Request URI: ' . $request_uri);
 
         $media_map = cmu_get_media_map();
         $filepath = isset($media_map[$requested_filename]) ? $media_map[$requested_filename] : false;
         $cache_status = 'HIT';
 
+        // DEBUG: Log media map info
+        error_log('Clean Media URLs: Media map has ' . count($media_map) . ' files');
+        error_log('Clean Media URLs: File found in map: ' . ($filepath ? 'YES - ' . $filepath : 'NO'));
+
         // If the file isn't in our map, the map might be stale.
-        // As a fallback, we'll rebuild the cache and try one more time.
         if (!$filepath) {
             cmu_delete_media_map_cache();
             $media_map = cmu_get_media_map();
             $filepath = isset($media_map[$requested_filename]) ? $media_map[$requested_filename] : false;
             $cache_status = 'MISS_REBUILT';
+            error_log('Clean Media URLs: After rebuild - File found: ' . ($filepath ? 'YES - ' . $filepath : 'NO'));
         }
-        
+
         if ($filepath && file_exists($filepath)) {
+            error_log('Clean Media URLs: Serving file: ' . $filepath);
             $mime_type = mime_content_type($filepath);
             header('Content-Type: ' . $mime_type);
             header('Content-Length: ' . filesize($filepath));
             header('Content-Disposition: inline; filename="' . basename($requested_filename) . '"');
             header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (60 * 60 * 24 * 365)) . ' GMT');
             header('Cache-Control: public, max-age=31536000');
-            
+
             while (ob_get_level()) {
                 ob_end_clean();
             }
@@ -134,9 +142,10 @@ function cmu_direct_request_handler() {
             exit;
         }
 
-        // If we still can't find it, trigger a 404 error with a detailed debug message.
+        // DEBUG: More detailed error info
+        error_log('Clean Media URLs: File not found or doesnt exist. Filepath: ' . ($filepath ?: 'NULL') . ', Exists: ' . (file_exists($filepath ?: '') ? 'YES' : 'NO'));
+
         status_header(404);
-        // This HTML comment will be invisible to users but helpful for debugging.
         exit('<!-- Clean Media URLs Debug: File "' . esc_html($requested_filename) . '" not found. Cache status: ' . $cache_status . '. -->');
     }
 }

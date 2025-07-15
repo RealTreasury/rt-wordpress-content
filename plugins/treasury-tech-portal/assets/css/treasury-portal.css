@@ -648,7 +648,7 @@
     color: #6366f1;
     font-weight: 500;
     cursor: pointer;
-    align-self: flex-start; /* prevent full width stretch */
+    align-self: flex-end; /* right justify within header */
 }
 
         .treasury-portal .tool-card:hover .video-indicator {

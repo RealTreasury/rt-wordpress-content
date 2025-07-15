@@ -56,22 +56,7 @@
             padding: 60px 0;
         }
 
-        .page-container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 2.5rem 2rem;
-        }
-
-        .reading-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 3px;
-            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
-            z-index: 1000;
-            transition: width 0.3s ease;
-        }
+        /* Hero Section */
 
         .hero-meta {
             color: var(--gray-text);
@@ -92,6 +77,34 @@
             background: rgba(199, 125, 255, 0.1);
             border-radius: 20px;
             border: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--dark-text);
+            background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: var(--gray-text);
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            font-weight: 400;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
         }
 
         /* Glassmorphism Card Component */
@@ -557,60 +570,6 @@
   
 </section>
 
-
-    <!-- Introduction Section -->
-    <section class="section">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Are Cash Tools?</h2>
-                <p>The foundational category of treasury management systems designed for companies with simple cash structures and straightforward needs</p>
-            </div>
-            <div class="glass-card">
-                <h3>Essential Cash Management Foundation</h3>
-                <p>Cash Tools provide a single portal to view your bank account balances and transactions while creating basic forecasts. These solutions serve as the entry point into automated treasury management, offering the four core functions every business needs to gain control over their cash operations.</p>
-                <p>Perfect for organizations that need to move beyond spreadsheets and manual processes, Cash Tools deliver bank connectivity, forecasting capabilities, global cash visibility, and transaction management in one integrated platform. Companies requiring more advanced functionality like treasury payments, market data feeds, or derivatives management typically graduate to TMS-LITE or full Treasury & Risk Management Systems.</p>
-                <div style="background: rgba(114, 22, 244, 0.1); padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem; border-left: 4px solid var(--primary-purple);">
-                    <p style="margin: 0; font-weight: 500; color: var(--dark-text);"><strong>Key Insight:</strong> A product must have ALL four required functions to qualify as a complete Cash Tool. Missing any core function means it's either incomplete or belongs in a different category.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Core Cash Tools Requirements -->
-    <section class="section" style="background: #f8f8f8;">
-        <div class="container">
-            <div class="section-header">
-                <h2>The 4 Core Cash Tool Functions</h2>
-                <p>Every cash management system must include these essential capabilities to qualify as a complete Cash Tool solution</p>
-            </div>
-            <div class="tools-grid" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2rem; max-width: 900px; margin: 0 auto;">
-                <div class="glass-card tool-card floating">
-                    <h3>🔗 Bank Connectivity</h3>
-                    <p><strong>Required Function:</strong> Secure API and SFTP connections to your financial institutions for automated balance and transaction reporting from the previous day.</p>
-                    <ul class="tool-features">
-                        <li>Real-time API connections</li>
-                        <li>Secure SFTP file transfers</li>
-                        <li>Previous day transaction data</li>
-                        <li>Multi-bank account aggregation</li>
-                        <li>Automated data synchronization</li>
-                    </ul>
-                </div>
-                
-                <div class="glass-card tool-card floating" style="animation-delay: 0.5s;">
-                    <h3>📊 Basic Forecasting Tools</h3>
-                    <p><strong>Required Function:</strong> Manual forecast modeling capabilities with comprehensive variance analysis reporting to predict and track cash flow patterns.</p>
-                    <ul class="tool-features">
-                        <li>Manual forecast creation</li>
-                        <li>Variance analysis reporting</li>
-                        <li>Historical trend analysis</li>
-                        <li>Scenario planning tools</li>
-                        <li>Forecast accuracy tracking</li>
-                    </ul>
-                </div>
-                
-                <div class="glass-card tool-card floating" style="animation-delay: 1s;">
-                    <h3>👁️ Cash Visibility</h3>
-                    <p><strong>Required Function:</strong> Complete global view of all cash balances across accounts, including investment positions for comprehensive liquidity oversight.</p>
                     <ul class="tool-features">
                         <li>Global cash position dashboard</li>
                         <li>Investment portfolio visibility</li>
@@ -960,6 +919,118 @@
                 submitBtn.disabled = false;
             }, 3000);
         });
+</script>
+
+    <script>
+        // Professional sharing functionality
+        function shareOnLinkedIn() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent('Cash Tools Explained: Complete Guide to Treasury Management');
+            const summary = encodeURIComponent('Comprehensive guide to cash management tools, treasury solutions, and liquidity optimization for modern businesses.');
+
+            const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${summary}`;
+            window.open(linkedinUrl, '_blank', 'width=600,height=400');
+
+            // Track sharing
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'share', {
+                    'method': 'LinkedIn',
+                    'content_type': 'Insight Article',
+                    'content_id': 'cash-tools-explained'
+                });
+            }
+        }
+
+        function shareOnX() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent('Cash Tools Explained: Complete Guide to Treasury Management');
+            const hashtags = encodeURIComponent('Treasury,FinTech,CashManagement');
+
+            const xUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}&hashtags=${hashtags}`;
+            window.open(xUrl, '_blank', 'width=600,height=400');
+
+            // Track sharing
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'share', {
+                    'method': 'X',
+                    'content_type': 'Insight Article',
+                    'content_id': 'cash-tools-explained'
+                });
+            }
+        }
+
+        function shareViaEmail() {
+            const subject = encodeURIComponent('Cash Tools Explained: Complete Guide to Treasury Management');
+            const body = encodeURIComponent(`Check out this comprehensive guide to cash management tools:\n\nCash Tools Explained: Complete Guide to Treasury Management\n\nView the article: ${window.location.href}\n\nBest regards`);
+
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+
+            // Track sharing
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'share', {
+                    'method': 'Email',
+                    'content_type': 'Insight Article',
+                    'content_id': 'cash-tools-explained'
+                });
+            }
+        }
+
+        function copyLink(button) {
+            const url = window.location.href;
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showCopySuccess(button);
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(url, button);
+                });
+            } else {
+                fallbackCopyTextToClipboard(url, button);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text, button) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.position = 'fixed';
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                document.execCommand('copy');
+                showCopySuccess(button);
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        function showCopySuccess(button) {
+            const originalText = button.querySelector('.copy-text').textContent;
+            const originalClass = button.className;
+
+            button.classList.add('copied');
+            button.querySelector('.copy-text').textContent = 'Copied!';
+
+            setTimeout(() => {
+                button.className = originalClass;
+                button.querySelector('.copy-text').textContent = originalText;
+            }, 2000);
+
+            // Track copying
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'share', {
+                    'method': 'Copy Link',
+                    'content_type': 'Insight Article',
+                    'content_id': 'cash-tools-explained'
+                });
+            }
+        }
     </script>
 
 </div>

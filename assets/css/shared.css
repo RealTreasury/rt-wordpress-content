@@ -3420,6 +3420,8 @@ body.menu-open {
     cursor: pointer !important;
     font-weight: 400 !important;
     flex: 1 !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
 }
 
 /* Ensure links in the label work */
@@ -3427,6 +3429,8 @@ body.menu-open {
     color: #8b5cf6 !important;
     text-decoration: underline !important;
     font-weight: 500 !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
 }
 
 .portal-access-form .checkbox-row label a:hover {

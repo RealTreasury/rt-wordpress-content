@@ -4639,3 +4639,94 @@ a[href="#openportalmodal"] {
     }
 }
 
+
+/* Insight Hero New */
+.insight-hero {
+    padding: 60px 0;
+    background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+    text-align: center;
+}
+.insight-hero .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--gray-text);
+}
+.insight-hero .hero-meta span {
+    padding: 0.5rem 1rem;
+    background: rgba(199,125,255,0.1);
+    border-radius: 20px;
+    border: 1px solid rgba(199,125,255,0.2);
+}
+.insight-hero .hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #281345 0%, #7216f4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.insight-hero .hero-subtitle {
+    font-size: 1.25rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+.insight-hero .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+.insight-hero .stat-item { text-align: center; }
+.insight-hero .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #7216f4;
+}
+.insight-hero .stat-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 4px;
+}
+.insight-hero .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+.insight-hero .btn-primary,
+.insight-hero .btn-secondary {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+.insight-hero .btn-primary {
+    background: linear-gradient(135deg, #7216f4, #8f47f6);
+    color: #fff;
+}
+.insight-hero .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(114,22,244,0.3);
+    color: #fff;
+}
+.insight-hero .btn-secondary {
+    background: transparent;
+    color: #7216f4;
+    border: 2px solid #7216f4;
+}
+.insight-hero .btn-secondary:hover {
+    background: #7216f4;
+    color: #fff;
+}

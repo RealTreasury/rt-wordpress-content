@@ -1669,8 +1669,8 @@
         }
 
         .treasury-portal .external-shortlist-toggle.active .icon {
-            background: rgba(114,22,244,0.9);
-            color: #7216f4;
+            background: rgba(255,255,255,0.7);
+            color: inherit;
         }
 
         .treasury-portal .external-shortlist-toggle.active .icon::before {

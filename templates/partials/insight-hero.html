@@ -1,23 +1,45 @@
-<% var cls = typeof containerClass === 'undefined' ? 'container' : containerClass; %>
 <% var heroContent = typeof heroContent === 'undefined' ? '' : heroContent; %>
 <% var cta = typeof cta === 'undefined' ? null : cta; %>
 <% var ctaOnclick = typeof ctaOnclick === 'undefined' ? '' : ctaOnclick; %>
 <% var title = typeof title === 'undefined' ? '' : title; %>
 <% var subtitle = typeof subtitle === 'undefined' ? '' : subtitle; %>
+<% var date = typeof date === 'undefined' ? '' : date; %>
+<% var readTime = typeof readTime === 'undefined' ? '' : readTime; %>
+<% var label = typeof label === 'undefined' ? '' : label; %>
+
 <section class="insight-hero">
-  <% if (cls === false) { %>
-    <% if (heroContent) { %>
-      <%- heroContent %>
-    <% } %>
+  <% if (heroContent) { %>
+    <%- heroContent %>
   <% } else { %>
     <div class="<%= cls %>">
+      <% if (meta.length) { %>
+        <div class="hero-meta">
+          <% meta.forEach(function(item){ %>
+            <span><%= item %></span>
+          <% }); %>
+        </div>
+      <% } %>
       <% if (heroContent) { %>
         <%- heroContent %>
       <% } else { %>
+        <% if (date || readTime || label) { %>
+        <div class="hero-meta">
+          <% if (date) { %><span>📅 <%= date %></span><% } %>
+          <% if (readTime) { %><span>⏱️ <%= readTime %></span><% } %>
+          <% if (label) { %><span>📘 <%= label %></span><% } %>
+        </div>
+        <% } %>
         <h1><%= title %></h1>
         <% if (subtitle) { %><p class="subtitle"><%= subtitle %></p><% } %>
         <% if (cta) { %><a href="<%= cta.href %>" class="cta-button"<% if (ctaOnclick) { %> onclick="<%= ctaOnclick %>"<% } %>><%= cta.text %></a><% } %>
       <% } %>
+      <div class="share-buttons">
+        <a href="#" class="share-btn linkedin" aria-label="Share on LinkedIn" onclick="shareOnLinkedIn()">LinkedIn</a>
+        <a href="#" class="share-btn x-twitter" aria-label="Share on X" onclick="shareOnX()">Share on X</a>
+        <a href="#" class="share-btn email" aria-label="Share via Email" onclick="shareViaEmail()">Email</a>
+        <a href="#" class="share-btn copy-link" aria-label="Copy Link" onclick="copyLink(this)"><span class="copy-text">Copy Link</span></a>
+
+      </div>
     </div>
   <% } %>
 </section>

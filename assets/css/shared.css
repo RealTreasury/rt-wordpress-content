@@ -4769,3 +4769,89 @@ a[href="#openportalmodal"] {
     }
 }
 
+.insight-hero {
+  padding: 60px 0 40px;
+  text-align: center;
+}
+.insight-hero .hero-meta {
+  color: var(--gray-text);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  font-weight: 500;
+}
+.insight-hero .hero-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(199,125,255,0.1);
+  border-radius: 20px;
+  border: 1px solid rgba(199,125,255,0.2);
+}
+.insight-hero .hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+  color: var(--dark-text);
+  background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.insight-hero .hero-subtitle {
+  font-size: 1.4rem;
+  color: var(--gray-text);
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto 2.5rem;
+  font-weight: 400;
+}
+.insight-hero .hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.insight-hero .stat-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,248,248,0.95) 100%);
+  border: 2px solid rgba(199,125,255,0.2);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+.insight-hero .stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+}
+.insight-hero .stat-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(114,22,244,0.2);
+  border-color: rgba(199,125,255,0.4);
+}
+.insight-hero .stat-number {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--primary-purple);
+  display: block;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.insight-hero .stat-label {
+  color: var(--gray-text);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.3;
+}

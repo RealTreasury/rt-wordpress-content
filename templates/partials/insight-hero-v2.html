@@ -1,0 +1,35 @@
+<% var cls = (typeof containerClass === 'undefined' || containerClass === true) ? 'container' : containerClass; %>
+<% var meta = Array.isArray(meta) ? meta : []; %>
+<% var metrics = Array.isArray(metrics) ? metrics : []; %>
+<section class="insight-hero">
+  <% if (cls !== false) { %>
+  <div class="<%= cls %>">
+  <% } %>
+    <% if (meta.length) { %>
+    <div class="hero-meta">
+      <% meta.forEach(function(item){ %>
+        <span><%- item %></span>
+      <% }); %>
+    </div>
+    <% } %>
+    <h1 class="hero-title"><%= title %></h1>
+    <% if (subtitle) { %>
+      <p class="hero-subtitle"><%- subtitle %></p>
+    <% } %>
+    <% if (metrics.length) { %>
+    <div class="hero-stats">
+      <% metrics.forEach(function(m){ %>
+        <div class="stat-card">
+          <span class="stat-number"><%= m.number %></span>
+          <span class="stat-label"><%= m.label %></span>
+        </div>
+      <% }); %>
+    </div>
+    <% } %>
+    <% if (cta) { %>
+      <a href="<%= cta.href %>" class="cta-button"><%= cta.text %></a>
+    <% } %>
+  <% if (cls !== false) { %>
+  </div>
+  <% } %>
+</section>

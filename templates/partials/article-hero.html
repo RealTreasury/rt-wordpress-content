@@ -1,0 +1,30 @@
+<section class="insight-hero">
+  <div class="container">
+    <% if (meta && meta.length) { %>
+    <div class="hero-meta">
+      <% meta.forEach(function(item) { %>
+        <span><%= item %></span>
+      <% }); %>
+    </div>
+    <% } %>
+    <h1 class="hero-title"><%= title %></h1>
+    <% if (subtitle) { %><p class="hero-subtitle"><%= subtitle %></p><% } %>
+    <% if (metrics && metrics.length) { %>
+    <div class="hero-stats">
+      <% metrics.forEach(function(m) { %>
+        <div class="stat-item">
+          <span class="stat-number"><%= m.number %></span>
+          <span class="stat-label"><%= m.label %></span>
+        </div>
+      <% }); %>
+    </div>
+    <% } %>
+    <% if (cta && cta.length) { %>
+    <div class="hero-cta">
+      <% cta.forEach(function(c) { %>
+        <a href="<%= c.href %>" class="<%= c.class || 'btn-primary' %>"><%= c.text %></a>
+      <% }); %>
+    </div>
+    <% } %>
+  </div>
+</section>

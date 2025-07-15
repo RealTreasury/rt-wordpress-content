@@ -4,12 +4,8 @@ if (!defined("ABSPATH")) exit;
 ?>
 <div class="treasury-portal">
     <div class="container">
-        <button class="external-menu-toggle" id="externalMenuToggle">
-            <span class="icon"></span>
-        </button>
-        <button class="external-shortlist-toggle" id="externalShortlistToggle" aria-label="Open shortlist menu" title="Shortlist">
-            <span class="icon"></span>
-        </button>
+        <button class="external-menu-toggle" id="externalMenuToggle">Menu</button>
+        <button class="external-shortlist-toggle" id="externalShortlistToggle" aria-label="Open shortlist menu" title="Shortlist">Shortlist</button>
         <!-- Loading Screen -->
         <div class="loading" id="loadingScreen" style="display: none; text-align: center; padding: 40px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
             <div class="loading-logo" style="font-size: 3rem; margin-bottom: 1rem;">💼</div>

@@ -2225,3 +2225,34 @@
         padding-bottom: 80px !important;
     }
 }
+
+/* External toggle tabs */
+.treasury-portal .external-menu-toggle,
+.treasury-portal .external-shortlist-toggle {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    min-height: 100px;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    background: #7216f4;
+    border: none;
+    cursor: pointer;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+}
+.treasury-portal .external-menu-toggle {
+    left: 0;
+    border-radius: 0 8px 8px 0;
+}
+.treasury-portal .external-shortlist-toggle {
+    right: 0;
+    border-radius: 8px 0 0 8px;
+}
+

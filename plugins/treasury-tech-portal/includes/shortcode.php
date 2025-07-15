@@ -132,9 +132,7 @@ if (!defined("ABSPATH")) exit;
         <div class="shortlist-menu-header">
             <div></div>
             <h3 class="shortlist-menu-title">Shortlist</h3>
-            <button class="menu-toggle" id="shortlistMenuToggle" aria-label="Open shortlist menu" title="Shortlist">
-                <span class="icon"></span>
-            </button>
+            <div style="width: 36px;"></div>
         </div>
         <div class="shortlist-menu-content">
             <div class="shortlist-section">

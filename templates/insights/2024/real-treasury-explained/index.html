@@ -640,16 +640,13 @@
     </style>
 </head>
 <body>
+    <%- include('/partials/homepage-stats.ejs') %>
     <!-- Hero Section -->
     <%- include('/partials/article-hero.html', {
         title: 'Transform Your Treasury Operations in 30 Days',
         subtitle: "Join 500+ finance leaders using Real Treasury's AI-powered platform to optimize cash flow, reduce costs, and unlock millions in working capital.",
         meta: ['July 15, 2025', '5 min read', 'Expert Insights', 'SOC 2 Certified'],
-        metrics: [
-          { number: '$2.3M', label: 'Avg. Annual Savings' },
-          { number: '85%', label: 'Time Reduction' },
-          { number: '30', label: 'Days to ROI' }
-        ],
+        metrics: homepageStats,
         cta: [
           { href: 'https://realtreasury.com/treasury-tech-portal/', text: 'Access Portal', class: 'btn-primary tpa-btn-ready' },
           { href: '#roi-calculator', text: '💰 Calculate Your Savings', class: 'btn-secondary' }

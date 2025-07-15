@@ -662,13 +662,15 @@
 </head>
 <body>
     <div class="reading-progress"></div>
-    
+
     <article class="article-container">
+        <%- include('/partials/homepage-stats.ejs') %>
         <%- include('/partials/insight-hero.html', {
             title: 'Treasury Marketplace Part 1: Infrastructure Revolution',
             subtitle: 'The corporate treasury landscape is undergoing its most dramatic transformation in decades. Discover how <em>treasury marketplaces</em> are fundamentally reshaping financial infrastructure, unlocking unprecedented efficiency gains, and creating new strategic advantages for forward-thinking organizations.',
             meta: ['📅 January 15, 2025', '⏱️ 12 min read', '📊 Treasury Strategy', '🎯 Part 1 of 3'],
-            cta: { href: '#insightForm', text: 'Get Part 2 + ROI Calculator' }
+            cta: { href: '#insightForm', text: 'Get Part 2 + ROI Calculator' },
+            metrics: homepageStats
         }) %>
 
         <!-- Introduction -->
@@ -709,22 +711,12 @@
             </p>
 
             <div class="stats-grid">
+                <% homepageStats.forEach(function(m){ %>
                 <div class="stat-card">
-                    <span class="stat-number">78%</span>
-                    <span class="stat-label">Manual Process Dependency Across Treasury Operations</span>
+                    <span class="stat-number"><%= m.number %></span>
+                    <span class="stat-label"><%= m.label %></span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-number">18+</span>
-                    <span class="stat-label">Average Banking Relationships Per Enterprise</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">45%</span>
-                    <span class="stat-label">Time Spent on Data Reconciliation</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">$3.2M</span>
-                    <span class="stat-label">Annual Inefficiency Cost (Fortune 500)</span>
-                </div>
+                <% }); %>
             </div>
 
             <p class="content-text">

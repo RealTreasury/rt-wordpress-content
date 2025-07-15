@@ -82,15 +82,8 @@
             transition: width 0.3s ease;
         }
 
-        /* Article Header */
-        .article-header {
-            margin-bottom: 4rem;
-            padding-bottom: 2.5rem;
-            border-bottom: 2px solid rgba(199, 125, 255, 0.2);
-            text-align: center;
-        }
-
-        .article-meta {
+        /* Hero Section */
+        .hero-meta {
             color: var(--gray-text);
             font-size: 0.9rem;
             margin-bottom: 1.5rem;
@@ -101,7 +94,7 @@
             font-weight: 500;
         }
 
-        .article-meta span {
+        .hero-meta span {
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -111,7 +104,7 @@
             border: 1px solid rgba(199, 125, 255, 0.2);
         }
 
-        .article-title {
+        .hero-title {
             font-size: 3.2rem;
             font-weight: 800;
             line-height: 1.1;
@@ -123,13 +116,115 @@
             background-clip: text;
         }
 
-        .article-subtitle {
+        .hero-subtitle {
             font-size: 1.3rem;
             color: var(--gray-text);
             line-height: 1.6;
             max-width: 750px;
             margin: 0 auto;
             font-weight: 400;
+        }
+
+        .share-buttons {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 248, 248, 0.98) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid rgba(199, 125, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 0.9rem;
+            min-width: 120px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .share-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .share-btn:hover::before {
+            left: 100%;
+        }
+
+        .share-btn.linkedin {
+            color: #0077B5;
+            border-color: rgba(0, 119, 181, 0.2);
+        }
+
+        .share-btn.linkedin:hover {
+            background: linear-gradient(135deg, #0077B5, #005885);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 119, 181, 0.25);
+            border-color: #0077B5;
+        }
+
+        .share-btn.x-twitter {
+            color: #000;
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+
+        .share-btn.x-twitter:hover {
+            background: linear-gradient(135deg, #000, #1a1a1a);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            border-color: #000;
+        }
+
+        .share-btn.email {
+            color: #6B7280;
+            border-color: rgba(107, 114, 128, 0.2);
+        }
+
+        .share-btn.email:hover {
+            background: linear-gradient(135deg, #6B7280, #4B5563);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(107, 114, 128, 0.25);
+            border-color: #6B7280;
+        }
+
+        .share-btn.copy-link {
+            color: var(--primary-purple);
+            border-color: rgba(114, 22, 244, 0.2);
+        }
+
+        .share-btn.copy-link:hover {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(114, 22, 244, 0.25);
+            border-color: var(--primary-purple);
+        }
+
+        .share-btn.copied {
+            background: linear-gradient(135deg, #10B981, #059669) !important;
+            color: #fff !important;
+            border-color: #10B981 !important;
         }
 
         /* Content Sections */
@@ -569,21 +664,12 @@
     <div class="reading-progress"></div>
     
     <article class="article-container">
-        <!-- Article Header -->
-        <header class="article-header">
-            <div class="article-meta">
-                <span>📅 January 15, 2025</span>
-                <span>⏱️ 12 min read</span>
-                <span>📊 Treasury Strategy</span>
-                <span>🎯 Part 1 of 3</span>
-            </div>
-            <h1 class="article-title">Treasury Marketplace Part 1: Infrastructure Revolution</h1>
-            <p class="article-subtitle">
-                The corporate treasury landscape is undergoing its most dramatic transformation in decades. 
-                Discover how <em>treasury marketplaces</em> are fundamentally reshaping financial infrastructure, 
-                unlocking unprecedented efficiency gains, and creating new strategic advantages for forward-thinking organizations.
-            </p>
-        </header>
+        <%- include('/partials/insight-hero.html', {
+            title: 'Treasury Marketplace Part 1: Infrastructure Revolution',
+            subtitle: 'The corporate treasury landscape is undergoing its most dramatic transformation in decades. Discover how <em>treasury marketplaces</em> are fundamentally reshaping financial infrastructure, unlocking unprecedented efficiency gains, and creating new strategic advantages for forward-thinking organizations.',
+            meta: ['📅 January 15, 2025', '⏱️ 12 min read', '📊 Treasury Strategy', '🎯 Part 1 of 3'],
+            cta: { href: '#insightForm', text: 'Get Part 2 + ROI Calculator' }
+        }) %>
 
         <!-- Introduction -->
         <section class="content-section">
@@ -963,6 +1049,37 @@
             item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
             observer.observe(item);
         });
+
+        function shareOnLinkedIn() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareOnX() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(document.title);
+            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
+        }
+
+        function shareViaEmail() {
+            const subject = encodeURIComponent(document.title);
+            const body = encodeURIComponent(`Check out this article: ${window.location.href}`);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+
+        function copyLink(btn) {
+            const url = window.location.href;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url).then(() => {
+                    btn.classList.add('copied');
+                    btn.querySelector('.copy-text').textContent = 'Copied!';
+                    setTimeout(() => {
+                        btn.classList.remove('copied');
+                        btn.querySelector('.copy-text').textContent = 'Copy Link';
+                    }, 2000);
+                });
+            }
+        }
     </script>
 
 </body>

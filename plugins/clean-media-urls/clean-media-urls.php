@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Clean Media URLs
  * Plugin URI:        https://realtreasury.com
- * Description:       Rewrites media library file URLs to a cleaner /media/filename structure and handles the requests.
+ * Description:       Rewrites media library file URLs to a cleaner /downloads/filename structure and handles the requests.
  * Version:           2.4.0
  * Author:            Gemini
  * Author URI:        https://gemini.google.com
@@ -85,9 +85,8 @@ add_action('add_attachment', 'cmu_delete_media_map_cache');
 add_action('delete_attachment', 'cmu_delete_media_map_cache');
 add_action('edit_attachment', 'cmu_delete_media_map_cache');
 
-
 /**
- * Intercepts requests for /media/ URLs at an early stage, finds the file, and serves it.
+ * Intercepts requests for /downloads/ URLs at an early stage, finds the file, and serves it.
  * This new architecture inspects the request URI directly, bypassing the rewrite system
  * entirely to avoid conflicts with themes or other plugins that heavily modify URL rewrites.
  */
@@ -95,9 +94,9 @@ function cmu_direct_request_handler() {
     // Get the request path, stripping any query strings.
     $request_uri = strtok($_SERVER['REQUEST_URI'], '?');
 
-    // Check if the request is for our /media/ URL structure.
+    // Check if the request is for our /downloads/ URL structure.
     // This regex handles an optional trailing slash.
-    if (preg_match('#^/media/([^/]+)/?$#', $request_uri, $matches)) {
+    if (preg_match('#^/downloads/([^/]+)/?$#', $request_uri, $matches)) {
         $requested_filename = $matches[1];
 
         $media_map = cmu_get_media_map();
@@ -138,18 +137,80 @@ function cmu_direct_request_handler() {
 add_action('init', 'cmu_direct_request_handler', 1);
 
 /**
- * Filters the attachment URL to use the clean /media/ format.
+ * Filters the attachment URL to use the clean /downloads/ format.
  */
 function cmu_clean_attachment_url($url, $post_id) {
     $uploads_dir = wp_get_upload_dir();
     if (strpos($url, $uploads_dir['baseurl']) !== false) {
         $filename = basename($url);
         // Generate a clean URL without a trailing slash, as we are no longer using endpoints.
-        return home_url('/media/' . $filename);
+        return home_url('/downloads/' . $filename);
     }
     return $url;
 }
 add_filter('wp_get_attachment_url', 'cmu_clean_attachment_url', 10, 2);
 
-// NOTE: All rewrite rule and endpoint functions have been removed as they are no longer needed with this direct-intercept method.
-// The activate/deactivate hooks are no longer necessary as we don't need to flush rewrite rules.
+/**
+ * Handle filename conflicts by ensuring unique filenames
+ * This function checks for duplicate filenames and adds a suffix if needed
+ */
+function cmu_handle_filename_conflicts($filename, $filepath) {
+    $media_map = cmu_get_media_map();
+    
+    // If filename already exists and points to a different file, we need to handle the conflict
+    if (isset($media_map[$filename]) && $media_map[$filename] !== $filepath) {
+        $info = pathinfo($filename);
+        $name = $info['filename'];
+        $ext = isset($info['extension']) ? '.' . $info['extension'] : '';
+        $counter = 1;
+        
+        do {
+            $new_filename = $name . '-' . $counter . $ext;
+            $counter++;
+        } while (isset($media_map[$new_filename]) && $media_map[$new_filename] !== $filepath);
+        
+        return $new_filename;
+    }
+    
+    return $filename;
+}
+
+/**
+ * Add debug information for administrators
+ */
+function cmu_add_debug_info() {
+    if (current_user_can('manage_options') && isset($_GET['debug_media_urls'])) {
+        $media_map = cmu_get_media_map();
+        echo '<div style="background: #fff; padding: 20px; margin: 20px; border: 1px solid #ccc;">';
+        echo '<h3>Clean Media URLs Debug Information</h3>';
+        echo '<p>Total files in map: ' . count($media_map) . '</p>';
+        echo '<p>Add ?rebuild_media_map=1 to force cache rebuild</p>';
+        echo '<details><summary>Media Map (click to expand)</summary>';
+        echo '<pre>' . print_r($media_map, true) . '</pre>';
+        echo '</details>';
+        echo '</div>';
+    }
+}
+add_action('wp_footer', 'cmu_add_debug_info');
+add_action('admin_footer', 'cmu_add_debug_info');
+
+/**
+ * Plugin activation hook
+ */
+function cmu_activate() {
+    // Clear any existing cache on activation
+    cmu_delete_media_map_cache();
+    
+    // Create the media map to ensure it's ready
+    cmu_get_media_map();
+}
+register_activation_hook(__FILE__, 'cmu_activate');
+
+/**
+ * Plugin deactivation hook
+ */
+function cmu_deactivate() {
+    // Clean up transients on deactivation
+    cmu_delete_media_map_cache();
+}
+register_deactivation_hook(__FILE__, 'cmu_deactivate');

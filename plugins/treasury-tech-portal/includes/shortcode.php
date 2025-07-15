@@ -142,6 +142,17 @@ if (!defined("ABSPATH")) exit;
                     <div id="shortlistContainer" class="shortlist-container empty">
                         <p id="shortlistEmptyMessage" class="shortlist-empty-message">Drag vendor cards here or click to add.</p>
                     </div>
+
+                    <!-- Always visible tool picker -->
+                    <div class="tool-picker permanent-picker" id="permanentToolPicker">
+                        <button type="button" class="tool-picker-button">Add a Tool</button>
+                        <div class="tool-picker-dropdown" id="permanentDropdown" style="display: none;">
+                            <input type="text" placeholder="Search tools..." class="tool-picker-search" id="permanentSearch">
+                            <ul class="tool-picker-options" id="permanentList">
+                                <!-- Options populated by JavaScript -->
+                            </ul>
+                        </div>
+                    </div>
                     <div class="tips-section">
                         <h3>Tips for Building a Tech Vendor Shortlist</h3>
                         <ul>

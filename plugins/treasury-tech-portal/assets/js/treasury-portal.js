@@ -1719,18 +1719,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         this.renderShortlist();
                     });
 
-                    container.addEventListener('click', e => {
-                        if (e.target === container && !container.querySelector('#toolPicker')) {
-                            this.openToolPicker();
-                        }
-                    });
-                }
+
 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape' && this.shortlistMenuOpen) this.closeShortlistMenu();
                 });
 
                 this.renderShortlist();
+                this.setupPermanentToolPicker();
             }
 
             toggleShortlistMenu() {
@@ -1795,8 +1791,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (this.shortlist.length === 0) {
                     container.classList.add('empty');
                     if (emptyMsg) emptyMsg.classList.remove('visually-hidden');
-                    // show the tool picker immediately when the shortlist is empty
-                    this.openToolPicker();
                 } else {
                     container.classList.remove('empty');
                     if (emptyMsg) emptyMsg.classList.add('visually-hidden');
@@ -1864,6 +1858,88 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (exportBtn) {
                     exportBtn.disabled = this.shortlist.length === 0;
                 }
+
+                // Always update the permanent tool picker
+                this.updatePermanentToolPicker();
+            }
+
+            updatePermanentToolPicker() {
+                const button = document.getElementById('permanentToolPicker')?.querySelector('.tool-picker-button');
+                const dropdown = document.getElementById('permanentDropdown');
+                const search = document.getElementById('permanentSearch');
+                const list = document.getElementById('permanentList');
+
+                if (!button || !dropdown || !search || !list) return;
+
+                // Update available tools list
+                const availableTools = this.TREASURY_TOOLS.filter(t =>
+                    !this.shortlist.some(i => i.tool.name === t.name)
+                );
+
+                // Populate the list
+                list.innerHTML = availableTools
+                    .map(t => `<li data-name="${t.name}">${t.name}</li>`)
+                    .join('');
+
+                // Update button text
+                button.textContent = availableTools.length > 0 ?
+                    `Add a Tool (${availableTools.length} available)` :
+                    'All tools added';
+                button.disabled = availableTools.length === 0;
+
+                // Clear search
+                search.value = '';
+                dropdown.style.display = 'none';
+            }
+
+            setupPermanentToolPicker() {
+                const button = document.getElementById('permanentToolPicker')?.querySelector('.tool-picker-button');
+                const dropdown = document.getElementById('permanentDropdown');
+                const search = document.getElementById('permanentSearch');
+                const list = document.getElementById('permanentList');
+
+                if (!button || !dropdown || !search || !list) return;
+
+                // Toggle dropdown
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isVisible = dropdown.style.display === 'block';
+                    dropdown.style.display = isVisible ? 'none' : 'block';
+                    if (!isVisible) search.focus();
+                });
+
+                // Search functionality
+                search.addEventListener('input', () => {
+                    const term = search.value.toLowerCase();
+                    list.querySelectorAll('li').forEach(li => {
+                        const matches = li.textContent.toLowerCase().includes(term);
+                        li.style.display = matches ? 'block' : 'none';
+                    });
+                });
+
+                // Tool selection
+                list.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'LI') {
+                        const toolName = e.target.dataset.name;
+                        const tool = this.TREASURY_TOOLS.find(t => t.name === toolName);
+                        if (tool && !this.shortlist.some(i => i.tool.name === toolName)) {
+                            this.shortlist.push({ tool, notes: '' });
+                            this.renderShortlist();
+                        }
+                        dropdown.style.display = 'none';
+                    }
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    const picker = document.getElementById('permanentToolPicker');
+                    if (picker && !picker.contains(e.target)) {
+                        dropdown.style.display = 'none';
+                    }
+                });
+
+                // Initial update
+                this.updatePermanentToolPicker();
             }
 
             clearShortlist() {
@@ -1872,78 +1948,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             openToolPicker() {
-                const container = document.getElementById('shortlistContainer');
-                if (!container) return;
-                const existing = container.querySelector('.tool-picker');
-                if (existing) existing.remove();
-
-                const picker = document.createElement('div');
-                picker.className = 'tool-picker';
-
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.textContent = 'Select a tool';
-                picker.appendChild(button);
-
-                const dropdown = document.createElement('div');
-                dropdown.className = 'tool-picker-dropdown';
-                dropdown.style.display = 'none';
-
-                const search = document.createElement('input');
-                search.type = 'text';
-                search.placeholder = 'Search tools...';
-                search.className = 'tool-picker-search';
-                dropdown.appendChild(search);
-
-                const list = document.createElement('ul');
-                list.className = 'tool-picker-options';
-                list.innerHTML = this.TREASURY_TOOLS
-                    .filter(t => !this.shortlist.some(i => i.tool.name === t.name))
-                    .map(t => `<li data-name="${t.name}">${t.name}</li>`)
-                    .join('');
-                dropdown.appendChild(list);
-                picker.appendChild(dropdown);
-                container.appendChild(picker);
-
-                const close = (e) => {
-                    if (!picker.contains(e.target)) {
-                        picker.remove();
-                        document.removeEventListener('click', close);
-                    }
-                };
-
-                const toggleDropdown = (show) => {
-                    dropdown.style.display = show ? 'block' : 'none';
-                    if (show) search.focus();
-                };
-
-                button.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggleDropdown(dropdown.style.display === 'none');
-                });
-
-                search.addEventListener('input', () => {
-                    const term = search.value.toLowerCase();
-                    list.querySelectorAll('li').forEach(li => {
-                        li.style.display = li.textContent.toLowerCase().includes(term) ? 'block' : 'none';
-                    });
-                });
-
-                list.querySelectorAll('li').forEach(li => {
-                    li.addEventListener('click', () => {
-                        const name = li.dataset.name;
-                        const tool = this.TREASURY_TOOLS.find(t => t.name === name);
-                        if (tool && !this.shortlist.some(i => i.tool.name === name)) {
-                            this.shortlist.push({ tool, notes: '' });
-                            this.renderShortlist();
-                        }
-                        picker.remove();
-                        document.removeEventListener('click', close);
-                    });
-                });
-
-                setTimeout(() => document.addEventListener('click', close));
-                button.focus();
+                // Legacy method - now using permanent picker
+                return;
             }
 
             setupBottomNav() {

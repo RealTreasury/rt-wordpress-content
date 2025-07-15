@@ -1331,7 +1331,7 @@
             border-right: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 0 20px 20px 0;
             z-index: 1001;
-            transform: translateX(-220px);
+            transform: translateX(-100%);
             opacity: 1;
             pointer-events: auto;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1695,7 +1695,7 @@
             border-left: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 20px 0 0 20px;
             z-index: 1001;
-            transform: translateX(260px);
+            transform: translateX(100%);
             opacity: 1;
             pointer-events: auto;
             transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
@@ -2254,5 +2254,15 @@
 .treasury-portal .external-shortlist-toggle {
     right: 0;
     border-radius: 8px 0 0 8px;
+}
+
+
+/* Ensure menus are completely hidden by default */
+.treasury-portal .side-menu:not(.open) {
+    transform: translateX(-100%) !important;
+}
+
+.treasury-portal .shortlist-menu:not(.open) {
+    transform: translateX(100%) !important;
 }
 

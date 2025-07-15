@@ -437,6 +437,7 @@
 
 <body>
     <!-- Hero Section -->
+    <%- include('/partials/homepage-stats.ejs') %>
     <% heroContent = `
         <div class="article-meta">
             <span>📅 January 1, 2025</span>
@@ -475,28 +476,18 @@
             </a>
         </div>
     ` %>
-    <%- include('/partials/insight-hero.html', { heroContent: heroContent }) %>
+    <%- include('/partials/insight-hero.html', { heroContent: heroContent, metrics: homepageStats }) %>
 
     <!-- Stats Section -->
     <section class="stats-container section-alt">
         <div class="container">
             <div class="grid grid-4">
+                <% homepageStats.forEach(function(m){ %>
                 <div class="stat-item">
-                    <span class="stat-number">87%</span>
-                    <span class="stat-label">Cost Reduction Achieved</span>
+                    <span class="stat-number"><%= m.number %></span>
+                    <span class="stat-label"><%= m.label %></span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">50+</span>
-                    <span class="stat-label">TMS Implementations</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">$2M+</span>
-                    <span class="stat-label">Average Savings</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">6 Months</span>
-                    <span class="stat-label">Typical ROI Timeline</span>
-                </div>
+                <% }); %>
             </div>
         </div>
     </section>
@@ -616,7 +607,7 @@
             <div class="content-section" style="text-align: center;">
                 <h2>Trusted by Leading Organizations</h2>
                 <div class="trust-signal">
-                    <p><strong>Join 200+ companies</strong> that have successfully transformed their treasury operations with our expert guidance. Our proven methodology has helped organizations save an average of $2M+ annually while reducing operational risk.</p>
+                    <p><strong>Join 200+ companies</strong> that have successfully transformed their treasury operations with our expert guidance. Our proven methodology consistently reduces operational risk and improves efficiency.</p>
                 </div>
             </div>
         </div>

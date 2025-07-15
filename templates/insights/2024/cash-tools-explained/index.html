@@ -476,6 +476,7 @@
 <body>
     <div class="reading-progress"></div>
     <div class="page-container">
+    <%- include('/partials/homepage-stats.ejs') %>
     <!-- Schema.org structured data for SEO -->
     <script type="application/ld+json">
     {
@@ -514,7 +515,8 @@
             '💻 Technology Guide',
             '💡 Expert Insights'
         ],
-        cta: { href: '#get-started', text: 'Get Your Free Treasury Analysis' }
+        cta: { href: '#get-started', text: 'Get Your Free Treasury Analysis' },
+        metrics: homepageStats
     }) %>
                     <ul class="tool-features">
                         <li>Global cash position dashboard</li>
@@ -590,22 +592,12 @@
                 <p style="color: rgba(255,255,255,0.9);">See how businesses leverage cash tools to achieve measurable financial improvements</p>
             </div>
             <div class="stats-grid">
+                <% homepageStats.forEach(function(m){ %>
                 <div class="stat-item">
-                    <h3>25%</h3>
-                    <p>Average improvement in cash conversion cycle</p>
+                    <span class="stat-number"><%= m.number %></span>
+                    <span class="stat-label"><%= m.label %></span>
                 </div>
-                <div class="stat-item">
-                    <h3>40%</h3>
-                    <p>Reduction in manual treasury processes</p>
-                </div>
-                <div class="stat-item">
-                    <h3>15%</h3>
-                    <p>Increase in investment returns on excess cash</p>
-                </div>
-                <div class="stat-item">
-                    <h3>99.8%</h3>
-                    <p>Forecast accuracy with advanced tools</p>
-                </div>
+                <% }); %>
             </div>
         </div>
     </section>

@@ -624,8 +624,9 @@
 </head>
 <body>
     <div class="reading-progress"></div>
-    
+
     <div class="page-container">
+        <%- include('/partials/homepage-stats.ejs') %>
         <!-- Hero Section -->
 
 <%- include('/partials/insight-hero-v2.html', {
@@ -633,12 +634,7 @@
     title: 'Treasury Technology for Real Estate Funds',
     subtitle: 'Discover how advanced treasury technology transforms real estate fund operations through <em>intelligent automation</em>, integrated payment systems, and strategic data analytics. Gain competitive advantages with modern treasury infrastructure designed for the unique challenges of real estate sponsors and fund managers.',
     meta: ['🏢 Real Estate Technology', '⏱️ 10 min read', '💡 Expert Insights', '🎯 Fund Management'],
-    metrics: [
-        { number: '65%', label: 'Time Savings with Automation' },
-        { number: '40+', label: 'Banking Relationships Managed' },
-        { number: '$3B+', label: 'Assets Under Management' },
-        { number: '90%', label: 'Faster Monthly Close' }
-    ],
+    metrics: homepageStats,
     cta: { text: 'Get Assessment Tool + Consultation', href: '#techAssessmentForm' }
 }) %>
         <!-- Introduction -->

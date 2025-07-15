@@ -4639,3 +4639,52 @@ a[href="#openportalmodal"] {
     }
 }
 
+/* Insight Hero Styles */
+.insight-hero {
+    padding: 40px 0;
+    background: linear-gradient(135deg, #f8f8ff, #ffffff);
+    text-align: center;
+}
+.insight-hero .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+.insight-hero .hero-meta span {
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(199, 125, 255, 0.1);
+    border: 1px solid rgba(199, 125, 255, 0.2);
+}
+.insight-hero .share-buttons {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.insight-hero .share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: #ffffff;
+    border: 1px solid rgba(114, 22, 244, 0.2);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--primary-purple, #7216f4);
+    transition: background 0.3s, color 0.3s;
+}
+.insight-hero .share-btn:hover {
+    background: var(--primary-purple, #7216f4);
+    color: #ffffff;
+}
+.insight-hero .share-btn.copied {
+    background: #10b981;
+    color: #ffffff;
+}

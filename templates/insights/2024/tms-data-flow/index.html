@@ -867,42 +867,41 @@
     <article>
         <!-- Hero Section -->
         <% heroContent = `
-            <div class="container">
-                <div class="hero-content">
-                    <div class="hero-text">
-                        <h1>TMS Data Flows: The Complete Technical Guide</h1>
-                        <p class="subtitle">Master treasury management system data architecture with comprehensive insights into automated workflows, real-time integration patterns, and enterprise-grade financial data processing that transforms treasury operations.</p>
-                        <div class="cta-buttons">
-                            <button class="btn btn-primary" onclick="openModal()" aria-label="Request free TMS data flow assessment">Get Free TMS Assessment</button>
-                            <a href="#technical-architecture" class="btn btn-secondary" aria-label="Jump to technical architecture section">Explore Architecture</a>
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="openModal()" aria-label="Request free TMS data flow assessment">Get Free TMS Assessment</button>
+                <a href="#technical-architecture" class="btn btn-secondary" aria-label="Jump to technical architecture section">Explore Architecture</a>
+            </div>
+            <div class="hero-visual">
+                <div class="data-flow-diagram" role="img" aria-label="TMS data flow visualization showing the four main stages of treasury data processing">
+                    <div class="flow-nodes">
+                        <div class="flow-node">
+                            <h4>📊 Data Ingestion Layer</h4>
+                            <p>Bank APIs, SWIFT networks, ERP connectors, market data feeds</p>
                         </div>
-                    </div>
-                    <div class="hero-visual">
-                        <div class="data-flow-diagram" role="img" aria-label="TMS data flow visualization showing the four main stages of treasury data processing">
-                            <div class="flow-nodes">
-                                <div class="flow-node">
-                                    <h4>📊 Data Ingestion Layer</h4>
-                                    <p>Bank APIs, SWIFT networks, ERP connectors, market data feeds</p>
-                                </div>
-                                <div class="flow-node">
-                                    <h4>🔄 Processing & Validation Engine</h4>
-                                    <p>Real-time reconciliation, anomaly detection, compliance checks</p>
-                                </div>
-                                <div class="flow-node">
-                                    <h4>🧠 Analytics & Intelligence Layer</h4>
-                                    <p>Cash forecasting, risk modeling, predictive analytics</p>
-                                </div>
-                                <div class="flow-node">
-                                    <h4>⚡ Automated Execution Framework</h4>
-                                    <p>Investment decisions, payment processing, regulatory reporting</p>
-                                </div>
-                            </div>
+                        <div class="flow-node">
+                            <h4>🔄 Processing & Validation Engine</h4>
+                            <p>Real-time reconciliation, anomaly detection, compliance checks</p>
+                        </div>
+                        <div class="flow-node">
+                            <h4>🧠 Analytics & Intelligence Layer</h4>
+                            <p>Cash forecasting, risk modeling, predictive analytics</p>
+                        </div>
+                        <div class="flow-node">
+                            <h4>⚡ Automated Execution Framework</h4>
+                            <p>Investment decisions, payment processing, regulatory reporting</p>
                         </div>
                     </div>
                 </div>
             </div>
         ` %>
-        <%- include('/partials/insight-hero.html', { heroContent: heroContent, containerClass: false }) %>
+        <%- include('/partials/insight-hero.html', {
+            containerClass: 'container',
+            title: 'TMS Data Flows: The Complete Technical Guide',
+            subtitle: 'Master treasury management system data architecture with comprehensive insights into automated workflows, real-time integration patterns, and enterprise-grade financial data processing that transforms treasury operations.',
+            metadata: ['📅 June 30, 2024', '⏱️ 14 min read', '🔧 Implementation Guide'],
+            heroContent: heroContent,
+            showShare: true
+        }) %>
 
         <!-- Introduction and Overview -->
         <section class="section">

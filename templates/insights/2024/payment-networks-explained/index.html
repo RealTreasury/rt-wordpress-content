@@ -610,35 +610,9 @@
             <h2 class="section-title" style="color: white;">Optimize Your Payment Infrastructure</h2>
             <p style="font-size: 1.25rem; max-width: 800px; margin: 0 auto 2rem; opacity: 0.9;">Ready to architect a payment system that leverages the right network infrastructure? Our technical experts can analyze your requirements and design an optimal network strategy.</p>
             
-            <div class="lead-form">
+            <div class="lead-form" style="text-align:center;">
                 <h3 style="text-align: center; margin-bottom: 2rem; color: #281345;">Get Your Infrastructure Assessment</h3>
-                <form id="leadForm">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="form-group">
-                            <label for="firstName">First Name *</label>
-                            <input type="text" id="firstName" name="firstName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name *</label>
-                            <input type="text" id="lastName" name="lastName" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="company">Company Name *</label>
-                        <input type="text" id="company" name="company" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="useCase">Primary Use Case</label>
-                        <input type="text" id="useCase" name="useCase" placeholder="e.g., B2B payments, consumer transfers, international">
-                    </div>
-                    <button type="submit" class="cta-button" style="width: 100%; margin-top: 1rem; background: linear-gradient(135deg, #7216f4, #8f47f6); border: none;">
-                        Get Infrastructure Assessment
-                    </button>
-                </form>
+                <a href="/contact" class="cta-button" style="width: 100%; margin-top: 1rem; background: linear-gradient(135deg, #7216f4, #8f47f6); border: none; display:inline-block;">Get Infrastructure Assessment</a>
             </div>
         </div>
     </section>
@@ -687,23 +661,6 @@
             observer.observe(el);
         });
 
-        // Form submission handler
-        document.getElementById('leadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Collect form data
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            
-            // Show success message
-            alert('Thank you! Our technical team will contact you within 24 hours with your infrastructure assessment.');
-            
-            // Reset form
-            this.reset();
-            
-            // In a real implementation, you would send this data to your backend
-            console.log('Lead data:', data);
-        });
 
         // Add smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

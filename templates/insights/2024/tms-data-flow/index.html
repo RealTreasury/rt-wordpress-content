@@ -241,38 +241,9 @@
     <div class="container">
         <h2>Get Your Free TMS Assessment</h2>
         <p>Discover how TMS data flows can transform your treasury operations with a personalized assessment from our experts.</p>
-        <form class="lead-form" id="leadForm">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="firstName">First Name *</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name *</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="email">Business Email *</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="company">Company Name *</label>
-                <input type="text" id="company" name="company" required>
-            </div>
-            <div class="form-group">
-                <label for="role">Role/Title *</label>
-                <select id="role" name="role" required>
-                    <option value="">Select your role</option>
-                    <option value="treasurer">Treasurer</option>
-                    <option value="cfo">Chief Financial Officer</option>
-                    <option value="finance-director">Finance Director</option>
-                    <option value="treasury-manager">Treasury Manager</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Get Free Assessment</button>
-        </form>
+        <div class="lead-form" style="text-align:center;">
+            <a href="/contact" class="btn btn-primary" style="width: 100%;">Get Free Assessment</a>
+        </div>
     </div>
 </section>
 <section class="section" id="download">
@@ -330,14 +301,6 @@ function showCopySuccess(button) {
         button.style.color = '';
     }, 2000);
 }
-document.getElementById('leadForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData);
-    console.log('Form submitted:', data);
-    alert('Thank you! We\'ll contact you within 24 hours with your personalized TMS assessment.');
-    this.reset();
-});
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();

@@ -3,7 +3,7 @@
  * Plugin Name:       Clean Media URLs
  * Plugin URI:        https://realtreasury.com
  * Description:       Rewrites media library file URLs to a cleaner /downloads/filename structure and handles the requests.
- * Version:           2.4.0
+ * Version:           2.4.1
  * Author:            Gemini
  * Author URI:        https://gemini.google.com
  * License:           GPL v2 or later
@@ -149,6 +149,39 @@ function cmu_clean_attachment_url($url, $post_id) {
     return $url;
 }
 add_filter('wp_get_attachment_url', 'cmu_clean_attachment_url', 10, 2);
+add_filter('wp_get_attachment_image_src', 'cmu_clean_attachment_image_src', 10, 4);
+add_filter('wp_get_attachment_thumb_url', 'cmu_clean_attachment_url', 10, 2);
+add_filter('wp_calculate_image_srcset', 'cmu_clean_srcset_urls', 10, 5);
+
+/**
+ * Filters the attachment image source array to use clean URLs
+ */
+function cmu_clean_attachment_image_src($image, $attachment_id, $size, $icon) {
+    if ($image && is_array($image)) {
+        $uploads_dir = wp_get_upload_dir();
+        if (strpos($image[0], $uploads_dir['baseurl']) !== false) {
+            $filename = basename($image[0]);
+            $image[0] = home_url('/downloads/' . $filename);
+        }
+    }
+    return $image;
+}
+
+/**
+ * Filters srcset URLs to use clean format
+ */
+function cmu_clean_srcset_urls($sources, $size_array, $image_src, $image_meta, $attachment_id) {
+    if (is_array($sources)) {
+        $uploads_dir = wp_get_upload_dir();
+        foreach ($sources as $width => $source) {
+            if (strpos($source['url'], $uploads_dir['baseurl']) !== false) {
+                $filename = basename($source['url']);
+                $sources[$width]['url'] = home_url('/downloads/' . $filename);
+            }
+        }
+    }
+    return $sources;
+}
 
 /**
  * Handle filename conflicts by ensuring unique filenames

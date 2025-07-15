@@ -1741,10 +1741,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const toggle = document.getElementById('shortlistMenuToggle');
                 const externalToggle = document.getElementById('externalShortlistToggle');
 
-                menu?.classList.add('open');
-                portalRoot.classList.add('shortlist-menu-open');
-                overlay?.classList.add('show');
-                document.addEventListener('click', this.handleOutsideShortlistMenuClick);
+               menu?.classList.add('open');
+               portalRoot.classList.add('shortlist-menu-open');
+               overlay?.classList.add('show');
+               document.addEventListener('click', this.handleOutsideShortlistMenuClick);
                toggle?.classList.add('active');
                externalToggle?.classList.add('active');
                if (this.isMobile()) {
@@ -1754,7 +1754,11 @@ document.addEventListener('DOMContentLoaded', () => {
                } else {
                    portalRoot.style.overflow = 'hidden';
                }
+               const wasOpen = this.shortlistMenuOpen;
                this.shortlistMenuOpen = true;
+               if (!wasOpen) {
+                   this.setupPermanentToolPicker();
+               }
             }
 
             closeShortlistMenu() {

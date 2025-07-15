@@ -105,7 +105,6 @@
             gap: 2rem;
             margin-top: 3rem;
         }
-
         /* Glassmorphism Card Component */
         .glass-card {
             background: var(--glass-bg);
@@ -475,6 +474,8 @@
     </style>
 </head>
 <body>
+    <div class="reading-progress"></div>
+    <div class="page-container">
     <!-- Schema.org structured data for SEO -->
     <script type="application/ld+json">
     {
@@ -771,6 +772,26 @@
     </section>
 
     <script>
+        // Reading progress bar
+        function updateReadingProgress() {
+            const article = document.querySelector('.page-container');
+            const progressBar = document.querySelector('.reading-progress');
+
+            const articleTop = article.offsetTop;
+            const articleHeight = article.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrollTop = window.scrollY;
+
+            const progress = Math.min(
+                Math.max((scrollTop - articleTop + windowHeight) / articleHeight, 0),
+                1
+            );
+
+            progressBar.style.width = (progress * 100) + '%';
+        }
+
+        window.addEventListener('scroll', updateReadingProgress);
+
         // FAQ Toggle Functionality
         function toggleFAQ(element) {
             const answer = element.nextElementSibling;
@@ -958,5 +979,6 @@
         }
     </script>
 
+</div>
 </body>
 </html>

@@ -3,7 +3,7 @@
  * Plugin Name:       Clean Media URLs
  * Plugin URI:        https://realtreasury.com
  * Description:       Rewrites media library file URLs to a cleaner /downloads/filename structure and handles the requests.
- * Version:           2.4.1
+ * Version:           2.4.2
  * Author:            Gemini
  * Author URI:        https://gemini.google.com
  * License:           GPL v2 or later
@@ -24,7 +24,7 @@ if (!defined('ABSPATH')) {
  * @return array The map of filenames to filepaths.
  */
 function cmu_get_media_map() {
-    $transient_key = 'cmu_media_map_v6'; // New version to force cache rebuild
+    $transient_key = 'cmu_media_map_v7'; // Increment version to force rebuild
 
     // Add a manual cache-breaking mechanism for debugging.
     if (isset($_GET['rebuild_media_map']) && current_user_can('manage_options')) {
@@ -41,14 +41,13 @@ function cmu_get_media_map() {
             'post_type'      => 'attachment',
             'post_status'    => 'inherit',
             'posts_per_page' => -1,
-            'suppress_filters' => true, // This explicitly tells WordPress to ignore other plugin filters.
+            'suppress_filters' => true,
         ]);
 
         if ($attachments) {
             foreach ($attachments as $attachment) {
                 $attached_file = get_attached_file($attachment->ID);
-                $meta = wp_get_attachment_metadata($attachment->ID);
-                
+
                 if (empty($attached_file) || !file_exists($attached_file)) {
                     continue;
                 }
@@ -56,18 +55,26 @@ function cmu_get_media_map() {
                 // Add the full-sized original file to the map.
                 $map[basename($attached_file)] = $attached_file;
 
+                // Get attachment metadata for thumbnail sizes
+                $meta = wp_get_attachment_metadata($attachment->ID);
+
                 // Add all generated thumbnail sizes to the map.
                 if (!empty($meta['sizes']) && is_array($meta['sizes'])) {
+                    $upload_dir = wp_get_upload_dir();
                     $dir = dirname($attached_file);
-                    foreach ($meta['sizes'] as $size_info) {
-                        $thumbnail_path = trailingslashit($dir) . $size_info['file'];
-                        if (file_exists($thumbnail_path)) {
-                           $map[$size_info['file']] = $thumbnail_path;
+
+                    foreach ($meta['sizes'] as $size_name => $size_info) {
+                        if (isset($size_info['file'])) {
+                            $thumbnail_path = trailingslashit($dir) . $size_info['file'];
+                            if (file_exists($thumbnail_path)) {
+                                $map[$size_info['file']] = $thumbnail_path;
+                            }
                         }
                     }
                 }
             }
         }
+
         // Cache the newly built map for 1 hour.
         set_transient($transient_key, $map, HOUR_IN_SECONDS);
     }
@@ -78,7 +85,7 @@ function cmu_get_media_map() {
  * Deletes the cached media map. This is called when files are added or removed.
  */
 function cmu_delete_media_map_cache() {
-    delete_transient('cmu_media_map_v6');
+    delete_transient('cmu_media_map_v7');
 }
 // Hooks to clear the cache automatically on media library changes.
 add_action('add_attachment', 'cmu_delete_media_map_cache');

@@ -31,6 +31,7 @@ function fallbackCopyTextToClipboard(text, button) {
     textArea.style.position = 'fixed';
     textArea.style.top = '0';
     textArea.style.left = '0';
+
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();

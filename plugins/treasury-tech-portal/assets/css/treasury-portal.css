@@ -1839,6 +1839,81 @@
             background:#eceffd;
         }
 
+        /* Permanent tool picker styles */
+        .treasury-portal .permanent-picker {
+            position: static;
+            margin-top: 12px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .treasury-portal .permanent-picker .tool-picker-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #7216f4, #8f47f6);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .treasury-portal .permanent-picker .tool-picker-button:hover {
+            background: linear-gradient(135deg, #8f47f6, #7216f4);
+            transform: translateY(-1px);
+        }
+
+        .treasury-portal .permanent-picker .tool-picker-dropdown {
+            margin-top: 8px;
+            padding: 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .treasury-portal .permanent-picker .tool-picker-search {
+            width: 100%;
+            padding: 8px 12px;
+            margin: 0;
+            border: none;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .treasury-portal .permanent-picker .tool-picker-search:focus {
+            background: #f9fafb;
+        }
+
+        .treasury-portal .permanent-picker .tool-picker-options {
+            max-height: 200px;
+            overflow-y: auto;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .treasury-portal .permanent-picker .tool-picker-options li {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background 0.2s ease;
+        }
+
+        .treasury-portal .permanent-picker .tool-picker-options li:hover {
+            background: #eceffd;
+            color: #7216f4;
+        }
+
+        .treasury-portal .permanent-picker .tool-picker-options li:last-child {
+            border-bottom: none;
+        }
+
         .treasury-portal .shortlist-empty-message {
             color: #4b5563;
             font-size: 1rem;

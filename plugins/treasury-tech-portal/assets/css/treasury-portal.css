@@ -1624,7 +1624,7 @@
         }
 
         .treasury-portal.side-menu-open .external-menu-toggle {
-            display: none;
+            display: none !important;
         }
 
         .treasury-portal .external-shortlist-toggle {
@@ -1678,7 +1678,7 @@
         }
 
         .treasury-portal.shortlist-menu-open .external-shortlist-toggle {
-            display: none;
+            display: none !important;
         }
 
         /* Shortlist Menu */

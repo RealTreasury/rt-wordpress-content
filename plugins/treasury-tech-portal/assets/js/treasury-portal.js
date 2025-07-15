@@ -1538,7 +1538,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 portalRoot.classList.add('side-menu-open');
                 overlay?.classList.add('show');
                 toggle?.classList.add('active');
-                externalToggle?.classList.add('active');
+                if (externalToggle) {
+                    externalToggle.classList.add('active');
+                    externalToggle.style.display = 'none';
+                }
                 if (this.isMobile()) {
                     document.body.style.overflow = 'hidden';
                     document.body.style.position = 'fixed';
@@ -1559,7 +1562,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 sideMenu?.classList.remove('open');
                 overlay?.classList.remove('show');
                 toggle?.classList.remove('active');
-                externalToggle?.classList.remove('active');
+                if (externalToggle) {
+                    externalToggle.classList.remove('active');
+                    externalToggle.style.display = this.isMobile() ? 'none' : 'flex';
+                }
                 portalRoot.classList.remove('side-menu-open');
                 if (this.isMobile()) {
                     document.body.style.overflow = '';

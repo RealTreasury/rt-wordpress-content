@@ -3,6 +3,9 @@
 <% var cta = typeof cta === 'undefined' ? null : cta; %>
 <% var title = typeof title === 'undefined' ? '' : title; %>
 <% var subtitle = typeof subtitle === 'undefined' ? '' : subtitle; %>
+<% var date = typeof date === 'undefined' ? '' : date; %>
+<% var readTime = typeof readTime === 'undefined' ? '' : readTime; %>
+<% var label = typeof label === 'undefined' ? '' : label; %>
 <section class="insight-hero">
   <% if (cls === false) { %>
     <% if (heroContent) { %>
@@ -13,6 +16,13 @@
       <% if (heroContent) { %>
         <%- heroContent %>
       <% } else { %>
+        <% if (date || readTime || label) { %>
+        <div class="hero-meta">
+          <% if (date) { %><span>📅 <%= date %></span><% } %>
+          <% if (readTime) { %><span>⏱️ <%= readTime %></span><% } %>
+          <% if (label) { %><span>📘 <%= label %></span><% } %>
+        </div>
+        <% } %>
         <h1><%= title %></h1>
         <% if (subtitle) { %><p class="subtitle"><%= subtitle %></p><% } %>
         <% if (cta) { %><a href="<%= cta.href %>" class="cta-button"><%= cta.text %></a><% } %>

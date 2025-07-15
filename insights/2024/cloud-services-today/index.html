@@ -707,13 +707,6 @@
       <p class="subtitle">The corporate treasury landscape is undergoing its most dramatic transformation in decades. Discover how &lt;em&gt;treasury marketplaces&lt;/em&gt; are fundamentally reshaping financial infrastructure, unlocking unprecedented efficiency gains, and creating new strategic advantages for forward-thinking organizations.</p>
       
       
-      <div class="share-buttons">
-        <a href="#" class="share-btn linkedin" aria-label="Share on LinkedIn" onclick="shareOnLinkedIn()">LinkedIn</a>
-        <a href="#" class="share-btn x-twitter" aria-label="Share on X" onclick="shareOnX()">Share on X</a>
-        <a href="#" class="share-btn email" aria-label="Share via Email" onclick="shareViaEmail()">Email</a>
-        <a href="#" class="share-btn copy-link" aria-label="Copy Link" onclick="copyLink(this)"><span class="copy-text">Copy Link</span></a>
-
-      </div>
     </div>
   
 </section>
@@ -998,16 +991,9 @@
                 Get exclusive access to <strong>Part 2: Implementation Strategies</strong> plus our comprehensive 
                 Treasury Transformation ROI Calculator and best practices framework.
             </p>
-            <form class="cta-form" id="insightForm">
-                <input 
-                    type="email" 
-                    class="email-input" 
-                    placeholder="Enter your business email address"
-                    required
-                    id="emailInput"
-                >
-                <button type="submit" class="cta-button">Get Part 2 + ROI Calculator</button>
-            </form>
+            <p style="text-align:center;">
+                <a href="/contact" class="cta-button">Request the Toolkit</a>
+            </p>
         </section>
     </article>
 
@@ -1032,42 +1018,6 @@
 
         window.addEventListener('scroll', updateReadingProgress);
 
-        // Form submission
-        document.getElementById('insightForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('emailInput').value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (!emailRegex.test(email)) {
-                alert('Please enter a valid business email address.');
-                return;
-            }
-            
-            const button = this.querySelector('.cta-button');
-            const originalText = button.textContent;
-            button.textContent = 'Processing...';
-            button.disabled = true;
-            
-            // Simulate form submission
-            setTimeout(() => {
-                alert('Success! Check your email for Part 2 and the Treasury Transformation ROI Calculator.');
-                this.reset();
-                button.textContent = originalText;
-                button.disabled = false;
-                
-                // Analytics tracking
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'conversion', {
-                        'send_to': 'AW-CONVERSION_ID/CONVERSION_LABEL',
-                        'value': 1.0,
-                        'currency': 'USD'
-                    });
-                }
-                
-                console.log('Lead captured:', { email, timestamp: new Date().toISOString() });
-            }, 2000);
-        });
 
         // Enhanced scroll animations
         const observerOptions = {

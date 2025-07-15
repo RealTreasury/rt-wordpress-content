@@ -558,46 +558,9 @@
                 <h2 style="text-align: center; margin-bottom: 1rem;">Get Your Free TMS Selection Strategy Call</h2>
                 <p style="text-align: center; margin-bottom: 2rem; color: var(--gray-text);">Discover how the right TMS can transform your treasury operations and deliver measurable ROI within 6 months.</p>
                 
-                <form id="leadForm" action="#" method="post">
-                    <div class="grid grid-2" style="gap: 1rem;">
-                        <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" id="firstName" name="firstName" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" id="lastName" name="lastName" class="form-control" required>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-2" style="gap: 1rem;">
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" name="email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="company">Company</label>
-                            <input type="text" id="company" name="company" class="form-control" required>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="challenge">What's your biggest treasury management challenge?</label>
-                        <select id="challenge" name="challenge" class="form-control" required>
-                            <option value="">Select your primary challenge</option>
-                            <option value="manual-processes">Too many manual processes</option>
-                            <option value="lack-visibility">Lack of real-time cash visibility</option>
-                            <option value="system-integration">System integration issues</option>
-                            <option value="risk-management">Risk management concerns</option>
-                            <option value="cost-reduction">Need to reduce operational costs</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="cta-button" style="width: 100%; margin-top: 1rem;">
-                        Schedule My Free Strategy Call
-                    </button>
-                </form>
+                <div style="text-align:center;">
+                    <a href="/contact" class="cta-button" style="width: 100%; margin-top: 1rem; display:inline-block;">Schedule My Free Strategy Call</a>
+                </div>
             </div>
         </div>
     </section>
@@ -616,22 +579,6 @@
 
     <!-- JavaScript for Form Handling -->
     <script>
-        document.getElementById('leadForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Collect form data
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            
-            // Here you would typically send the data to your backend
-            console.log('Form submitted:', data);
-            
-            // Show success message
-            alert('Thank you! We\'ll be in touch within 24 hours to schedule your strategy call.');
-            
-            // Optional: Reset form
-            this.reset();
-        });
         
         // Add smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

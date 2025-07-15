@@ -636,7 +636,7 @@
     subtitle: 'Discover how advanced treasury technology transforms real estate fund operations through <em>intelligent automation</em>, integrated payment systems, and strategic data analytics. Gain competitive advantages with modern treasury infrastructure designed for the unique challenges of real estate sponsors and fund managers.',
     meta: ['🏢 Real Estate Technology', '⏱️ 10 min read', '💡 Expert Insights', '🎯 Fund Management'],
     metrics: homepageStats,
-    cta: { text: 'Get Assessment Tool + Consultation', href: '#techAssessmentForm' }
+    cta: { text: 'Get Assessment Tool + Consultation', href: '/contact' }
 }) %>
         <!-- Introduction -->
         <section class="content-section">
@@ -939,16 +939,9 @@
                 Get our exclusive <strong>Real Estate Treasury Technology Assessment</strong> tool plus 
                 expert consultation to identify the optimal technology solutions for your fund's unique requirements.
             </p>
-            <form class="cta-form" id="techAssessmentForm">
-                <input 
-                    type="email" 
-                    class="email-input" 
-                    placeholder="Enter your business email address"
-                    required
-                    id="emailInput"
-                >
-                <button type="submit" class="cta-button">Get Assessment Tool + Consultation</button>
-            </form>
+            <p style="text-align:center;">
+                <a href="/contact" class="cta-button">Get Assessment Tool + Consultation</a>
+            </p>
         </section>
     </div>
 
@@ -973,46 +966,6 @@
 
         window.addEventListener('scroll', updateReadingProgress);
 
-        // Form submission
-        document.getElementById('techAssessmentForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('emailInput').value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (!emailRegex.test(email)) {
-                alert('Please enter a valid business email address.');
-                return;
-            }
-            
-            const button = this.querySelector('.cta-button');
-            const originalText = button.textContent;
-            button.textContent = 'Processing...';
-            button.disabled = true;
-            
-            // Simulate form submission
-            setTimeout(() => {
-                alert('Success! Check your email for the Real Estate Treasury Technology Assessment tool and consultation scheduling link.');
-                this.reset();
-                button.textContent = originalText;
-                button.disabled = false;
-                
-                // Analytics tracking for real estate treasury tech leads
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'conversion', {
-                        'send_to': 'AW-CONVERSION_ID/RE_TREASURY_TECH',
-                        'value': 1.0,
-                        'currency': 'USD'
-                    });
-                }
-                
-                console.log('Real Estate Treasury Tech Lead:', { 
-                    email, 
-                    source: 'treasury-technology-real-estate',
-                    timestamp: new Date().toISOString() 
-                });
-            }, 2000);
-        });
 
         // Enhanced scroll animations
         const observerOptions = {

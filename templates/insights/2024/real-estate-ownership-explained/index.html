@@ -502,35 +502,9 @@
                 <h3 style="text-align: center; margin-bottom: 8px; color: #281345;">Get Your Real Estate Ownership Guide</h3>
                 <p style="text-align: center; margin-bottom: 24px; color: #7e7e7e;">Learn about ownership types and modern management strategies from Real Treasury experts.</p>
                 
-                <form id="leadForm" onsubmit="submitLeadForm(event)">
-                    <div class="form-row">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="firstName" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-row">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-row">
-                        <label for="phone">Phone Number (Optional)</label>
-                        <input type="tel" id="phone" name="phone" class="form-control">
-                    </div>
-                    
-                    <div class="form-row">
-                        <label for="interest">Primary Interest</label>
-                        <select id="interest" name="interest" class="form-control">
-                            <option value="">What interests you most?</option>
-                            <option value="ownership-types">Understanding ownership types</option>
-                            <option value="tax-benefits">Tax benefits and strategies</option>
-                            <option value="management-tech">Modern management technology</option>
-                            <option value="portfolio-growth">Growing my portfolio</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="cta-button" style="width: 100%; margin-top: 16px;">Get My Guide</button>
-                </form>
+                <div style="text-align:center;">
+                    <a href="/contact" class="cta-button" style="width: 100%; margin-top: 16px; display:inline-block;">Get My Guide</a>
+                </div>
                 
                 <p style="font-size: 12px; color: #7e7e7e; text-align: center; margin-top: 16px;">
                     By submitting this form, you agree to receive insights from Real Treasury. Unsubscribe anytime.
@@ -558,19 +532,6 @@
             }
         });
 
-        // Form Submission
-        function submitLeadForm(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData);
-            
-            alert('Thank you! Your Real Estate Ownership Guide will be sent to your email shortly.');
-            closeLeadModal();
-            event.target.reset();
-            
-            console.log('Lead form data:', data);
-        }
 
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

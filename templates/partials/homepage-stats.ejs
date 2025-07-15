@@ -1,0 +1,17 @@
+<% var homepageStats = [
+  { number: '4-6 Weeks', label: 'Average Selection Time' },
+  { number: '100+',       label: 'Vendors Evaluated' },
+  { number: '100%',       label: 'Independent & Unbiased' },
+  { number: '45+',        label: 'Years Experience' }
+]; %>
+
+<% if (homepageStats && homepageStats.length) { %>
+<div class="hero-stats">
+  <% homepageStats.forEach(function(m){ %>
+    <div class="stat-card">
+      <span class="stat-number"><%= m.number %></span>
+      <span class="stat-label"><%= m.label %></span>
+    </div>
+  <% }); %>
+</div>
+<% } %>

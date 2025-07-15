@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Estate Ownership Explained: Types, Benefits & Smart Management | Real Treasury</title>
-    <meta name="description" content="Learn the different types of real estate ownership, their benefits, and how modern treasury management systems help optimize property investments. Complete guide from Real Treasury experts.">
+    <title>Real Estate Ownership Guide: Types, Benefits & Management Tips | Real Treasury</title>
+    <meta name="description" content="Step-by-step tutorial on property ownership structures and proven management strategies. Download the free Real Treasury Ownership Guide to master real estate investing.">
     <meta name="keywords" content="real estate ownership, property ownership types, real estate investment, treasury management, property portfolio optimization">
     <meta name="author" content="Real Treasury">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Real Estate Ownership Explained: Types, Benefits & Smart Management">
-    <meta property="og:description" content="Complete guide to real estate ownership types and how modern treasury systems optimize property investments.">
+    <meta property="og:title" content="Real Estate Ownership Guide: Types, Benefits & Management Tips">
+    <meta property="og:description" content="Free tutorial covering property ownership structures and modern management approaches for investors.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://realtreasury.com/real-estate-ownership-explained">
     <meta property="og:site_name" content="Real Treasury">
@@ -19,9 +19,9 @@
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "Real Estate Ownership Explained: Types, Benefits & Smart Management",
-        "description": "Complete guide to real estate ownership types and modern management approaches",
+        "@type": "HowTo",
+        "headline": "Real Estate Ownership Guide: Types, Benefits & Management Tips",
+        "description": "Step-by-step tutorial on property ownership structures and modern management approaches",
         "author": {
             "@type": "Organization",
             "name": "Real Treasury"
@@ -344,17 +344,12 @@
 </head>
 <body>
     <!-- Hero Section -->
-    <% heroContent = `
-        <div class="hero-content">
-            <h1>Real Estate Ownership Explained</h1>
-            <p class="subtitle">Understand the different types of property ownership and how to manage them effectively</p>
-            <div class="hero-cta">
-                <button class="cta-button" onclick="openLeadModal()">Get Ownership Guide</button>
-                <a href="#ownership-types" class="cta-button secondary">Learn More</a>
-            </div>
-        </div>
-    ` %>
-    <%- include('/partials/insight-hero.html', { heroContent: heroContent, containerClass: false }) %>
+    <%- include('/partials/insight-hero.html', {
+        title: 'Real Estate Ownership Guide',
+        subtitle: 'Understand the different types of property ownership and how to manage them effectively',
+        cta: { href: '#leadModal', text: 'Get Ownership Guide' },
+        ctaOnclick: 'openLeadModal()'
+    }) %>
 
     <!-- Types of Real Estate Ownership -->
     <section id="ownership-types" class="content-section">
@@ -605,13 +600,14 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.glass-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'all 0.6s ease';
-            observer.observe(card);
-        });
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
+    });
     </script>
+    <%- include('/partials/share-script.html') %>
 
 </body>
 </html>

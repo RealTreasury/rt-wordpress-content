@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Estate Ownership Explained: Types, Benefits & Smart Management | Real Treasury</title>
-    <meta name="description" content="Learn the different types of real estate ownership, their benefits, and how modern treasury management systems help optimize property investments. Complete guide from Real Treasury experts.">
+    <title>Real Estate Ownership Guide: Types, Benefits & Management Tips | Real Treasury</title>
+    <meta name="description" content="Step-by-step tutorial on property ownership structures and proven management strategies. Download the free Real Treasury Ownership Guide to master real estate investing.">
     <meta name="keywords" content="real estate ownership, property ownership types, real estate investment, treasury management, property portfolio optimization">
     <meta name="author" content="Real Treasury">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Real Estate Ownership Explained: Types, Benefits & Smart Management">
-    <meta property="og:description" content="Complete guide to real estate ownership types and how modern treasury systems optimize property investments.">
+    <meta property="og:title" content="Real Estate Ownership Guide: Types, Benefits & Management Tips">
+    <meta property="og:description" content="Free tutorial covering property ownership structures and modern management approaches for investors.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://realtreasury.com/real-estate-ownership-explained">
     <meta property="og:site_name" content="Real Treasury">
@@ -19,9 +19,9 @@
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "Real Estate Ownership Explained: Types, Benefits & Smart Management",
-        "description": "Complete guide to real estate ownership types and modern management approaches",
+        "@type": "HowTo",
+        "headline": "Real Estate Ownership Guide: Types, Benefits & Management Tips",
+        "description": "Step-by-step tutorial on property ownership structures and modern management approaches",
         "author": {
             "@type": "Organization",
             "name": "Real Treasury"
@@ -345,7 +345,7 @@
 <body>
     <!-- Hero Section -->
     
-    
+
 
 
 
@@ -354,17 +354,14 @@
 
 <section class="insight-hero">
   
-    
-        <div class="hero-content">
-            <h1>Real Estate Ownership Explained</h1>
-            <p class="subtitle">Understand the different types of property ownership and how to manage them effectively</p>
-            <div class="hero-cta">
-                <button class="cta-button" onclick="openLeadModal()">Get Ownership Guide</button>
-                <a href="#ownership-types" class="cta-button secondary">Learn More</a>
-            </div>
-        </div>
-    
-  
+    <div class="container">
+      
+        <h1>Real Estate Ownership Guide</h1>
+        <p class="subtitle">Understand the different types of property ownership and how to manage them effectively</p>
+        <a href="#leadModal" class="cta-button" onclick="openLeadModal()">Get Ownership Guide</a>
+      
+    </div>
+
 </section>
 
 
@@ -617,13 +614,79 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.glass-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'all 0.6s ease';
-            observer.observe(card);
-        });
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
+    });
     </script>
+    <script>
+function shareOnLinkedIn() {
+  const url = encodeURIComponent(window.location.href);
+  const title = encodeURIComponent(document.title);
+  const linkedIn = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}`;
+  window.open(linkedIn, '_blank', 'width=600,height=400');
+}
+
+function shareOnX() {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent(document.title);
+  const hashtags = encodeURIComponent('RealTreasury');
+  const xUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}&hashtags=${hashtags}`;
+  window.open(xUrl, '_blank', 'width=600,height=400');
+}
+
+function shareViaEmail() {
+  const subject = encodeURIComponent(document.title);
+  const body = encodeURIComponent(`Check out this article: ${window.location.href}`);
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+function copyLink(button) {
+  const url = window.location.href;
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).then(() => {
+      showCopySuccess(button);
+    }).catch(() => {
+      fallbackCopyTextToClipboard(url, button);
+    });
+  } else {
+    fallbackCopyTextToClipboard(url, button);
+  }
+}
+
+function fallbackCopyTextToClipboard(text, button) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.position = 'fixed';
+  textArea.style.top = 0;
+  textArea.style.left = 0;
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    document.execCommand('copy');
+    showCopySuccess(button);
+  } catch (err) {
+    console.error('Unable to copy', err);
+  }
+  document.body.removeChild(textArea);
+}
+
+function showCopySuccess(button) {
+  if (!button) return;
+  const originalText = button.querySelector('.copy-text').textContent;
+  const originalClass = button.className;
+  button.classList.add('copied');
+  button.querySelector('.copy-text').textContent = 'Copied!';
+  setTimeout(() => {
+    button.className = originalClass;
+    button.querySelector('.copy-text').textContent = originalText;
+  }, 2000);
+}
+</script>
+
 
 </body>
 </html>

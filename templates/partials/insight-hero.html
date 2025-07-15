@@ -2,8 +2,9 @@
 <% var meta = typeof meta === 'undefined' ? [] : meta; %>
 <% var title = typeof title === 'undefined' ? '' : title; %>
 <% var subtitle = typeof subtitle === 'undefined' ? '' : subtitle; %>
-
-<% var meta = Array.isArray(meta) ? meta : []; %>
+<% var date = typeof date === 'undefined' ? '' : date; %>
+<% var readTime = typeof readTime === 'undefined' ? '' : readTime; %>
+<% var label = typeof label === 'undefined' ? '' : label; %>
 
 <section class="insight-hero">
   <% if (heroContent) { %>
@@ -20,8 +21,15 @@
       <% if (heroContent) { %>
         <%- heroContent %>
       <% } else { %>
-        <h1 class="hero-title"><%= title %></h1>
-        <% if (subtitle) { %><p class="hero-subtitle"><%= subtitle %></p><% } %>
+        <% if (date || readTime || label) { %>
+        <div class="hero-meta">
+          <% if (date) { %><span>📅 <%= date %></span><% } %>
+          <% if (readTime) { %><span>⏱️ <%= readTime %></span><% } %>
+          <% if (label) { %><span>📘 <%= label %></span><% } %>
+        </div>
+        <% } %>
+        <h1><%= title %></h1>
+        <% if (subtitle) { %><p class="subtitle"><%= subtitle %></p><% } %>
         <% if (cta) { %><a href="<%= cta.href %>" class="cta-button"><%= cta.text %></a><% } %>
       <% } %>
       <div class="share-buttons">

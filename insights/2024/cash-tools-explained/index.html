@@ -56,6 +56,44 @@
             padding: 60px 0;
         }
 
+        .page-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem;
+        }
+
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 50%, #9d4edd 100%);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        .hero-meta {
+            color: var(--gray-text);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-weight: 500;
+        }
+
+        .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(199, 125, 255, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
         /* Glassmorphism Card Component */
         .glass-card {
             background: var(--glass-bg);
@@ -425,6 +463,8 @@
     </style>
 </head>
 <body>
+    <div class="reading-progress"></div>
+    <div class="page-container">
     <!-- Schema.org structured data for SEO -->
     <script type="application/ld+json">
     {
@@ -460,7 +500,6 @@
 
 
 
-
 <section class="insight-hero">
   
     <div class="hero-container">
@@ -474,9 +513,15 @@
         <p class="hero-subtitle">Master the four essential functions every cash management system needs: Bank Connectivity, Basic Forecasting, Cash Visibility, and Transaction Management</p>
       
 
-      
+        <div class="hero-meta">
+          <span>📅 January 1, 2025</span>
+          <span>⏱️ 10 min read</span>
+          <span>📘 Technology Guide</span>
+        </div>
+        
+        <h1>Cash Tools Explained</h1>
+        <p class="subtitle">Master the four essential functions every cash management system needs: Bank Connectivity, Basic Forecasting, Cash Visibility, and Transaction Management</p>
 
-      
         <a href="#get-started" class="cta-button">Get Your Free Treasury Analysis</a>
       
 
@@ -822,6 +867,26 @@
     </section>
 
     <script>
+        // Reading progress bar
+        function updateReadingProgress() {
+            const article = document.querySelector('.page-container');
+            const progressBar = document.querySelector('.reading-progress');
+
+            const articleTop = article.offsetTop;
+            const articleHeight = article.offsetHeight;
+            const windowHeight = window.innerHeight;
+            const scrollTop = window.scrollY;
+
+            const progress = Math.min(
+                Math.max((scrollTop - articleTop + windowHeight) / articleHeight, 0),
+                1
+            );
+
+            progressBar.style.width = (progress * 100) + '%';
+        }
+
+        window.addEventListener('scroll', updateReadingProgress);
+
         // FAQ Toggle Functionality
         function toggleFAQ(element) {
             const answer = element.nextElementSibling;
@@ -897,5 +962,6 @@
         });
     </script>
 
+</div>
 </body>
 </html>

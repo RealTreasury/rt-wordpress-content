@@ -2266,3 +2266,25 @@
     transform: translateX(100%) !important;
 }
 
+
+/* Emergency visibility fixes */
+.treasury-portal .category-section {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.treasury-portal .tools-grid {
+    display: grid !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.treasury-portal .external-menu-toggle,
+.treasury-portal .external-shortlist-toggle {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+

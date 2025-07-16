@@ -58,51 +58,71 @@ new MutationObserver(() => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    treasuryTechPortal = new TreasuryTechPortal();
-    
-    // Ensure iframe height is set after content loads
+    console.log('🚀 Treasury Portal: DOM loaded, starting initialization...');
+
+    try {
+        treasuryTechPortal = new TreasuryTechPortal();
+        console.log('✅ Treasury Portal created successfully');
+
+        // Make it globally accessible for debugging
+        window.treasuryTechPortal = treasuryTechPortal;
+
+    } catch (error) {
+        console.error('❌ Treasury Portal initialization FAILED:', error);
+        console.error('📍 Error details:', error.stack);
+
+        // Emergency fallback after 1 second
+        setTimeout(() => {
+            console.log('🚨 Running emergency fallback...');
+            if (typeof emergencyToolDisplay === 'function') {
+                emergencyToolDisplay();
+            }
+        }, 1000);
+    }
+
+    // Height management for iframes
     setTimeout(() => {
         if (typeof postHeight === 'function') {
             postHeight();
         }
     }, 1500);
-    
-    // Handle window resize to properly enable/disable mobile features
+
+    // Responsive handling
     window.addEventListener('resize', () => {
         const isMobile = window.innerWidth <= 768;
-        
-        if (isMobile) {
-            // Close any open menus on mobile
-            if (treasuryTechPortal.sideMenuOpen) treasuryTechPortal.closeSideMenu();
-            if (treasuryTechPortal.shortlistMenuOpen) treasuryTechPortal.closeShortlistMenu();
-        } else {
-            // Re-enable sidebar functionality on desktop
-            treasuryTechPortal.renderShortlist();
+
+        if (treasuryTechPortal) {
+            if (isMobile) {
+                if (treasuryTechPortal.sideMenuOpen) treasuryTechPortal.closeSideMenu();
+                if (treasuryTechPortal.shortlistMenuOpen) treasuryTechPortal.closeShortlistMenu();
+            } else {
+                treasuryTechPortal.renderShortlist();
+            }
         }
-        
-        // Update height after resize
+
         setTimeout(() => {
             if (typeof postHeight === 'function') {
                 postHeight();
             }
         }, 200);
     });
-    const navDropdowns = document.querySelectorAll(".rt-nav-item");
-    const treasuryPortal = window.treasuryTechPortal;
 
+    // Navigation dropdown handling
+    const navDropdowns = document.querySelectorAll(".rt-nav-item");
     navDropdowns.forEach(item => {
         item.addEventListener("click", function() {
-            if (treasuryPortal) {
-                if (treasuryPortal.sideMenuOpen) {
-                    treasuryPortal.closeSideMenu();
+            if (treasuryTechPortal) {
+                if (treasuryTechPortal.sideMenuOpen) {
+                    treasuryTechPortal.closeSideMenu();
                 }
-                if (treasuryPortal.shortlistMenuOpen) {
-                    treasuryPortal.closeShortlistMenu();
+                if (treasuryTechPortal.shortlistMenuOpen) {
+                    treasuryTechPortal.closeShortlistMenu();
                 }
             }
         });
     });
 
+    // External toggle handling
     document.addEventListener("click", function(e) {
         if (e.target.closest(".external-menu-toggle") ||
             e.target.closest(".external-shortlist-toggle")) {
@@ -112,84 +132,85 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // URL parameter handling for direct tool links
     const params = new URLSearchParams(window.location.search);
     const toolName = params.get('tool');
     if (toolName && document.cookie.includes('portal_access_token=')) {
-        const toolObj = treasuryTechPortal.TREASURY_TOOLS.find(t =>
-            t.name.toLowerCase() === decodeURIComponent(toolName).toLowerCase());
-        if (toolObj) {
-            setTimeout(() => treasuryTechPortal.showToolModal(toolObj), 500);
-        }
+        setTimeout(() => {
+            if (treasuryTechPortal && treasuryTechPortal.TREASURY_TOOLS) {
+                const toolObj = treasuryTechPortal.TREASURY_TOOLS.find(t =>
+                    t.name.toLowerCase() === decodeURIComponent(toolName).toLowerCase());
+                if (toolObj) {
+                    treasuryTechPortal.showToolModal(toolObj);
+                }
+            }
+        }, 1000);
     }
-
 });
         class TreasuryTechPortal {
             constructor() {
-                this.TREASURY_TOOLS = [];
-                this.loadTools()
-                    .catch(err => console.error('Failed to load tools.json', err))
-                    .then(() => this.init());
+                // Embed tools data directly to avoid async loading issues
+                this.TREASURY_TOOLS = [
+                    {
+                        "name": "Kyriba",
+                        "category": "TRMS",
+                        "desc": "Market-leading cloud treasury platform serving 3,000+ global clients with AI-powered cash forecasting, comprehensive risk management, and advanced derivatives trading capabilities.",
+                        "videoUrl": "https://realtreasury.com/kyriba-06-2025/?embed=1",
+                        "websiteUrl": "https://www.kyriba.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Kyriba.png"
+                    },
+                    {
+                        "name": "GTreasury",
+                        "category": "TRMS",
+                        "desc": "Enterprise treasury platform known for deep ERP integration, advanced reporting, and sophisticated multi-entity consolidation for complex organizational structures.",
+                        "videoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/GTreasury-06-2025.mp4",
+                        "websiteUrl": "https://gtreasury.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/GTreasury.png"
+                    },
+                    {
+                        "name": "Trovata",
+                        "category": "CASH",
+                        "desc": "AI-powered cash management platform providing real-time bank connectivity, predictive forecasting, and intelligent cash visibility for modern finance teams.",
+                        "websiteUrl": "https://trovata.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Trovata.png"
+                    },
+                    {
+                        "name": "Treasury4",
+                        "category": "LITE",
+                        "desc": "Next-generation treasury platform with modern UI/UX, cloud-native architecture, and intuitive workflows designed for the modern finance professional.",
+                        "videoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/Treasury4-06-2025.mp4",
+                        "websiteUrl": "https://www.treasury4.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/06/Treasury4Logo-GraphiteGreen.png"
+                    }
+                    // Add all your other tools here...
+                ];
 
-                // Category information with videos
+                // Category configuration
                 this.CATEGORY_INFO = {
                     CASH: {
                         name: "Cash Tools",
                         badge: "Essential",
-                        description: "Cash Tools are the essential first step for treasury teams moving away from manual spreadsheets. These platforms provide a single, unified view of bank balances and transactions through direct bank connections (via API or files). They excel at providing clear, real-time cash visibility and basic forecasting, allowing businesses to understand their current cash position and anticipate future needs without the complexity of a full TRMS.",
-                        features: [
-                            "Bank Connectivity (API, SFTP)",
-                            "Basic Forecasting Tools",
-                            "Cash Visibility",
-                            "Transaction Search, Sort, Tag, Group"
-                        ],
+                        description: "Cash Tools are the essential first step for treasury teams moving away from manual spreadsheets...",
+                        features: ["Bank Connectivity (API, SFTP)", "Basic Forecasting Tools", "Cash Visibility", "Transaction Search, Sort, Tag, Group"],
                         videoUrl: ""
                     },
                     LITE: {
                         name: "Treasury Management System Lite (TMS-Lite)",
                         badge: "Scalable",
-                        description: "TMS-Lite solutions bridge the gap between basic Cash Tools and enterprise TRMS platforms. They build upon cash visibility by adding crucial treasury functions like multi-currency cash positioning, initiating treasury payments (wires, transfers), and managing basic financial instruments like foreign exchange contracts. These systems are ideal for growing companies whose needs have outpaced simple cash tools but do not yet require the full complexity of an enterprise system.",
-                        features: [
-                            "Bank Connectivity (API, SFTP)",
-                            "Basic Forecasting Tools",
-                            "Cash Visibility",
-                            "Transaction Search, Sort, Tag, Group",
-                            "Cash Positioning",
-                            "Market Data",
-                            "Treasury Payments (API, SFTP)"
-                        ],
+                        description: "TMS-Lite solutions bridge the gap between basic Cash Tools and enterprise TRMS platforms...",
+                        features: ["Bank Connectivity (API, SFTP)", "Basic Forecasting Tools", "Cash Visibility", "Transaction Search, Sort, Tag, Group", "Cash Positioning", "Market Data", "Treasury Payments (API, SFTP)"],
                         videoUrl: ""
                     },
                     TRMS: {
                         name: "Treasury & Risk Management Systems (TRMS)",
                         badge: "Advanced",
-                        description: "Treasury & Risk Management Systems (TRMS) are comprehensive platforms for large, complex organizations. They offer a broad suite of tightly integrated modules far beyond cash visibility, covering debt and investment management, advanced financial risk analysis (FX, interest rates, commodities), hedge accounting, global payments, and in-house banking. These systems are designed to centralize and automate sophisticated treasury workflows.",
-                        features: [
-                            "Bank Connectivity (API, SFTP)",
-                            "Basic Forecasting Tools",
-                            "Cash Visibility",
-                            "Transaction Search, Sort, Tag, Group",
-                            "Cash Positioning",
-                            "Market Data",
-                            "Treasury Payments (API, SFTP)",
-                            "Derivatives (Interest, FX)",
-                            "Intercompany Loans",
-                            "Instrument Valuations",
-                            "AI Forecasting",
-                            "AI Insights",
-                            "AP Payments",
-                            "Bank Account Management",
-                            "Basic FX (Spots, FWD)",
-                            "Cash Accounting",
-                            "Debt Management",
-                            "Deal Accounting",
-                            "In-House Banking",
-                            "Investments",
-                            "SWIFT Connectivity"
-                        ],
+                        description: "Treasury & Risk Management Systems (TRMS) are comprehensive platforms for large, complex organizations...",
+                        features: ["Bank Connectivity (API, SFTP)", "Basic Forecasting Tools", "Cash Visibility", "Transaction Search, Sort, Tag, Group", "Cash Positioning", "Market Data", "Treasury Payments (API, SFTP)", "Derivatives (Interest, FX)", "Intercompany Loans", "Instrument Valuations", "AI Forecasting", "AI Insights", "AP Payments", "Bank Account Management", "Basic FX (Spots, FWD)", "Cash Accounting", "Debt Management", "Deal Accounting", "In-House Banking", "Investments", "SWIFT Connectivity"],
                         videoUrl: ""
                     }
                 };
 
+                // Initialize category tags
                 const cashTags = ["Bank Connectivity", "Basic Forecasting Tools", "Cash Visibility", "Transaction Search, Sort, Tag, Group"];
                 const liteTags = [...cashTags, "Cash Positioning", "Market Data", "Treasury Payments"];
                 const trmsTags = [...liteTags, "AI Forecasting", "AI Insights", "AP Payments", "Bank Account Management", "Basic FX (Spots, FWD)", "Cash Accounting", "Debt Management", "Deal Accounting", "In-House Banking", "Investments", "SWIFT Connectivity", "Derivatives (Interest, FX)", "Intercompany Loans", "Instrument Valuations"];
@@ -200,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     TRMS: trmsTags
                 };
 
+                // Initialize properties
                 this.currentFilter = 'ALL';
                 this.searchTerm = '';
                 this.filteredTools = [];
@@ -216,6 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.videoTimes = {};
                 this.currentToolId = null;
                 this.spaceHandler = null;
+
+                // Event handlers
                 this.handleOutsideSideMenuClick = (e) => {
                     const sideMenu = document.getElementById('sideMenu');
                     const toggle = document.getElementById('sideMenuToggle');
@@ -239,12 +263,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 };
 
-
                 // Swipe gesture tracking
                 this.swipeStart = null;
-                this.swipeThreshold = 100; // Minimum distance for a swipe
-                this.swipeVelocityThreshold = 0.3; // Minimum velocity
+                this.swipeThreshold = 100;
+                this.swipeVelocityThreshold = 0.3;
 
+                // YouTube video time tracking
                 window.addEventListener('message', (e) => {
                     if (e.origin.includes('youtube.com') && typeof e.data === 'string') {
                         try {
@@ -257,19 +281,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-           }
-
-            async loadTools() {
-                try {
-                    const res = await fetch(`${TTP_DATA.plugin_url}data/tools.json`);
-                    const data = await res.json();
-                    if (Array.isArray(data)) {
-                        this.TREASURY_TOOLS = data;
-                    }
-                } catch (e) {
-                    console.error('Failed to load tools.json', e);
-                }
+                // Initialize immediately since tools are embedded
+                console.log('🚀 Treasury Portal: Starting initialization with', this.TREASURY_TOOLS.length, 'tools');
+                this.init();
             }
+
+            // Remove the async loadTools() method entirely
             isMobile() {
                 return window.matchMedia('(max-width: 768px)').matches;
             }
@@ -307,25 +324,70 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             init() {
-                this.assignTags();
-                this.setupInteractions();
-                this.setupSearch();
-                this.setupModals();
-                this.setupSideMenu();
-                this.setupShortlistMenu();
-                this.setupBottomNav();
-                this.updateCounts();
-                this.populateCategoryTags();
-                this.filterAndDisplayTools();
-                this.applyViewStyles();
+                console.log('📋 Treasury Portal: Running init with', this.TREASURY_TOOLS.length, 'tools');
 
-                this.handleResponsive();
-                window.addEventListener('resize', () => this.handleResponsive());
+                try {
+                    this.assignTags();
+                    this.setupInteractions();
+                    this.setupSearch();
+                    this.setupModals();
+                    this.setupSideMenu();
+                    this.setupShortlistMenu();
+                    this.setupBottomNav();
+                    this.updateCounts();
+                    this.populateCategoryTags();
+                    this.filterAndDisplayTools();
+                    this.applyViewStyles();
 
-                setTimeout(() => {
-                    const loading = document.getElementById('loadingScreen');
-                    if (loading) loading.style.display = 'none';
-                }, 800);
+                    this.handleResponsive();
+                    window.addEventListener('resize', () => this.handleResponsive());
+
+                    setTimeout(() => {
+                        const loading = document.getElementById('loadingScreen');
+                        if (loading) loading.style.display = 'none';
+                    }, 800);
+
+                console.log('✅ Treasury Portal: Initialization completed successfully');
+            } catch (error) {
+                console.error('❌ Treasury Portal: Initialization failed:', error);
+                // Emergency fallback
+                setTimeout(() => this.emergencyDisplay(), 100);
+            }
+            }
+
+            // Add emergency display method
+            emergencyDisplay() {
+                console.log('🚨 Running emergency tool display...');
+                const toolData = {
+                    'CASH': this.TREASURY_TOOLS.filter(t => t.category === 'CASH'),
+                    'LITE': this.TREASURY_TOOLS.filter(t => t.category === 'LITE'),
+                    'TRMS': this.TREASURY_TOOLS.filter(t => t.category === 'TRMS')
+                };
+
+                Object.entries(toolData).forEach(([category, tools]) => {
+                    const container = document.getElementById(`tools-${category}`);
+                    const section = document.querySelector(`.category-section[data-category="${category}"]`);
+
+                    if (container && section && tools.length > 0) {
+                        console.log(`📦 Emergency display for ${category}: ${tools.length} tools`);
+                        section.style.display = 'block';
+                        container.innerHTML = tools.map(tool => this.createSimpleToolCard(tool, category)).join('');
+                    }
+                });
+            }
+
+            createSimpleToolCard(tool, category) {
+                return `
+            <div class="tool-card" style="border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin: 8px 0; background: white; cursor: pointer;">
+                <h3 style="margin: 0 0 8px 0; color: #281345;">${tool.name}</h3>
+                <p style="margin: 0; color: #7e7e7e; font-size: 0.9rem;">${tool.desc}</p>
+                <div style="margin-top: 8px;">
+                    <span style="background: #7216f4; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">
+                        ${category === 'CASH' ? 'Cash Tools' : category === 'LITE' ? 'TMS-Lite' : 'TRMS'}
+                    </span>
+                </div>
+            </div>
+        `;
             }
 
             // Swipe detection utility methods
@@ -1904,3 +1966,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }, {
             passive: false
         });
+
+// Debugging function
+window.debugTreasuryPortal = function() {
+    console.log('🧪 Treasury Portal Debug Info:');
+    console.log('1. Instance exists:', !!window.treasuryTechPortal);
+    console.log('2. Tools count:', window.treasuryTechPortal?.TREASURY_TOOLS?.length || 0);
+    console.log('3. Sample tools:', window.treasuryTechPortal?.TREASURY_TOOLS?.slice(0, 3) || 'None');
+    console.log('4. DOM elements:', {
+        cash: !!document.getElementById('tools-CASH'),
+        lite: !!document.getElementById('tools-LITE'),
+        trms: !!document.getElementById('tools-TRMS'),
+        mainContent: !!document.getElementById('mainContent')
+    });
+    console.log('5. Visible tool cards:', {
+        cash: document.getElementById('tools-CASH')?.children?.length || 0,
+        lite: document.getElementById('tools-LITE')?.children?.length || 0,
+        trms: document.getElementById('tools-TRMS')?.children?.length || 0
+    });
+
+    // Try manual tool display if none are visible
+    const totalVisible = (document.getElementById('tools-CASH')?.children?.length || 0) +
+                         (document.getElementById('tools-LITE')?.children?.length || 0) +
+                         (document.getElementById('tools-TRMS')?.children?.length || 0);
+
+    if (totalVisible === 0 && window.treasuryTechPortal) {
+        console.log('🚨 No tools visible, running manual display...');
+        window.treasuryTechPortal.filterAndDisplayTools();
+    }
+
+    return {
+        instance: !!window.treasuryTechPortal,
+        toolsCount: window.treasuryTechPortal?.TREASURY_TOOLS?.length || 0,
+        visibleCards: totalVisible
+    };
+};
+
+// Auto-run debug after 2 seconds
+setTimeout(() => {
+    if (typeof window.debugTreasuryPortal === 'function') {
+        window.debugTreasuryPortal();
+    }
+}, 2000);

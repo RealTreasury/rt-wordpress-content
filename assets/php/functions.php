@@ -182,6 +182,7 @@ function add_sitewide_cookie_banner() {
     ?>
     <script>
     // FAST COOKIE MANAGEMENT WITH PRIVATE BROWSING OPTIMIZATION
+    (function() {
     document.addEventListener('DOMContentLoaded', function() {
 
         // Quick private browsing check
@@ -350,6 +351,7 @@ function add_sitewide_cookie_banner() {
 
         window.showCookieBanner = showCookieBanner;
     });
+    })();
     </script>
     <?php
 }
@@ -363,6 +365,7 @@ function add_tawk_to_chat_widget() {
     ?>
     <!--Start of Ultra-Robust Tawk.to Script for Private Browsing-->
     <script type="text/javascript">
+    (function() {
     // MULTIPLE PRIVATE BROWSING DETECTION METHODS
     function isPrivateBrowsing() {
         // Method 1: localStorage test
@@ -517,6 +520,7 @@ function add_tawk_to_chat_widget() {
         };
     };
     }
+    })();
     </script>
     <!--End of Ultra-Robust Tawk.to Script-->
 

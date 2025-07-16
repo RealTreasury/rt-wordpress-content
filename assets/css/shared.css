@@ -160,7 +160,15 @@
     border-color: var(--primary-purple);
     text-decoration: none;
 }
-
+.share-btn.sms { color: #10B981; border-color: rgba(16,185,129,0.2); }
+.share-btn.sms:hover {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16,185,129,0.25);
+    border-color: #10B981;
+    text-decoration: none;
+}
 .share-btn.copied {
     background: linear-gradient(135deg, #10B981, #059669) !important;
     color: #fff !important;

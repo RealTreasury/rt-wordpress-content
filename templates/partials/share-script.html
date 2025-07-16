@@ -19,16 +19,6 @@ function shareViaEmail() {
   const body = encodeURIComponent(`Check out this article: ${window.location.href}`);
   window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
-function shareViaSMS(button) {
-  const text = `Check this out: ${window.location.href}`;
-  const smsUrl = `sms:?&body=${encodeURIComponent(text)}`;
-  if (/Mobi|Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)) {
-    window.location.href = smsUrl;
-  } else {
-    copyLink(button);
-  }
-}
-
 
 function copyLink(button) {
   const url = window.location.href;

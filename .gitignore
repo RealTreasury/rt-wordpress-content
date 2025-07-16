@@ -1,1 +1,14 @@
 node_modules/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# MacOS artifacts
+.DS_Store
+
+# Build outputs
+dist/
+

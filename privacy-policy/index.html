@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Real Treasury</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6; color: #281345; }
+        h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem; }
+        h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; }
+        p { margin: 1rem 0; }
+        a { color: #7216f4; }
+    </style>
+</head>
+<body>
+<h1>Privacy Policy</h1>
+<p>Effective Date: June 1, 2025</p>
+<p>This Privacy Policy explains how Real Treasury, LLC ("we", "us") collects and uses information when you visit our website. By using the site you agree to the collection and use of information in accordance with this policy.</p>
+<h2>Information Collection</h2>
+<p>We collect information you provide directly, such as your name and email address when you submit a form. We may also collect limited usage data through cookies to improve the website.</p>
+<h2>Use of Information</h2>
+<p>Information is used to respond to inquiries, provide requested services and improve our content. We do not sell your personal data.</p>
+<h2>Contact Us</h2>
+<p>If you have any questions about this policy, please contact us at <a href="mailto:info@realtreasury.com">info@realtreasury.com</a>.</p>
+<script>
+  if (window.self !== window.top) {
+    function sendHeight() {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({ type: "setHeight", height: height }, "*");
+    }
+    window.addEventListener("DOMContentLoaded", sendHeight);
+    window.addEventListener("resize", sendHeight);
+    window.addEventListener("orientationchange", sendHeight);
+    setTimeout(sendHeight, 500);
+  }
+</script>
+</body>
+</html>

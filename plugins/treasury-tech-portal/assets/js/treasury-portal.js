@@ -1547,10 +1547,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             dragPreview.remove();
                             dragPreview = null;
                         }
-                        this.renderShortlist();
-                    });
+                    this.renderShortlist();
+                });
 
-
+                }
 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape' && this.shortlistMenuOpen) this.closeShortlistMenu();

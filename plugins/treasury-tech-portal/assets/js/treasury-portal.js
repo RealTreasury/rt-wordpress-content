@@ -1,3 +1,4 @@
+(function() {
         const EMBED_ORIGIN = 'https://realtreasury.com';
         let treasuryTechPortal;
         const portalRoot = document.querySelector('.treasury-portal') || document.body;
@@ -347,13 +348,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (loading) loading.style.display = 'none';
                     }, 800);
 
+                    console.log('✅ Treasury Portal: Initialization completed successfully');
+                } catch (error) {
+                    console.error('❌ Treasury Portal: Initialization failed:', error);
+                    // Emergency fallback
+                    setTimeout(() => this.emergencyDisplay(), 100);
                 }
-                console.log('✅ Treasury Portal: Initialization completed successfully');
-            } catch (error) {
-                console.error('❌ Treasury Portal: Initialization failed:', error);
-                // Emergency fallback
-                setTimeout(() => this.emergencyDisplay(), 100);
-            }
             }
 
             // Add emergency display method
@@ -2009,3 +2009,4 @@ setTimeout(() => {
         window.debugTreasuryPortal();
     }
 }, 2000);
+})();

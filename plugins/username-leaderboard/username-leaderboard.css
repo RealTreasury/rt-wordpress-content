@@ -1,0 +1,13 @@
+.username-leaderboard {
+    width: 100%;
+    border-collapse: collapse;
+}
+.username-leaderboard th,
+.username-leaderboard td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+.username-leaderboard th {
+    background: #f2f2f2;
+    text-align: left;
+}

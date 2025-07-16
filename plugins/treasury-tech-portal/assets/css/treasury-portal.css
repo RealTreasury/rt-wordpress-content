@@ -648,7 +648,7 @@
     color: #6366f1;
     font-weight: 500;
     cursor: pointer;
-    align-self: flex-end; /* right justify within header */
+    align-self: flex-start; /* prevent full width stretch */
 }
 
         .treasury-portal .tool-card:hover .video-indicator {
@@ -1331,7 +1331,7 @@
             border-right: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 0 20px 20px 0;
             z-index: 1001;
-            transform: translateX(-100%);
+            transform: translateX(-220px);
             opacity: 1;
             pointer-events: auto;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1695,7 +1695,7 @@
             border-left: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 20px 0 0 20px;
             z-index: 1001;
-            transform: translateX(100%);
+            transform: translateX(260px);
             opacity: 1;
             pointer-events: auto;
             transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
@@ -2225,66 +2225,3 @@
         padding-bottom: 80px !important;
     }
 }
-
-/* External toggle tabs */
-.treasury-portal .external-menu-toggle,
-.treasury-portal .external-shortlist-toggle {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    min-height: 100px;
-    padding: 8px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #fff;
-    background: #7216f4;
-    border: none;
-    cursor: pointer;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-}
-.treasury-portal .external-menu-toggle {
-    left: 0;
-    border-radius: 0 8px 8px 0;
-}
-.treasury-portal .external-shortlist-toggle {
-    right: 0;
-    border-radius: 8px 0 0 8px;
-}
-
-
-/* Ensure menus are completely hidden by default */
-.treasury-portal .side-menu:not(.open) {
-    transform: translateX(-100%) !important;
-}
-
-.treasury-portal .shortlist-menu:not(.open) {
-    transform: translateX(100%) !important;
-}
-
-
-/* Emergency visibility fixes */
-.treasury-portal .category-section {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-.treasury-portal .tools-grid {
-    display: grid !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-.treasury-portal .external-menu-toggle,
-.treasury-portal .external-shortlist-toggle {
-    display: flex !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
-}
-

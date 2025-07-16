@@ -705,12 +705,7 @@ if (empty($form_id)) {
                     }
                 })
                 .catch(error => {
-                    if (error && error.message && error.message.includes('403')) {
-                        console.error('TPA: Sync failed with 403 - likely expired session');
-                        this.handleSyncFailure();
-                    } else {
-                        console.error('TPA: Sync failed:', error);
-                    }
+                    console.error('TPA: Sync failed:', error);
                 });
             } catch (e) {
                 console.log('TPA: Error in syncToLocal:', e);
@@ -791,24 +786,6 @@ if (empty($form_id)) {
 
         clearLocal() {
             safeLocalStorageRemove('tpa_access_token');
-        },
-
-        handleSyncFailure() {
-            console.log('TPA: Handling sync failure');
-            try {
-                this.clearLocal();
-                document.cookie = 'portal_access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                this.showMessage('Your portal session has expired. Please reauthenticate.', 'error');
-                setTimeout(() => {
-                    if (this.modal) {
-                        this.openModal();
-                    } else {
-                        window.location.reload();
-                    }
-                }, 1500);
-            } catch (e) {
-                console.error('TPA: Error in handleSyncFailure:', e);
-            }
         },
 
         executeRedirect() {

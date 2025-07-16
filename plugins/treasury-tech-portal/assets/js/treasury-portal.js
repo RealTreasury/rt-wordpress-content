@@ -347,6 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (loading) loading.style.display = 'none';
                     }, 800);
 
+                }
                 console.log('✅ Treasury Portal: Initialization completed successfully');
             } catch (error) {
                 console.error('❌ Treasury Portal: Initialization failed:', error);

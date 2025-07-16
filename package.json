@@ -5,10 +5,12 @@
   "scripts": {
     "build": "node build.js",
     "test:ejs": "node -e \"console.log('EJS installed:', require('ejs').VERSION)\"",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "serve": "npx http-server -p 8080"
   },
   "devDependencies": {
     "ejs": "^3.1.10",
+    "http-server": "^14.1.1",
     "prettier": "^3.6.2"
   }
 }

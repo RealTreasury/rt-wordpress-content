@@ -347,6 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (loading) loading.style.display = 'none';
                     }, 800);
 
+                }
                 console.log('✅ Treasury Portal: Initialization completed successfully');
             } catch (error) {
                 console.error('❌ Treasury Portal: Initialization failed:', error);
@@ -1547,10 +1548,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             dragPreview.remove();
                             dragPreview = null;
                         }
-                        this.renderShortlist();
-                    });
+                    this.renderShortlist();
+                });
 
-
+                }
 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape' && this.shortlistMenuOpen) this.closeShortlistMenu();

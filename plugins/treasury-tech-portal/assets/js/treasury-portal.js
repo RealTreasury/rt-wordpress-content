@@ -1957,10 +1957,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.renderShortlist();
             }
 
-            openToolPicker() {
-                // Legacy method - now using permanent picker
-                return;
-            }
 
             setupBottomNav() {
                 const search = document.getElementById('bottomSearch');

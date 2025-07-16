@@ -178,42 +178,20 @@
 
     <script>
         const portalBase = 'https://realtreasury.com/treasury-tech-portal/';
-        const treasuryVendors = [
-            { name: "Kyriba", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Kyriba.png", websiteUrl: "https://www.kyriba.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "GTreasury", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/07/GTreasury.png", websiteUrl: "https://gtreasury.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Reval", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/07/Reval.png", websiteUrl: "https://iongroup.com/products/treasury/reval/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Quantum", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/FIS.png", websiteUrl: "#" },
-            { name: "WallStreet Suite", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/07/Wallstreet-Suite.png", websiteUrl: "https://iongroup.com/products/treasury/wallstreet-suite/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "ATOM", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/ATOM-TM.png", websiteUrl: "#" },
-            { name: "Integrity", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/FIS.png", websiteUrl: "#" },
-            { name: "IT2", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/07/IT2.png", websiteUrl: "https://iongroup.com/products/treasury/it2/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Datalog", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Datalog-logo.png", websiteUrl: "https://www.datalog-finance.com/en/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Coupa", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Coupa.png", websiteUrl: "https://www.coupa.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Treasury Cube", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Cube.png", websiteUrl: "https://treasurycube.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Openlink", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/07/Openlink.png", websiteUrl: "https://iongroup.com/products/treasury/openlink/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Trovata", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Trovata.png", websiteUrl: "https://trovata.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Tesorio", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Tesorio.jpg", websiteUrl: "https://www.tesorio.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Autocash", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/AutoCash.png", websiteUrl: "https://www.autocash.ai/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Balance", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Balance-Cash.jpg", websiteUrl: "https://www.balancecash.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Nilus", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Nilus.png", websiteUrl: "https://www.nilus.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Obol", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Obol.png", websiteUrl: "https://www.obol.app/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Panax", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Panax.png", websiteUrl: "https://www.thepanax.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Statement", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Statement.png", websiteUrl: "https://www.statement.io/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Treasury Suite", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Suite-Logo-PNG.png", websiteUrl: "https://www.treasurysuite.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Vesto", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Vesto.png", websiteUrl: "https://www.vesto.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Treasura", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/07/Treasura.png", websiteUrl: "https://iongroup.com/products/treasury/treasura/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Treasury Curve", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury-Curve.png", websiteUrl: "https://www.treasurycurve.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Bottomline", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/bottomline-technologies-logo.png", websiteUrl: "https://www.bottomline.com/us?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "City Financials", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/07/City-Financials.png", websiteUrl: "https://iongroup.com/products/treasury/city-financials/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "HighRadius", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/High-Radius.png", websiteUrl: "https://www.highradius.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" },
-            { name: "Treasury4", logoUrl: "https://realtreasury.com/wp-content/uploads/2025/06/Treasury4Logo-GraphiteGreen.png", websiteUrl: "https://www.treasury4.com/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral" }
-        ].sort((a, b) => a.name.localeCompare(b.name));
+        let treasuryVendors = [];
+        let logoCounts = {};
 
-        // Count occurrences of each logo URL
-        const logoCounts = treasuryVendors.reduce((acc, vendor) => {
-            acc[vendor.logoUrl] = (acc[vendor.logoUrl] || 0) + 1;
-            return acc;
-        }, {});
+        function loadVendors() {
+            return fetch('/plugins/treasury-tech-portal/data/tools.json')
+                .then(resp => resp.json())
+                .then(data => {
+                    treasuryVendors = data.sort((a, b) => a.name.localeCompare(b.name));
+                    logoCounts = treasuryVendors.reduce((acc, vendor) => {
+                        acc[vendor.logoUrl] = (acc[vendor.logoUrl] || 0) + 1;
+                        return acc;
+                    }, {});
+                });
+        }
 
         function createLogoSlide(vendor) {
             const slide = document.createElement('div');
@@ -268,13 +246,15 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            initializeCarousel();
-            setupDragScroll();
-            if (document.readyState === 'complete') {
-                setScrollWidth();
-            } else {
-                window.addEventListener('load', setScrollWidth);
-            }
+            loadVendors().then(() => {
+                initializeCarousel();
+                setupDragScroll();
+                if (document.readyState === 'complete') {
+                    setScrollWidth();
+                } else {
+                    window.addEventListener('load', setScrollWidth);
+                }
+            });
         });
 
         function setupDragScroll() {

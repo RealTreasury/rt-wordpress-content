@@ -97,7 +97,6 @@
             <a href="#" class="share-btn linkedin" onclick="shareOnLinkedIn()">LinkedIn</a>
             <a href="#" class="share-btn x-twitter" onclick="shareOnX()">X</a>
             <a href="#" class="share-btn email" onclick="shareViaEmail()">Email</a>
-            <a href="#" class="share-btn sms" onclick="shareViaSMS(this)">Text</a>
             <a href="#" class="share-btn copy-link" onclick="copyLink(this)">Copy Link</a>
         </div>
     </div>
@@ -273,7 +272,6 @@ function shareOnX() {
     window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
 }
 function shareViaEmail() {
-            <a href="#" class="share-btn sms" onclick="shareViaSMS(this)">Text</a>
     const subject = encodeURIComponent('Treasury Management System Data Flows Guide');
     const body = encodeURIComponent(`Check out this comprehensive guide: ${window.location.href}`);
     window.location.href = `mailto:?subject=${subject}&body=${body}`;

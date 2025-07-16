@@ -310,15 +310,9 @@ final class Treasury_Portal_Access {
         }
 
         // Verify nonce with enhanced error handling
-        $nonce = sanitize_text_field($_POST['nonce'] ?? '');
-        if (empty($nonce)) {
-            error_log('TPA: Missing nonce in restore_access_ajax');
-            wp_send_json_error(['message' => 'Missing security token.'], 400);
-            return;
-        }
-
-        if (!wp_verify_nonce($nonce, 'tpa_frontend_nonce')) {
-            error_log('TPA: Invalid nonce in restore_access_ajax: ' . $nonce);
+        // Verify the AJAX nonce
+        if (!check_ajax_referer('tpa_frontend_nonce', 'nonce', false)) {
+            error_log('TPA: Invalid nonce in restore_access_ajax');
             wp_send_json_error(['message' => 'Invalid security token.'], 403);
             return;
         }
@@ -364,14 +358,8 @@ final class Treasury_Portal_Access {
             return;
         }
 
-        $nonce = sanitize_text_field($_POST['nonce'] ?? '');
-        if (empty($nonce)) {
-            error_log('TPA: Missing nonce in revoke_access_ajax');
-            wp_send_json_error(['message' => 'Missing security token.'], 400);
-            return;
-        }
-
-        if (!wp_verify_nonce($nonce, 'tpa_frontend_nonce')) {
+        // Verify the AJAX nonce
+        if (!check_ajax_referer('tpa_frontend_nonce', 'nonce', false)) {
             error_log('TPA: Invalid nonce in revoke_access_ajax');
             wp_send_json_error(['message' => 'Invalid security token.'], 403);
             return;
@@ -396,14 +384,8 @@ final class Treasury_Portal_Access {
             return;
         }
 
-        $nonce = sanitize_text_field($_POST['nonce'] ?? '');
-        if (empty($nonce)) {
-            error_log('TPA: Missing nonce in get_user_access_ajax');
-            wp_send_json_error(['message' => 'Missing security token.'], 400);
-            return;
-        }
-
-        if (!wp_verify_nonce($nonce, 'tpa_frontend_nonce')) {
+        // Verify the AJAX nonce
+        if (!check_ajax_referer('tpa_frontend_nonce', 'nonce', false)) {
             error_log('TPA: Invalid nonce in get_user_access_ajax');
             wp_send_json_error(['message' => 'Invalid security token.'], 403);
             return;

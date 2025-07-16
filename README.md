@@ -82,3 +82,7 @@ Use the **Treasury Tech Portal** plugin (`plugins/treasury-tech-portal`) to embe
 ### Shortcode
 
 Place `[treasury_portal]` on a page or post to display the portal. The shortcode automatically enqueues `treasury-portal.css` and `treasury-portal.js` so no extra asset management is required.
+
+### Troubleshooting
+
+Some browsers or ad-blocking extensions may block requests to `*.wp.com`, resulting in `ERR_BLOCKED_BY_CLIENT` messages in the developer console. These errors are harmless and the portal will continue to function normally. If the messages are distracting, whitelist the site in your browser or ad-blocker to remove them.

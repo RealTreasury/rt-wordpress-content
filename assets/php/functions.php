@@ -427,12 +427,8 @@ function add_tawk_to_chat_widget() {
             console.log('Opening email fallback for private browsing');
             window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry - Private Browsing';
         };
-
-        // Don't load ANY Tawk.to scripts
-        return;
-    }
-
-    console.log('✅ Normal browsing detected - Loading Tawk.to with safeguards');
+    } else {
+        console.log('✅ Normal browsing detected - Loading Tawk.to with safeguards');
 
     // ONLY LOAD TAWK.TO IN NORMAL BROWSING MODE
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -520,6 +516,7 @@ function add_tawk_to_chat_widget() {
             window.location.href = 'mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry - Runtime Error';
         };
     };
+    }
     </script>
     <!--End of Ultra-Robust Tawk.to Script-->
 

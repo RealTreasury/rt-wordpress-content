@@ -126,7 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
         class TreasuryTechPortal {
             constructor() {
                 this.TREASURY_TOOLS = [];
-                this.loadTools().then(() => this.init());
+                this.loadTools()
+                    .catch(err => console.error('Failed to load tools.json', err))
+                    .then(() => this.init());
 
                 // Category information with videos
                 this.CATEGORY_INFO = {

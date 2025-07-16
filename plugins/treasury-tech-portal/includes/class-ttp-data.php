@@ -37,6 +37,12 @@ class TTP_Data {
     public static function save_tools($tools) {
         update_option(self::OPTION_KEY, $tools);
         delete_transient(self::CACHE_KEY);
+        // Clear all caches
+        wp_cache_flush();
+        if (function_exists('wp_cache_clear_cache')) {
+            wp_cache_clear_cache();
+        }
+        delete_transient('ttp_tools_cache');
     }
 
     /**

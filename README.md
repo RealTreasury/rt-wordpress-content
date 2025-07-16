@@ -19,7 +19,15 @@ The `build` script renders every template in `templates/` and writes the resulti
 
 The compiled pages live in the `insights/` directory. These HTML files are standalone and can be pasted directly into WordPress. They are generated from EJS templates that rely on shared partials, so remember to run `npm run build` whenever a template or partial changes.
 
-Before committing changes, run `npm run format` to apply Prettier formatting.
+## Previewing pages locally
+
+Run the development server to serve the compiled static files:
+
+```bash
+npm run serve
+```
+
+This command starts [http-server](https://www.npmjs.com/package/http-server) on port `8080`. Open <http://localhost:8080> in your browser to preview the generated pages.
 
 ## WordPress Additional CSS
 

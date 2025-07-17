@@ -464,6 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.previousFocusedElement = null;
                 this.videoTimes = {};
                 this.currentToolId = null;
+                this.permanentToolPickerInitialized = false;
                 this.spaceHandler = null;
                 this.handleOutsideSideMenuClick = (e) => {
                     const sideMenu = document.getElementById('sideMenu');
@@ -1762,12 +1763,11 @@ document.addEventListener('DOMContentLoaded', () => {
                } else {
                    portalRoot.style.overflow = 'hidden';
                }
-               const wasOpen = this.shortlistMenuOpen;
                this.shortlistMenuOpen = true;
-               if (!wasOpen) {
-                   this.setupPermanentToolPicker();
+               if (this.permanentToolPickerInitialized) {
+                   this.updatePermanentToolPicker();
                }
-            }
+           }
 
             closeShortlistMenu() {
                 const menu = document.getElementById('shortlistMenu');
@@ -1952,6 +1952,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Initial update
                 this.updatePermanentToolPicker();
+                this.permanentToolPickerInitialized = true;
             }
 
             clearShortlist() {

@@ -1725,6 +1725,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         this.renderShortlist();
                     });
 
+                }
+
 
 
                 document.addEventListener('keydown', (e) => {

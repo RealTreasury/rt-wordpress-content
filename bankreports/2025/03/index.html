@@ -56,12 +56,26 @@
     </script>
     
     <style>
+        /* Iframe compatibility - prevent double scroll bars */
+        html, body {
+            overflow-x: hidden;
+            overflow-y: visible;
+            height: auto;
+            margin: 0;
+            padding: 0;
+        }
+
         /* ===============================================================
            CRE Report Page - SEO & AI Optimized Design System
            =============================================================== */
         
         /* Root Variables - Matching Your Site */
         .cre-report-page {
+            /* Prevent internal scrolling - let parent handle it */
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+
             --primary-purple: #7216f4;
             --secondary-purple: #8f47f6;
             --light-purple: #c77dff;
@@ -829,7 +843,7 @@
         /* Modal styles */
         .cre-report-page .modal-overlay {
             display: none;
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             right: 0;

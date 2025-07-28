@@ -1081,18 +1081,11 @@
             <h2>Optimize Your 2025 Treasury Technology Strategy</h2>
             <p>Download our Q4 2024 CRE risk analysis and book a free consultation to discuss how modern treasury technology can help you navigate year-end banking relationship data and prepare for 2025 market challenges.</p>
             <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 30px;">
-                <a href="#" id="openDownloadForm" class="cta-btn" style="background: rgba(255,255,255,0.95); color: var(--primary-purple);">📄 Download Q4 2024 Report</a>
+                <a href="https://www.dropbox.com/scl/fi/j0e07cmpwd5d3in7nlmxw/Bank-CRE-Exposure-12-2024.pdf?rlkey=o54yb8b8sljxe4uhugvec6x7p&st=fnahjk0t&dl=1" class="cta-btn" style="background: rgba(255,255,255,0.95); color: var(--primary-purple);">📄 Download Q4 2024 Report</a>
                 <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" class="cta-btn" style="background: rgba(255,255,255,0.95); color: var(--primary-purple);">📅 Book 2025 Strategy Session</a>
             </div>
         </section>
         
-        <!-- Download Form Popup -->
-        <div id="download-modal" class="modal-overlay">
-            <div class="modal">
-                <button id="closeDownloadForm" class="close-modal" aria-label="Close form">&times;</button>
-                <div class="download-form-container" style="padding: 20px;">
-                    [contact-form-7 id="7ee4fba" title="Bank Report Access Form"]
-                </div>
             </div>
         </div>
     </div>
@@ -1295,42 +1288,6 @@ Best regards`);
                 observer.observe(section);
             });
 
-            // Modal form logic
-            const openBtn = document.getElementById('openDownloadForm');
-            const modal = document.getElementById('download-modal');
-            const closeBtn = document.getElementById('closeDownloadForm');
-
-            if (openBtn && modal) {
-                openBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    modal.style.display = 'flex';
-                });
-            }
-            if (closeBtn && modal) {
-                closeBtn.addEventListener('click', function() {
-                    modal.style.display = 'none';
-                });
-            }
-
-            // Listen for the wpcf7mailsent event, which Contact Form 7 triggers on a successful submission.
-            document.addEventListener("wpcf7mailsent", function(event) {
-                if ("7ee4fba" === event.detail.contactFormId) {
-                    if (typeof gtag !== "undefined") {
-                        gtag("event", "generate_lead", {
-                            "event_category": "engagement",
-                            "event_label": "CRE Report Q4 2024 Download",
-                            "value": 1
-                        });
-                    }
-                    if (modal) {
-                        modal.style.display = "none";
-                    }
-                    setTimeout(function() {
-                        // Update this URL to point to the Q4 2024 report when available
-                        window.location.href = "https://www.dropbox.com/scl/fi/j0e07cmpwd5d3in7nlmxw/Bank-CRE-Exposure-12-2024.pdf?rlkey=o54yb8b8sljxe4uhugvec6x7p&st=fnahjk0t&dl=1";
-                    }, 300); // 300ms delay to ensure tracking scripts can fire
-                });
-            }, false);
         })();
     </script>
 </div>

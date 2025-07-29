@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         "target": "Mid-market companies seeking practical and growth-oriented solutions",
                         "videoUrl": "",
                         "websiteUrl": "https://iongroup.com/products/treasury/city-financials/?utm_source=realtreasury&utm_medium=website&utm_campaign=vendor_referral",
-                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/City-Financials.png"
+                        "logoUrl": "https://realtreasury.com/wp-content/uploads/2025/07/City-Financials-navy.svg"
                     }, {
                         "name": "HighRadius",
                         "category": "LITE",

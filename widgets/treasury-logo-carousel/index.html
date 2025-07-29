@@ -283,12 +283,19 @@
             let isDown = false;
             let startX;
             let currentX = 0;
+            function getTranslateX() {
+                const transform = getComputedStyle(track).transform;
+                if (!transform || transform === 'none') return 0;
+                const matrix = new DOMMatrix(transform);
+                return matrix.m41;
+            }
             let hasMoved = false;
 
             container.addEventListener('mousedown', (e) => {
                 isDown = true;
                 hasMoved = false;
                 track.classList.add('dragging');
+                currentX = getTranslateX();
                 startX = e.pageX;
                 container.style.cursor = 'grabbing';
                 e.preventDefault();
@@ -323,6 +330,7 @@
                 isDown = true;
                 hasMoved = false;
                 track.classList.add('dragging');
+                currentX = getTranslateX();
                 startX = e.touches[0].pageX;
             }, { passive: true });
 
@@ -351,6 +359,7 @@
 
             function resumeAnimation() {
                 if (track.classList.contains('dragging')) return;
+                currentX = getTranslateX();
                 const styles = getComputedStyle(track);
                 const duration = parseFloat(styles.animationDuration) || 40;
                 const distance = parseFloat(styles.getPropertyValue('--scroll-width')) || 0;

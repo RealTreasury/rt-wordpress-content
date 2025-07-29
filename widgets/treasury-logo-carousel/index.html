@@ -51,12 +51,7 @@
             width: 100%;
             overflow: hidden;
             background: #fff;
-            cursor: grab;
             position: relative;
-        }
-
-        .carousel-container:active {
-            cursor: grabbing;
         }
 
         .carousel-track {
@@ -70,9 +65,6 @@
             animation: infiniteScroll 40s linear infinite;
         }
 
-        .carousel-track.dragging {
-            animation-play-state: paused;
-        }
 
         .logo-slide {
             min-width: 200px;
@@ -269,7 +261,6 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeCarousel();
-            setupDragScroll();
             if (document.readyState === 'complete') {
                 setScrollWidth();
             } else {
@@ -277,100 +268,6 @@
             }
         });
 
-        function setupDragScroll() {
-            const container = document.querySelector('.carousel-container');
-            const track = document.getElementById('carouselTrack');
-            let isDown = false;
-            let startX;
-            let currentX = 0;
-            function getTranslateX() {
-                const transform = getComputedStyle(track).transform;
-                if (!transform || transform === 'none') return 0;
-                const matrix = new DOMMatrix(transform);
-                return matrix.m41;
-            }
-            let hasMoved = false;
-
-            container.addEventListener('mousedown', (e) => {
-                isDown = true;
-                hasMoved = false;
-                track.classList.add('dragging');
-                currentX = getTranslateX();
-                startX = e.pageX;
-                container.style.cursor = 'grabbing';
-                e.preventDefault();
-            });
-
-            container.addEventListener('mouseleave', () => {
-                isDown = false;
-                track.classList.remove('dragging');
-                container.style.cursor = 'grab';
-                resumeAnimation();
-            });
-
-            container.addEventListener('mouseup', () => {
-                isDown = false;
-                track.classList.remove('dragging');
-                container.style.cursor = 'grab';
-                setTimeout(resumeAnimation, 1000);
-            });
-
-            container.addEventListener('mousemove', (e) => {
-                if (!isDown) return;
-                e.preventDefault();
-                const x = e.pageX;
-                const walk = (x - startX) * 1.5;
-                if (Math.abs(walk) > 5) hasMoved = true;
-                currentX += walk;
-                track.style.transform = `translateX(${currentX}px)`;
-                startX = x;
-            });
-
-            container.addEventListener('touchstart', (e) => {
-                isDown = true;
-                hasMoved = false;
-                track.classList.add('dragging');
-                currentX = getTranslateX();
-                startX = e.touches[0].pageX;
-            }, { passive: true });
-
-            container.addEventListener('touchend', () => {
-                isDown = false;
-                track.classList.remove('dragging');
-                setTimeout(resumeAnimation, 1000);
-            });
-
-            container.addEventListener('touchmove', (e) => {
-                if (!isDown) return;
-                const x = e.touches[0].pageX;
-                const walk = (x - startX) * 1.5;
-                if (Math.abs(walk) > 5) hasMoved = true;
-                currentX += walk;
-                track.style.transform = `translateX(${currentX}px)`;
-                startX = x;
-            }, { passive: true });
-
-            container.addEventListener('click', (e) => {
-                if (hasMoved) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            }, true);
-
-            function resumeAnimation() {
-                if (track.classList.contains('dragging')) return;
-                currentX = getTranslateX();
-                const styles = getComputedStyle(track);
-                const duration = parseFloat(styles.animationDuration) || 40;
-                const distance = parseFloat(styles.getPropertyValue('--scroll-width')) || 0;
-
-                currentX = ((currentX % distance) + distance) % distance - distance;
-
-                const progress = -currentX / distance;
-                track.style.animationDelay = `-${progress * duration}s`;
-                track.style.transform = '';
-            }
-        }
     </script>
 </body>
 </html>

@@ -259,13 +259,31 @@
             carouselTrack.style.setProperty('--scroll-width', trackWidth + 'px');
         }
 
+        function onImagesLoaded(track, callback) {
+            const imgs = track.querySelectorAll('img');
+            let remaining = imgs.length;
+            if (remaining === 0) {
+                callback();
+                return;
+            }
+            function done() {
+                if (--remaining === 0) {
+                    callback();
+                }
+            }
+            imgs.forEach(img => {
+                if (img.complete) {
+                    done();
+                } else {
+                    img.addEventListener('load', done, { once: true });
+                    img.addEventListener('error', done, { once: true });
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             initializeCarousel();
-            if (document.readyState === 'complete') {
-                setScrollWidth();
-            } else {
-                window.addEventListener('load', setScrollWidth);
-            }
+            onImagesLoaded(carouselTrack, setScrollWidth);
         });
 
     </script>

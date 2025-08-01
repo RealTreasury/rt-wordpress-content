@@ -203,7 +203,7 @@ function add_my_custom_header_html() {
                                     <div class="rt-founders-grid">
                                         <div class="rt-founder-card">
                                             <div class="rt-founder-image">
-                                                <img src="https://realtreasury.com/wp-content/uploads/2025/06/Tim-Schultz-website-headshot_046.jpg" 
+                                                <img src="https://realtreasury.com/wp-content/uploads/2025/08/Tim-Schultz-website-headshot.webp"
                                                      alt="Tim Schultz" loading="lazy">
                                             </div>
                                             <div class="rt-founder-info">

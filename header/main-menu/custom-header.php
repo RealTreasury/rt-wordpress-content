@@ -213,7 +213,7 @@ function add_my_custom_header_html() {
                                         </div>
                                         <div class="rt-founder-card">
                                             <div class="rt-founder-image">
-                                                <img src="https://realtreasury.com/wp-content/uploads/2025/06/Tracey-Headshot-Website.png" 
+                                                <img src="https://realtreasury.com/wp-content/uploads/2025/08/TraceyHeadshot-3.webp"
                                                      alt="Tracey Knight" loading="lazy">
                                             </div>
                                             <div class="rt-founder-info">

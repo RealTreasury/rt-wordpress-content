@@ -2115,7 +2115,7 @@ body.banner-closed {
 }
 
 /* Specific fix for Tracey's image in dropdown */
-.rt-founder-image img[src*="Tracey-Headshot-Website.png"] {
+.rt-founder-image img[src*="TraceyHeadshot-3.webp"] {
     object-fit: cover;
     object-position: center 20%;
     transform: scale(1.2);

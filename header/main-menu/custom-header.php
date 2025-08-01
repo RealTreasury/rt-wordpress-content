@@ -134,7 +134,7 @@ function add_my_custom_header_html() {
                                             <span class="rt-service-cta">Request Access →</span>
                                         </a>
 
-                                        <a href="https://us06web.zoom.us/meeting/register/89M-cPIGT4CNIixFn7ESPQ#/registration" target="_blank" class="rt-service-item">
+                                        <a href="https://realtreasury.com/tech-selection-workshop/" class="rt-service-item">
                                             <div class="rt-service-header">
                                                 <div class="rt-service-icon">💡</div>
                                                 <div class="rt-service-title">Treasury Insights Workshop</div>

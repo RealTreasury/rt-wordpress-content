@@ -25,8 +25,8 @@ if (!defined("ABSPATH")) exit;
 
                 <div class="header-middle">
 
-                    <div class="video-preview" aria-label="Tech portal overview video placeholder">
-                        <span class="video-placeholder">Video Overview</span>
+                    <div class="video-preview" aria-label="Tech portal overview video">
+                        <video src="https://realtreasury.com/wp-content/uploads/2025/08/Portal-Intro.mp4" controls></video>
                     </div>
 
                     <div class="stats-bar">

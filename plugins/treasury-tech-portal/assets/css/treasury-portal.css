@@ -224,7 +224,6 @@
             justify-content: center;
             color: #fff;
             font-size: 0.75rem;
-            margin: 0 auto;
             cursor: pointer;
             border: none;
             padding: 0;
@@ -1112,18 +1111,6 @@
         /* Mobile adjustments */
         /* Hide external toggles across common mobile widths */
         @media (max-width: 1024px) {
-            .treasury-portal .header-content {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 15px;
-                padding: 20px 15px;
-            }
-
-            .treasury-portal .stats-bar {
-                justify-content: space-around;
-                width: 100%;
-            }
-
             .treasury-portal .filter-tabs {
                 flex-wrap: wrap;
                 justify-content: center;
@@ -1275,14 +1262,32 @@
                 z-index: 1;
             }
 
-            .treasury-portal .ttp-modal.show .ttp-modal-content::before {
-                background: rgba(114, 22, 244, 0.6);
-            }
-
+        .treasury-portal .ttp-modal.show .ttp-modal-content::before {
+            background: rgba(114, 22, 244, 0.6);
         }
 
-        /* Side Menu Toggle Button */
-        .treasury-portal .menu-toggle {
+    }
+
+    @media (max-width: 768px) {
+        .treasury-portal .header-content {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 15px;
+            padding: 20px 15px;
+        }
+
+        .treasury-portal .stats-bar {
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .treasury-portal .video-preview {
+            margin: 0 auto;
+        }
+    }
+
+    /* Side Menu Toggle Button */
+    .treasury-portal .menu-toggle {
             background: rgba(255,255,255,0.25);
             border: 1px solid rgba(255,255,255,0.3);
             backdrop-filter: blur(8px);

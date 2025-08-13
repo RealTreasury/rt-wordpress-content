@@ -203,24 +203,41 @@
             align-items: center;
             gap: 20px;
             flex: 1;
-            justify-content: center;
         }
 
         /* Stats Cards */
         .treasury-portal .stats-bar {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             align-items: center;
+            margin-left: auto;
         }
 
         .treasury-portal .stat-card {
             background: white;
             border: 1px solid #e5e7eb;
             border-radius: 12px;
-            padding: 12px 16px;
+            padding: 8px 12px;
             text-align: center;
-            min-width: 100px;
+            min-width: 80px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .treasury-portal .video-preview {
+            width: 160px;
+            height: 90px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.75rem;
+        }
+
+        .treasury-portal .video-preview .video-placeholder {
+            pointer-events: none;
         }
 
         .treasury-portal .stat-number {

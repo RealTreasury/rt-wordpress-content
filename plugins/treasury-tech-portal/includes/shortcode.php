@@ -25,6 +25,10 @@ if (!defined("ABSPATH")) exit;
 
                 <div class="header-middle">
 
+                    <div class="video-preview" aria-label="Tech portal overview video placeholder">
+                        <span class="video-placeholder">Video Overview</span>
+                    </div>
+
                     <div class="stats-bar">
                         <div class="stat-card">
                             <div class="stat-number" id="totalTools">28</div>

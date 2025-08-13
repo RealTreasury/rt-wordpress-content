@@ -832,6 +832,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
+                const introPreview = document.querySelector('.video-preview');
+                const introModal = document.getElementById('portalIntroModal');
+                const introContainer = document.getElementById('portalIntroContainer');
+                const introClose = document.getElementById('portalIntroClose');
+
+                const closeIntro = () => {
+                    const vid = introModal?.querySelector('video');
+                    if (vid) vid.pause();
+                    if (introContainer) introContainer.innerHTML = '';
+                    this.closeModal('portalIntroModal');
+                };
+
+                if (introPreview && introModal && introContainer) {
+                    introPreview.addEventListener('click', () => {
+                        const src = introPreview.dataset.videoSrc;
+                        if (src) {
+                            introContainer.innerHTML = `<video src="${src}" controls autoplay></video>`;
+                            const vid = introContainer.querySelector('video');
+                            if (vid) vid.play();
+                        }
+                        this.openModal(introModal);
+                    });
+                }
+
+                if (introClose) introClose.addEventListener('click', closeIntro);
+                if (introModal) {
+                    introModal.addEventListener('click', (e) => {
+                        if (e.target.closest('.ttp-modal-content') === null) closeIntro();
+                    });
+                }
+
                 // Setup swipe-to-close for tool modal
                 this.setupSwipeToClose('toolModal', 'toolModal', () => this.closeModal('toolModal'));
 
@@ -842,6 +873,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (e.key === 'Escape') {
                         this.closeModal('toolModal');
                         this.closeModal('categoryModal');
+                        closeIntro();
                     }
                 });
             }

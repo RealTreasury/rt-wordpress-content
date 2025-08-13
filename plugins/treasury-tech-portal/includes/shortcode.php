@@ -23,9 +23,9 @@ if (!defined("ABSPATH")) exit;
                     </div>
                 </div>
 
-                <div class="video-preview" aria-label="Tech portal overview video">
-                    <video src="https://realtreasury.com/wp-content/uploads/2025/08/Portal-Intro.mp4"></video>
-                </div>
+                <button class="video-preview" type="button" aria-label="Tech portal overview video" data-video-src="https://realtreasury.com/wp-content/uploads/2025/08/Portal-Intro.mp4">
+                    <span class="video-placeholder">▶</span>
+                </button>
 
                 <div class="stats-bar">
                     <div class="stat-card">
@@ -240,12 +240,25 @@ if (!defined("ABSPATH")) exit;
                 <div class="tools-grid" id="tools-TRMS">
                     <!-- Tools will be populated by JavaScript -->
                 </div>
-            </div>
         </div>
+    </div>
 
-        <!-- Tool Details Modal -->
-        <div class="ttp-modal" id="toolModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-            <div class="ttp-modal-content" tabindex="-1">
+    <!-- Intro Video Modal -->
+    <div class="ttp-modal" id="portalIntroModal" role="dialog" aria-modal="true">
+        <div class="ttp-modal-content" tabindex="-1">
+            <div class="modal-header">
+                <div></div>
+                <div class="modal-header-actions">
+                    <button class="modal-close" id="portalIntroClose">×</button>
+                </div>
+            </div>
+            <div class="modal-body" id="portalIntroContainer"></div>
+        </div>
+    </div>
+
+    <!-- Tool Details Modal -->
+    <div class="ttp-modal" id="toolModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="ttp-modal-content" tabindex="-1">
                 <div class="modal-header">
                     <div class="modal-title-group">
                         <h3 class="modal-title" id="modalTitle"></h3>

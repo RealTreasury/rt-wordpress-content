@@ -226,12 +226,8 @@
             font-size: 0.75rem;
             margin: 0 auto;
             cursor: pointer;
-        }
-
-        .treasury-portal .video-preview video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            border: none;
+            padding: 0;
         }
 
         .treasury-portal .video-preview .video-placeholder {

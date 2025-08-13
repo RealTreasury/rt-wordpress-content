@@ -122,6 +122,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const introPreview = document.querySelector('.video-preview');
+    const introModal = document.getElementById('portalIntroModal');
+    const introVideo = document.getElementById('portalIntroVideo');
+    const introClose = document.getElementById('portalIntroClose');
+
+    if (introPreview && introModal && introVideo) {
+        introPreview.addEventListener('click', () => {
+            introVideo.src = introPreview.dataset.video;
+            treasuryTechPortal.openModal(introModal);
+            introVideo.play();
+        });
+    }
+
+    if (introClose && introVideo) {
+        introClose.addEventListener('click', () => {
+            introVideo.pause();
+            treasuryTechPortal.closeModal('portalIntroModal');
+            introVideo.removeAttribute('src');
+        });
+    }
+
+    if (introModal && introVideo) {
+        introModal.addEventListener('click', (e) => {
+            if (e.target.closest('.ttp-modal-content') === null) {
+                introVideo.pause();
+                treasuryTechPortal.closeModal('portalIntroModal');
+                introVideo.removeAttribute('src');
+            }
+        });
+    }
 });
         class TreasuryTechPortal {
             constructor() {
@@ -832,6 +862,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
+                const introModal = document.getElementById('portalIntroModal');
+                const introClose = document.getElementById('portalIntroClose');
+                const introVideo = document.getElementById('portalIntroVideo');
+
+                if (introClose) {
+                    introClose.addEventListener('click', () => {
+                        if (introVideo) introVideo.pause();
+                        this.closeModal('portalIntroModal');
+                    });
+                }
+                if (introModal) {
+                    introModal.addEventListener('click', (e) => {
+                        if (e.target.closest('.ttp-modal-content') === null) {
+                            if (introVideo) introVideo.pause();
+                            this.closeModal('portalIntroModal');
+                        }
+                    });
+                }
+
                 // Setup swipe-to-close for tool modal
                 this.setupSwipeToClose('toolModal', 'toolModal', () => this.closeModal('toolModal'));
 
@@ -840,8 +889,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') {
+                        if (introVideo) introVideo.pause();
                         this.closeModal('toolModal');
                         this.closeModal('categoryModal');
+                        this.closeModal('portalIntroModal');
                     }
                 });
             }

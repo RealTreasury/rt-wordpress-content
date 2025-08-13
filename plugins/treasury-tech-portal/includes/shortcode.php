@@ -23,9 +23,9 @@ if (!defined("ABSPATH")) exit;
                     </div>
                 </div>
 
-                <div class="video-preview" aria-label="Tech portal overview video">
-                    <video src="https://realtreasury.com/wp-content/uploads/2025/08/Portal-Intro.mp4" controls></video>
-                </div>
+                <button class="video-preview" id="portalIntroPreview" aria-label="Tech portal overview video">
+                    Watch Overview
+                </button>
 
                 <div class="stats-bar">
                     <div class="stat-card">
@@ -239,6 +239,18 @@ if (!defined("ABSPATH")) exit;
                 </div>
                 <div class="tools-grid" id="tools-TRMS">
                     <!-- Tools will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Portal Intro Video Modal -->
+        <div class="ttp-modal" id="portalIntroModal" role="dialog" aria-modal="true" aria-label="Portal introduction video">
+            <div class="ttp-modal-content" tabindex="-1">
+                <div class="modal-header">
+                    <button class="modal-close" id="portalIntroModalClose">×</button>
+                </div>
+                <div class="modal-body">
+                    <video id="portalIntroVideo" controls autoplay></video>
                 </div>
             </div>
         </div>

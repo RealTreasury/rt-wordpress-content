@@ -808,6 +808,51 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             setupModals() {
+                const introPreview = document.querySelector('.video-preview');
+                const introModal = document.getElementById('portalIntroModal');
+                const introModalClose = document.getElementById('portalIntroModalClose');
+
+                if (introPreview && introModal) {
+                    introPreview.addEventListener('click', () => {
+                        const body = introModal.querySelector('.modal-body');
+                        if (body) {
+                            body.innerHTML = '';
+                            const video = document.createElement('video');
+                            video.src = 'https://realtreasury.com/wp-content/uploads/2025/08/Portal-Intro.mp4';
+                            video.controls = true;
+                            video.autoplay = true;
+                            video.playsInline = true;
+                            body.appendChild(video);
+                            this.openModal(introModal);
+                            video.play();
+                        }
+                    });
+                }
+
+                if (introModalClose && introModal) {
+                    introModalClose.addEventListener('click', () => {
+                        const video = introModal.querySelector('video');
+                        if (video) {
+                            video.pause();
+                            video.remove();
+                        }
+                        this.closeModal('portalIntroModal');
+                    });
+                }
+
+                if (introModal) {
+                    introModal.addEventListener('click', (e) => {
+                        if (e.target.closest('.ttp-modal-content') === null) {
+                            const video = introModal.querySelector('video');
+                            if (video) {
+                                video.pause();
+                                video.remove();
+                            }
+                            this.closeModal('portalIntroModal');
+                        }
+                    });
+                }
+
                 const toolModal = document.getElementById('toolModal');
                 const toolModalClose = document.getElementById('modalClose');
 

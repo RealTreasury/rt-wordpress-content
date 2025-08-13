@@ -23,21 +23,18 @@ if (!defined("ABSPATH")) exit;
                     </div>
                 </div>
 
-                <div class="header-middle">
+                <div class="video-preview" aria-label="Tech portal overview video placeholder">
+                    <span class="video-placeholder">Video Overview</span>
+                </div>
 
-                    <div class="video-preview" aria-label="Tech portal overview video placeholder">
-                        <span class="video-placeholder">Video Overview</span>
+                <div class="stats-bar">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalTools">28</div>
+                        <div class="stat-label">Tools</div>
                     </div>
-
-                    <div class="stats-bar">
-                        <div class="stat-card">
-                            <div class="stat-number" id="totalTools">28</div>
-                            <div class="stat-label">Tools</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number">3</div>
-                            <div class="stat-label">Categories</div>
-                        </div>
+                    <div class="stat-card">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Categories</div>
                     </div>
                 </div>
 

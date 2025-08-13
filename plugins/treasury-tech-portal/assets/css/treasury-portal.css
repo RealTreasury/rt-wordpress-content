@@ -153,7 +153,6 @@
             padding: 20px 40px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             flex-wrap: wrap;
             gap: 20px;
         }
@@ -197,14 +196,6 @@
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
 
-        /* Header Middle Section */
-        .treasury-portal .header-middle {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex: 1;
-        }
-
         /* Stats Cards */
         .treasury-portal .stats-bar {
             display: flex;
@@ -234,6 +225,7 @@
             justify-content: center;
             color: #fff;
             font-size: 0.75rem;
+            margin: 0 auto;
         }
 
         .treasury-portal .video-preview .video-placeholder {
@@ -1122,15 +1114,6 @@
                 align-items: stretch;
                 gap: 15px;
                 padding: 20px 15px;
-            }
-
-            .treasury-portal .header-middle {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .treasury-portal .header-middle .search-container {
-                width: 100%;
             }
 
             .treasury-portal .stats-bar {

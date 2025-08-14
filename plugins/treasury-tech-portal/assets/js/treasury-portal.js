@@ -845,16 +845,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     video.src = src;
                     video.controls = true;
                     video.autoplay = true;
-                    video.muted = true;
                     video.playsInline = true;
                     video.preload = 'metadata';
-                    video.setAttribute('muted', '');
                     video.setAttribute('playsinline', '');
 
                     video.onerror = showFallback;
 
                     target.innerHTML = '';
                     target.appendChild(video);
+                    video.muted = false;
+                    video.removeAttribute('muted');
                     video.play().catch(() => {});
                     if (video.requestPictureInPicture) {
                         video.addEventListener('click', async () => {

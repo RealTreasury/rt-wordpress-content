@@ -856,6 +856,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     target.innerHTML = '';
                     target.appendChild(video);
                     video.play().catch(() => {});
+                    if (video.requestPictureInPicture) {
+                        video.addEventListener('click', async () => {
+                            try {
+                                if (video !== document.pictureInPictureElement) {
+                                    await video.requestPictureInPicture();
+                                } else {
+                                    await document.exitPictureInPicture();
+                                }
+                            } catch (err) {
+                                console.error('PiP toggle failed', err);
+                            }
+                        });
+                    }
                 } else {
                     showFallback();
                 }

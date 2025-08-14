@@ -241,6 +241,24 @@
             object-fit: cover;
         }
 
+        .treasury-portal .intro-video-target {
+            position: relative;
+        }
+
+        .treasury-portal .intro-video-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            background: rgba(114, 22, 244, 0.9);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
         .treasury-portal .stat-number {
             font-size: 1.4rem;
             font-weight: 700;

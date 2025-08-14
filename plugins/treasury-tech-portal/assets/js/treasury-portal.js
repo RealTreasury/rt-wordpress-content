@@ -855,7 +855,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     target.appendChild(video);
                     video.muted = false;
                     video.removeAttribute('muted');
-                    video.play().catch(() => {});
+                    const playAttempt = video.play();
+                    if (playAttempt) {
+                        playAttempt.catch(() => {
+                            const overlay = document.createElement('button');
+                            overlay.className = 'intro-video-play';
+                            overlay.textContent = 'Play';
+                            overlay.addEventListener('click', () => {
+                                overlay.remove();
+                                video.play();
+                            });
+                            if (getComputedStyle(target).position === 'static') {
+                                target.style.position = 'relative';
+                            }
+                            target.appendChild(overlay);
+                        });
+                    }
                     if (video.requestPictureInPicture) {
                         video.addEventListener('click', async () => {
                             try {

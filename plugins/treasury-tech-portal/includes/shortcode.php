@@ -1,8 +1,16 @@
 <?php
 // Exit if accessed directly
 if (!defined("ABSPATH")) exit;
+
+$video_url = defined('TTP_INTRO_VIDEO_URL')
+    ? TTP_INTRO_VIDEO_URL
+    : get_option('ttp_intro_video_url', '');
+
+if ($video_url && !wp_http_validate_url($video_url)) {
+    $video_url = '';
+}
 ?>
-<div class="treasury-portal">
+<div class="treasury-portal" data-video-src="<?php echo esc_url($video_url); ?>">
     <div class="container">
         <button class="external-menu-toggle" id="externalMenuToggle">Menu</button>
         <button class="external-shortlist-toggle" id="externalShortlistToggle" aria-label="Open shortlist menu" title="Shortlist">Shortlist</button>
@@ -23,9 +31,7 @@ if (!defined("ABSPATH")) exit;
                     </div>
                 </div>
 
-                <button class="video-preview" type="button" aria-label="Tech portal overview video" data-video-src="https://realtreasury.com/wp-content/uploads/2025/08/Portal-Intro.mp4">
-                    <span class="video-placeholder">▶</span>
-                </button>
+                <div class="intro-video-target"></div>
 
                 <div class="stats-bar">
                     <div class="stat-card">
@@ -240,19 +246,6 @@ if (!defined("ABSPATH")) exit;
                 <div class="tools-grid" id="tools-TRMS">
                     <!-- Tools will be populated by JavaScript -->
                 </div>
-        </div>
-    </div>
-
-    <!-- Intro Video Modal -->
-    <div class="ttp-modal" id="portalIntroModal" role="dialog" aria-modal="true">
-        <div class="ttp-modal-content" tabindex="-1">
-            <div class="modal-header">
-                <div></div>
-                <div class="modal-header-actions">
-                    <button class="modal-close" id="portalIntroClose">×</button>
-                </div>
-            </div>
-            <div class="modal-body" id="portalIntroContainer"></div>
         </div>
     </div>
 

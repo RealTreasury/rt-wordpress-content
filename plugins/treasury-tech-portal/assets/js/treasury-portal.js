@@ -832,35 +832,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                const introPreview = document.querySelector('.video-preview');
-                const introModal = document.getElementById('portalIntroModal');
-                const introContainer = document.getElementById('portalIntroContainer');
-                const introClose = document.getElementById('portalIntroClose');
+                const container = document.querySelector('.treasury-portal');
+                const src = container?.getAttribute('data-video-src') || '';
 
-                const closeIntro = () => {
-                    const vid = introModal?.querySelector('video');
-                    if (vid) vid.pause();
-                    if (introContainer) introContainer.innerHTML = '';
-                    this.closeModal('portalIntroModal');
-                };
+                if (src) {
+                    const video = document.createElement('video');
+                    video.src = src;
+                    video.controls = true;
+                    video.autoplay = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    video.preload = 'metadata';
 
-                if (introPreview && introModal && introContainer) {
-                    introPreview.addEventListener('click', () => {
-                        const src = introPreview.dataset.videoSrc;
-                        if (src) {
-                            introContainer.innerHTML = `<video src="${src}" controls autoplay></video>`;
-                            const vid = introContainer.querySelector('video');
-                            if (vid) vid.play();
-                        }
-                        this.openModal(introModal);
-                    });
-                }
+                    video.onerror = () => {
+                        container.innerHTML = '<div class="intro-video-fallback">Intro video unavailable</div>';
+                    };
 
-                if (introClose) introClose.addEventListener('click', closeIntro);
-                if (introModal) {
-                    introModal.addEventListener('click', (e) => {
-                        if (e.target.closest('.ttp-modal-content') === null) closeIntro();
-                    });
+                    const target = container.querySelector('.intro-video-target') || container;
+                    target.innerHTML = '';
+                    target.appendChild(video);
+                } else {
+                    container.innerHTML = '<div class="intro-video-fallback">Intro video unavailable</div>';
                 }
 
                 // Setup swipe-to-close for tool modal
@@ -873,7 +865,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (e.key === 'Escape') {
                         this.closeModal('toolModal');
                         this.closeModal('categoryModal');
-                        closeIntro();
                     }
                 });
             }

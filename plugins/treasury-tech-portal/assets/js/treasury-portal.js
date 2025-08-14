@@ -833,7 +833,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const container = document.querySelector('.treasury-portal');
+                const target = container?.querySelector('.intro-video-target') || container;
                 const src = container?.getAttribute('data-video-src') || '';
+
+                const showFallback = () => {
+                    target.innerHTML = '<div class="intro-video-fallback">Intro video unavailable</div>';
+                };
 
                 if (src) {
                     const video = document.createElement('video');
@@ -843,16 +848,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     video.muted = true;
                     video.playsInline = true;
                     video.preload = 'metadata';
+                    video.setAttribute('muted', '');
+                    video.setAttribute('playsinline', '');
 
-                    video.onerror = () => {
-                        container.innerHTML = '<div class="intro-video-fallback">Intro video unavailable</div>';
-                    };
+                    video.onerror = showFallback;
 
-                    const target = container.querySelector('.intro-video-target') || container;
                     target.innerHTML = '';
                     target.appendChild(video);
+                    video.play().catch(() => {});
                 } else {
-                    container.innerHTML = '<div class="intro-video-fallback">Intro video unavailable</div>';
+                    showFallback();
                 }
 
                 // Setup swipe-to-close for tool modal

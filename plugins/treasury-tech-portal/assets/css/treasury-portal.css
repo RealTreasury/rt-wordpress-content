@@ -233,6 +233,14 @@
             pointer-events: none;
         }
 
+        .treasury-portal .intro-video-target video {
+            width: 160px;
+            height: 90px;
+            border-radius: 12px;
+            display: block;
+            object-fit: cover;
+        }
+
         .treasury-portal .stat-number {
             font-size: 1.4rem;
             font-weight: 700;

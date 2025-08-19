@@ -1,1 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commercial Real Estate Exposure Report - Q2 2025</title>
+    <link rel="stylesheet" href="../../../assets/css/shared.css">
+    <style>
+        /* Additional report-specific styles */
+        .report-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f8f8, #ffffff);
+            /* Remove fixed padding-top to work with existing site navigation */
+        }
+        
+        .report-header {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            /* Remove any fixed positioning */
+            margin-top: 0;
+        }
+        
+        .report-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.1), transparent);
+            pointer-events: none;
+        }
+        
+        .report-header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .report-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .report-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            color: white;
+        }
+        
+        .report-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .meta-item {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .report-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        
+        .criteria-section {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,248,248,0.98));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(199,125,255,0.2);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .criteria-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,248,248,0.98));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(199,125,255,0.2);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(114,22,244,0.15);
+            border-color: rgba(199,125,255,0.4);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-purple);
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        
+        .stat-label {
+            color: var(--gray-text);
+            font-weight: 500;
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+        
+        .data-table-container {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,248,248,0.98));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(199,125,255,0.2);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .data-table-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+        }
+        
+        .table-header {
+            padding: 30px 40px 20px;
+            border-bottom: 1px solid rgba(199,125,255,0.2);
+        }
+        
+        .table-header h2 {
+            color: var(--dark-text) !important;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+        }
+        
+        .data-table th {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white !important;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            position: relative;
+            user-select: none;
+        }
+        
+        .data-table th:hover {
+            background: linear-gradient(135deg, var(--secondary-purple), var(--light-purple));
+        }
+        
+        .data-table th.sortable::after {
+            content: ' ⇅';
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+        
+        .data-table th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+        
+        .data-table th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
+        }
+        
+        .data-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid rgba(199,125,255,0.1);
+            color: var(--dark-text);
+            font-size: 0.9rem;
+            border-left: none;
+            border-right: none;
+        }
+        
+        .data-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .data-table tbody tr:hover {
+            background: rgba(114,22,244,0.05);
+        }
+        
+        .risk-extreme {
+            border-left: 4px solid #e74c3c;
+            background: linear-gradient(90deg, rgba(231,76,60,0.05), transparent);
+        }
+        
+        .risk-very-high {
+            border-left: 4px solid #f39c12;
+            background: linear-gradient(90deg, rgba(243,156,18,0.05), transparent);
+        }
+        
+        .risk-high {
+            border-left: 4px solid #f1c40f;
+            background: linear-gradient(90deg, rgba(241,196,15,0.05), transparent);
+        }
+        
+        .bank-name {
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+        
+        .percentage {
+            font-weight: 700;
+            color: var(--primary-purple);
+        }
+        
+        .assets {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .risk-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .risk-category {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,248,248,0.98));
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 30px;
+            border-left: 4px solid;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .risk-category.extreme {
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, rgba(231,76,60,0.03), rgba(255,255,255,0.95));
+        }
+        
+        .risk-category.very-high {
+            border-left-color: #f39c12;
+            background: linear-gradient(135deg, rgba(243,156,18,0.03), rgba(255,255,255,0.95));
+        }
+        
+        .risk-category.high {
+            border-left-color: #f1c40f;
+            background: linear-gradient(135deg, rgba(241,196,15,0.03), rgba(255,255,255,0.95));
+        }
+        
+        .risk-category h3 {
+            color: var(--dark-text) !important;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .key-factors {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,248,248,0.98));
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(199,125,255,0.2);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .key-factors::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .key-factors h2 {
+            color: var(--dark-text) !important;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+        
+        .key-factors ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .key-factors li {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(199,125,255,0.1);
+            color: var(--dark-text);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .key-factors li::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: var(--primary-purple);
+            font-weight: bold;
+        }
+        
+        .key-factors li:last-child {
+            border-bottom: none;
+        }
+        
+        .disclaimer {
+            background: linear-gradient(135deg, rgba(107,114,128,0.1), rgba(156,163,175,0.1));
+            border: 1px solid rgba(107,114,128,0.2);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .disclaimer p {
+            margin: 0;
+            color: var(--gray-text);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-style: italic;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .report-header h1 {
+                font-size: 2rem;
+            }
+            
+            .report-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .report-content {
+                padding: 40px 15px;
+            }
+            
+            .criteria-section,
+            .key-factors,
+            .data-table-container {
+                padding: 25px 20px;
+            }
+            
+            .table-header {
+                padding: 20px;
+            }
+            
+            .data-table {
+                font-size: 0.8rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .risk-summary {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .data-table-container {
+                margin: 20px -15px;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+            
+            .data-table {
+                font-size: 0.75rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 8px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <!-- Report Header -->
+        <div class="report-header">
+            <div class="report-header-content">
+                <h1>Commercial Real Estate Exposure Report</h1>
+                <div class="report-subtitle">Top 100 US Banks by Total Assets</div>
+                <div class="report-meta">
+                    <div class="meta-item">📅 June 30, 2025</div>
+                    <div class="meta-item">📊 FFIEC UBPR Reports</div>
+                    <div class="meta-item">🏦 34 Banks Identified</div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Report Content -->
+        <div class="report-content">
+            <!-- Summary Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">34</div>
+                    <div class="stat-label">Banks Meeting All Criteria</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">549.86%</div>
+                    <div class="stat-label">Highest CRE Exposure Ratio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$19.1B</div>
+                    <div class="stat-label">Smallest Bank Assets</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$92.2B</div>
+                    <div class="stat-label">Largest Bank Assets</div>
+                </div>
+            </div>
+
+            <!-- Filtering Criteria -->
+            <div class="criteria-section">
+                <h2 style="color: var(--dark-text); font-size: 2rem; font-weight: 700; margin-bottom: 30px;">Risk Assessment Criteria</h2>
+                <p style="color: var(--gray-text); font-size: 1.1rem; margin-bottom: 25px;">Banks included in this analysis meet ALL of the following elevated risk thresholds:</p>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 12px 0; color: var(--dark-text); font-size: 1.1rem; position: relative; padding-left: 30px;">
+                        <span style="position: absolute; left: 0; color: var(--primary-purple); font-weight: bold;">✓</span>
+                        <strong>Net Loans & Leases to Assets</strong> ≥ 70%
+                    </li>
+                    <li style="padding: 12px 0; color: var(--dark-text); font-size: 1.1rem; position: relative; padding-left: 30px;">
+                        <span style="position: absolute; left: 0; color: var(--primary-purple); font-weight: bold;">✓</span>
+                        <strong>Non-Current Assets to Total Assets</strong> ≥ 2%
+                    </li>
+                    <li style="padding: 12px 0; color: var(--dark-text); font-size: 1.1rem; position: relative; padding-left: 30px;">
+                        <span style="position: absolute; left: 0; color: var(--primary-purple); font-weight: bold;">✓</span>
+                        <strong>C&D Loans to Tier 1 Capital + Allowance</strong> ≥ 100%
+                    </li>
+                    <li style="padding: 12px 0; color: var(--dark-text); font-size: 1.1rem; position: relative; padding-left: 30px;">
+                        <span style="position: absolute; left: 0; color: var(--primary-purple); font-weight: bold;">✓</span>
+                        <strong>CRE Loans to Tier 1 Capital + Allowance</strong> ≥ 300%
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Data Table -->
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h2>Bank Risk Analysis Data</h2>
+                    <p style="color: var(--gray-text); margin: 10px 0 0 0; font-size: 0.9rem;">Click column headers to sort data</p>
+                </div>
+                <table class="data-table" id="bankTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-sort="rank">CRE Rank</th>
+                            <th class="sortable" data-sort="bank">Bank Name</th>
+                            <th class="sortable" data-sort="assets">Total Assets ($000)</th>
+                            <th class="sortable" data-sort="loans">Net Loans/Assets</th>
+                            <th class="sortable" data-sort="noncurr">Non-Curr Assets</th>
+                            <th class="sortable" data-sort="cd">C&D/Tier 1 Cap</th>
+                            <th class="sortable" data-sort="cre">CRE/Tier 1 Cap</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="risk-extreme">
+                            <td>1</td>
+                            <td class="bank-name">Provident Bank</td>
+                            <td class="assets">24,549,890</td>
+                            <td>77.08%</td>
+                            <td>0.53%</td>
+                            <td>31.43%</td>
+                            <td class="percentage">549.86%</td>
+                        </tr>
+                        <tr class="risk-extreme">
+                            <td>2</td>
+                            <td class="bank-name">Flagstar Bank NA</td>
+                            <td class="assets">92,176,203</td>
+                            <td>68.71%</td>
+                            <td>5.27%</td>
+                            <td>27.19%</td>
+                            <td class="percentage">435.42%</td>
+                        </tr>
+                        <tr class="risk-extreme">
+                            <td>3</td>
+                            <td class="bank-name">Valley National Bank</td>
+                            <td class="assets">62,649,952</td>
+                            <td>77.96%</td>
+                            <td>0.72%</td>
+                            <td>42.50%</td>
+                            <td class="percentage">434.25%</td>
+                        </tr>
+                        <tr class="risk-very-high">
+                            <td>4</td>
+                            <td class="bank-name">Renasant Bank</td>
+                            <td class="assets">26,605,052</td>
+                            <td>70.02%</td>
+                            <td>0.75%</td>
+                            <td>64.77%</td>
+                            <td class="percentage">393.83%</td>
+                        </tr>
+                        <tr class="risk-very-high">
+                            <td>5</td>
+                            <td class="bank-name">WesBanco Bank</td>
+                            <td class="assets">27,462,417</td>
+                            <td>68.21%</td>
+                            <td>0.56%</td>
+                            <td>72.42%</td>
+                            <td class="percentage">393.04%</td>
+                        </tr>
+                        <tr class="risk-very-high">
+                            <td>6</td>
+                            <td class="bank-name">Bank OZK</td>
+                            <td class="assets">41,454,390</td>
+                            <td>78.37%</td>
+                            <td>0.18%</td>
+                            <td>148.58%</td>
+                            <td class="percentage">390.45%</td>
+                        </tr>
+                        <tr class="risk-very-high">
+                            <td>7</td>
+                            <td class="bank-name">Umpqua Bank</td>
+                            <td class="assets">51,892,650</td>
+                            <td>71.84%</td>
+                            <td>0.48%</td>
+                            <td>49.94%</td>
+                            <td class="percentage">386.77%</td>
+                        </tr>
+                        <tr class="risk-very-high">
+                            <td>8</td>
+                            <td class="bank-name">Washington Federal Bank</td>
+                            <td class="assets">26,719,225</td>
+                            <td>75.91%</td>
+                            <td>0.40%</td>
+                            <td>50.90%</td>
+                            <td class="percentage">385.93%</td>
+                        </tr>
+                        <tr class="risk-very-high">
+                            <td>9</td>
+                            <td class="bank-name">SouthState Bank NA</td>
+                            <td class="assets">65,865,505</td>
+                            <td>71.30%</td>
+                            <td>0.63%</td>
+                            <td>47.73%</td>
+                            <td class="percentage">385.46%</td>
+                        </tr>
+                        <tr class="risk-very-high">
+                            <td>10</td>
+                            <td class="bank-name">Glacier Bank</td>
+                            <td class="assets">28,986,503</td>
+                            <td>63.32%</td>
+                            <td>0.25%</td>
+                            <td>70.32%</td>
+                            <td class="percentage">384.33%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>11</td>
+                            <td class="bank-name">Atlantic Union Bank</td>
+                            <td class="assets">37,203,504</td>
+                            <td>72.70%</td>
+                            <td>0.74%</td>
+                            <td>59.75%</td>
+                            <td class="percentage">379.71%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>12</td>
+                            <td class="bank-name">Banc of California</td>
+                            <td class="assets">34,163,241</td>
+                            <td>71.66%</td>
+                            <td>1.28%</td>
+                            <td>71.22%</td>
+                            <td class="percentage">371.45%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>13</td>
+                            <td class="bank-name">First Interstate Bank</td>
+                            <td class="assets">27,490,940</td>
+                            <td>59.94%</td>
+                            <td>1.16%</td>
+                            <td>36.94%</td>
+                            <td class="percentage">365.41%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>14</td>
+                            <td class="bank-name">Old National Bank</td>
+                            <td class="assets">70,701,190</td>
+                            <td>67.06%</td>
+                            <td>1.27%</td>
+                            <td>45.19%</td>
+                            <td class="percentage">362.33%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>15</td>
+                            <td class="bank-name">United Bank</td>
+                            <td class="assets">32,679,829</td>
+                            <td>72.76%</td>
+                            <td>0.28%</td>
+                            <td>96.89%</td>
+                            <td class="percentage">361.48%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>16</td>
+                            <td class="bank-name">Simmons Bank</td>
+                            <td class="assets">26,628,111</td>
+                            <td>63.37%</td>
+                            <td>0.92%</td>
+                            <td>98.47%</td>
+                            <td class="percentage">360.90%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>17</td>
+                            <td class="bank-name">United Community Bank</td>
+                            <td class="assets">28,042,982</td>
+                            <td>66.83%</td>
+                            <td>0.42%</td>
+                            <td>69.13%</td>
+                            <td class="percentage">347.82%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>18</td>
+                            <td class="bank-name">Cathay Bank</td>
+                            <td class="assets">23,709,143</td>
+                            <td>82.76%</td>
+                            <td>0.96%</td>
+                            <td>13.17%</td>
+                            <td class="percentage">343.77%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>19</td>
+                            <td class="bank-name">City National Bank of Florida</td>
+                            <td class="assets">27,059,543</td>
+                            <td>69.95%</td>
+                            <td>0.66%</td>
+                            <td>50.24%</td>
+                            <td class="percentage">341.85%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>20</td>
+                            <td class="bank-name">Merchants Bank of Indiana</td>
+                            <td class="assets">19,083,804</td>
+                            <td>78.29%</td>
+                            <td>1.67%</td>
+                            <td>79.34%</td>
+                            <td class="percentage">335.90%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>21</td>
+                            <td class="bank-name">Rockland Trust Company</td>
+                            <td class="assets">20,051,412</td>
+                            <td>71.84%</td>
+                            <td>0.39%</td>
+                            <td>35.01%</td>
+                            <td class="percentage">330.55%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>22</td>
+                            <td class="bank-name">Ameris Bank</td>
+                            <td class="assets">26,601,583</td>
+                            <td>79.86%</td>
+                            <td>0.45%</td>
+                            <td>45.39%</td>
+                            <td class="percentage">315.32%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>23</td>
+                            <td class="bank-name">Wilmington Savings Fund Society FSB</td>
+                            <td class="assets">20,677,502</td>
+                            <td>62.70%</td>
+                            <td>0.97%</td>
+                            <td>38.96%</td>
+                            <td class="percentage">313.79%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>24</td>
+                            <td class="bank-name">Synovus Bank</td>
+                            <td class="assets">60,919,986</td>
+                            <td>70.95%</td>
+                            <td>0.68%</td>
+                            <td>31.37%</td>
+                            <td class="percentage">312.61%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>25</td>
+                            <td class="bank-name">Pinnacle Bank</td>
+                            <td class="assets">54,690,073</td>
+                            <td>67.46%</td>
+                            <td>0.43%</td>
+                            <td>61.87%</td>
+                            <td class="percentage">307.78%</td>
+                        </tr>
+                        <tr class="risk-high">
+                            <td>26</td>
+                            <td class="bank-name">Centennial Bank</td>
+                            <td class="assets">22,735,541</td>
+                            <td>65.11%</td>
+                            <td>0.64%</td>
+                            <td>91.30%</td>
+                            <td class="percentage">300.64%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Risk Categories Summary -->
+            <div class="risk-summary">
+                <div class="risk-category extreme">
+                    <h3>🔴 Extreme Risk (CRE > 400%)</h3>
+                    <p style="color: var(--gray-text); margin: 0; font-weight: 500;">3 banks with CRE exposure ratios exceeding 400% of Tier 1 Capital</p>
+                </div>
+                <div class="risk-category very-high">
+                    <h3>🟠 Very High Risk (350-400%)</h3>
+                    <p style="color: var(--gray-text); margin: 0; font-weight: 500;">7 banks with CRE exposure ratios between 350-400% of Tier 1 Capital</p>
+                </div>
+                <div class="risk-category high">
+                    <h3>🟡 High Risk (300-350%)</h3>
+                    <p style="color: var(--gray-text); margin: 0; font-weight: 500;">16 banks with CRE exposure ratios between 300-350% of Tier 1 Capital</p>
+                </div>
+            </div>
+
+            <!-- Key Risk Factors -->
+            <div class="key-factors">
+                <h2>Key Risk Factors & Considerations</h2>
+                <ul>
+                    <li><strong>Concentration Risk:</strong> High CRE exposure relative to capital increases vulnerability to sector-specific downturns</li>
+                    <li><strong>Market Sensitivity:</strong> These banks are particularly vulnerable to commercial real estate market corrections</li>
+                    <li><strong>Regulatory Scrutiny:</strong> Banks meeting these criteria may face enhanced regulatory supervision and stress testing</li>
+                    <li><strong>Geographic Concentration:</strong> Many identified banks are regional with concentrated exposure to specific markets</li>
+                    <li><strong>Construction & Development Focus:</strong> Several banks show elevated C&D lending concentrations above 100%</li>
+                    <li><strong>Liquidity Considerations:</strong> High loan-to-asset ratios may limit liquidity buffers during stress periods</li>
+                </ul>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="disclaimer">
+                <p><strong>Disclaimer:</strong> This analysis is for informational and educational purposes only. Data sourced from publicly available FFIEC UBPR Reports as of June 30, 2025. This should not be considered as investment advice. Consult with qualified financial professionals for specific investment decisions.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Table sorting functionality
+        function initTableSorting() {
+            const table = document.getElementById('bankTable');
+            const headers = table.querySelectorAll('th.sortable');
+            let currentSort = { column: null, direction: null };
+
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.dataset.sort;
+                    let direction = 'asc';
+                    
+                    // Toggle direction if clicking the same column
+                    if (currentSort.column === column && currentSort.direction === 'asc') {
+                        direction = 'desc';
+                    }
+                    
+                    // Reset all headers
+                    headers.forEach(h => {
+                        h.className = 'sortable';
+                    });
+                    
+                    // Set current header state
+                    header.className = `sortable sort-${direction}`;
+                    
+                    // Sort the table
+                    sortTable(column, direction);
+                    currentSort = { column, direction };
+                });
+            });
+        }
+
+        function sortTable(column, direction) {
+            const tbody = document.querySelector('#bankTable tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            rows.sort((a, b) => {
+                let aVal, bVal;
+                
+                switch(column) {
+                    case 'rank':
+                        aVal = parseInt(a.cells[0].textContent);
+                        bVal = parseInt(b.cells[0].textContent);
+                        break;
+                    case 'bank':
+                        aVal = a.cells[1].textContent;
+                        bVal = b.cells[1].textContent;
+                        break;
+                    case 'assets':
+                        aVal = parseInt(a.cells[2].textContent.replace(/,/g, ''));
+                        bVal = parseInt(b.cells[2].textContent.replace(/,/g, ''));
+                        break;
+                    case 'loans':
+                    case 'noncurr':
+                    case 'cd':
+                    case 'cre':
+                        aVal = parseFloat(a.cells[column === 'loans' ? 3 : column === 'noncurr' ? 4 : column === 'cd' ? 5 : 6].textContent.replace('%', ''));
+                        bVal = parseFloat(b.cells[column === 'loans' ? 3 : column === 'noncurr' ? 4 : column === 'cd' ? 5 : 6].textContent.replace('%', ''));
+                        break;
+                    default:
+                        return 0;
+                }
+                
+                if (direction === 'asc') {
+                    return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+                } else {
+                    return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+                }
+            });
+            
+            // Clear tbody and re-append sorted rows
+            tbody.innerHTML = '';
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initTableSorting);
+    </script>
+</body>
+</html>

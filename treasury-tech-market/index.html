@@ -90,6 +90,7 @@
         .market-section {
             padding: 80px 0;
             background: #fafafa;
+            overflow: visible;
         }
 
         .market-content {
@@ -98,6 +99,7 @@
             gap: 60px;
             align-items: center;
             margin-bottom: 60px;
+            overflow: visible;
         }
 
         .market-text h2 {
@@ -118,10 +120,11 @@
         .market-image {
             position: relative;
             border-radius: 16px;
-            overflow: hidden;
+            overflow: visible;
             box-shadow:
                 0 16px 32px rgba(0, 0, 0, 0.1),
                 0 0 0 1px rgba(0, 0, 0, 0.05);
+            
         }
 
         .market-image img {
@@ -142,7 +145,7 @@
             color: var(--dark-text);
             padding: 12px 20px;
             border-radius: 16px;
-            z-index: 3;
+            z-index: 10;
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
             width: auto;

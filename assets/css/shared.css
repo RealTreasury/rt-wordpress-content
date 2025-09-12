@@ -579,7 +579,6 @@ input[type=submit].wpcf7-submit:hover {
 
     .site-content {
         margin-top: 70px !important;
-        min-height: calc(100vh - 70px) !important;
     }
 
     .rt-nav-container {
@@ -1276,22 +1275,18 @@ body.modal-open {
 
         .site-content {
             margin-top: 80px;
-            min-height: calc(100vh - 80px);
         }
 
         body.banner-present .site-content {
             margin-top: 160px;
-            min-height: calc(100vh - 160px);
         }
 
         body.banner-minimized .site-content {
             margin-top: 140px;
-            min-height: calc(100vh - 140px);
         }
 
         body.banner-closed .site-content {
             margin-top: 80px;
-            min-height: calc(100vh - 80px);
         }
 
         .wp-block-spacer {

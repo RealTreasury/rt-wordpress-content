@@ -22,6 +22,22 @@ body {
 body.banner-minimized,
 body.banner-closed { min-height: auto; }
 
+.site-content {
+    margin-top: var(--nav-height);
+}
+
+body.banner-present .site-content {
+    margin-top: calc(var(--nav-height) + var(--banner-height));
+}
+
+body.banner-minimized .site-content {
+    margin-top: calc(var(--nav-height) + var(--banner-height-minimized));
+}
+
+body.banner-closed .site-content {
+    margin-top: var(--nav-height);
+}
+
 .workshop-banner {
     width: 100%;
     margin: 0;

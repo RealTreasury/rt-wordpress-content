@@ -20,9 +20,16 @@ body {
     overflow-x: hidden;
 }
 
-.site-content {
-    margin-top: 160px;
-    min-height: calc(100vh - 160px);
+.site-content { margin-top: 80px; min-height: calc(100vh - 80px); }
+body.banner-present .site-content { margin-top: 160px; min-height: calc(100vh - 160px); }
+body.banner-minimized .site-content { margin-top: 140px; min-height: calc(100vh - 140px); }
+body.banner-closed .site-content { margin-top: 80px; min-height: calc(100vh - 80px); }
+.site-content:empty,
+body.banner-present .site-content:empty,
+body.banner-minimized .site-content:empty,
+body.banner-closed .site-content:empty {
+    margin-top: 0;
+    min-height: 0;
 }
 
 .workshop-banner {
@@ -377,31 +384,26 @@ body.banner-minimized .rt-nav-container {
     top: 60px !important;
 }
 
-body.banner-minimized {
-    padding-top: 140px !important; /* 60px banner + 80px nav */
-}
-
-body.banner-closed {
-    padding-top: 80px !important;
-}
-
-
 /* Hide banner entirely on mobile */
 @media (max-width: 768px) {
     .workshop-banner {
         display: none !important;
     }
 
-    body {
-        padding-top: 80px !important;
+    .site-content {
+        margin-top: 80px;
+        min-height: calc(100vh - 80px);
     }
 
-    body.banner-minimized {
-        padding-top: 90px !important; /* 20px banner + 70px mobile nav */
+    body.banner-minimized .site-content {
+        margin-top: 90px;
+        min-height: calc(100vh - 90px);
     }
 
-    body.banner-closed {
-        padding-top: 80px !important;
+    .site-content:empty,
+    body.banner-minimized .site-content:empty {
+        margin-top: 0;
+        min-height: 0;
     }
 
     body.banner-minimized .rt-nav-container {

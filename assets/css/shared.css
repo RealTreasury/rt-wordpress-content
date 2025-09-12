@@ -581,6 +581,10 @@ input[type=submit].wpcf7-submit:hover {
         padding-top: 70px !important; /* Mobile nav height */
     }
 
+    body.rt-no-body-padding {
+        padding-top: 0 !important;
+    }
+
     .rt-nav-container {
         height: 70px !important;
     }
@@ -1282,10 +1286,30 @@ body.modal-open {
             min-height: auto;
         }
 
-        body.banner-closed {
-            padding-top: var(--nav-height);
-            min-height: auto;
-        }
+body.banner-closed {
+    padding-top: var(--nav-height);
+    min-height: auto;
+}
+
+body.rt-no-body-padding {
+    padding-top: 0 !important;
+}
+
+body.rt-no-body-padding .site-content {
+    margin-top: var(--nav-height);
+}
+
+body.banner-present.rt-no-body-padding .site-content {
+    margin-top: calc(var(--nav-height) + var(--banner-height));
+}
+
+body.banner-minimized.rt-no-body-padding .site-content {
+    margin-top: calc(var(--nav-height) + var(--banner-height-minimized));
+}
+
+body.banner-closed.rt-no-body-padding .site-content {
+    margin-top: var(--nav-height);
+}
 
         .frosted-glass {
             background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9));

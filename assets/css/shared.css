@@ -577,11 +577,9 @@ input[type=submit].wpcf7-submit:hover {
         display: none !important;
     }
 
-    body,
-    body.banner-present,
-    body.banner-minimized,
-    body.banner-closed {
-        padding-top: 70px !important; /* Mobile nav height */
+    .site-content {
+        margin-top: 70px !important;
+        min-height: calc(100vh - 70px) !important;
     }
 
     .rt-nav-container {
@@ -1274,20 +1272,32 @@ body.modal-open {
             margin: 0;
             min-height: 100vh;
             overflow-x: hidden;
-            /* Default padding that gets overridden by banner states */
-            padding-top: 80px;
         }
-body.banner-present {
-    padding-top: 160px !important; /* 80px banner + 80px nav */
-}
 
-body.banner-minimized {
-    padding-top: 140px !important; /* 60px banner + 80px nav */
-}
+        .site-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
 
-body.banner-closed {
-    padding-top: 80px !important;
-}
+        body.banner-present .site-content {
+            margin-top: 160px;
+            min-height: calc(100vh - 160px);
+        }
+
+        body.banner-minimized .site-content {
+            margin-top: 140px;
+            min-height: calc(100vh - 140px);
+        }
+
+        body.banner-closed .site-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .wp-block-spacer {
+            height: 0 !important;
+            margin: 0 !important;
+        }
 
         .frosted-glass {
             background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9));
@@ -1676,10 +1686,6 @@ body.banner-minimized .rt-nav-container {
 
 body.banner-closed .rt-nav-container {
     top: 0 !important;
-}
-
-body.banner-closed {
-    padding-top: 80px !important;
 }
 
 .rt-nav-wrapper {

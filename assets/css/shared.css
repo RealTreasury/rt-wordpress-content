@@ -1270,12 +1270,22 @@ body.modal-open {
             padding: 0;
             margin: 0;
             overflow-x: hidden;
-            padding-top: 80px; /* Header height */
+            padding-top: var(--nav-height);
         }
-body.banner-minimized,
-body.banner-closed {
-    min-height: auto;
-}
+
+        body.banner-present {
+            padding-top: calc(var(--nav-height) + var(--banner-height));
+        }
+
+        body.banner-minimized {
+            padding-top: calc(var(--nav-height) + var(--banner-height-minimized));
+            min-height: auto;
+        }
+
+        body.banner-closed {
+            padding-top: var(--nav-height);
+            min-height: auto;
+        }
 
         .frosted-glass {
             background: linear-gradient(135deg, hsla(0, 0%, 100%, .85), hsla(0, 0%, 97%, .9));
@@ -1633,6 +1643,12 @@ body.banner-closed {
         rgba(255, 255, 255, 0.35) 50%,
         rgba(255, 255, 255, 0.4));
     --dropdown-border-color: rgba(199, 125, 255, .35);
+}
+
+@media (max-width: 992px) {
+    :root {
+        --nav-height: 70px;
+    }
 }
 
 /* Main Header Container */

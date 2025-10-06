@@ -33,11 +33,11 @@ function add_my_custom_header_html() {
                                 <div class="rt-main-menu-column">
                                     <a href="https://realtreasury.com/treasury-tech-market/" class="rt-explore-link">
                                         <div class="chart-title-overlay">
-                                            <h3>Treasury &amp; Risk Management Systems</h3>
+                                            <h3>Treasury Systems</h3>
                                             <p>North America</p>
                                         </div>
                                         <img class="rt-explore-image"
-                                            src="https://realtreasury.com/wp-content/uploads/2025/08/treasury-tech-market-08-2025-clean.webp"
+                                            src="https://realtreasury.com/wp-content/uploads/2025/10/treasury-tech-market-10-2025-clean.webp"
                                              alt="Treasury Tech Market"
                                              loading="lazy">
                                     </a>

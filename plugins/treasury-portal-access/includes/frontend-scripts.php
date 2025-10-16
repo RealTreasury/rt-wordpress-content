@@ -417,10 +417,26 @@ if (empty($form_id)) {
                 const localData = safeLocalStorageGet('tpa_access_token');
                 if (localData) {
                     const storedData = JSON.parse(localData);
-                    if (storedData && storedData.email && (Date.now()/1000 - storedData.timestamp) < this.accessDuration) {
-                        console.log('TPA: Quick access check passed');
-                        this.preUpdateButtons();
+                    const hasEmail = storedData && storedData.email;
+                    const withinDuration = hasEmail && (Date.now() / 1000 - storedData.timestamp) < this.accessDuration;
+                    const hasCookie = safeCookieCheck('portal_access_token');
+
+                    if (!hasEmail || !withinDuration) {
+                        console.log('TPA: Stored access data invalid or expired, clearing');
+                        this.clearLocal();
+                        return;
                     }
+
+                    if (!hasCookie) {
+                        console.log('TPA: Access cookie missing, clearing stored data and keeping request flow');
+                        this.clearLocal();
+                        // Ensure buttons remain in request state until a new token is issued.
+                        setTimeout(() => this.updateAllButtons(false), 100);
+                        return;
+                    }
+
+                    console.log('TPA: Quick access check passed');
+                    this.preUpdateButtons();
                 }
             } catch (e) {
                 console.log('TPA: Error in quickAccessCheck:', e);

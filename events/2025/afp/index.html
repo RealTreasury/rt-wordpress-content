@@ -10,329 +10,401 @@
     <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
+            --ast-global-color-2: #333333;
             --primary-purple: #7216f4;
             --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
             --dark-text: #281345;
-            --gray-text: #615c73;
-            --soft-background: #f5f4ff;
-            --hero-gradient: linear-gradient(135deg, rgba(9, 24, 84, 0.92), rgba(114, 22, 244, 0.88));
+            --gray-text: #7e7e7e;
+            --glass-purple-tint-wp-final: linear-gradient(135deg, rgba(114, 22, 244, 0.6), rgba(80, 15, 171, 0.7));
+            --glass-purple-tint-hover-wp-final: linear-gradient(135deg, rgba(114, 22, 244, 0.7), rgba(80, 15, 171, 0.8));
+            --glass-border-purple-wp-final: rgba(199, 125, 255, 0.4);
+            --glass-border-purple-hover-wp-final: rgba(220, 180, 255, 0.7);
+            --text-color-wp-final: #ffffff;
+            --boston-sky: linear-gradient(135deg, rgba(0, 82, 155, 0.85), rgba(114, 22, 244, 0.85));
+            --boston-harbor: #14365d;
+            --boston-sunrise: #f7b733;
         }
 
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-weight: 400;
-            color: var(--dark-text);
-            background: #f8f9fb;
-            margin: 0;
+            color: #281345;
+            background: #f4f6fb;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         h1, h2, h3, h4 {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-weight: 700;
-            color: var(--dark-text);
+            color: #281345;
             line-height: 1.2;
         }
 
         p {
             font-size: 1.125rem;
-            color: var(--gray-text);
+            color: #4f4f63;
             line-height: 1.6;
         }
 
-        .page-container {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 0 24px 64px;
+        .post-container {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 20px;
         }
 
-        .hero {
-            background: var(--hero-gradient);
-            color: #ffffff;
-            border-radius: 28px;
-            padding: 60px 48px;
-            margin: 64px auto 40px;
-            box-shadow: 0 18px 38px rgba(14, 21, 58, 0.2);
-            overflow: hidden;
+        .post-content {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 18px 40px rgba(20, 54, 93, 0.08);
+            border: 1px solid rgba(20, 54, 93, 0.12);
+            margin-bottom: 40px;
         }
 
-        .hero h1 {
-            font-size: 2.9rem;
-            color: #ffffff;
-            margin-bottom: 16px;
+        .post-content h2 {
+            margin: 32px 0 18px;
+            font-size: 1.9rem;
         }
 
-        .hero p {
-            color: rgba(255, 255, 255, 0.85);
-            max-width: 680px;
-        }
-
-        .hero-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
+        .post-content a {
+            color: var(--primary-purple);
+            text-decoration: underline;
             font-weight: 600;
-            letter-spacing: 0.02em;
         }
 
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-top: 32px;
-        }
-
-        .hero-actions a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 16px 26px;
-            border-radius: 12px;
-            font-size: 1.125rem;
-            font-weight: 600;
+        .post-content a:hover {
+            color: var(--secondary-purple);
             text-decoration: none;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .hero-actions a.cta-primary {
+        .media-frame {
+            margin: 36px 0;
+        }
+
+        .media-frame img {
+            width: 100%;
+            border-radius: 18px;
+            box-shadow: 0 18px 45px rgba(20, 54, 93, 0.16);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .session-card {
             background: #ffffff;
-            color: var(--dark-text);
-            box-shadow: 0 16px 28px rgba(15, 18, 58, 0.25);
+            border-radius: 18px;
+            padding: 26px;
+            border: 1px solid rgba(114, 22, 244, 0.18);
+            box-shadow: 0 18px 36px rgba(114, 22, 244, 0.12);
         }
 
-        .hero-actions a.cta-primary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 22px 36px rgba(15, 18, 58, 0.32);
+        .session-card h3 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            color: #1e2545;
         }
 
-        .hero-actions a.cta-secondary {
-            background: rgba(255, 255, 255, 0.16);
+        .session-card p {
+            font-size: 1.05rem;
+        }
+
+        .callout {
+            border-left: 4px solid #7216f4;
+            padding-left: 20px;
+            margin: 28px 0;
+            background: rgba(114, 22, 244, 0.05);
+            border-radius: 14px;
+            padding: 24px;
+        }
+
+        .checklist {
+            display: grid;
+            gap: 14px;
+            margin: 28px 0;
+            padding-left: 20px;
+        }
+
+        .checklist li {
+            font-size: 1.05rem;
+            color: #1e2545;
+        }
+
+        .resources {
+            display: grid;
+            gap: 26px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            margin: 32px 0;
+        }
+
+        .resource-card {
+            background: #f6f1ff;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(114, 22, 244, 0.18);
+            box-shadow: 0 12px 32px rgba(114, 22, 244, 0.08);
+        }
+
+        .resource-card h3 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            color: #281345;
+        }
+
+        .resource-card p {
+            font-size: 1rem;
+        }
+
+        .resource-card a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            font-weight: 600;
+        }
+
+        .afp-boston-hero {
+            background: var(--boston-sky);
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.32);
+            border-radius: 20px;
+            padding: 48px 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 24px 45px rgba(20, 54, 93, 0.28);
         }
 
-        .hero-actions a.cta-secondary:hover {
-            transform: translateY(-4px);
-            background: rgba(255, 255, 255, 0.24);
+        .afp-boston-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(247, 183, 51, 0.45), transparent 55%);
+            opacity: 0.9;
         }
 
-        .content-card {
-            background: #ffffff;
-            border-radius: 22px;
-            padding: 40px 44px;
-            margin-bottom: 32px;
-            box-shadow: 0 18px 40px rgba(114, 22, 244, 0.08);
-            border: 1px solid rgba(114, 22, 244, 0.1);
+        .afp-boston-hero > * {
+            position: relative;
+            z-index: 1;
         }
 
-        .session-summary {
+        .afp-boston-hero h1 {
+            font-size: clamp(2.5rem, 4vw, 3.4rem);
+            margin-bottom: 12px;
+        }
+
+        .afp-boston-hero p {
+            font-size: clamp(1.15rem, 2.6vw, 1.4rem);
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .afp-boston-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(20, 54, 93, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            padding: 10px 18px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .afp-boston-badge svg {
+            width: 18px;
+            height: 18px;
+            fill: #f7b733;
+        }
+
+        .afp-boston-highlight {
+            border-left: 4px solid var(--boston-sunrise);
+            padding-left: 18px;
+            margin: 22px 0;
+            font-size: 1.1rem;
+            color: var(--boston-harbor);
+            background: rgba(247, 183, 51, 0.08);
+            border-radius: 12px;
+            padding: 18px 22px;
+        }
+
+        .afp-boston-schedule {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 24px;
+            margin: 32px 0 12px;
         }
 
-        .session-summary__item {
-            padding: 22px;
+        .afp-boston-schedule__card {
+            background: #ffffff;
             border-radius: 18px;
-            background: var(--soft-background);
-            border: 1px solid rgba(114, 22, 244, 0.12);
+            padding: 24px;
+            box-shadow: 0 18px 35px rgba(20, 54, 93, 0.12);
+            border: 1px solid rgba(114, 22, 244, 0.18);
         }
 
-        .session-summary__item h3 {
-            margin-top: 0;
-            font-size: 1.2rem;
+        .afp-boston-schedule__card h3 {
+            color: var(--boston-harbor);
+            margin: 0 0 10px;
+            font-size: 1.25rem;
         }
 
-        .session-summary__item p {
-            margin: 12px 0 0;
-            font-size: 1.05rem;
-            color: var(--dark-text);
+        .afp-boston-schedule__card p {
+            margin: 6px 0;
+            font-size: 1rem;
         }
 
-        .agenda-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: grid;
-            gap: 18px;
-        }
-
-        .agenda-item {
-            display: grid;
-            grid-template-columns: 120px 1fr;
-            gap: 16px;
-            align-items: start;
-            padding: 20px;
-            border-radius: 16px;
-            background: rgba(242, 240, 255, 0.7);
-            border: 1px solid rgba(114, 22, 244, 0.12);
-        }
-
-        .agenda-time {
+        .afp-boston-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #f7b733, #f65d5d);
+            color: #0b1726 !important;
+            text-decoration: none !important;
+            padding: 16px 26px;
+            border-radius: 14px;
             font-weight: 700;
-            color: var(--primary-purple);
-        }
-
-        .highlight-box {
-            background: rgba(9, 24, 84, 0.08);
-            border-left: 4px solid var(--primary-purple);
-            padding: 26px 28px;
-            border-radius: 16px;
-        }
-
-        .cta-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            text-align: center;
-            padding: 36px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(245, 240, 255, 0.92), rgba(236, 227, 255, 0.96));
-            border: 1px solid rgba(114, 22, 244, 0.14);
-            box-shadow: 0 16px 36px rgba(114, 22, 244, 0.12);
-        }
-
-        .cta-panel a {
-            display: inline-block;
-            margin: 0 auto;
-            padding: 14px 24px;
-            border-radius: 12px;
-            background: var(--primary-purple);
-            color: #ffffff;
-            font-weight: 600;
-            text-decoration: none;
+            box-shadow: 0 16px 28px rgba(246, 93, 93, 0.28);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .cta-panel a:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 26px rgba(114, 22, 244, 0.22);
+        .afp-boston-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 32px rgba(246, 93, 93, 0.34);
+        }
+
+        .afp-boston-cta svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .afp-boston-bullets {
+            display: grid;
+            gap: 14px;
+            margin: 28px 0;
+            padding-left: 20px;
+        }
+
+        .afp-boston-bullets li {
+            font-size: 1.08rem;
+            color: var(--boston-harbor);
+        }
+
+        @media (max-width: 720px) {
+            .afp-boston-hero {
+                padding: 36px 26px;
+            }
+
+            .afp-boston-schedule {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            .hero {
-                padding: 44px 28px;
+            .post-container {
+                margin: 24px auto;
             }
 
-            .hero h1 {
-                font-size: 2.3rem;
-            }
-
-            .agenda-item {
-                grid-template-columns: 1fr;
-            }
-
-            .agenda-time {
-                font-size: 1.05rem;
+            .post-content {
+                padding: 26px;
             }
         }
     </style>
 </head>
 <body>
-    <main class="page-container">
-        <section class="hero">
-            <div class="hero-badges">
-                <span class="hero-badge">October 26–29, 2025</span>
-                <span class="hero-badge">Boston, Massachusetts</span>
-                <span class="hero-badge">Session: Tuesday, 8:30 AM ET</span>
-            </div>
-            <h1>Modern Treasury Roadmaps at AFP 2025</h1>
-            <p>Join Tracey Ferguson Knight and the Real Treasury advisory team in Boston for a playbook on building an automation-first treasury strategy. We will share benchmarks, frameworks, and tools you can activate as soon as you are back from AFP.</p>
-            <div class="hero-actions">
-                <a class="cta-primary" href="https://go.realtreasury.com/afp-2025-boston" target="_blank" rel="noopener">Reserve Your Seat</a>
-                <a class="cta-secondary" href="mailto:hello@realtreasury.com?subject=Meet%20at%20AFP%202025">Schedule a Meeting</a>
-            </div>
-        </section>
+    <div class="post-container">
+        <article class="post-content">
+            <section class="afp-boston-hero text-center">
+                <div class="afp-boston-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8zm1-12.586 3.293 3.293-1.414 1.414L13 11.414V17h-2v-5.586l-1.879 1.879-1.414-1.414L11 7.414V5h2z"/>
+                    </svg>
+                    October 19–22, 2025 • Boston, MA • Booth 342
+                </div>
+                <h1>Meet Real Treasury at AFP 2025 in Boston</h1>
+                <p>We are heading to Boston for AFP 2025 to help treasury and finance teams build confident strategies, modernize technology stacks, and create resilient operations. Schedule time with us or stop by booth 342 to talk treasury modernization.</p>
+                <div style="margin-top: 26px;">
+                    <a class="afp-boston-cta" href="https://go.realtreasury.com/afp-2025-boston" target="_blank" rel="noopener">
+                        Book Your Session
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 12a1 1 0 0 1 1-1h12.586l-4.293-4.293 1.414-1.414L20.414 12l-6.707 6.707-1.414-1.414L16.586 13H4a1 1 0 0 1-1-1z" />
+                        </svg>
+                    </a>
+                </div>
+            </section>
 
-        <article class="content-card">
-            <h2>Session Snapshot</h2>
-            <div class="session-summary">
-                <div class="session-summary__item">
-                    <h3>Featured Session</h3>
-                    <p><strong>From Roadmap to Reality: Modern Treasury in Motion</strong></p>
-                </div>
-                <div class="session-summary__item">
-                    <h3>When &amp; Where</h3>
-                    <p>Tuesday, October 28 at 8:30 AM ET<br>Room 312, Boston Convention &amp; Exhibition Center</p>
-                </div>
-                <div class="session-summary__item">
-                    <h3>Who You'll Hear From</h3>
-                    <p>Tracey Ferguson Knight with guest panelists from high-growth treasury and finance teams.</p>
-                </div>
+            <div class="afp-boston-highlight">
+                We are unveiling a new decision framework to help treasury leaders prioritize automation, payments, and analytics initiatives. Bring your current roadmap or toughest bottleneck—we will workshop real solutions with you in Boston.
             </div>
-        </article>
 
-        <article class="content-card">
-            <h2>What We Will Cover</h2>
-            <div class="highlight-box">
-                <p>We built this AFP conversation for treasury teams that need a clear decision path for new platforms. Expect candid stories about implementation pitfalls, ways to accelerate stakeholder alignment, and tangible metrics to track in your first 90 days.</p>
+            <div class="media-frame">
+                <img loading="lazy" src="https://realtreasury.com/wp-content/uploads/2025/10/AFP-Boston-2025.webp" alt="Real Treasury team at AFP 2025 in Boston" onerror="this.onerror=null;this.src='https://placehold.co/1200x630/003f88/ffffff?text=AFP+2025+Boston';">
             </div>
-            <ul class="agenda-list" aria-label="Session agenda">
-                <li class="agenda-item">
-                    <span class="agenda-time">08:30 – 08:40</span>
-                    <div>
-                        <h3>State of Modern Treasury</h3>
-                        <p>Benchmark your current capabilities against the latest adoption data across payments, cash positioning, and analytics.</p>
-                    </div>
-                </li>
-                <li class="agenda-item">
-                    <span class="agenda-time">08:40 – 09:00</span>
-                    <div>
-                        <h3>Roadmap Frameworks</h3>
-                        <p>See the prioritization matrix we use with clients to align treasury, finance, and IT on a 12–18 month roadmap.</p>
-                    </div>
-                </li>
-                <li class="agenda-item">
-                    <span class="agenda-time">09:00 – 09:20</span>
-                    <div>
-                        <h3>Implementation Playbooks</h3>
-                        <p>Walk through the steps that help teams prototype faster, avoid integration surprises, and activate quick wins.</p>
-                    </div>
-                </li>
-                <li class="agenda-item">
-                    <span class="agenda-time">09:20 – 09:30</span>
-                    <div>
-                        <h3>Live Q&amp;A + Peer Roundtable</h3>
-                        <p>Bring your toughest challenge—we will workshop real scenarios and share the templates we use with clients.</p>
-                    </div>
-                </li>
-            </ul>
-        </article>
 
-        <article class="content-card">
-            <h2>Plan Your Time with Real Treasury</h2>
-            <p>Our team is on-site all week to help you make the most of AFP. Stop by our meet-up table or book a working session tailored to your roadmap.</p>
-            <div class="session-summary">
-                <div class="session-summary__item">
-                    <h3>Daily Office Hours</h3>
-                    <p>Visit the Real Treasury lounge from 11:00 AM – 3:00 PM ET for quick diagnostics and product comparisons.</p>
+            <h2>Where to Find Us</h2>
+            <div class="afp-boston-schedule">
+                <div class="afp-boston-schedule__card">
+                    <h3>Expo Floor</h3>
+                    <p><strong>Booth 342</strong> • Hynes Convention Center</p>
+                    <p>Daily office hours from 11:00 a.m. to 3:30 p.m. ET</p>
                 </div>
-                <div class="session-summary__item">
+                <div class="afp-boston-schedule__card">
+                    <h3>Strategy Sessions</h3>
+                    <p>Reserve a 30-minute working session with Tracey Ferguson-Knight and the Real Treasury advisory team.</p>
+                </div>
+                <div class="afp-boston-schedule__card">
                     <h3>Evening Meetup</h3>
-                    <p>Join peers on Monday at 6:30 PM for a roundtable on elevating treasury analytics in year one.</p>
-                </div>
-                <div class="session-summary__item">
-                    <h3>Resources</h3>
-                    <p>Preview our Treasury Tech Selection Guide and change management templates when you reserve a meeting.</p>
+                    <p>Join our peer roundtable on Monday, October 20 at 6:30 p.m. in Back Bay.</p>
                 </div>
             </div>
-        </article>
 
-        <section class="cta-panel" aria-labelledby="cta-panel-heading">
-            <h2 id="cta-panel-heading">Bring Your Roadmap – Leave with an Action Plan</h2>
-            <p>Share your priorities when you register so we can match you with the right experts and tools during AFP 2025 in Boston.</p>
-            <a href="https://go.realtreasury.com/afp-2025-boston" target="_blank" rel="noopener">Save My Seat for Tuesday at 8:30 AM</a>
-        </section>
-    </main>
+            <h2>Session Spotlight: From Roadmap to Reality</h2>
+            <div class="session-card">
+                <h3>Blueprinting a Future-Ready Treasury Tech Stack</h3>
+                <p><strong>Tuesday, October 21 • 1:00 p.m. – 1:50 p.m.</strong></p>
+                <p>Modern treasury requires more than a best-of-breed checklist. Tracey Ferguson-Knight and guests from a Fortune 200 treasury team will walk through the frameworks they used to evaluate payments, forecasting, and cash visibility platforms.</p>
+                <ul class="afp-boston-bullets">
+                    <li>See how to map use cases to stakeholder needs and budget cycles.</li>
+                    <li>Evaluate integration complexity with a practical scoring matrix.</li>
+                    <li>Understand how to measure value within six months of go-live.</li>
+                </ul>
+            </div>
+
+            <h2>How We Help Treasury Teams Win</h2>
+            <p>Whether you are building your first treasury tech stack or refreshing an existing ecosystem, Real Treasury brings cross-industry expertise to help teams move faster and smarter.</p>
+            <ul class="checklist">
+                <li>Vendor-neutral guidance across treasury management, payments, risk, and banking tools.</li>
+                <li>Implementation playbooks that de-risk change management and accelerate adoption.</li>
+                <li>Benchmarks from hundreds of projects to inform investment priorities.</li>
+                <li>Fractional expertise across treasury, finance, and data operations.</li>
+            </ul>
+
+            <div class="callout">
+                <p><strong>Pre-book your AFP conversation.</strong> Share your roadmap or top challenges when you schedule a meeting so we can tailor recommendations and resources before Boston.</p>
+            </div>
+
+            <h2>Resources to Explore Before AFP</h2>
+            <div class="resources">
+                <div class="resource-card">
+                    <h3>Treasury Tech Selection Guide</h3>
+                    <p>See the proven scorecard that helps teams compare TMS, bank portals, and data automation platforms.</p>
+                    <a href="https://realtreasury.com/treasury-tech-selection" target="_blank" rel="noopener">Download the Guide →</a>
+                </div>
+                <div class="resource-card">
+                    <h3>Office Hours with Real Treasury</h3>
+                    <p>Join our monthly sessions to stress-test your implementation roadmap with experts who have led dozens of transformations.</p>
+                    <a href="https://go.realtreasury.com/office-hours" target="_blank" rel="noopener">Save Your Seat →</a>
+                </div>
+                <div class="resource-card">
+                    <h3>Case Study: Global Treasury Transformation</h3>
+                    <p>Learn how a multinational organization delivered global cash visibility and automated reconciliations in under nine months.</p>
+                    <a href="https://realtreasury.com/insights/treasury-transformation" target="_blank" rel="noopener">Read the Story →</a>
+                </div>
+            </div>
+
+            <p>We cannot wait to see you in Boston. Reach out at <a href="mailto:hello@realtreasury.com">hello@realtreasury.com</a> or stop by booth 342 to plan your next treasury milestone.</p>
+        </article>
+    </div>
 </body>
 </html>

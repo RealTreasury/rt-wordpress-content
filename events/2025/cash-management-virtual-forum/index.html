@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Management Virtual Forum | November 12–13, 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --teal: #19b3b8;
+            --dark-text: #1d1b3f;
+            --gray-text: #5f5a72;
+            --soft-panel: #f5f3ff;
+            --hero-gradient: linear-gradient(120deg, rgba(29, 27, 63, 0.95), rgba(25, 179, 184, 0.85));
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background: #f7f7fb;
+            color: var(--dark-text);
+            margin: 0;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            color: var(--dark-text);
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: var(--gray-text);
+            line-height: 1.6;
+        }
+
+        .page-container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 24px 64px;
+        }
+
+        .hero {
+            margin: 64px auto 40px;
+            padding: 56px 48px;
+            border-radius: 28px;
+            background: var(--hero-gradient);
+            color: #ffffff;
+            box-shadow: 0 18px 40px rgba(18, 20, 58, 0.28);
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .hero p {
+            color: rgba(255, 255, 255, 0.88);
+            max-width: 660px;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .hero-badge {
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .hero-actions a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .hero-actions a.cta-primary {
+            background: #ffffff;
+            color: var(--dark-text);
+            box-shadow: 0 18px 32px rgba(18, 20, 58, 0.28);
+        }
+
+        .hero-actions a.cta-primary:hover {
+            transform: translateY(-4px);
+        }
+
+        .hero-actions a.cta-secondary {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.32);
+        }
+
+        .hero-actions a.cta-secondary:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.26);
+        }
+
+        .content-card {
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 40px 44px;
+            margin-bottom: 32px;
+            box-shadow: 0 18px 38px rgba(114, 22, 244, 0.08);
+            border: 1px solid rgba(114, 22, 244, 0.12);
+        }
+
+        .session-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .session-grid__item {
+            background: var(--soft-panel);
+            border-radius: 18px;
+            padding: 24px;
+            border: 1px solid rgba(114, 22, 244, 0.14);
+        }
+
+        .agenda-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 20px;
+        }
+
+        .agenda-item {
+            border-radius: 16px;
+            padding: 22px;
+            border: 1px solid rgba(114, 22, 244, 0.12);
+            background: rgba(245, 243, 255, 0.85);
+        }
+
+        .agenda-item h3 {
+            margin-top: 0;
+        }
+
+        .callout {
+            padding: 26px;
+            border-radius: 16px;
+            background: rgba(25, 179, 184, 0.08);
+            border-left: 4px solid var(--teal);
+            margin-bottom: 26px;
+        }
+
+        .cta-panel {
+            text-align: center;
+            padding: 34px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(245, 243, 255, 0.95), rgba(221, 250, 250, 0.95));
+            border: 1px solid rgba(114, 22, 244, 0.12);
+            box-shadow: 0 16px 34px rgba(114, 22, 244, 0.12);
+        }
+
+        .cta-panel a {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 14px 26px;
+            border-radius: 12px;
+            background: var(--primary-purple);
+            color: #ffffff;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .cta-panel a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 26px rgba(114, 22, 244, 0.22);
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 44px 28px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page-container">
+        <section class="hero">
+            <div class="hero-badges">
+                <span class="hero-badge">November 12–13, 2025</span>
+                <span class="hero-badge">Virtual • Interactive Forum</span>
+                <span class="hero-badge">Cash &amp; Liquidity Leaders</span>
+            </div>
+            <h1>Cash Management Virtual Forum</h1>
+            <p>Two half-days of interactive working sessions for treasury, finance, and banking teams ready to modernize cash visibility, forecasting, and liquidity decisioning. Join live from anywhere and leave with templates you can deploy immediately.</p>
+            <div class="hero-actions">
+                <a class="cta-primary" href="https://www.linkedin.com/events/real-treasury-virtual-forum-nov-12-13-2025/" target="_blank" rel="noopener">Register on LinkedIn</a>
+                <a class="cta-secondary" href="mailto:hello@realtreasury.com?subject=Virtual%20Forum%20Questions">Ask a Question</a>
+            </div>
+        </section>
+
+        <article class="content-card">
+            <h2>Forum Overview</h2>
+            <div class="session-grid">
+                <div class="session-grid__item">
+                    <h3>Format</h3>
+                    <p>Two half-day virtual tracks featuring keynotes, live diagnostics, and peer roundtables.</p>
+                </div>
+                <div class="session-grid__item">
+                    <h3>Audience</h3>
+                    <p>Treasury, finance, FP&amp;A, and banking partners focused on cash management modernization.</p>
+                </div>
+                <div class="session-grid__item">
+                    <h3>Dates &amp; Times</h3>
+                    <p>Wednesday, Nov 12 • 11:00 AM – 2:30 PM ET<br>Thursday, Nov 13 • 11:00 AM – 2:00 PM ET</p>
+                </div>
+                <div class="session-grid__item">
+                    <h3>Access</h3>
+                    <p>Live-streamed via LinkedIn with recordings and toolkits delivered to all registrants.</p>
+                </div>
+            </div>
+        </article>
+
+        <article class="content-card">
+            <h2>Agenda Highlights</h2>
+            <div class="callout">
+                <p>Expect a mix of practitioner stories, hands-on breakouts, and benchmark sharing designed to help teams move from manual reporting to proactive liquidity decisions.</p>
+            </div>
+            <ul class="agenda-list" aria-label="Forum agenda">
+                <li class="agenda-item">
+                    <h3>Day 1 • Building Real-Time Visibility</h3>
+                    <p>Kick off with a keynote on modern bank connectivity, followed by breakout labs on forecasting accuracy and cash positioning dashboards.</p>
+                </li>
+                <li class="agenda-item">
+                    <h3>Day 1 Peer Roundtable</h3>
+                    <p>Small-group discussions on balancing automation budgets with governance, moderated by Real Treasury advisors.</p>
+                </li>
+                <li class="agenda-item">
+                    <h3>Day 2 • Liquidity Strategy in Motion</h3>
+                    <p>Explore dynamic investment playbooks, decision frameworks for payments modernization, and a fireside chat with banking partners.</p>
+                </li>
+                <li class="agenda-item">
+                    <h3>Day 2 Action Clinics</h3>
+                    <p>Work through scenario-based exercises to prioritize initiatives for 2026, with templates and scorecards you can adapt.</p>
+                </li>
+            </ul>
+        </article>
+
+        <article class="content-card">
+            <h2>Who You'll Learn From</h2>
+            <div class="session-grid">
+                <div class="session-grid__item">
+                    <h3>Real Treasury Strategists</h3>
+                    <p>Tracey Ferguson Knight and our advisory team share lessons from recent cash transformation programs.</p>
+                </div>
+                <div class="session-grid__item">
+                    <h3>Corporate Treasury Leaders</h3>
+                    <p>Hear from practitioners at global brands who rebuilt forecasting, pooling, and payments governance.</p>
+                </div>
+                <div class="session-grid__item">
+                    <h3>Banking &amp; Fintech Partners</h3>
+                    <p>Get a first look at new collaboration models with key platform partners and regional banks.</p>
+                </div>
+            </div>
+        </article>
+
+        <section class="cta-panel" aria-labelledby="cta-panel-heading">
+            <h2 id="cta-panel-heading">Reserve Your Virtual Seat</h2>
+            <p>Registration is free and space is limited to keep sessions interactive. Sign up on LinkedIn and invite your team to join the discussions.</p>
+            <a href="https://www.linkedin.com/events/real-treasury-virtual-forum-nov-12-13-2025/" target="_blank" rel="noopener">Save My Spot</a>
+        </section>
+    </main>
+</body>
+</html>

@@ -456,7 +456,58 @@
             const filterButtonsContainer = document.getElementById('filterButtons');
             const showMoreBtn = document.getElementById('showMoreBtn');
 
-            const apiUrl = '/api/posts?_embed&per_page=100';
+            function normalizeOrigin(origin) {
+                return origin ? origin.replace(/\/$/, '') : origin;
+            }
+
+            function determineWordPressOrigin() {
+                const fallbackOrigin = 'https://realtreasury.com';
+
+                if (window.WORDPRESS_ORIGIN) {
+                    return normalizeOrigin(String(window.WORDPRESS_ORIGIN));
+                }
+
+                const bodyDataOrigin = document.body?.dataset?.wordpressOrigin;
+                if (bodyDataOrigin) {
+                    return normalizeOrigin(bodyDataOrigin);
+                }
+
+                const metaOrigin = document.querySelector('meta[name="wordpress-origin"]')?.content?.trim();
+                if (metaOrigin) {
+                    return normalizeOrigin(metaOrigin);
+                }
+
+                try {
+                    if (window.location && window.location.origin && window.location.origin !== 'null') {
+                        const locationUrl = new URL(window.location.href);
+                        const host = locationUrl.hostname;
+                        if (
+                            host === 'localhost' ||
+                            host === '127.0.0.1' ||
+                            host.endsWith('.local') ||
+                            host.endsWith('realtreasury.com')
+                        ) {
+                            return normalizeOrigin(locationUrl.origin);
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Unable to determine WordPress origin from window.location', error);
+                }
+
+                if (document.referrer) {
+                    try {
+                        const referrerUrl = new URL(document.referrer);
+                        return normalizeOrigin(referrerUrl.origin);
+                    } catch (error) {
+                        console.warn('Unable to parse document.referrer for WordPress origin', error);
+                    }
+                }
+
+                return normalizeOrigin(fallbackOrigin);
+            }
+
+            const wordpressOrigin = determineWordPressOrigin();
+            const apiUrl = `${wordpressOrigin}/wp-json/wp/v2/posts?_embed&per_page=100`;
 
             let allPosts = [];
             let currentPosts = [];

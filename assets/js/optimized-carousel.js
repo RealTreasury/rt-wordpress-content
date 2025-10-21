@@ -6,10 +6,12 @@
                 this.requestController = new AbortController();
             }
 
-            async fetchRecentPosts(excludeId = null, useCustomEndpoint = true) {
+            async fetchRecentPosts(excludeId = null, options = {}) {
+                const { useCustomEndpoint = true, maxPosts = null } = options;
+                const perPage = this.resolvePerPage(maxPosts);
                 try {
                     if (useCustomEndpoint) {
-                        const customUrl = `${this.baseUrl}/wp-json/rt/v1/posts/recent?per_page=8&page=1`;
+                        const customUrl = `${this.baseUrl}/wp-json/rt/v1/posts/recent?per_page=${perPage}&page=1`;
                         const response = await this.makeRequest(customUrl);
                         if (response && Array.isArray(response) && response.length > 0) {
                             console.log('✅ Using custom RT API endpoint');
@@ -17,11 +19,18 @@
                         }
                     }
                     console.log('🔄 Falling back to standard WordPress API');
-                    return await this.fetchStandardPosts(excludeId);
+                    return await this.fetchStandardPosts(excludeId, perPage);
                 } catch (error) {
                     console.warn('API Error, using fallback:', error.message);
-                    return await this.fetchStandardPosts(excludeId);
+                    return await this.fetchStandardPosts(excludeId, perPage);
                 }
+            }
+
+            resolvePerPage(maxPosts) {
+                if (Number.isFinite(maxPosts) && maxPosts > 0) {
+                    return Math.min(maxPosts, 100);
+                }
+                return 20;
             }
 
             async makeRequest(url, options = {}) {
@@ -68,8 +77,8 @@
                     }));
             }
 
-            async fetchStandardPosts(excludeId = null) {
-                let url = `${this.baseUrl}/wp-json/wp/v2/posts?per_page=8&orderby=date&_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,featured_media,date,link,_embedded`;
+            async fetchStandardPosts(excludeId = null, perPage = 20) {
+                let url = `${this.baseUrl}/wp-json/wp/v2/posts?per_page=${perPage}&orderby=date&_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,featured_media,date,link,_embedded`;
                 if (excludeId) {
                     url += `&exclude=${excludeId}`;
                 }
@@ -186,6 +195,7 @@
                 this.prevBtn = document.getElementById('prevBtn');
                 this.nextBtn = document.getElementById('nextBtn');
                 this.dotsContainer = document.getElementById('carouselDots');
+                this.maxPosts = this.getMaxPosts();
                 this.init();
             }
 
@@ -205,13 +215,15 @@
                 try {
                     console.log('📡 Fetching posts with optimized API...');
                     const currentPostId = this.getCurrentPostId();
-                    let relatedPosts = await this.api.fetchRecentPosts(currentPostId);
+                    let relatedPosts = await this.api.fetchRecentPosts(currentPostId, { maxPosts: this.maxPosts });
                     console.log(`✅ Fetched ${relatedPosts.length} posts`);
                     if (relatedPosts.length === 0) {
                         this.showNoPostsMessage();
                         return;
                     }
-                    this.posts = this.shuffleArray(relatedPosts).slice(0, 6);
+                    const shuffledPosts = this.shuffleArray(relatedPosts);
+                    this.posts = Number.isFinite(this.maxPosts) ? shuffledPosts.slice(0, this.maxPosts) : shuffledPosts;
+                    this.currentIndex = 0;
                     await this.renderPostsWithSkeletons();
                     this.createDots();
                     this.updateCarousel();
@@ -454,6 +466,10 @@
             updateCarousel() {
                 if (this.posts.length === 0) return;
                 const totalPages = Math.ceil(this.posts.length / this.postsPerView);
+                if (totalPages === 0) return;
+                if (this.currentIndex >= totalPages) {
+                    this.currentIndex = totalPages - 1;
+                }
                 const cardElements = this.track.children;
                 if (cardElements.length === 0) return;
                 const cardWidth = cardElements[0]?.offsetWidth || 350;
@@ -520,6 +536,14 @@
                 if (window.innerWidth <= 768) return 2;
                 if (window.innerWidth <= 1200) return 3;
                 return 3;
+            }
+
+            getMaxPosts() {
+                if (!this.track || !this.track.dataset) return null;
+                const rawValue = this.track.dataset.maxPosts;
+                if (!rawValue) return null;
+                const parsed = parseInt(rawValue, 10);
+                return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
             }
 
             handleResize() {

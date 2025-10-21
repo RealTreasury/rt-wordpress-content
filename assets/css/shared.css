@@ -4903,3 +4903,7 @@ a[href="#openportalmodal"] {
     background: #10b981;
     color: #ffffff;
 }
+/* Hide mobile header */
+#ast-mobile-header {
+    display: none !important;
+}

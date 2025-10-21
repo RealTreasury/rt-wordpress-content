@@ -539,11 +539,12 @@
             }
 
             getMaxPosts() {
-                if (!this.track || !this.track.dataset) return null;
+                const defaultMaxPosts = 6;
+                if (!this.track || !this.track.dataset) return defaultMaxPosts;
                 const rawValue = this.track.dataset.maxPosts;
-                if (!rawValue) return null;
+                if (rawValue === undefined || rawValue === '') return defaultMaxPosts;
                 const parsed = parseInt(rawValue, 10);
-                return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+                return Number.isFinite(parsed) && parsed > 0 ? parsed : defaultMaxPosts;
             }
 
             handleResize() {

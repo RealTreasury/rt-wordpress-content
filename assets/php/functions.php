@@ -833,18 +833,23 @@ add_action('rest_api_init', function() {
             $search = sanitize_text_field($request->get_param('search') ?: '');
             $category = sanitize_text_field($request->get_param('category') ?: '');
 
+            $include_no_featured = filter_var($request->get_param('include_no_featured'), FILTER_VALIDATE_BOOLEAN);
+
             $args = array(
                 'posts_per_page' => $per_page,
                 'paged' => $page,
                 'post_status' => 'publish',
-                'post_type' => 'post',
-                'meta_query' => array(
+                'post_type' => 'post'
+            );
+
+            if (false === $include_no_featured) {
+                $args['meta_query'] = array(
                     array(
                         'key' => '_thumbnail_id',
                         'compare' => 'EXISTS'
                     )
-                )
-            );
+                );
+            }
 
             if (!empty($search)) {
                 $args['s'] = $search;

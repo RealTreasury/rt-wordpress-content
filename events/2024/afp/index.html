@@ -211,7 +211,20 @@
             </article>
 
         </div>
-    </main>
-    
+</main>
+
+<script>
+  if (window !== window.parent) {
+    function sendHeight() {
+      const height = document.documentElement.scrollHeight;
+      const id = window.frameElement?.id || "iframe-default";
+      window.parent.postMessage({ type: "setHeight", height: height, id: id }, "*");
+    }
+
+    window.addEventListener("load", sendHeight);
+    window.addEventListener("resize", sendHeight);
+  }
+</script>
+
 </body>
 </html>

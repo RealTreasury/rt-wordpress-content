@@ -12,7 +12,17 @@
         if (window !== window.parent) {
             function sendHeight() {
                 const height = document.documentElement.scrollHeight;
-                const id = window.frameElement?.id || 'iframe-default';
+                let id = "iframe-default";
+
+                try {
+                    const frame = window.frameElement;
+                    if (frame && frame.id) {
+                        id = frame.id;
+                    }
+                } catch (error) {
+                    // Accessing frameElement can throw a SecurityError for cross-origin embeds.
+                }
+
                 window.parent.postMessage({ type: "setHeight", height: height, id: id }, "*");
             }
 

@@ -514,83 +514,6 @@
             const POSTS_PER_PAGE = 6;
             let displayedCount = POSTS_PER_PAGE;
 
-            const GENERIC_EXCERPT_PATTERNS = [
-                /^meta:\s*/, // Meta information block
-                /^tags?:\s*/, // Tag boilerplate
-                /^categories?:\s*/,
-                /^by\s+(?:the\s+)?realtreasury(?:\s+team)?/,
-                /^written by\s+(?:the\s+)?realtreasury(?:\s+team)?/,
-                /appeared first on realtreasury/
-            ];
-
-            function stripHtml(html) {
-                if (!html) return '';
-                const temp = document.createElement('div');
-                temp.innerHTML = html;
-                return temp.textContent || temp.innerText || '';
-            }
-
-            function normalizeText(text) {
-                return text ? text.replace(/\s+/g, ' ').trim() : '';
-            }
-
-            function isGenericText(text) {
-                if (!text) return true;
-                const lower = text.toLowerCase();
-                return GENERIC_EXCERPT_PATTERNS.some(pattern => pattern.test(lower));
-            }
-
-            function extractParagraphs(html) {
-                if (!html) return [];
-                const container = document.createElement('div');
-                container.innerHTML = html;
-                const paragraphNodes = container.querySelectorAll('p');
-                if (paragraphNodes.length === 0) {
-                    const text = normalizeText(container.textContent || '');
-                    return text ? [text] : [];
-                }
-                return Array.from(paragraphNodes)
-                    .map(node => normalizeText(node.textContent || ''))
-                    .filter(Boolean);
-            }
-
-            function findMeaningfulParagraph(html) {
-                const paragraphs = extractParagraphs(html);
-                return paragraphs.find(paragraph => !isGenericText(paragraph));
-            }
-
-            function truncateWithEllipsis(text, length = 120) {
-                if (!text) return '...';
-                let truncated = text;
-                if (text.length > length) {
-                    truncated = text.slice(0, length);
-                    const lastSpace = truncated.lastIndexOf(' ');
-                    if (lastSpace > 60) {
-                        truncated = truncated.slice(0, lastSpace);
-                    }
-                }
-                const normalized = normalizeText(truncated);
-                return normalized.endsWith('...') ? normalized : `${normalized}...`;
-            }
-
-            function buildExcerpt(post) {
-                const excerptText = normalizeText(stripHtml(post?.excerpt?.rendered));
-                if (excerptText && !isGenericText(excerptText)) {
-                    return truncateWithEllipsis(excerptText);
-                }
-
-                const fallbackParagraph = findMeaningfulParagraph(post?.content?.rendered);
-                if (fallbackParagraph) {
-                    return truncateWithEllipsis(fallbackParagraph);
-                }
-
-                if (excerptText) {
-                    return truncateWithEllipsis(excerptText);
-                }
-
-                return '...';
-            }
-
             // Function to create and append schema
             const appendSchema = (() => {
                 const clearExistingSchemas = () => {
@@ -669,7 +592,7 @@
                     const height = featuredMedia?.media_details?.height || 400;
                     const categoryNames = post._embedded?.['wp:term']?.[0]?.map(cat => cat.name).filter(name => name !== 'Uncategorized') || [];
                     const category = categoryNames.length > 0 ? categoryNames[0] : '';
-                    const excerpt = buildExcerpt(post);
+                    const excerpt = post.excerpt.rendered.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
 
                     const card = document.createElement('article');
                     card.className = 'insight-card';

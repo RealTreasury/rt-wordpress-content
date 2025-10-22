@@ -1422,6 +1422,25 @@ if (isset($_GET['tpa_debug']) && current_user_can('manage_options')) {
     }
 }
 
+add_action('wp_enqueue_scripts', 'rt_enqueue_iframe_resizer_script', 20);
+function rt_enqueue_iframe_resizer_script() {
+    $script_path = get_stylesheet_directory() . '/assets/js/iframe-resizer.js';
+
+    if (!file_exists($script_path)) {
+        return;
+    }
+
+    $script_uri = get_stylesheet_directory_uri() . '/assets/js/iframe-resizer.js';
+
+    wp_enqueue_script(
+        'rt-iframe-resizer',
+        $script_uri,
+        array(),
+        filemtime($script_path),
+        true
+    );
+}
+
 /**
  * TREASURY PORTAL ACCESS - JQUERY FIXES
  * Fix jQuery loading issues for Treasury Portal Access

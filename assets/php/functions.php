@@ -955,16 +955,33 @@ add_action('init', function() {
     }
 
     // Ensure posts endpoint includes featured media by default
+    add_filter('rest_post_collection_params', function($query_params) {
+        $query_params['include_no_featured'] = array(
+            'description'       => 'Include posts without featured images in results.',
+            'type'              => 'boolean',
+            'default'           => false,
+            'sanitize_callback' => 'rest_sanitize_boolean',
+        );
+
+        return $query_params;
+    });
+
     add_filter('rest_post_query', function($args, $request) {
-        // Only add thumbnail requirement if not specifically requesting all posts
-        if (!$request->get_param('include_no_featured')) {
-            $args['meta_query'] = array(
-                array(
-                    'key' => '_thumbnail_id',
-                    'compare' => 'EXISTS'
-                )
+        $include_no_featured = filter_var($request->get_param('include_no_featured'), FILTER_VALIDATE_BOOLEAN);
+
+        if (false === $include_no_featured) {
+            $thumbnail_query = array(
+                'key'     => '_thumbnail_id',
+                'compare' => 'EXISTS',
             );
+
+            if (isset($args['meta_query']) && is_array($args['meta_query'])) {
+                $args['meta_query'][] = $thumbnail_query;
+            } else {
+                $args['meta_query'] = array($thumbnail_query);
+            }
         }
+
         return $args;
     }, 10, 2);
 });

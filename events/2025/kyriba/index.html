@@ -1,1 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyriba Live 2025</title>
+</head>
+<body>
+    <!-- Event content coming soon -->
 
+    <script>
+        if (window !== window.parent) {
+            function sendHeight() {
+                const height = document.documentElement.scrollHeight;
+                let id = "iframe-default";
+
+                try {
+                    const frame = window.frameElement;
+                    if (frame && frame.id) {
+                        id = frame.id;
+                    }
+                } catch (error) {
+                    // Accessing frameElement can throw a SecurityError for cross-origin embeds.
+                }
+
+                window.parent.postMessage({ type: "setHeight", height: height, id: id }, "*");
+            }
+
+            window.addEventListener("load", sendHeight);
+            window.addEventListener("resize", sendHeight);
+        }
+    </script>
+</body>
+</html>

@@ -507,7 +507,7 @@
             }
 
             const wordpressOrigin = determineWordPressOrigin();
-            const apiUrl = `${wordpressOrigin}/wp-json/wp/v2/posts?_embed&per_page=100`;
+            const apiUrl = `${wordpressOrigin}/wp-json/wp/v2/posts?_embed&per_page=100&include_no_featured=1`;
 
             let allPosts = [];
             let currentPosts = [];

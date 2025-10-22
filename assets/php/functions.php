@@ -1060,10 +1060,20 @@ if (current_user_can('manage_options') && isset($_GET['fix_api'])) {
 add_action('rest_api_init', function() {
     register_rest_route('rt/v1', '/posts/recent', array(
         'methods' => 'GET',
+        'args'    => array(
+            'include_no_featured' => array(
+                'description'       => 'Include posts regardless of whether they have featured media.',
+                'type'              => 'boolean',
+                'default'           => false,
+                'sanitize_callback' => 'rest_sanitize_boolean',
+            ),
+        ),
         'callback' => function($request) {
             $per_page = max(1, min(20, intval($request->get_param('per_page') ?: 8)));
             $exclude = $request->get_param('exclude');
             $category = sanitize_text_field($request->get_param('category') ?: '');
+
+            $include_no_featured = rest_sanitize_boolean($request->get_param('include_no_featured'));
 
             $args = array(
                 'posts_per_page' => $per_page,
@@ -1071,13 +1081,16 @@ add_action('rest_api_init', function() {
                 'post_type'      => 'post',
                 'orderby'        => 'date',
                 'order'          => 'DESC',
-                'meta_query'     => array(
+            );
+
+            if (!$include_no_featured) {
+                $args['meta_query'] = array(
                     array(
                         'key'     => '_thumbnail_id',
                         'compare' => 'EXISTS'
                     )
-                )
-            );
+                );
+            }
 
             if ($exclude) {
                 $args['post__not_in'] = array_map('intval', explode(',', $exclude));

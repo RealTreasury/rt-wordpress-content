@@ -1086,6 +1086,44 @@
         });
     </script>
     <script src="/assets/js/share.js"></script>
+    <script>
+(function () {
+  const providedId = "insights-2024-cre-treasury-tech";
+  const fallbackId = document.body?.dataset?.iframeId || window.location.pathname;
+  const id = providedId || fallbackId;
+
+  const postHeight = () => {
+    const height = document.documentElement?.scrollHeight || document.body?.scrollHeight || 0;
+    if (window.parent && typeof window.parent.postMessage === 'function') {
+      window.parent.postMessage({ type: 'setHeight', height, id }, '*');
+    }
+  };
+
+  let frameId;
+  const schedulePostHeight = () => {
+    if (frameId) {
+      cancelAnimationFrame(frameId);
+    }
+    frameId = requestAnimationFrame(postHeight);
+  };
+
+  window.addEventListener('load', schedulePostHeight, { passive: true });
+  window.addEventListener('resize', schedulePostHeight, { passive: true });
+
+  if (typeof MutationObserver !== 'undefined' && document.body) {
+    const observer = new MutationObserver(schedulePostHeight);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      characterData: true,
+    });
+  }
+
+  schedulePostHeight();
+})();
+</script>
+
 
 </body>
 </html>

@@ -62,19 +62,22 @@
 
             processCustomPosts(posts, excludeId = null) {
                 return posts
-                    .filter(post => post.id !== excludeId && post.featured_image_url)
-                    .map(post => ({
-                        id: post.id,
-                        title: post.title,
-                        excerpt: post.excerpt,
-                        content: post.content,
-                        link: post.link,
-                        date: post.date,
-                        featured_media: post.featured_media,
-                        featured_image_url: post.featured_image_url,
-                        categories: post.categories || [],
-                        _embedded: post._embedded || {}
-                    }));
+                    .filter(post => post.id !== excludeId)
+                    .map(post => {
+                        const categories = Array.isArray(post.categories) ? post.categories : [];
+                        return {
+                            id: post.id,
+                            title: post.title,
+                            excerpt: post.excerpt,
+                            content: post.content,
+                            link: post.link,
+                            date: post.date,
+                            featured_media: post.featured_media,
+                            featured_image_url: this.sanitizeImageUrl(post.featured_image_url),
+                            categories,
+                            _embedded: post._embedded || {}
+                        };
+                    });
             }
 
             async fetchStandardPosts(excludeId = null, perPage = 20) {
@@ -87,26 +90,30 @@
             }
 
             processStandardPosts(posts) {
-                return posts
-                    .filter(post => {
-                        return post.featured_media && post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0];
-                    })
-                    .map(post => {
-                        const featuredMedia = post._embedded['wp:featuredmedia'][0];
-                        const sizes = featuredMedia.media_details?.sizes || {};
-                        const imageUrl = sizes.medium?.source_url || sizes.large?.source_url || featuredMedia.source_url;
-                        return {
-                            id: post.id,
-                            title: post.title,
-                            excerpt: post.excerpt,
-                            link: post.link,
-                            date: post.date,
-                            featured_media: post.featured_media,
-                            featured_image_url: imageUrl,
-                            categories: post._embedded['wp:term'] ? post._embedded['wp:term'][0] || [] : [],
-                            _embedded: post._embedded
-                        };
-                    });
+                return posts.map(post => {
+                    const featuredMedia = post._embedded?.['wp:featuredmedia']?.[0];
+                    const sizes = featuredMedia?.media_details?.sizes || {};
+                    const imageUrl = sizes.medium?.source_url || sizes.large?.source_url || featuredMedia?.source_url || null;
+                    const terms = post._embedded?.['wp:term'];
+                    const categories = Array.isArray(terms) ? terms[0] || [] : [];
+                    return {
+                        id: post.id,
+                        title: post.title,
+                        excerpt: post.excerpt,
+                        link: post.link,
+                        date: post.date,
+                        featured_media: post.featured_media,
+                        featured_image_url: this.sanitizeImageUrl(imageUrl),
+                        categories,
+                        _embedded: post._embedded || {}
+                    };
+                });
+            }
+
+            sanitizeImageUrl(url) {
+                if (typeof url !== 'string') return null;
+                const trimmed = url.trim();
+                return trimmed.length ? trimmed : null;
             }
 
             async loadOptimizedImage(post, container) {
@@ -196,6 +203,7 @@
                 this.nextBtn = document.getElementById('nextBtn');
                 this.dotsContainer = document.getElementById('carouselDots');
                 this.maxPosts = this.getMaxPosts();
+                this.ensurePlaceholderStyles();
                 this.init();
             }
 
@@ -270,7 +278,9 @@
                         </div>
                     </div>`;
                 const imageContainer = card.querySelector('.post-image-skeleton');
-                if (this.intersectionObserver && imageContainer) {
+                if (!post.featured_image_url) {
+                    this.applyImageFallback(imageContainer);
+                } else if (this.intersectionObserver && imageContainer) {
                     this.intersectionObserver.observe(imageContainer);
                 } else {
                     setTimeout(() => this.loadImageForElement(imageContainer), index * 100);
@@ -279,11 +289,55 @@
             }
 
             async loadImageForElement(element) {
+                if (!element) return;
                 const index = element.getAttribute('data-post-index');
                 const post = this.posts[parseInt(index)];
-                if (post && post.featured_image_url) {
-                    await this.api.loadOptimizedImage(post, element);
+                if (!post) return;
+                if (!post.featured_image_url) {
+                    this.applyImageFallback(element);
+                    return;
                 }
+                await this.api.loadOptimizedImage(post, element);
+            }
+
+            applyImageFallback(element) {
+                if (!element || element.dataset.placeholderApplied === 'true') return;
+                element.classList.remove('post-image-skeleton');
+                element.classList.add('post-image-placeholder');
+                element.dataset.placeholderApplied = 'true';
+                element.setAttribute('role', 'img');
+                element.setAttribute('aria-label', 'No image available');
+                element.innerHTML = '<span aria-hidden="true" class="post-image-placeholder-icon">📰</span>';
+            }
+
+            ensurePlaceholderStyles() {
+                if (document.getElementById('optimized-carousel-placeholder-styles')) return;
+                const style = document.createElement('style');
+                style.id = 'optimized-carousel-placeholder-styles';
+                style.textContent = `
+                    .post-image-placeholder {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        height: 140px;
+                        border-radius: 12px;
+                        margin-bottom: 0.5rem;
+                        border: 1px solid rgba(199, 125, 255, 0.2);
+                        background: linear-gradient(135deg, #f6f3ff 0%, #ebe6ff 100%);
+                        color: #6d5c8b;
+                        font-size: 0.75rem;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.08em;
+                    }
+
+                    .post-image-placeholder-icon {
+                        font-size: 1.75rem;
+                        opacity: 0.65;
+                    }
+                `;
+                document.head.appendChild(style);
             }
 
             generateEnhancedExcerpt(post) {

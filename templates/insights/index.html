@@ -515,12 +515,39 @@
             let displayedCount = POSTS_PER_PAGE;
 
             // Function to create and append schema
-            function appendSchema(schema) {
-                const script = document.createElement('script');
-                script.type = 'application/ld+json';
-                script.text = JSON.stringify(schema);
-                document.head.appendChild(script);
-            }
+            const appendSchema = (() => {
+                const clearExistingSchemas = () => {
+                    document.head.querySelectorAll('script[data-dynamic-schema]').forEach(script => script.remove());
+                };
+
+                let hasClearedThisCycle = false;
+
+                const fn = (schema, identifier) => {
+                    if (!hasClearedThisCycle) {
+                        clearExistingSchemas();
+                        hasClearedThisCycle = true;
+                    } else if (identifier) {
+                        const existing = document.head.querySelector(`script[data-dynamic-schema="${identifier}"]`);
+                        if (existing) {
+                            existing.remove();
+                        }
+                    }
+
+                    const attributeValue = identifier || `schema-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+                    const script = document.createElement('script');
+                    script.type = 'application/ld+json';
+                    script.dataset.dynamicSchema = attributeValue;
+                    script.textContent = JSON.stringify(schema);
+                    document.head.appendChild(script);
+                };
+
+                fn.reset = () => {
+                    clearExistingSchemas();
+                    hasClearedThisCycle = false;
+                };
+
+                return fn;
+            })();
 
             async function fetchPosts() {
                 try {
@@ -542,6 +569,7 @@
             }
 
             function displayPosts(posts) {
+                appendSchema.reset();
                 insightsGrid.innerHTML = '';
                 if (posts.length === 0) {
                     insightsGrid.innerHTML = `<p class="text-center col-span-full">No insights found.</p>`;
@@ -613,7 +641,7 @@
                         },
                         "description": excerpt
                     };
-                    appendSchema(articleSchema);
+                    appendSchema(articleSchema, `article-${post.id}`);
                     
                     // Add to ItemList for main page schema
                     articleListSchema.itemListElement.push({
@@ -624,7 +652,7 @@
                 });
                 
                 // Add the complete ItemList schema
-                appendSchema(articleListSchema);
+                appendSchema(articleListSchema, 'list');
                 showMoreBtn.style.display = displayedCount < currentPosts.length ? 'block' : 'none';
             }
 

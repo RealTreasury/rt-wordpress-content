@@ -62,7 +62,7 @@
 
             processCustomPosts(posts, excludeId = null) {
                 return posts
-                    .filter(post => post.id !== excludeId)
+                    .filter(post => post && post.id !== excludeId)
                     .map(post => {
                         const categories = Array.isArray(post.categories) ? post.categories : [];
                         return {
@@ -73,11 +73,25 @@
                             link: post.link,
                             date: post.date,
                             featured_media: post.featured_media,
-                            featured_image_url: this.sanitizeImageUrl(post.featured_image_url),
+                            featured_image_url: this.resolveCustomFeaturedImage(post),
                             categories,
                             _embedded: post._embedded || {}
                         };
                     });
+            }
+
+            resolveCustomFeaturedImage(post) {
+                const directUrl = this.sanitizeImageUrl(post.featured_image_url);
+                if (directUrl) {
+                    return directUrl;
+                }
+                const embeddedMedia = post?._embedded?.['wp:featuredmedia']?.[0];
+                if (!embeddedMedia) {
+                    return null;
+                }
+                const sizes = embeddedMedia.media_details?.sizes || {};
+                const fallbackUrl = sizes.medium?.source_url || sizes.large?.source_url || embeddedMedia.source_url || null;
+                return this.sanitizeImageUrl(fallbackUrl);
             }
 
             async fetchStandardPosts(excludeId = null, perPage = 20) {
@@ -117,7 +131,8 @@
             }
 
             async loadOptimizedImage(post, container) {
-                if (!post.featured_image_url || !container) return null;
+                const imageUrl = this.sanitizeImageUrl(post?.featured_image_url);
+                if (!imageUrl || !container) return null;
                 return new Promise(resolve => {
                     const img = new Image();
                     img.onload = () => {
@@ -131,18 +146,18 @@
                         resolve(img);
                     };
                     img.onerror = () => {
-                        console.warn('Failed to load image:', post.featured_image_url);
+                        console.warn('Failed to load image:', imageUrl);
                         resolve(null);
                     };
                     if (this.supportsWebP()) {
-                        const webpUrl = post.featured_image_url.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+                        const webpUrl = imageUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp');
                         img.src = webpUrl;
                         img.onerror = () => {
                             img.onerror = () => resolve(null);
-                            img.src = post.featured_image_url;
+                            img.src = imageUrl;
                         };
                     } else {
-                        img.src = post.featured_image_url;
+                        img.src = imageUrl;
                     }
                 });
             }
@@ -290,14 +305,24 @@
 
             async loadImageForElement(element) {
                 if (!element) return;
-                const index = element.getAttribute('data-post-index');
-                const post = this.posts[parseInt(index)];
+                const indexAttr = element.getAttribute('data-post-index');
+                const index = Number.parseInt(indexAttr, 10);
+                if (!Number.isFinite(index)) return;
+                const post = this.posts[index];
                 if (!post) return;
                 if (!post.featured_image_url) {
                     this.applyImageFallback(element);
                     return;
                 }
-                await this.api.loadOptimizedImage(post, element);
+                const loadedImage = await this.api.loadOptimizedImage(post, element);
+                if (!loadedImage) {
+                    const fallbackTarget = element.isConnected
+                        ? element
+                        : this.track?.querySelector(`.post-image-skeleton[data-post-index="${index}"]`);
+                    if (fallbackTarget) {
+                        this.applyImageFallback(fallbackTarget);
+                    }
+                }
             }
 
             applyImageFallback(element) {

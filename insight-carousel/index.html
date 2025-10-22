@@ -562,6 +562,26 @@
         <div id="debugInfo" style="display: none; margin-top: 1rem; padding: 1rem; background: #f0f0f0; border-radius: 8px; font-size: 12px; color: #666;"></div>
     </div>
 
+    <script>
+        (function() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const config = window.optimizedCarouselConfig || {};
+                if (params.has('include_no_featured')) {
+                    const value = params.get('include_no_featured');
+                    config.includeNoFeatured = ['1', 'true', 'yes', 'y', 'on'].includes(String(value).trim().toLowerCase());
+                } else {
+                    const variant = (params.get('variant') || '').toLowerCase();
+                    if (['afp', 'iofm'].includes(variant)) {
+                        config.includeNoFeatured = true;
+                    }
+                }
+                window.optimizedCarouselConfig = config;
+            } catch (error) {
+                console.warn('Failed to configure optimized carousel options:', error);
+            }
+        })();
+    </script>
     <script src="/assets/js/optimized-carousel.js"></script>
 </body>
 </html>

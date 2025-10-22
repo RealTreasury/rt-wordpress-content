@@ -7,11 +7,22 @@
             }
 
             async fetchRecentPosts(excludeId = null, options = {}) {
-                const { useCustomEndpoint = true, maxPosts = null } = options;
+                const {
+                    useCustomEndpoint = true,
+                    maxPosts = null,
+                    includeNoFeatured = false
+                } = options;
                 const perPage = this.resolvePerPage(maxPosts);
                 try {
                     if (useCustomEndpoint) {
-                        const customUrl = `${this.baseUrl}/wp-json/rt/v1/posts/recent?per_page=${perPage}&page=1`;
+                        const params = new URLSearchParams({
+                            per_page: perPage,
+                            page: 1
+                        });
+                        if (includeNoFeatured) {
+                            params.set('include_no_featured', '1');
+                        }
+                        const customUrl = `${this.baseUrl}/wp-json/rt/v1/posts/recent?${params.toString()}`;
                         const response = await this.makeRequest(customUrl);
                         if (response && Array.isArray(response) && response.length > 0) {
                             console.log('✅ Using custom RT API endpoint');
@@ -19,10 +30,10 @@
                         }
                     }
                     console.log('🔄 Falling back to standard WordPress API');
-                    return await this.fetchStandardPosts(excludeId, perPage);
+                    return await this.fetchStandardPosts(excludeId, perPage, includeNoFeatured);
                 } catch (error) {
                     console.warn('API Error, using fallback:', error.message);
-                    return await this.fetchStandardPosts(excludeId, perPage);
+                    return await this.fetchStandardPosts(excludeId, perPage, includeNoFeatured);
                 }
             }
 
@@ -80,11 +91,20 @@
                     });
             }
 
-            async fetchStandardPosts(excludeId = null, perPage = 20) {
-                let url = `${this.baseUrl}/wp-json/wp/v2/posts?per_page=${perPage}&orderby=date&_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,featured_media,date,link,_embedded`;
+            async fetchStandardPosts(excludeId = null, perPage = 20, includeNoFeatured = false) {
+                const params = new URLSearchParams({
+                    per_page: perPage,
+                    orderby: 'date',
+                    _embed: 'wp:featuredmedia,wp:term',
+                    _fields: 'id,title,excerpt,featured_media,date,link,_embedded'
+                });
                 if (excludeId) {
-                    url += `&exclude=${excludeId}`;
+                    params.set('exclude', excludeId);
                 }
+                if (includeNoFeatured) {
+                    params.set('include_no_featured', '1');
+                }
+                const url = `${this.baseUrl}/wp-json/wp/v2/posts?${params.toString()}`;
                 const posts = await this.makeRequest(url);
                 return this.processStandardPosts(posts);
             }
@@ -190,7 +210,7 @@
         }
 
         class EnhancedRelatedPostsCarousel {
-            constructor() {
+            constructor(config = {}) {
                 this.api = new OptimizedCarouselAPI();
                 this.currentIndex = 0;
                 this.posts = [];
@@ -203,8 +223,59 @@
                 this.nextBtn = document.getElementById('nextBtn');
                 this.dotsContainer = document.getElementById('carouselDots');
                 this.maxPosts = this.getMaxPosts();
+                this.config = config || {};
+                this.includeNoFeatured = this.resolveIncludeNoFeatured();
                 this.ensurePlaceholderStyles();
                 this.init();
+            }
+
+            resolveIncludeNoFeatured() {
+                if (typeof this.config.includeNoFeatured === 'boolean') {
+                    return this.config.includeNoFeatured;
+                }
+
+                const datasetValue = this.track?.dataset?.includeNoFeatured;
+                if (datasetValue !== undefined) {
+                    return this.parseBoolean(datasetValue);
+                }
+
+                const bodyDatasetValue = document.body?.dataset?.carouselIncludeNoFeatured;
+                if (bodyDatasetValue !== undefined) {
+                    return this.parseBoolean(bodyDatasetValue);
+                }
+
+                try {
+                    const searchParams = new URLSearchParams(window.location.search);
+                    if (searchParams.has('include_no_featured')) {
+                        return this.parseBoolean(searchParams.get('include_no_featured'));
+                    }
+                    const variant = (searchParams.get('variant') || '').toLowerCase();
+                    if (['afp', 'iofm'].includes(variant)) {
+                        return true;
+                    }
+                } catch (error) {
+                    console.warn('Unable to parse carousel URL parameters:', error);
+                }
+
+                if (typeof window.optimizedCarouselConfig?.includeNoFeatured === 'boolean') {
+                    return window.optimizedCarouselConfig.includeNoFeatured;
+                }
+
+                return false;
+            }
+
+            parseBoolean(value) {
+                if (typeof value === 'boolean') {
+                    return value;
+                }
+                if (typeof value === 'number') {
+                    return value !== 0;
+                }
+                if (typeof value === 'string') {
+                    const normalized = value.trim().toLowerCase();
+                    return ['1', 'true', 'yes', 'y', 'on'].includes(normalized);
+                }
+                return false;
             }
 
             async init() {
@@ -223,7 +294,10 @@
                 try {
                     console.log('📡 Fetching posts with optimized API...');
                     const currentPostId = this.getCurrentPostId();
-                    let relatedPosts = await this.api.fetchRecentPosts(currentPostId, { maxPosts: this.maxPosts });
+                    let relatedPosts = await this.api.fetchRecentPosts(currentPostId, {
+                        maxPosts: this.maxPosts,
+                        includeNoFeatured: this.includeNoFeatured
+                    });
                     console.log(`✅ Fetched ${relatedPosts.length} posts`);
                     if (relatedPosts.length === 0) {
                         this.showNoPostsMessage();
@@ -636,9 +710,11 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            const globalConfig = window.optimizedCarouselConfig || {};
             if ('requestIdleCallback' in window) {
-                requestIdleCallback(() => new EnhancedRelatedPostsCarousel());
+                requestIdleCallback(() => new EnhancedRelatedPostsCarousel(globalConfig));
             } else {
-                setTimeout(() => new EnhancedRelatedPostsCarousel(), 0);
+                setTimeout(() => new EnhancedRelatedPostsCarousel(globalConfig), 0);
             }
         });
+

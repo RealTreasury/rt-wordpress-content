@@ -514,6 +514,51 @@
             const POSTS_PER_PAGE = 6;
             let displayedCount = POSTS_PER_PAGE;
 
+            function sanitizeExcerpt(rawText, maxLength = 160) {
+                if (!rawText) return '';
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = rawText;
+                const text = (tempDiv.textContent || tempDiv.innerText || '')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                if (!text) return '';
+                if (text.length <= maxLength) return text;
+
+                return `${text.slice(0, maxLength).trimEnd()}...`;
+            }
+
+            function buildExcerpt(post) {
+                const yoastDescription = post?.yoast_head_json?.description;
+                const yoastExcerpt = sanitizeExcerpt(yoastDescription);
+                if (yoastExcerpt) {
+                    return yoastExcerpt;
+                }
+
+                const contentHtml = post?.content?.rendered || '';
+                if (contentHtml) {
+                    try {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(contentHtml, 'text/html');
+                        const selectors = ['p', 'li'];
+                        for (const selector of selectors) {
+                            const element = doc.querySelector(selector);
+                            if (element) {
+                                const sanitized = sanitizeExcerpt(element.innerHTML || element.textContent);
+                                if (sanitized) {
+                                    return sanitized;
+                                }
+                            }
+                        }
+                    } catch (parseError) {
+                        console.warn('Unable to parse post content for excerpt generation', parseError);
+                    }
+                }
+
+                return sanitizeExcerpt(post?.excerpt?.rendered || '');
+            }
+
             // Function to create and append schema
             const appendSchema = (() => {
                 const clearExistingSchemas = () => {
@@ -592,7 +637,7 @@
                     const height = featuredMedia?.media_details?.height || 400;
                     const categoryNames = post._embedded?.['wp:term']?.[0]?.map(cat => cat.name).filter(name => name !== 'Uncategorized') || [];
                     const category = categoryNames.length > 0 ? categoryNames[0] : '';
-                    const excerpt = post.excerpt.rendered.replace(/<[^>]+>/g, '').substring(0, 120) + '...';
+                    const excerpt = buildExcerpt(post);
 
                     const card = document.createElement('article');
                     card.className = 'insight-card';

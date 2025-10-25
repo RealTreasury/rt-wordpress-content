@@ -927,23 +927,11 @@
                 <p class="lead">Schedule a free 15-minute strategy call to discuss your treasury technology needs, or start a quick chat to get your questions answered.</p>
                 <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 32px;">
                     <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="btn btn-primary">Schedule a Strategy Call</a>
-                    <button onclick="openTawkChat()" class="btn btn-chat">Quick Chat</button>
+                    <a href="mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry" class="btn btn-chat">Email Us</a>
                 </div>
             </div>
         </div>
     </section>
-    <script>
-        window.tawkOpenedByUser = false;
-
-        window.openTawkChat = function() {
-            window.tawkOpenedByUser = true;
-            if (typeof Tawk_API !== "undefined" && Tawk_API.maximize) {
-                Tawk_API.maximize();
-            } else {
-                window.location.href = "mailto:hello@realtreasury.com?subject=Treasury Technology Inquiry";
-            }
-        };
-    </script>
 
 <script>
   if (window !== window.parent) {

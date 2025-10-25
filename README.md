@@ -70,19 +70,6 @@ Version 1.0.9 adds weekly metrics showing the abandonment rate for both the curr
 
 The repository also includes the **Clean Media URLs** plugin (`plugins/clean-media-urls`). Activate it in WordPress to automatically sanitize media filenames so URLs contain only lowercase letters, numbers, and hyphens.
 
-## Treasury Tech Portal
-
-Use the **Treasury Tech Portal** plugin (`plugins/treasury-tech-portal`) to embed the portal on any WordPress page.
-
-### Installation
-
-1. Copy the `treasury-tech-portal` directory into your site's `wp-content/plugins/` folder.
-2. Activate **Treasury Tech Portal** from the WordPress Plugins screen.
-
-### Shortcode
-
-Place `[treasury_portal]` on a page or post to display the portal. The shortcode automatically enqueues `treasury-portal.css` and `treasury-portal.js` so no extra asset management is required.
-
 ### Troubleshooting
 
 Some browsers or ad-blocking extensions may block requests to `*.wp.com`, resulting in `ERR_BLOCKED_BY_CLIENT` messages in the developer console. These errors are harmless and the portal will continue to function normally. If the messages are distracting, whitelist the site in your browser or ad-blocker to remove them.

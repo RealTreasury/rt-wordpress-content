@@ -554,32 +554,43 @@ add_filter('rest_authentication_errors', function($result) {
     return true;
 });
 
-// 3. ✅ SECURITY FIX: Strict CORS headers for REST API requests
+/**
+ * ===============================================================
+ * SECURITY AUDIT FIX: SECURE CORS POLICY (FIX H-01)
+ * ===============================================================
+ */
 add_action('rest_api_init', function() {
+    // Remove default WordPress CORS filters
     remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
-    add_filter('rest_pre_serve_request', function($value) {
+
+    add_filter('rest_pre_serve_request', function( $value ) {
         $origin = get_http_origin();
+
+        // Define a strict whitelist of allowed origins
         $allowed_origins = [
             'https://realtreasury.com',
             'https://www.realtreasury.com',
-            // Remove localhost in production
+            // Add any other trusted subdomains here
         ];
 
-        // Only set CORS headers for allowed origins
-        if (in_array($origin, $allowed_origins, true)) {
-            header('Access-Control-Allow-Origin: ' . $origin);
-            header('Access-Control-Allow-Credentials: true');
+        // Only allow requests from the whitelist
+        if ( $origin && in_array( $origin, $allowed_origins, true ) ) {
+            header( 'Access-Control-Allow-Origin: ' . $origin );
+            header( 'Access-Control-Allow-Credentials: true' );
+            header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS' );
+            header( 'Access-Control-Allow-Headers: Content-Type, Authorization, X-WP-Nonce' );
+            header( 'Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages' );
         }
-        // ✅ NO wildcard fallback for security
 
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization');
-        header('Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages');
-        header('Access-Control-Max-Age: 86400');
+        // Handle preflight OPTIONS request
+        if ( 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
+            status_header( 200 );
+            exit();
+        }
 
         return $value;
     });
-});
+}, 15);
 
 // 4. Enhanced rewrite rules for custom API endpoints
 add_action('init', function() {
@@ -616,7 +627,7 @@ add_action('rest_api_init', function() {
                 'site_url' => site_url()
             );
         },
-        'permission_callback' => '__return_true'
+        'permission_callback' => 'rt_rest_permission_check'
     ));
 
     // Enhanced posts endpoint
@@ -715,7 +726,7 @@ add_action('rest_api_init', function() {
                 'X-WP-TotalPages' => $total_pages
             ));
         },
-        'permission_callback' => '__return_true'
+        'permission_callback' => 'rt_rest_permission_check'
     ));
 
     // Categories endpoint
@@ -738,7 +749,7 @@ add_action('rest_api_init', function() {
 
             return $formatted_categories;
         },
-        'permission_callback' => '__return_true'
+        'permission_callback' => 'rt_rest_permission_check'
     ));
 });
 
@@ -952,7 +963,7 @@ add_action('rest_api_init', function() {
                 'X-RT-Posts-Found' => count($formatted_posts)
             ));
         },
-        'permission_callback' => '__return_true'
+        'permission_callback' => 'rt_rest_permission_check'
     ));
 });
 
@@ -1006,7 +1017,7 @@ add_action('rest_api_init', function() {
 
             return $response;
         },
-        'permission_callback' => '__return_true'
+        'permission_callback' => 'rt_rest_permission_check'
     ));
 });
 
@@ -1046,7 +1057,7 @@ add_action('rest_api_init', function() {
                 'status'            => 'healthy'
             );
         },
-        'permission_callback' => '__return_true'
+        'permission_callback' => 'rt_rest_permission_check'
     ));
 });
 
@@ -1109,7 +1120,7 @@ add_action('rest_api_init', function() {
                 'rest_url'  => rest_url()
             );
         },
-        'permission_callback' => '__return_true'
+        'permission_callback' => 'rt_rest_permission_check'
     ));
 });
 
@@ -1301,5 +1312,39 @@ function tpa_debug_jquery_loading() {
         </script>
         <?php
     }
+}
+
+/**
+ * ===============================================================
+ * SECURITY AUDIT FIX: RATE LIMITING & PERMISSIONS (FIX C-01)
+ * ===============================================================
+ */
+
+/**
+ * Checks if a request for the custom REST API is rate-limited.
+ *
+ * @return bool|WP_Error True if OK, WP_Error if rate-limited.
+ */
+function rt_rest_permission_check() {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $key = 'rest_rate_limit_' . md5( $ip );
+    $requests = get_transient( $key );
+
+    // Allow 60 requests per minute per IP.
+    if ( false === $requests ) {
+        set_transient( $key, 1, MINUTE_IN_SECONDS );
+        $requests = 1;
+    } elseif ( $requests > 60 ) {
+        return new WP_Error(
+            'rest_rate_limit_exceeded',
+            'Too many requests. Please slow down.',
+            array( 'status' => 429 )
+        );
+    } else {
+        set_transient( $key, $requests + 1, MINUTE_IN_SECONDS );
+    }
+
+    // Passed rate limiting
+    return true;
 }
 ?>

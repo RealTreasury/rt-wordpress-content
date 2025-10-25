@@ -86,22 +86,47 @@ add_action('delete_attachment', 'cmu_delete_media_map_cache');
 add_action('edit_attachment', 'cmu_delete_media_map_cache');
 
 /**
+ * ✅ SECURITY FIX: Check rate limiting for file downloads
+ */
+function cmu_is_rate_limited() {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $key = 'cmu_rate_limit_' . md5($ip);
+    $downloads = get_transient($key);
+
+    // Allow 30 file downloads per minute per IP
+    if ($downloads && $downloads >= 30) {
+        error_log('CMU: Rate limit exceeded for IP ' . $ip);
+        return true;
+    }
+
+    set_transient($key, ($downloads + 1), MINUTE_IN_SECONDS);
+    return false;
+}
+
+/**
  * Handles file serving requests using query parameters
+ * ✅ SECURITY FIX: Added rate limiting
  */
 function cmu_query_request_handler() {
     if (isset($_GET['cmu_file'])) {
+        // ✅ SECURITY FIX: Rate limiting check FIRST
+        if (cmu_is_rate_limited()) {
+            status_header(429);
+            exit('Too many requests. Please slow down.');
+        }
+
         $requested_filename = sanitize_file_name($_GET['cmu_file']);
-        
+
         $media_map = cmu_get_media_map();
         $filepath = isset($media_map[$requested_filename]) ? $media_map[$requested_filename] : false;
-        
+
         // If not found, try rebuilding cache once
         if (!$filepath) {
             cmu_delete_media_map_cache();
             $media_map = cmu_get_media_map();
             $filepath = isset($media_map[$requested_filename]) ? $media_map[$requested_filename] : false;
         }
-        
+
         if ($filepath && file_exists($filepath)) {
             $mime_type = mime_content_type($filepath);
             header('Content-Type: ' . $mime_type);
@@ -109,14 +134,14 @@ function cmu_query_request_handler() {
             header('Content-Disposition: inline; filename="' . basename($requested_filename) . '"');
             header('Expires: ' . gmdate('D, d M Y H:i:s', time() + (60 * 60 * 24 * 365)) . ' GMT');
             header('Cache-Control: public, max-age=31536000');
-            
+
             while (ob_get_level()) {
                 ob_end_clean();
             }
             readfile($filepath);
             exit;
         }
-        
+
         status_header(404);
         exit('File not found: ' . esc_html($requested_filename));
     }

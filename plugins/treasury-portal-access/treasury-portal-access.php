@@ -70,7 +70,11 @@ final class Treasury_Portal_Access {
         add_action('wp_ajax_nopriv_get_current_user_access', array($this, 'get_user_access_ajax'));
         add_action('wp_ajax_track_portal_attempt', array($this, 'track_attempt_ajax'));
         add_action('wp_ajax_nopriv_track_portal_attempt', array($this, 'track_attempt_ajax'));
-        
+
+        // ✅ SECURITY FIX: Add auth status check endpoint for frontend
+        add_action('wp_ajax_check_auth_status', array($this, 'check_auth_ajax'));
+        add_action('wp_ajax_nopriv_check_auth_status', array($this, 'check_auth_ajax'));
+
         // Shortcodes
         add_shortcode('protected_content', array($this, 'protected_content_shortcode'));
         add_shortcode('portal_button', array($this, 'portal_button_shortcode'));
@@ -161,21 +165,39 @@ final class Treasury_Portal_Access {
         if (empty($selected_form_id) || $contact_form->id() != $selected_form_id) {
             return;
         }
-        
+
         $submission = WPCF7_Submission::get_instance();
         if (!$submission) {
             return;
         }
-        
+
         $posted_data = $submission->get_posted_data();
         $email = sanitize_email($posted_data['email-address'] ?? '');
         $first_name = sanitize_text_field($posted_data['first-name'] ?? '');
-        
+
+        // ✅ SECURITY FIX: Check honeypot field
+        $honeypot = sanitize_text_field($posted_data['website-url'] ?? '');
+        if (!empty($honeypot)) {
+            error_log('🍯 TPA: Honeypot triggered - bot detected from IP: ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+            $this->log_security_event('HONEYPOT_TRIGGERED', [
+                'email' => $email,
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+                'honeypot_value' => $honeypot
+            ]);
+            return; // Silently fail
+        }
+
+        // ✅ SECURITY FIX: Rate limiting check
+        if ($this->is_rate_limited('form_submission')) {
+            error_log('⏱️ TPA: Rate limit exceeded for form submission from IP: ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+            return;
+        }
+
         if (empty($email) || empty($first_name)) {
             error_log('❌ TPA Error: Form submission missing required fields (Email or First Name).');
             return;
         }
-        
+
         $user_data = [
             'first_name'      => $first_name,
             'last_name'       => sanitize_text_field($posted_data['last-name'] ?? ''),
@@ -186,7 +208,7 @@ final class Treasury_Portal_Access {
             'user_agent'      => $_SERVER['HTTP_USER_AGENT'] ?? ''
         ];
         $user_data['full_name'] = trim($user_data['first_name'] . ' ' . $user_data['last_name']);
-        
+
         $this->grant_portal_access($user_data);
     }
     
@@ -236,8 +258,10 @@ final class Treasury_Portal_Access {
     }
     
     private function generate_access_token($email) {
-        $salt = wp_salt('auth') . $email . time();
-        return hash('sha256', $salt);
+        // ✅ SECURITY FIX: Use cryptographically secure random bytes
+        $random_bytes = random_bytes(32);
+        $user_salt = wp_hash($email . wp_salt('auth'));
+        return hash_hmac('sha256', bin2hex($random_bytes), $user_salt);
     }
     
     private function set_access_cookies($access_token, $email, $duration) {
@@ -247,8 +271,8 @@ final class Treasury_Portal_Access {
             'path'     => COOKIEPATH,
             'domain'   => COOKIE_DOMAIN,
             'secure'   => is_ssl(),
-            // Frontend scripts need to read this cookie to update buttons
-            'httponly' => false,
+            // ✅ SECURITY FIX: Prevent JavaScript access to auth token
+            'httponly' => true,
             'samesite' => 'Lax'
         ];
         setcookie('portal_access_token', $access_token, $options);
@@ -297,10 +321,11 @@ final class Treasury_Portal_Access {
     }
     
     public function restore_access_ajax() {
-        // Enhanced error logging for debugging
-        error_log('TPA: restore_access_ajax called');
-        error_log('TPA: POST data: ' . print_r($_POST, true));
-        error_log('TPA: Headers: ' . print_r(getallheaders(), true));
+        // ✅ SECURITY FIX: Rate limiting check FIRST
+        if ($this->is_rate_limited('restore_access')) {
+            wp_send_json_error(['message' => 'Too many requests. Please wait a few minutes.'], 429);
+            return;
+        }
 
         // Check if it's an AJAX request
         if (!wp_doing_ajax()) {
@@ -337,18 +362,19 @@ final class Treasury_Portal_Access {
         }
 
         try {
+            // ✅ SECURITY FIX: Prevent email enumeration - restore if exists, but don't reveal
             if ($this->user_exists($email)) {
                 $access_token = $this->generate_access_token($email);
                 $this->update_user_token($email, $access_token);
                 $duration = (int) get_option('tpa_access_duration', 180) * DAY_IN_SECONDS;
                 $this->set_access_cookies($access_token, $email, $duration);
-
-                error_log("✅ TPA: Access restored via localStorage for {$email}");
-                wp_send_json_success(['message' => 'Access restored successfully.']);
+                error_log("✅ TPA: Access restored for {$email}");
             } else {
-                error_log("❌ TPA: Restore failed - user not found: {$email}");
-                wp_send_json_error(['message' => 'User not found in system.'], 404);
+                error_log("❌ TPA: Restore attempted for non-existent user: {$email}");
             }
+
+            // Always return success - don't reveal if user exists or not
+            wp_send_json_success(['message' => 'If this email is in our system, access has been restored.']);
         } catch (Exception $e) {
             error_log('TPA: Exception in restore_access_ajax: ' . $e->getMessage());
             wp_send_json_error(['message' => 'Server error occurred.'], 500);
@@ -356,7 +382,11 @@ final class Treasury_Portal_Access {
     }
     
     public function revoke_access_ajax() {
-        error_log('TPA: revoke_access_ajax called');
+        // ✅ SECURITY FIX: Rate limiting
+        if ($this->is_rate_limited('revoke_access')) {
+            wp_send_json_error(['message' => 'Too many requests. Please wait a few minutes.'], 429);
+            return;
+        }
 
         if (!wp_doing_ajax()) {
             error_log('TPA: Not an AJAX request');
@@ -388,7 +418,11 @@ final class Treasury_Portal_Access {
     }
     
     public function get_user_access_ajax() {
-        error_log('TPA: get_user_access_ajax called');
+        // ✅ SECURITY FIX: Rate limiting
+        if ($this->is_rate_limited('get_user_access')) {
+            wp_send_json_error(['message' => 'Too many requests. Please wait a few minutes.'], 429);
+            return;
+        }
 
         if (!wp_doing_ajax()) {
             error_log('TPA: Not an AJAX request');
@@ -614,6 +648,54 @@ final class Treasury_Portal_Access {
         $wpdb->insert($this->attempt_table, $data);
 
         wp_send_json_success(['message' => 'Attempt recorded']);
+    }
+
+    // ✅ SECURITY FIX: New auth status check endpoint (cookie is now httponly)
+    public function check_auth_ajax() {
+        check_ajax_referer('tpa_frontend_nonce', 'nonce');
+        wp_send_json_success([
+            'hasAccess' => $this->has_portal_access()
+        ]);
+    }
+
+    // ✅ SECURITY FIX: Rate limiting implementation
+    private function is_rate_limited($action = null) {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $action = $action ?: 'default';
+        $key = 'tpa_rate_' . md5($ip . $action);
+
+        $attempts = get_transient($key);
+
+        // Allow 5 attempts per 5 minutes per IP per action
+        if ($attempts && $attempts >= 5) {
+            $this->log_security_event('RATE_LIMIT_HIT', [
+                'ip' => $ip,
+                'action' => $action,
+                'attempts' => $attempts
+            ]);
+            return true;
+        }
+
+        set_transient($key, ($attempts + 1), 5 * MINUTE_IN_SECONDS);
+        return false;
+    }
+
+    // ✅ SECURITY FIX: Security event logging
+    private function log_security_event($type, $details = []) {
+        $log_data = [
+            'type' => $type,
+            'timestamp' => current_time('mysql'),
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+            'details' => $details
+        ];
+
+        error_log('TPA SECURITY [' . $type . ']: ' . json_encode($log_data));
+
+        // Increment daily counter for dashboard
+        $counter_key = 'tpa_security_' . strtolower($type) . '_today';
+        $count = get_transient($counter_key) ?: 0;
+        set_transient($counter_key, $count + 1, DAY_IN_SECONDS);
     }
     
     public function admin_page() {

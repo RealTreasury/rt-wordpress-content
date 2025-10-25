@@ -89,12 +89,22 @@ if (empty($form_id)) {
         }
     }
 
-    // Safe cookie reading with error handling
-    function safeCookieCheck(cookieName) {
+    // ✅ SECURITY FIX: Can't read httponly cookies, use AJAX check instead
+    async function checkAuthStatus() {
         try {
-            return document.cookie && document.cookie.includes(cookieName + '=');
+            const response = await fetch(window.TPA.ajaxUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
+                body: new URLSearchParams({
+                    action: 'check_auth_status',
+                    nonce: window.TPA.nonce
+                })
+            });
+            const data = await response.json();
+            return data.success && data.data.hasAccess;
         } catch (e) {
-            console.log('TPA: Error reading cookies:', e);
+            console.log('TPA: Error checking auth status:', e);
             return false;
         }
     }
@@ -406,7 +416,7 @@ if (empty($form_id)) {
             this.executeRedirect();
         },
 
-        quickAccessCheck() {
+        async quickAccessCheck() {
             const localStorageEnabled = <?php echo get_option('tpa_enable_localStorage', true) ? 'true' : 'false'; ?>;
             if (!localStorageEnabled || !this.localStorageAvailable) {
                 console.log('TPA: localStorage disabled or unavailable');
@@ -419,7 +429,8 @@ if (empty($form_id)) {
                     const storedData = JSON.parse(localData);
                     const hasEmail = storedData && storedData.email;
                     const withinDuration = hasEmail && (Date.now() / 1000 - storedData.timestamp) < this.accessDuration;
-                    const hasCookie = safeCookieCheck('portal_access_token');
+                    // ✅ SECURITY FIX: Use async auth check instead of cookie reading
+                    const hasCookie = await checkAuthStatus();
 
                     if (!hasEmail || !withinDuration) {
                         console.log('TPA: Stored access data invalid or expired, clearing');
@@ -453,10 +464,11 @@ if (empty($form_id)) {
             }, 100);
         },
 
-        updateAllButtons(hasAccess = null) {
+        async updateAllButtons(hasAccess = null) {
             try {
                 if (hasAccess === null) {
-                    hasAccess = safeCookieCheck('portal_access_token');
+                    // ✅ SECURITY FIX: Use async auth check
+                    hasAccess = await checkAuthStatus();
                 }
 
                 console.log('TPA: Updating all buttons, hasAccess:', hasAccess);
@@ -549,14 +561,15 @@ if (empty($form_id)) {
             }
         },
 
-        checkAccessPersistence() {
+        async checkAccessPersistence() {
             if (!this.localStorageAvailable) {
                 console.log('TPA: Skipping persistence check - localStorage unavailable');
                 return;
             }
 
             try {
-                const hasCookie = safeCookieCheck('portal_access_token');
+                // ✅ SECURITY FIX: Use async auth check
+                const hasCookie = await checkAuthStatus();
                 const localData = safeLocalStorageGet('tpa_access_token');
                 const hasLocalStorage = !!localData;
 

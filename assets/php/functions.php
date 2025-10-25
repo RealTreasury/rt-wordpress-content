@@ -745,6 +745,33 @@ function display_related_posts() {
 // WordPress REST API Fixes for Insights Page - ENHANCED VERSION
 // ===============================================================
 
+// ✅ SECURITY FIX: Add REST API rate limiting
+add_filter('rest_pre_dispatch', 'rt_rest_rate_limit', 10, 3);
+function rt_rest_rate_limit($result, $server, $request) {
+    // Only limit custom endpoints
+    $route = $request->get_route();
+    if (strpos($route, '/rt/v1/') !== 0) {
+        return $result;
+    }
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $key = 'rest_limit_' . md5($ip . $route);
+    $requests = get_transient($key);
+
+    // Allow 60 requests per minute per endpoint per IP
+    if ($requests && $requests >= 60) {
+        error_log('REST API Rate Limit: IP ' . $ip . ' exceeded limit on ' . $route);
+        return new WP_Error(
+            'rest_rate_limit',
+            'Too many requests. Please slow down.',
+            ['status' => 429]
+        );
+    }
+
+    set_transient($key, ($requests + 1), MINUTE_IN_SECONDS);
+    return $result;
+}
+
 // 1. Force enable REST API
 add_filter('rest_enabled', '__return_true');
 add_filter('rest_jsonp_enabled', '__return_true');
@@ -760,27 +787,28 @@ add_filter('rest_authentication_errors', function($result) {
     return true;
 });
 
-// 3. Enhanced CORS headers for REST API requests
+// 3. ✅ SECURITY FIX: Strict CORS headers for REST API requests
 add_action('rest_api_init', function() {
     remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
     add_filter('rest_pre_serve_request', function($value) {
         $origin = get_http_origin();
         $allowed_origins = [
-            home_url(),
-            site_url(),
             'https://realtreasury.com',
-            'http://localhost:3000', // For development
+            'https://www.realtreasury.com',
+            // Remove localhost in production
         ];
 
-        if (in_array($origin, $allowed_origins) || !$origin) {
-            $origin = $origin ?: '*';
+        // Only set CORS headers for allowed origins
+        if (in_array($origin, $allowed_origins, true)) {
+            header('Access-Control-Allow-Origin: ' . $origin);
+            header('Access-Control-Allow-Credentials: true');
         }
+        // ✅ NO wildcard fallback for security
 
-        header('Access-Control-Allow-Origin: ' . $origin);
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
-        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
-        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization');
         header('Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages');
+        header('Access-Control-Max-Age: 86400');
 
         return $value;
     });
@@ -1030,12 +1058,24 @@ if (current_user_can('manage_options') && isset($_GET['debug_api'])) {
     });
 }
 
-// 9. Handle OPTIONS requests for CORS preflight
+// 9. ✅ SECURITY FIX: Handle OPTIONS requests for CORS preflight (no wildcard)
 add_action('init', function() {
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        header('Access-Control-Allow-Origin: *');
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+        $allowed_origins = [
+            'https://realtreasury.com',
+            'https://www.realtreasury.com',
+        ];
+
+        // Only allow specific origins
+        if (in_array($origin, $allowed_origins, true)) {
+            header('Access-Control-Allow-Origin: ' . $origin);
+            header('Access-Control-Allow-Credentials: true');
+        }
+
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
         header('Access-Control-Allow-Headers: Content-Type, Authorization');
+        header('Access-Control-Max-Age: 86400');
         exit(0);
     }
 });
@@ -1243,16 +1283,7 @@ add_action('rest_api_init', function() {
     ));
 });
 
-add_action('rest_api_init', function() {
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-        header('Access-Control-Max-Age: 86400');
-        status_header(200);
-        exit;
-    }
-});
+// ✅ SECURITY FIX: Removed duplicate wildcard CORS handler (now handled above)
 
 add_action('rest_api_init', function() {
     add_filter('rest_request_before_callbacks', function($response, $handler, $request) {

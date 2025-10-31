@@ -83,7 +83,7 @@ function treasury_portal_immediate_fouc_prevention() {
             // Create loader immediately
             var loader = document.createElement('div');
             loader.className = 'treasury-portal-loader';
-            loader.innerHTML = '<div class="loader-content"><div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div><h3 style="color: #7216f4; margin: 0 0 15px 0;">Treasury Portal</h3><p style="color: #666; margin: 0 0 20px 0;">Verifying access...</p><div class="treasury-portal-spinner"></div></div>';
+            loader.innerHTML = '<div class="loader-content"><div style="font-size: 3rem; margin-bottom: 20px;">🏛️</div><h3 style="color: #7216f4; margin: 0 0 15px 0;">Treasury Portal</h3><p style="color: #666; margin: 0 0 20px 0;">Loading portal...</p><div class="treasury-portal-spinner"></div></div>';
             
             // Add to page immediately
             if (document.body) {
@@ -96,45 +96,15 @@ function treasury_portal_immediate_fouc_prevention() {
                 });
             }
             
-            // Access verification
+            // Access verification - DISABLED when plugin is not active
             function verifyAndShow() {
-                var hasAccess = false;
-                
-                // Check cookie
-                if (document.cookie.includes('portal_access_token=')) {
-                    hasAccess = true;
-                    console.log('✅ Portal access found');
-                }
-                
-                // Check localStorage
-                if (!hasAccess) {
-                    try {
-                        var localData = localStorage.getItem('tpa_access_token');
-                        if (localData) {
-                            var storedData = JSON.parse(localData);
-                            var duration = 180 * 24 * 60 * 60;
-                            if (storedData && storedData.email && (Date.now()/1000 - storedData.timestamp) < duration) {
-                                hasAccess = true;
-                                console.log('✅ Portal access found in localStorage');
-                            }
-                        }
-                    } catch (e) {}
-                }
-                
-                if (hasAccess) {
-                    // Show content
-                    setTimeout(function() {
-                        document.body.classList.remove('treasury-portal-loading');
-                        document.body.classList.add('treasury-portal-ready');
-                        console.log('✅ Portal content shown');
-                    }, 800);
-                } else {
-                    // Redirect to access form
-                    console.log('❌ No access - redirecting');
-                    setTimeout(function() {
-                        window.location.href = '/?portal_access_required=1&t=' + Date.now();
-                    }, 1500);
-                }
+                // Plugin is disabled, so skip access verification and show content
+                console.log('ℹ️ Portal Access plugin is disabled - showing content without verification');
+                setTimeout(function() {
+                    document.body.classList.remove('treasury-portal-loading');
+                    document.body.classList.add('treasury-portal-ready');
+                    console.log('✅ Portal content shown (public access)');
+                }, 800);
             }
             
             // Run verification after short delay

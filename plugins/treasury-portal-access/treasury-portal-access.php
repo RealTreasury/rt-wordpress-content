@@ -158,6 +158,14 @@ final class Treasury_Portal_Access {
         register_setting('tpa_settings_group', 'tpa_redirect_url', 'esc_url_raw');
         register_setting('tpa_settings_group', 'tpa_enable_localStorage', 'absint');
         register_setting('tpa_settings_group', 'tpa_enable_email_notifications', 'absint');
+
+        // Security & Anti-Spam Settings
+        register_setting('tpa_settings_group', 'tpa_recaptcha_site_key', 'sanitize_text_field');
+        register_setting('tpa_settings_group', 'tpa_recaptcha_secret_key', 'sanitize_text_field');
+        register_setting('tpa_settings_group', 'tpa_recaptcha_threshold', 'sanitize_text_field');
+        register_setting('tpa_settings_group', 'tpa_timing_check', 'absint');
+        register_setting('tpa_settings_group', 'tpa_fingerprint_check', 'absint');
+        register_setting('tpa_settings_group', 'tpa_ip_reputation', 'absint');
     }
     
     public function handle_form_submission($contact_form) {
@@ -190,6 +198,26 @@ final class Treasury_Portal_Access {
         // ✅ SECURITY FIX: Rate limiting check
         if ($this->is_rate_limited('form_submission')) {
             error_log('⏱️ TPA: Rate limit exceeded for form submission from IP: ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+            return;
+        }
+
+        // ✅ SECURITY: reCAPTCHA v3 Verification
+        if (!$this->verify_recaptcha($posted_data)) {
+            error_log('🤖 TPA: reCAPTCHA verification failed from IP: ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+            $this->log_security_event('RECAPTCHA_FAILED', [
+                'email' => $email,
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? ''
+            ]);
+            return;
+        }
+
+        // ✅ SECURITY: Timing Analysis (detect bots that fill forms too quickly)
+        if (!$this->verify_submission_timing($posted_data)) {
+            error_log('⏱️ TPA: Submission timing suspicious from IP: ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+            $this->log_security_event('TIMING_ANOMALY', [
+                'email' => $email,
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? ''
+            ]);
             return;
         }
 
@@ -715,6 +743,126 @@ final class Treasury_Portal_Access {
     
     public function cf7_missing_notice() {
         echo '<div class="notice notice-error"><p>⚠️ <strong>Treasury Portal Access:</strong> Contact Form 7 is not installed or active. This plugin depends on it to function.</p></div>';
+    }
+
+    /**
+     * ✅ SECURITY: Verify reCAPTCHA v3 token
+     */
+    private function verify_recaptcha($posted_data) {
+        $site_key = get_option('tpa_recaptcha_site_key');
+        $secret_key = get_option('tpa_recaptcha_secret_key');
+        $threshold = floatval(get_option('tpa_recaptcha_threshold', '0.5'));
+
+        // Skip if reCAPTCHA not configured
+        if (empty($site_key) || empty($secret_key)) {
+            return true;
+        }
+
+        // Get reCAPTCHA token from form submission
+        $recaptcha_token = sanitize_text_field($posted_data['g-recaptcha-response'] ?? '');
+
+        if (empty($recaptcha_token)) {
+            error_log('TPA: Missing reCAPTCHA token');
+            return false;
+        }
+
+        // Verify token with Google
+        $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
+            'body' => [
+                'secret' => $secret_key,
+                'response' => $recaptcha_token,
+                'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+            ],
+            'timeout' => 10
+        ]);
+
+        if (is_wp_error($response)) {
+            error_log('TPA: reCAPTCHA verification request failed: ' . $response->get_error_message());
+            return true; // Don't block on API failure
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        if (!$body['success']) {
+            error_log('TPA: reCAPTCHA verification failed: ' . json_encode($body));
+            return false;
+        }
+
+        $score = floatval($body['score'] ?? 0);
+        error_log("TPA: reCAPTCHA score: $score (threshold: $threshold)");
+
+        return $score >= $threshold;
+    }
+
+    /**
+     * ✅ SECURITY: Verify submission timing (detect too-fast bot submissions)
+     */
+    private function verify_submission_timing($posted_data) {
+        // Skip if timing check disabled
+        if (!get_option('tpa_timing_check', 1)) {
+            return true;
+        }
+
+        // Get form load timestamp (should be passed from frontend)
+        $form_loaded_time = intval($posted_data['form_loaded_time'] ?? 0);
+
+        if (empty($form_loaded_time)) {
+            // If no timestamp provided, allow it (for backward compatibility)
+            return true;
+        }
+
+        $submission_time = time();
+        $time_spent = $submission_time - $form_loaded_time;
+
+        // Minimum time to fill form: 5 seconds (bots fill forms instantly)
+        // Maximum time: 30 minutes (form probably abandoned and refilled)
+        if ($time_spent < 5) {
+            error_log("TPA: Form filled too quickly: {$time_spent} seconds");
+            return false;
+        }
+
+        if ($time_spent > 1800) {
+            error_log("TPA: Form filled after too long: {$time_spent} seconds (likely stale submission)");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * ✅ SECURITY: Browser fingerprinting check
+     */
+    private function verify_browser_fingerprint($posted_data) {
+        // Skip if fingerprint check disabled
+        if (!get_option('tpa_fingerprint_check', 1)) {
+            return true;
+        }
+
+        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+        // Check for common bot signatures
+        $bot_patterns = [
+            'bot', 'crawler', 'spider', 'scraper', 'curl', 'wget',
+            'python-requests', 'java/', 'perl', 'libwww'
+        ];
+
+        foreach ($bot_patterns as $pattern) {
+            if (stripos($user_agent, $pattern) !== false) {
+                error_log("TPA: Bot user-agent detected: $user_agent");
+                return false;
+            }
+        }
+
+        // Check for missing or suspicious headers
+        $required_headers = ['HTTP_ACCEPT', 'HTTP_ACCEPT_LANGUAGE', 'HTTP_ACCEPT_ENCODING'];
+        foreach ($required_headers as $header) {
+            if (empty($_SERVER[$header])) {
+                error_log("TPA: Missing browser header: $header");
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 

@@ -1316,6 +1316,208 @@ function tpa_debug_jquery_loading() {
 
 /**
  * ===============================================================
+ * ENHANCED SECURITY HEADERS - SPAM & BOT PROTECTION
+ * ===============================================================
+ */
+
+// Add comprehensive security headers to all pages
+add_action('send_headers', 'rt_add_security_headers');
+function rt_add_security_headers() {
+    // Don't add headers in admin area
+    if (is_admin()) {
+        return;
+    }
+
+    // Content Security Policy - Restrict resource loading
+    $csp_directives = [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://cdn.jsdelivr.net",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "img-src 'self' data: https: http:",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "connect-src 'self' https://www.google-analytics.com https://www.google.com",
+        "frame-src 'self' https://www.google.com https://www.youtube.com https://player.vimeo.com",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "frame-ancestors 'self'",
+        "upgrade-insecure-requests"
+    ];
+
+    header("Content-Security-Policy: " . implode('; ', $csp_directives));
+
+    // X-Frame-Options - Prevent clickjacking attacks
+    header('X-Frame-Options: SAMEORIGIN');
+
+    // X-Content-Type-Options - Prevent MIME sniffing
+    header('X-Content-Type-Options: nosniff');
+
+    // X-XSS-Protection - Enable XSS filtering (legacy browsers)
+    header('X-XSS-Protection: 1; mode=block');
+
+    // Referrer Policy - Control referrer information
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+
+    // Permissions Policy - Restrict browser features
+    $permissions = [
+        'geolocation=()',
+        'microphone=()',
+        'camera=()',
+        'payment=()',
+        'usb=()',
+        'magnetometer=()',
+        'gyroscope=()',
+        'accelerometer=()'
+    ];
+    header('Permissions-Policy: ' . implode(', ', $permissions));
+
+    // Strict-Transport-Security - Force HTTPS (only on HTTPS connections)
+    if (is_ssl()) {
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
+    }
+
+    // X-Permitted-Cross-Domain-Policies - Restrict cross-domain content
+    header('X-Permitted-Cross-Domain-Policies: none');
+
+    error_log('RT Security Headers Applied');
+}
+
+/**
+ * Additional bot detection for comment submissions
+ */
+add_filter('preprocess_comment', 'rt_enhanced_comment_spam_check');
+function rt_enhanced_comment_spam_check($commentdata) {
+    // Skip for logged-in users
+    if (is_user_logged_in()) {
+        return $commentdata;
+    }
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+    // Check for bot user agents
+    $bot_patterns = ['bot', 'crawler', 'spider', 'scraper', 'curl', 'wget', 'python-requests'];
+    foreach ($bot_patterns as $pattern) {
+        if (stripos($user_agent, $pattern) !== false) {
+            wp_die('Spam detected. Your comment has been blocked.', 'Spam Protection', ['response' => 403]);
+        }
+    }
+
+    // Rate limit comments from same IP
+    $rate_key = 'comment_rate_' . md5($ip);
+    $attempts = get_transient($rate_key);
+
+    if ($attempts && $attempts >= 3) {
+        wp_die('Too many comments. Please slow down.', 'Rate Limit', ['response' => 429]);
+    }
+
+    set_transient($rate_key, ($attempts + 1), 5 * MINUTE_IN_SECONDS);
+
+    return $commentdata;
+}
+
+/**
+ * Remove WordPress version from headers and feeds (security through obscurity)
+ */
+remove_action('wp_head', 'wp_generator');
+add_filter('the_generator', '__return_empty_string');
+
+/**
+ * Disable XML-RPC (common attack vector for bots)
+ */
+add_filter('xmlrpc_enabled', '__return_false');
+
+/**
+ * Disable file editing from WordPress admin (prevent backdoor access)
+ */
+if (!defined('DISALLOW_FILE_EDIT')) {
+    define('DISALLOW_FILE_EDIT', true);
+}
+
+/**
+ * Add honeypot field to comment forms (trap bots)
+ */
+add_action('comment_form_after_fields', 'rt_add_comment_honeypot');
+function rt_add_comment_honeypot() {
+    echo '<p style="display:none !important;">
+        <label for="comment_website">Website</label>
+        <input type="text" name="comment_website" id="comment_website" value="" tabindex="-1" autocomplete="off" />
+    </p>';
+}
+
+add_filter('preprocess_comment', 'rt_check_comment_honeypot');
+function rt_check_comment_honeypot($commentdata) {
+    if (!empty($_POST['comment_website'])) {
+        wp_die('Spam detected (honeypot triggered).', 'Spam Protection', ['response' => 403]);
+    }
+    return $commentdata;
+}
+
+/**
+ * Block suspicious IP addresses (you can expand this list)
+ */
+add_action('init', 'rt_block_suspicious_ips');
+function rt_block_suspicious_ips() {
+    $blocked_ips = get_option('rt_blocked_ips', []);
+    $current_ip = $_SERVER['REMOTE_ADDR'] ?? '';
+
+    if (in_array($current_ip, $blocked_ips)) {
+        wp_die('Access denied.', 'Security', ['response' => 403]);
+    }
+}
+
+/**
+ * Log failed login attempts (brute force detection)
+ */
+add_action('wp_login_failed', 'rt_log_failed_login');
+function rt_log_failed_login($username) {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $rate_key = 'login_attempts_' . md5($ip);
+    $attempts = get_transient($rate_key);
+
+    set_transient($rate_key, ($attempts + 1), 15 * MINUTE_IN_SECONDS);
+
+    if ($attempts >= 5) {
+        error_log("RT Security: Brute force attempt detected from IP $ip for user $username");
+
+        // Optionally auto-block IP after 10 attempts
+        if ($attempts >= 10) {
+            $blocked_ips = get_option('rt_blocked_ips', []);
+            if (!in_array($ip, $blocked_ips)) {
+                $blocked_ips[] = $ip;
+                update_option('rt_blocked_ips', $blocked_ips);
+                error_log("RT Security: IP $ip has been auto-blocked");
+            }
+        }
+    }
+}
+
+/**
+ * Add rate limiting to admin-ajax.php requests
+ */
+add_action('admin_init', 'rt_ajax_rate_limiting');
+add_action('wp_ajax_nopriv_*', 'rt_ajax_rate_limiting', 1);
+function rt_ajax_rate_limiting() {
+    if (!wp_doing_ajax()) {
+        return;
+    }
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $action = $_REQUEST['action'] ?? 'unknown';
+    $rate_key = 'ajax_rate_' . md5($ip . $action);
+    $requests = get_transient($rate_key);
+
+    // Allow 30 AJAX requests per minute per IP per action
+    if ($requests && $requests >= 30) {
+        wp_send_json_error(['message' => 'Rate limit exceeded'], 429);
+        exit;
+    }
+
+    set_transient($rate_key, ($requests + 1), MINUTE_IN_SECONDS);
+}
+
+/**
+ * ===============================================================
  * SECURITY AUDIT FIX: RATE LIMITING & PERMISSIONS (FIX C-01)
  * ===============================================================
  */

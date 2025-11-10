@@ -76,6 +76,40 @@ if (class_exists('WPCF7_ContactForm')) {
                         </td>
                     </tr>
                 </table>
+
+                <h3 style="color: #7216f4;">Security & Anti-Spam</h3>
+                <table class="form-table">
+                    <tr>
+                        <th scope="row"><label for="tpa_recaptcha_site_key">reCAPTCHA Site Key</label></th>
+                        <td>
+                            <input type="text" name="tpa_recaptcha_site_key" id="tpa_recaptcha_site_key" value="<?php echo esc_attr(get_option('tpa_recaptcha_site_key', '')); ?>" class="regular-text" placeholder="6Lc..." />
+                            <p class="description">Google reCAPTCHA v3 Site Key for bot protection. <a href="https://www.google.com/recaptcha/admin" target="_blank">Get keys here</a></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="tpa_recaptcha_secret_key">reCAPTCHA Secret Key</label></th>
+                        <td>
+                            <input type="password" name="tpa_recaptcha_secret_key" id="tpa_recaptcha_secret_key" value="<?php echo esc_attr(get_option('tpa_recaptcha_secret_key', '')); ?>" class="regular-text" placeholder="6Lc..." />
+                            <p class="description">Google reCAPTCHA v3 Secret Key (kept private)</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="tpa_recaptcha_threshold">reCAPTCHA Score Threshold</label></th>
+                        <td>
+                            <input type="number" name="tpa_recaptcha_threshold" id="tpa_recaptcha_threshold" value="<?php echo esc_attr(get_option('tpa_recaptcha_threshold', '0.5')); ?>" class="small-text" min="0.0" max="1.0" step="0.1" />
+                            <p class="description">Minimum score to accept (0.0 = bot, 1.0 = human). Recommended: 0.5</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Enhanced Bot Detection</th>
+                        <td>
+                            <label><input type="checkbox" name="tpa_timing_check" value="1" <?php checked(get_option('tpa_timing_check', 1), 1); ?> /> Enable timing analysis (detect too-fast submissions)</label><br>
+                            <label><input type="checkbox" name="tpa_fingerprint_check" value="1" <?php checked(get_option('tpa_fingerprint_check', 1), 1); ?> /> Enable browser fingerprinting checks</label><br>
+                            <label><input type="checkbox" name="tpa_ip_reputation" value="1" <?php checked(get_option('tpa_ip_reputation', 0), 1); ?> /> Enable IP reputation checking (requires external API)</label>
+                            <p class="description">Additional layers of bot detection beyond honeypot and rate limiting</p>
+                        </td>
+                    </tr>
+                </table>
                 <?php submit_button('Save Settings', 'primary large'); ?>
             </div>
             <div>

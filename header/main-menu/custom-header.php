@@ -37,7 +37,7 @@ function add_my_custom_header_html() {
                                             <p>North America</p>
                                         </div>
                                         <img class="rt-explore-image"
-                                            src="https://realtreasury.com/wp-content/uploads/2025/10/treasury-tech-market-10-2025-clean.webp"
+                                            src="https://realtreasury.com/wp-content/uploads/2025/11/treasury-tech-market-11-2025-clean.webp"
                                              alt="Treasury Tech Market"
                                              loading="lazy">
                                     </a>

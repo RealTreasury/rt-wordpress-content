@@ -881,6 +881,176 @@
             font-size: 1.2rem;
             cursor: pointer;
         }
+
+        /* ===============================================================
+           Data Table Styles
+           =============================================================== */
+        .cre-report-page .data-table-container {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(248, 248, 248, 0.98) 100%);
+            backdrop-filter: blur(20px) saturate(130%);
+            -webkit-backdrop-filter: blur(20px) saturate(130%);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            border-radius: 16px;
+            margin: 40px 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow:
+                0 8px 32px rgba(114, 22, 244, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .cre-report-page .data-table-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+            border-radius: 16px 16px 0 0;
+            z-index: 1;
+        }
+
+        .cre-report-page .table-header {
+            padding: 30px 40px 20px;
+            border-bottom: 1px solid rgba(199, 125, 255, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        .cre-report-page .table-header h2 {
+            color: var(--dark-text) !important;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+        }
+
+        .cre-report-page .table-header p {
+            color: var(--gray-text);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .cre-report-page .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cre-report-page .data-table thead th {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%) !important;
+            color: white !important;
+            padding: 15px 12px !important;
+            text-align: left !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            position: relative !important;
+            user-select: none !important;
+            vertical-align: middle !important;
+            white-space: nowrap !important;
+        }
+
+        .cre-report-page .data-table thead th:hover {
+            background: linear-gradient(135deg, var(--secondary-purple), var(--light-purple)) !important;
+        }
+
+        .cre-report-page .data-table thead th.sortable::after {
+            content: ' ⇅';
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-left: 4px;
+        }
+
+        .cre-report-page .data-table thead th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+        }
+
+        .cre-report-page .data-table thead th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
+        }
+
+        .cre-report-page .data-table tbody td {
+            padding: 15px 12px;
+            border-bottom: 1px solid rgba(199, 125, 255, 0.1);
+            color: var(--dark-text);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .cre-report-page .data-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .cre-report-page .data-table tbody tr:hover {
+            background: rgba(114, 22, 244, 0.05);
+        }
+
+        .cre-report-page .risk-extreme {
+            border-left: 4px solid #e74c3c;
+            background: linear-gradient(90deg, rgba(231, 76, 60, 0.05), transparent);
+        }
+
+        .cre-report-page .risk-very-high {
+            border-left: 4px solid #f39c12;
+            background: linear-gradient(90deg, rgba(243, 156, 18, 0.05), transparent);
+        }
+
+        .cre-report-page .risk-high {
+            border-left: 4px solid #f1c40f;
+            background: linear-gradient(90deg, rgba(241, 196, 15, 0.05), transparent);
+        }
+
+        .cre-report-page .bank-name {
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .cre-report-page .percentage {
+            font-weight: 700;
+            color: var(--primary-purple);
+        }
+
+        .cre-report-page .assets {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+
+        @media (max-width: 768px) {
+            .cre-report-page .data-table-container {
+                margin: 20px -20px;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+
+            .cre-report-page .table-header {
+                padding: 20px;
+            }
+
+            .cre-report-page .table-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .cre-report-page .data-table {
+                font-size: 0.8rem;
+            }
+
+            .cre-report-page .data-table thead th,
+            .cre-report-page .data-table tbody td {
+                padding: 10px 8px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -978,6 +1148,932 @@
                 <strong>📊 Q3 2025 Key Finding:</strong> Zero banks meet all four risk criteria simultaneously, representing a significant improvement from prior quarters (Q4 2024: 34 banks, Q1 2025: 32 banks, Q2 2025: 34 banks). While individual banks exhibit elevated CRE concentrations, the absence of banks meeting all four thresholds suggests improved overall risk profiles across the banking sector.
             </div>
         </section>
+
+
+        <!-- Data Table Section -->
+        <div class="container">
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h2>Complete Bank CRE Data - Q3 2025</h2>
+                    <p>Click column headers to sort • All 100 banks ranked by CRE exposure</p>
+                </div>
+                <table class="data-table" id="bankTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-sort="rank">CRE Rank</th>
+                            <th class="sortable" data-sort="bank">Bank Name</th>
+                            <th class="sortable" data-sort="assets">Total Assets ($000)</th>
+                            <th class="sortable" data-sort="loans">Net Loans/Assets</th>
+                            <th class="sortable" data-sort="noncurr">Non-Curr Assets</th>
+                            <th class="sortable" data-sort="cd">C&D/Tier 1 Cap</th>
+                            <th class="sortable" data-sort="cre">CRE/Tier 1 Cap</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="risk-extreme">
+                        <td>1</td>
+                        <td class="bank-name">PROVIDENT BK</td>
+                        <td class="assets">24840140</td>
+                        <td>76.95%</td>
+                        <td>0.49%</td>
+                        <td>29.99</td>
+                        <td class="percentage">540.39%</td>
+                    </tr>
+                    <tr class="risk-very-high">
+                        <td>2</td>
+                        <td class="bank-name">BROOKLINE BK</td>
+                        <td class="assets">22779605</td>
+                        <td>79.33%</td>
+                        <td>0.67%</td>
+                        <td>34.31</td>
+                        <td class="percentage">450.39%</td>
+                    </tr>
+                    <tr class="risk-very-high">
+                        <td>3</td>
+                        <td class="bank-name">SIMMONS BK</td>
+                        <td class="assets">24164419</td>
+                        <td>70.13%</td>
+                        <td>0.89%</td>
+                        <td>125.67</td>
+                        <td class="percentage">445.74%</td>
+                    </tr>
+                    <tr class="risk-very-high">
+                        <td>4</td>
+                        <td class="bank-name">VALLEY NB</td>
+                        <td class="assets">62959203</td>
+                        <td>77.36%</td>
+                        <td>0.87%</td>
+                        <td>37.27</td>
+                        <td class="percentage">430.84%</td>
+                    </tr>
+                    <tr class="risk-very-high">
+                        <td>5</td>
+                        <td class="bank-name">FLAGSTAR BK NA</td>
+                        <td class="assets">91593478</td>
+                        <td>67.83%</td>
+                        <td>5.49%</td>
+                        <td>24.27</td>
+                        <td class="percentage">419.15%</td>
+                    </tr>
+                    <tr class="risk-very-high">
+                        <td>6</td>
+                        <td class="bank-name">UMPQUA BK</td>
+                        <td class="assets">67491443</td>
+                        <td>71.61%</td>
+                        <td>0.41%</td>
+                        <td>38.13</td>
+                        <td class="percentage">418.84%</td>
+                    </tr>
+                    <tr class="risk-very-high">
+                        <td>7</td>
+                        <td class="bank-name">RENASANT BK</td>
+                        <td class="assets">26722596</td>
+                        <td>71.16%</td>
+                        <td>0.89%</td>
+                        <td>70.49</td>
+                        <td class="percentage">401.04%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>8</td>
+                        <td class="bank-name">GLACIER BK</td>
+                        <td class="assets">28997691</td>
+                        <td>64.16%</td>
+                        <td>0.28%</td>
+                        <td>74.20</td>
+                        <td class="percentage">388.65%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>9</td>
+                        <td class="bank-name">WESBANCO BK</td>
+                        <td class="assets">27465831</td>
+                        <td>68.61%</td>
+                        <td>0.60%</td>
+                        <td>71.51</td>
+                        <td class="percentage">387.12%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>10</td>
+                        <td class="bank-name">MECHANICS BK</td>
+                        <td class="assets">22712606</td>
+                        <td>63.66%</td>
+                        <td>0.44%</td>
+                        <td>24.00</td>
+                        <td class="percentage">385.28%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>11</td>
+                        <td class="bank-name">WASHINGTON FED BK</td>
+                        <td class="assets">26682607</td>
+                        <td>75.3%</td>
+                        <td>0.63%</td>
+                        <td>53.47</td>
+                        <td class="percentage">384.41%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>12</td>
+                        <td class="bank-name">ATLANTIC UNION BK</td>
+                        <td class="assets">36991202</td>
+                        <td>73.24%</td>
+                        <td>0.55%</td>
+                        <td>51.81</td>
+                        <td class="percentage">380.49%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>13</td>
+                        <td class="bank-name">SOUTHSTATE BK NA</td>
+                        <td class="assets">66027921</td>
+                        <td>71.82%</td>
+                        <td>0.63%</td>
+                        <td>37.64</td>
+                        <td class="percentage">379.24%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>14</td>
+                        <td class="bank-name">UNITED BK</td>
+                        <td class="assets">33293363</td>
+                        <td>72.82%</td>
+                        <td>0.48%</td>
+                        <td>93.62</td>
+                        <td class="percentage">366.82%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>15</td>
+                        <td class="bank-name">BANK OZK</td>
+                        <td class="assets">41606548</td>
+                        <td>77.67%</td>
+                        <td>0.46%</td>
+                        <td>141.61</td>
+                        <td class="percentage">366.34%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>16</td>
+                        <td class="bank-name">ROCKLAND TC</td>
+                        <td class="assets">24993348</td>
+                        <td>73.14%</td>
+                        <td>0.47%</td>
+                        <td>52.02</td>
+                        <td class="percentage">366.29%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>17</td>
+                        <td class="bank-name">FIRST INTRST BK</td>
+                        <td class="assets">27254238</td>
+                        <td>58.47%</td>
+                        <td>1.13%</td>
+                        <td>35.54</td>
+                        <td class="percentage">355.91%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>18</td>
+                        <td class="bank-name">OLD NB</td>
+                        <td class="assets">70996954</td>
+                        <td>66.87%</td>
+                        <td>1.23%</td>
+                        <td>44.57</td>
+                        <td class="percentage">351.10%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>19</td>
+                        <td class="bank-name">BANC OF CA</td>
+                        <td class="assets">33923978</td>
+                        <td>70.99%</td>
+                        <td>1.34%</td>
+                        <td>60.99</td>
+                        <td class="percentage">350.42%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>20</td>
+                        <td class="bank-name">UNITED CMNTY BK</td>
+                        <td class="assets">28087547</td>
+                        <td>67.62%</td>
+                        <td>0.50%</td>
+                        <td>68.31</td>
+                        <td class="percentage">350.39%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>21</td>
+                        <td class="bank-name">CATHAY BK</td>
+                        <td class="assets">24059479</td>
+                        <td>82.76%</td>
+                        <td>0.82%</td>
+                        <td>14.94</td>
+                        <td class="percentage">345.66%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>22</td>
+                        <td class="bank-name">CITY NB OF FL</td>
+                        <td class="assets">27770671</td>
+                        <td>70.52%</td>
+                        <td>1.05%</td>
+                        <td>52.95</td>
+                        <td class="percentage">345.00%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>23</td>
+                        <td class="bank-name">AMERIS BK</td>
+                        <td class="assets">27013931</td>
+                        <td>79.65%</td>
+                        <td>0.49%</td>
+                        <td>42.25</td>
+                        <td class="percentage">312.83%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>24</td>
+                        <td class="bank-name">SYNOVUS BK</td>
+                        <td class="assets">60332869</td>
+                        <td>71.99%</td>
+                        <td>0.49%</td>
+                        <td>30.65</td>
+                        <td class="percentage">309.67%</td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td>25</td>
+                        <td class="bank-name">WILMINGTON SVG FUND SCTY FSB</td>
+                        <td class="assets">20758310</td>
+                        <td>61.86%</td>
+                        <td>0.66%</td>
+                        <td>43.64</td>
+                        <td class="percentage">305.85%</td>
+                    </tr>
+                    <tr class="">
+                        <td>26</td>
+                        <td class="bank-name">AXOS BK</td>
+                        <td class="assets">26345444</td>
+                        <td>81.03%</td>
+                        <td>0.58%</td>
+                        <td>63.14</td>
+                        <td class="percentage">299.93%</td>
+                    </tr>
+                    <tr class="">
+                        <td>27</td>
+                        <td class="bank-name">PINNACLE BK</td>
+                        <td class="assets">55867973</td>
+                        <td>67.43%</td>
+                        <td>0.40%</td>
+                        <td>59.67</td>
+                        <td class="percentage">299.39%</td>
+                    </tr>
+                    <tr class="">
+                        <td>28</td>
+                        <td class="bank-name">CENTENNIAL BK</td>
+                        <td class="assets">22542008</td>
+                        <td>66.14%</td>
+                        <td>0.56%</td>
+                        <td>90.60</td>
+                        <td class="percentage">298.60%</td>
+                    </tr>
+                    <tr class="">
+                        <td>29</td>
+                        <td class="bank-name">WEBSTER BK NA</td>
+                        <td class="assets">83097405</td>
+                        <td>65.46%</td>
+                        <td>1.04%</td>
+                        <td>25.38</td>
+                        <td class="percentage">293.74%</td>
+                    </tr>
+                    <tr class="">
+                        <td>30</td>
+                        <td class="bank-name">FULTON BK NA</td>
+                        <td class="assets">31842186</td>
+                        <td>74.38%</td>
+                        <td>0.83%</td>
+                        <td>31.56</td>
+                        <td class="percentage">292.93%</td>
+                    </tr>
+                    <tr class="">
+                        <td>31</td>
+                        <td class="bank-name">UMB BK NA</td>
+                        <td class="assets">71519137</td>
+                        <td>52.16%</td>
+                        <td>0.37%</td>
+                        <td>58.58</td>
+                        <td class="percentage">286.30%</td>
+                    </tr>
+                    <tr class="">
+                        <td>32</td>
+                        <td class="bank-name">CADENCE BK</td>
+                        <td class="assets">53282352</td>
+                        <td>68.63%</td>
+                        <td>0.99%</td>
+                        <td>61.44</td>
+                        <td class="percentage">284.56%</td>
+                    </tr>
+                    <tr class="">
+                        <td>33</td>
+                        <td class="bank-name">ZIONS BC NA</td>
+                        <td class="assets">88533079</td>
+                        <td>67.59%</td>
+                        <td>0.54%</td>
+                        <td>39.58</td>
+                        <td class="percentage">276.47%</td>
+                    </tr>
+                    <tr class="">
+                        <td>34</td>
+                        <td class="bank-name">EASTERN BK</td>
+                        <td class="assets">25448467</td>
+                        <td>72.04%</td>
+                        <td>0.37%</td>
+                        <td>11.85</td>
+                        <td class="percentage">272.07%</td>
+                    </tr>
+                    <tr class="">
+                        <td>35</td>
+                        <td class="bank-name">FIRST NB OF PA</td>
+                        <td class="assets">49665430</td>
+                        <td>69.98%</td>
+                        <td>0.39%</td>
+                        <td>59.90</td>
+                        <td class="percentage">267.57%</td>
+                    </tr>
+                    <tr class="">
+                        <td>36</td>
+                        <td class="bank-name">EAST WEST BK</td>
+                        <td class="assets">79081956</td>
+                        <td>69.54%</td>
+                        <td>0.32%</td>
+                        <td>8.51</td>
+                        <td class="percentage">266.15%</td>
+                    </tr>
+                    <tr class="">
+                        <td>37</td>
+                        <td class="bank-name">CUSTOMERS BK</td>
+                        <td class="assets">24261355</td>
+                        <td>66.57%</td>
+                        <td>0.20%</td>
+                        <td>6.56</td>
+                        <td class="percentage">263.08%</td>
+                    </tr>
+                    <tr class="">
+                        <td>38</td>
+                        <td class="bank-name">ARVEST BK</td>
+                        <td class="assets">27349420</td>
+                        <td>70.38%</td>
+                        <td>0.83%</td>
+                        <td>71.03</td>
+                        <td class="percentage">258.54%</td>
+                    </tr>
+                    <tr class="">
+                        <td>39</td>
+                        <td class="bank-name">FIRSTBANK</td>
+                        <td class="assets">26620953</td>
+                        <td>59.97%</td>
+                        <td>0.54%</td>
+                        <td>40.66</td>
+                        <td class="percentage">257.40%</td>
+                    </tr>
+                    <tr class="">
+                        <td>40</td>
+                        <td class="bank-name">FIRST HORIZON BK</td>
+                        <td class="assets">82886598</td>
+                        <td>75.75%</td>
+                        <td>0.98%</td>
+                        <td>19.26</td>
+                        <td class="percentage">252.91%</td>
+                    </tr>
+                    <tr class="">
+                        <td>41</td>
+                        <td class="bank-name">ASSOCIATED BK NA</td>
+                        <td class="assets">44393788</td>
+                        <td>69.04%</td>
+                        <td>0.36%</td>
+                        <td>49.21</td>
+                        <td class="percentage">249.13%</td>
+                    </tr>
+                    <tr class="">
+                        <td>42</td>
+                        <td class="bank-name">MIDFIRST BK</td>
+                        <td class="assets">41161881</td>
+                        <td>78.55%</td>
+                        <td>11.25%</td>
+                        <td>27.33</td>
+                        <td class="percentage">241.24%</td>
+                    </tr>
+                    <tr class="">
+                        <td>43</td>
+                        <td class="bank-name">BANKUNITED NA</td>
+                        <td class="assets">35065427</td>
+                        <td>66.97%</td>
+                        <td>2.29%</td>
+                        <td>20.13</td>
+                        <td class="percentage">232.43%</td>
+                    </tr>
+                    <tr class="">
+                        <td>44</td>
+                        <td class="bank-name">FIRST HAWAIIAN BK</td>
+                        <td class="assets">24101748</td>
+                        <td>57.94%</td>
+                        <td>0.26%</td>
+                        <td>37.98</td>
+                        <td class="percentage">231.52%</td>
+                    </tr>
+                    <tr class="">
+                        <td>45</td>
+                        <td class="bank-name">OPTUM BK</td>
+                        <td class="assets">20102000</td>
+                        <td>42.19%</td>
+                        <td>0.19%</td>
+                        <td>3.13</td>
+                        <td class="percentage">230.20%</td>
+                    </tr>
+                    <tr class="">
+                        <td>46</td>
+                        <td class="bank-name">WESTERN ALLI BK</td>
+                        <td class="assets">90816270</td>
+                        <td>66.16%</td>
+                        <td>2.08%</td>
+                        <td>50.33</td>
+                        <td class="percentage">226.53%</td>
+                    </tr>
+                    <tr class="">
+                        <td>47</td>
+                        <td class="bank-name">BOKF NA</td>
+                        <td class="assets">49918282</td>
+                        <td>49.37%</td>
+                        <td>0.54%</td>
+                        <td>26.01</td>
+                        <td class="percentage">223.38%</td>
+                    </tr>
+                    <tr class="">
+                        <td>48</td>
+                        <td class="bank-name">TRISTATE CAP BK</td>
+                        <td class="assets">22333726</td>
+                        <td>74.06%</td>
+                        <td>0.38%</td>
+                        <td>17.20</td>
+                        <td class="percentage">220.68%</td>
+                    </tr>
+                    <tr class="">
+                        <td>49</td>
+                        <td class="bank-name">BANK OF HAWAII</td>
+                        <td class="assets">23980457</td>
+                        <td>57.86%</td>
+                        <td>0.20%</td>
+                        <td>30.51</td>
+                        <td class="percentage">211.83%</td>
+                    </tr>
+                    <tr class="">
+                        <td>50</td>
+                        <td class="bank-name">HANCOCK WHITNEY BK</td>
+                        <td class="assets">35747114</td>
+                        <td>65.23%</td>
+                        <td>0.58%</td>
+                        <td>27.83</td>
+                        <td class="percentage">208.25%</td>
+                    </tr>
+                    <tr class="">
+                        <td>51</td>
+                        <td class="bank-name">PROSPERITY BK</td>
+                        <td class="assets">38360065</td>
+                        <td>56.54%</td>
+                        <td>0.48%</td>
+                        <td>67.89</td>
+                        <td class="percentage">208.16%</td>
+                    </tr>
+                    <tr class="">
+                        <td>52</td>
+                        <td class="bank-name">CIBC BK USA</td>
+                        <td class="assets">61487093</td>
+                        <td>60.97%</td>
+                        <td>1.54%</td>
+                        <td>16.74</td>
+                        <td class="percentage">207.38%</td>
+                    </tr>
+                    <tr class="">
+                        <td>53</td>
+                        <td class="bank-name">COMERICA BK</td>
+                        <td class="assets">77366000</td>
+                        <td>65.11%</td>
+                        <td>0.53%</td>
+                        <td>33.74</td>
+                        <td class="percentage">204.07%</td>
+                    </tr>
+                    <tr class="">
+                        <td>54</td>
+                        <td class="bank-name">FROST BK</td>
+                        <td class="assets">52598588</td>
+                        <td>40.24%</td>
+                        <td>0.26%</td>
+                        <td>54.83</td>
+                        <td class="percentage">199.07%</td>
+                    </tr>
+                    <tr class="">
+                        <td>55</td>
+                        <td class="bank-name">EVERBANK NA</td>
+                        <td class="assets">44814438</td>
+                        <td>73.87%</td>
+                        <td>1.42%</td>
+                        <td>3.09</td>
+                        <td class="percentage">186.60%</td>
+                    </tr>
+                    <tr class="">
+                        <td>56</td>
+                        <td class="bank-name">MANUFACTURERS & TRADERS TC</td>
+                        <td class="assets">210741944</td>
+                        <td>64%</td>
+                        <td>1.48%</td>
+                        <td>18.81</td>
+                        <td class="percentage">177.68%</td>
+                    </tr>
+                    <tr class="">
+                        <td>57</td>
+                        <td class="bank-name">TEXAS CAP BK</td>
+                        <td class="assets">32246474</td>
+                        <td>74.17%</td>
+                        <td>0.40%</td>
+                        <td>30.11</td>
+                        <td class="percentage">169.07%</td>
+                    </tr>
+                    <tr class="">
+                        <td>58</td>
+                        <td class="bank-name">FIRST-CITIZENS B&TC</td>
+                        <td class="assets">233167000</td>
+                        <td>61.42%</td>
+                        <td>1.11%</td>
+                        <td>26.82</td>
+                        <td class="percentage">167.28%</td>
+                    </tr>
+                    <tr class="">
+                        <td>59</td>
+                        <td class="bank-name">CITY NB</td>
+                        <td class="assets">96473902</td>
+                        <td>68.11%</td>
+                        <td>0.46%</td>
+                        <td>29.89</td>
+                        <td class="percentage">146.97%</td>
+                    </tr>
+                    <tr class="">
+                        <td>60</td>
+                        <td class="bank-name">REGIONS BK</td>
+                        <td class="assets">158598000</td>
+                        <td>59.97%</td>
+                        <td>1.01%</td>
+                        <td>16.45</td>
+                        <td class="percentage">137.05%</td>
+                    </tr>
+                    <tr class="">
+                        <td>61</td>
+                        <td class="bank-name">COMMERCE BK</td>
+                        <td class="assets">32080679</td>
+                        <td>54.9%</td>
+                        <td>0.21%</td>
+                        <td>38.27</td>
+                        <td class="percentage">135.96%</td>
+                    </tr>
+                    <tr class="">
+                        <td>62</td>
+                        <td class="bank-name">CITIZENS BK NA</td>
+                        <td class="assets">222110656</td>
+                        <td>63.19%</td>
+                        <td>1.37%</td>
+                        <td>27.02</td>
+                        <td class="percentage">135.02%</td>
+                    </tr>
+                    <tr class="">
+                        <td>63</td>
+                        <td class="bank-name">SANTANDER BK NA</td>
+                        <td class="assets">97745560</td>
+                        <td>49.6%</td>
+                        <td>1.96%</td>
+                        <td>34.00</td>
+                        <td class="percentage">132.88%</td>
+                    </tr>
+                    <tr class="">
+                        <td>64</td>
+                        <td class="bank-name">FIRST NB OF OMAHA</td>
+                        <td class="assets">32340615</td>
+                        <td>68%</td>
+                        <td>0.77%</td>
+                        <td>49.73</td>
+                        <td class="percentage">128.98%</td>
+                    </tr>
+                    <tr class="">
+                        <td>65</td>
+                        <td class="bank-name">UBS BK USA</td>
+                        <td class="assets">115279525</td>
+                        <td>75.89%</td>
+                        <td>0.22%</td>
+                        <td>0.03</td>
+                        <td class="percentage">125.54%</td>
+                    </tr>
+                    <tr class="">
+                        <td>66</td>
+                        <td class="bank-name">BMO BK NA</td>
+                        <td class="assets">249342469</td>
+                        <td>54.94%</td>
+                        <td>1.13%</td>
+                        <td>17.74</td>
+                        <td class="percentage">109.71%</td>
+                    </tr>
+                    <tr class="">
+                        <td>67</td>
+                        <td class="bank-name">RAYMOND JAMES BK</td>
+                        <td class="assets">42857360</td>
+                        <td>81.78%</td>
+                        <td>0.35%</td>
+                        <td>3.48</td>
+                        <td class="percentage">107.42%</td>
+                    </tr>
+                    <tr class="">
+                        <td>68</td>
+                        <td class="bank-name">TRUIST BK</td>
+                        <td class="assets">535540000</td>
+                        <td>59.85%</td>
+                        <td>0.66%</td>
+                        <td>15.17</td>
+                        <td class="percentage">106.56%</td>
+                    </tr>
+                    <tr class="">
+                        <td>69</td>
+                        <td class="bank-name">KEYBANK NA</td>
+                        <td class="assets">184694965</td>
+                        <td>57.21%</td>
+                        <td>0.79%</td>
+                        <td>14.31</td>
+                        <td class="percentage">103.54%</td>
+                    </tr>
+                    <tr class="">
+                        <td>70</td>
+                        <td class="bank-name">BANCO POPULAR DE PR</td>
+                        <td class="assets">59601000</td>
+                        <td>44.19%</td>
+                        <td>2.43%</td>
+                        <td>6.26</td>
+                        <td class="percentage">97.28%</td>
+                    </tr>
+                    <tr class="">
+                        <td>71</td>
+                        <td class="bank-name">PNC BK NA</td>
+                        <td class="assets">563953196</td>
+                        <td>57.32%</td>
+                        <td>0.84%</td>
+                        <td>7.47</td>
+                        <td class="percentage">94.15%</td>
+                    </tr>
+                    <tr class="">
+                        <td>72</td>
+                        <td class="bank-name">HUNTINGTON NB</td>
+                        <td class="assets">209540855</td>
+                        <td>65.04%</td>
+                        <td>0.75%</td>
+                        <td>6.86</td>
+                        <td class="percentage">91.90%</td>
+                    </tr>
+                    <tr class="">
+                        <td>73</td>
+                        <td class="bank-name">WELLS FARGO BK NA</td>
+                        <td class="assets">1767105000</td>
+                        <td>50.85%</td>
+                        <td>1.21%</td>
+                        <td>10.08</td>
+                        <td class="percentage">87.84%</td>
+                    </tr>
+                    <tr class="">
+                        <td>74</td>
+                        <td class="bank-name">U S BK NA</td>
+                        <td class="assets">679293260</td>
+                        <td>55.57%</td>
+                        <td>1.26%</td>
+                        <td>13.91</td>
+                        <td class="percentage">84.70%</td>
+                    </tr>
+                    <tr class="">
+                        <td>75</td>
+                        <td class="bank-name">FIFTH THIRD BK NA</td>
+                        <td class="assets">212207000</td>
+                        <td>57.23%</td>
+                        <td>0.78%</td>
+                        <td>20.18</td>
+                        <td class="percentage">79.25%</td>
+                    </tr>
+                    <tr class="">
+                        <td>76</td>
+                        <td class="bank-name">T D BK NA</td>
+                        <td class="assets">350851701</td>
+                        <td>46.99%</td>
+                        <td>1.10%</td>
+                        <td>11.42</td>
+                        <td class="percentage">78.48%</td>
+                    </tr>
+                    <tr class="">
+                        <td>77</td>
+                        <td class="bank-name">JPMORGAN CHASE BK NA</td>
+                        <td class="assets">3813431000</td>
+                        <td>37.58%</td>
+                        <td>0.90%</td>
+                        <td>5.37</td>
+                        <td class="percentage">65.02%</td>
+                    </tr>
+                    <tr class="">
+                        <td>78</td>
+                        <td class="bank-name">NORTHERN TC</td>
+                        <td class="assets">169571105</td>
+                        <td>25.23%</td>
+                        <td>0.22%</td>
+                        <td>6.11</td>
+                        <td class="percentage">63.34%</td>
+                    </tr>
+                    <tr class="">
+                        <td>79</td>
+                        <td class="bank-name">BANK OF AMER NA</td>
+                        <td class="assets">2651090000</td>
+                        <td>43.31%</td>
+                        <td>0.68%</td>
+                        <td>5.04</td>
+                        <td class="percentage">54.33%</td>
+                    </tr>
+                    <tr class="">
+                        <td>80</td>
+                        <td class="bank-name">CAPITAL ONE NA</td>
+                        <td class="assets">652138082</td>
+                        <td>65.73%</td>
+                        <td>1.69%</td>
+                        <td>2.11</td>
+                        <td class="percentage">52.84%</td>
+                    </tr>
+                    <tr class="">
+                        <td>81</td>
+                        <td class="bank-name">MORGAN STANLEY PRIV BK NA</td>
+                        <td class="assets">240201000</td>
+                        <td>66.97%</td>
+                        <td>0.28%</td>
+                        <td>0.00</td>
+                        <td class="percentage">44.74%</td>
+                    </tr>
+                    <tr class="">
+                        <td>82</td>
+                        <td class="bank-name">BNY MELLON NA</td>
+                        <td class="assets">31312000</td>
+                        <td>59.71%</td>
+                        <td>0.05%</td>
+                        <td>3.55</td>
+                        <td class="percentage">44.46%</td>
+                    </tr>
+                    <tr class="">
+                        <td>83</td>
+                        <td class="bank-name">DEUTSCHE BK TC AMERICAS</td>
+                        <td class="assets">40293000</td>
+                        <td>38.05%</td>
+                        <td>1.45%</td>
+                        <td>1.36</td>
+                        <td class="percentage">42.45%</td>
+                    </tr>
+                    <tr class="">
+                        <td>84</td>
+                        <td class="bank-name">MORGAN STANLEY BK NA</td>
+                        <td class="assets">249681000</td>
+                        <td>40.53%</td>
+                        <td>0.69%</td>
+                        <td>1.30</td>
+                        <td class="percentage">36.96%</td>
+                    </tr>
+                    <tr class="">
+                        <td>85</td>
+                        <td class="bank-name">HSBC BK USA NA</td>
+                        <td class="assets">162239855</td>
+                        <td>35.07%</td>
+                        <td>1.42%</td>
+                        <td>0.96</td>
+                        <td class="percentage">36.03%</td>
+                    </tr>
+                    <tr class="">
+                        <td>86</td>
+                        <td class="bank-name">ALLY BK</td>
+                        <td class="assets">180089000</td>
+                        <td>72.79%</td>
+                        <td>1.01%</td>
+                        <td>1.74</td>
+                        <td class="percentage">33.19%</td>
+                    </tr>
+                    <tr class="">
+                        <td>87</td>
+                        <td class="bank-name">BANK OF NY MELLON</td>
+                        <td class="assets">366502000</td>
+                        <td>10.2%</td>
+                        <td>0.39%</td>
+                        <td>6.84</td>
+                        <td class="percentage">24.73%</td>
+                    </tr>
+                    <tr class="">
+                        <td>88</td>
+                        <td class="bank-name">GOLDMAN SACHS BK USA</td>
+                        <td class="assets">644020000</td>
+                        <td>32.66%</td>
+                        <td>1.17%</td>
+                        <td>4.78</td>
+                        <td class="percentage">23.53%</td>
+                    </tr>
+                    <tr class="">
+                        <td>89</td>
+                        <td class="bank-name">STATE STREET B&TC</td>
+                        <td class="assets">366079000</td>
+                        <td>12.74%</td>
+                        <td>0.50%</td>
+                        <td>0.00</td>
+                        <td class="percentage">21.81%</td>
+                    </tr>
+                    <tr class="">
+                        <td>90</td>
+                        <td class="bank-name">CITIBANK NA</td>
+                        <td class="assets">1844189000</td>
+                        <td>37.06%</td>
+                        <td>0.82%</td>
+                        <td>4.02</td>
+                        <td class="percentage">20.63%</td>
+                    </tr>
+                    <tr class="">
+                        <td>91</td>
+                        <td class="bank-name">SOFI BK NA</td>
+                        <td class="assets">41250282</td>
+                        <td>81.75%</td>
+                        <td>0.08%</td>
+                        <td>0.01</td>
+                        <td class="percentage">2.77%</td>
+                    </tr>
+                    <tr class="">
+                        <td>91</td>
+                        <td class="bank-name">T D BK USA NA</td>
+                        <td class="assets">34297872</td>
+                        <td>23.35%</td>
+                        <td>2.33%</td>
+                        <td>1.50</td>
+                        <td class="percentage">2.77%</td>
+                    </tr>
+                    <tr class="">
+                        <td>93</td>
+                        <td class="bank-name">CHARLES SCHWAB BK SSB</td>
+                        <td class="assets">243112000</td>
+                        <td>20.95%</td>
+                        <td>0.08%</td>
+                        <td>0.00</td>
+                        <td class="percentage">0.79%</td>
+                    </tr>
+                    <tr class="">
+                        <td>94</td>
+                        <td class="bank-name">SALLIE MAE BK</td>
+                        <td class="assets">29619252</td>
+                        <td>73.2%</td>
+                        <td>0.63%</td>
+                        <td>0.00</td>
+                        <td class="percentage">0.48%</td>
+                    </tr>
+                    <tr class="">
+                        <td>95</td>
+                        <td class="bank-name">SYNCHRONY BK</td>
+                        <td class="assets">110559000</td>
+                        <td>78.3%</td>
+                        <td>2.16%</td>
+                        <td>0.08</td>
+                        <td class="percentage">0.08%</td>
+                    </tr>
+                    <tr class="">
+                        <td>96</td>
+                        <td class="bank-name">AMERICAN EXPRESS NB</td>
+                        <td class="assets">211134002</td>
+                        <td>74.55%</td>
+                        <td>0.74%</td>
+                        <td>0.00</td>
+                        <td class="percentage">0.07%</td>
+                    </tr>
+                    <tr class="">
+                        <td>97</td>
+                        <td class="bank-name">BARCLAYS BK DE</td>
+                        <td class="assets">46823000</td>
+                        <td>69.15%</td>
+                        <td>1.59%</td>
+                        <td>0.00</td>
+                        <td class="percentage">0.06%</td>
+                    </tr>
+                    <tr class="">
+                        <td>98</td>
+                        <td class="bank-name">USAA FSB</td>
+                        <td class="assets">104903000</td>
+                        <td>40.32%</td>
+                        <td>1.10%</td>
+                        <td>0.00</td>
+                        <td class="percentage">0.00%</td>
+                    </tr>
+                    <tr class="">
+                        <td>98</td>
+                        <td class="bank-name">AMERIPRISE BK FSB</td>
+                        <td class="assets">24297035</td>
+                        <td>7.11%</td>
+                        <td>0.16%</td>
+                        <td>0.00</td>
+                        <td class="percentage">0.00%</td>
+                    </tr>
+                    <tr class="">
+                        <td>98</td>
+                        <td class="bank-name">CHARLES SCHWAB PREMIER BK SSB</td>
+                        <td class="assets">25134000</td>
+                        <td>11.39%</td>
+                        <td>0.00%</td>
+                        <td>0.00</td>
+                        <td class="percentage">0.00%</td>
+                    </tr>                    </tbody>
+                </table>
+            </div>
+        </div>
+
 
         <!-- Company Introduction with Authority Signals -->
         <section class="content-section intro-section">
@@ -1318,6 +2414,89 @@ Best regards`);
                 observer.observe(section);
             });
 
+        })();
+
+        // Table sorting functionality
+        (function() {
+            const table = document.getElementById('bankTable');
+            if (!table) return;
+
+            const headers = table.querySelectorAll('thead th.sortable');
+            let currentSort = { column: null, direction: null };
+
+            headers.forEach(header => {
+                header.addEventListener('click', function() {
+                    const sortType = this.getAttribute('data-sort');
+                    const tbody = table.querySelector('tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+                    // Determine sort direction
+                    let direction = 'asc';
+                    if (currentSort.column === sortType && currentSort.direction === 'asc') {
+                        direction = 'desc';
+                    }
+
+                    // Remove sort classes from all headers
+                    headers.forEach(h => {
+                        h.classList.remove('sort-asc', 'sort-desc');
+                    });
+
+                    // Add sort class to current header
+                    this.classList.add(direction === 'asc' ? 'sort-asc' : 'sort-desc');
+
+                    // Sort rows
+                    rows.sort((a, b) => {
+                        let aValue, bValue;
+
+                        switch(sortType) {
+                            case 'rank':
+                                aValue = parseInt(a.cells[0].textContent);
+                                bValue = parseInt(b.cells[0].textContent);
+                                break;
+                            case 'bank':
+                                aValue = a.cells[1].textContent.trim();
+                                bValue = b.cells[1].textContent.trim();
+                                break;
+                            case 'assets':
+                                aValue = parseInt(a.cells[2].textContent.replace(/,/g, ''));
+                                bValue = parseInt(b.cells[2].textContent.replace(/,/g, ''));
+                                break;
+                            case 'loans':
+                                aValue = parseFloat(a.cells[3].textContent);
+                                bValue = parseFloat(b.cells[3].textContent);
+                                break;
+                            case 'noncurr':
+                                aValue = parseFloat(a.cells[4].textContent);
+                                bValue = parseFloat(b.cells[4].textContent);
+                                break;
+                            case 'cd':
+                                aValue = parseFloat(a.cells[5].textContent);
+                                bValue = parseFloat(b.cells[5].textContent);
+                                break;
+                            case 'cre':
+                                aValue = parseFloat(a.cells[6].textContent);
+                                bValue = parseFloat(b.cells[6].textContent);
+                                break;
+                        }
+
+                        if (typeof aValue === 'string') {
+                            return direction === 'asc'
+                                ? aValue.localeCompare(bValue)
+                                : bValue.localeCompare(aValue);
+                        } else {
+                            return direction === 'asc'
+                                ? aValue - bValue
+                                : bValue - aValue;
+                        }
+                    });
+
+                    // Reorder table rows
+                    rows.forEach(row => tbody.appendChild(row));
+
+                    // Update current sort state
+                    currentSort = { column: sortType, direction: direction };
+                });
+            });
         })();
     </script>
 </div>

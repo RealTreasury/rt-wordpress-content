@@ -1250,6 +1250,32 @@ function rt_enqueue_iframe_resizer_script() {
     );
 }
 
+add_action('wp_enqueue_scripts', 'rt_enqueue_shared_styles', 100);
+function rt_enqueue_shared_styles() {
+    if (is_admin()) {
+        return;
+    }
+
+    $shared_path = get_stylesheet_directory() . '/assets/css/shared.css';
+    if (!file_exists($shared_path)) {
+        return;
+    }
+
+    $shared_uri = get_stylesheet_directory_uri() . '/assets/css/shared.css';
+    $dependencies = array();
+
+    if (wp_style_is('astra-theme-css', 'registered') || wp_style_is('astra-theme-css', 'enqueued')) {
+        $dependencies[] = 'astra-theme-css';
+    }
+
+    wp_enqueue_style(
+        'rt-shared-styles',
+        $shared_uri,
+        $dependencies,
+        filemtime($shared_path)
+    );
+}
+
 /**
  * TREASURY PORTAL ACCESS - JQUERY FIXES
  * Fix jQuery loading issues for Treasury Portal Access

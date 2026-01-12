@@ -4964,3 +4964,208 @@ a[href="#openportalmodal"] {
 #ast-mobile-header {
     display: none !important;
 }
+
+/* =====================================================
+   RT Contact Form 7 (Contact_Us - id="1a045be")
+   Variant 1: Tight Professional (default)
+   Variant 2: Subtle Premium Glass (toggle .rt-cf7--v2)
+   ===================================================== */
+.rt-cf7,
+.rt-cf7--contact-us,
+.wpcf7:has(.wpcf7-form#1a045be),
+.wpcf7-form#1a045be {
+    --rt-cf7-primary: #7216f4;
+    --rt-cf7-primary-dark: #5b0acd;
+    --rt-cf7-primary-soft: #9d4edd;
+    --rt-cf7-accent: #281345;
+    --rt-cf7-text: #131313;
+    --rt-cf7-border: #bebebe;
+    --rt-cf7-border-hover: #7e7e7e;
+    --rt-cf7-bg: #ffffff;
+    --rt-cf7-muted-bg: #f8f8f8;
+    --rt-cf7-shadow: 0 0 0 4px rgba(114, 22, 244, 0.12);
+}
+
+.site-content .rt-cf7 .wpcf7,
+.entry-content .rt-cf7 .wpcf7,
+.site-content .rt-cf7--contact-us .wpcf7,
+.entry-content .rt-cf7--contact-us .wpcf7,
+.wpcf7:has(.wpcf7-form#1a045be) {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.rt-cf7 .wpcf7-form,
+.rt-cf7--contact-us .wpcf7-form,
+.wpcf7-form#1a045be {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rt-cf7 .wpcf7-form p,
+.rt-cf7--contact-us .wpcf7-form p,
+.wpcf7-form#1a045be p {
+    margin: 0;
+}
+
+.rt-cf7 .wpcf7-form label,
+.rt-cf7--contact-us .wpcf7-form label,
+.wpcf7-form#1a045be label {
+    color: var(--rt-cf7-text);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.rt-cf7 .wpcf7-form .rt-input,
+.rt-cf7--contact-us .wpcf7-form .rt-input,
+.wpcf7-form#1a045be .rt-input,
+.rt-cf7 .wpcf7-form-control.wpcf7-text,
+.rt-cf7 .wpcf7-form-control.wpcf7-email,
+.rt-cf7 .wpcf7-form-control.wpcf7-tel,
+.rt-cf7 .wpcf7-form-control.wpcf7-textarea,
+.rt-cf7--contact-us .wpcf7-form-control.wpcf7-text,
+.rt-cf7--contact-us .wpcf7-form-control.wpcf7-email,
+.rt-cf7--contact-us .wpcf7-form-control.wpcf7-tel,
+.rt-cf7--contact-us .wpcf7-form-control.wpcf7-textarea,
+.wpcf7-form#1a045be .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]) {
+    width: 100%;
+    height: 44px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--rt-cf7-border);
+    background-color: var(--rt-cf7-bg);
+    color: var(--rt-cf7-text);
+    font-size: 15px;
+    line-height: 1.4;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.rt-cf7 .wpcf7-form textarea.rt-input,
+.rt-cf7--contact-us .wpcf7-form textarea.rt-input,
+.wpcf7-form#1a045be textarea {
+    height: auto;
+    min-height: 140px;
+    resize: vertical;
+}
+
+.rt-cf7 .wpcf7-form .rt-input:hover,
+.rt-cf7--contact-us .wpcf7-form .rt-input:hover,
+.wpcf7-form#1a045be .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]):hover {
+    border-color: var(--rt-cf7-border-hover);
+}
+
+.rt-cf7 .wpcf7-form .rt-input:focus,
+.rt-cf7--contact-us .wpcf7-form .rt-input:focus,
+.wpcf7-form#1a045be .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]):focus {
+    outline: none;
+    border-color: var(--rt-cf7-primary);
+    box-shadow: var(--rt-cf7-shadow);
+}
+
+.rt-cf7 .wpcf7-form .rt-btn,
+.rt-cf7--contact-us .wpcf7-form .rt-btn,
+.wpcf7-form#1a045be .wpcf7-submit {
+    width: 100%;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #7216f4 0%, #9d4edd 100%) !important;
+    color: #ffffff !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    box-shadow: 0 10px 20px rgba(114, 22, 244, 0.2);
+}
+
+.rt-cf7 .wpcf7-form .rt-btn:hover,
+.rt-cf7--contact-us .wpcf7-form .rt-btn:hover,
+.wpcf7-form#1a045be .wpcf7-submit:hover {
+    background: var(--rt-cf7-primary-dark) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(91, 10, 205, 0.25);
+}
+
+.rt-cf7 .wpcf7-form .rt-btn:active,
+.rt-cf7--contact-us .wpcf7-form .rt-btn:active,
+.wpcf7-form#1a045be .wpcf7-submit:active {
+    transform: translateY(0);
+}
+
+.rt-cf7 .wpcf7-not-valid-tip,
+.rt-cf7--contact-us .wpcf7-not-valid-tip,
+.wpcf7-form#1a045be .wpcf7-not-valid-tip {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #dc2626;
+    font-weight: 500;
+}
+
+.rt-cf7 .wpcf7-response-output,
+.rt-cf7--contact-us .wpcf7-response-output,
+.wpcf7-form#1a045be .wpcf7-response-output {
+    margin: 12px 0 0;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    border: 1px solid transparent;
+}
+
+.rt-cf7 .wpcf7-form.invalid .wpcf7-response-output,
+.rt-cf7--contact-us .wpcf7-form.invalid .wpcf7-response-output,
+.wpcf7-form#1a045be.invalid .wpcf7-response-output {
+    border-color: #dc2626;
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.rt-cf7 .wpcf7-form.sent .wpcf7-response-output,
+.rt-cf7--contact-us .wpcf7-form.sent .wpcf7-response-output,
+.wpcf7-form#1a045be.sent .wpcf7-response-output {
+    border-color: #16a34a;
+    background: #f0fdf4;
+    color: #166534;
+}
+
+@media (max-width: 640px) {
+    .site-content .rt-cf7 .wpcf7,
+    .entry-content .rt-cf7 .wpcf7,
+    .site-content .rt-cf7--contact-us .wpcf7,
+    .entry-content .rt-cf7--contact-us .wpcf7,
+    .wpcf7:has(.wpcf7-form#1a045be) {
+        max-width: 100%;
+    }
+}
+
+/* Variant 2: Subtle Premium Glass (toggle .rt-cf7--v2 on wrapper) */
+.rt-cf7--v2 {
+    background: var(--rt-cf7-muted-bg);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.rt-cf7--v2 .wpcf7-form,
+.rt-cf7--v2 .wpcf7-form#1a045be {
+    gap: 12px;
+}
+
+.rt-cf7--v2 .wpcf7-form .rt-input,
+.rt-cf7--v2 .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]) {
+    border-color: rgba(190, 190, 190, 0.7);
+    box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+}
+
+.rt-cf7--v2 .wpcf7-form .rt-input:focus,
+.rt-cf7--v2 .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]):focus {
+    box-shadow: 0 0 0 4px rgba(114, 22, 244, 0.14), 0 10px 20px rgba(114, 22, 244, 0.12);
+}
+
+@media (max-width: 640px) {
+    .rt-cf7--v2 {
+        padding: 18px;
+    }
+}

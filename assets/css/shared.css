@@ -439,9 +439,9 @@
 .checkbox-row {
     display: flex !important;
     align-items: flex-start !important;
-    gap: 12px !important;
-    margin: 24px 0 !important;
-    padding: 16px !important;
+    gap: 4px !important;
+    margin: 8px 0 !important;
+    padding: 4px !important;
     background: #fafbfc !important;
     border-radius: 8px !important;
     border: 1px solid #e2e8f0 !important;
@@ -450,7 +450,7 @@
 .checkbox-row input[type=checkbox] {
     position: relative !important;
     width: 16px !important;
-    height: 16px !important;
+    height: 12px !important;
     margin: 0 !important;
     flex-shrink: 0 !important;
     margin-top: 2px !important;
@@ -461,7 +461,7 @@
 .checkbox-row label {
     margin: 0 !important;
     font-size: 14px !important;
-    line-height: 1.5 !important;
+    line-height: 1.25 !important;
     color: #6b7280 !important;
     cursor: pointer !important;
     font-weight: 400 !important;

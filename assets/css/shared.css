@@ -312,10 +312,10 @@
 /* Labels */
 .form-row label {
     display: block !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 4px !important;
     font-weight: 600 !important;
     color: #281345 !important;
-    font-size: 14px !important;
+    font-size: 13px !important;
     line-height: 1.2 !important;
 }
 

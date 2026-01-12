@@ -296,7 +296,7 @@
 .form-row-group {
     display: flex !important;
     gap: 4px !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 4px !important;
 }
 
 .form-row-group .form-row {
@@ -306,7 +306,7 @@
 }
 
 .form-row {
-    margin-bottom: 4px !important;
+    margin-bottom: 0px !important;
 }
 
 /* Labels */

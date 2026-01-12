@@ -432,16 +432,16 @@
 }
 
 .rt-cf7--contact-us .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]) {
-    padding: 6px 8px !important;
+    padding: 2px 4px !important;
 }
 
 /* Checkbox styling */
 .checkbox-row {
     display: flex !important;
     align-items: flex-start !important;
-    gap: 4px !important;
-    margin: 8px 0 !important;
-    padding: 4px !important;
+    gap: 2px !important;
+    margin: 2px 0 !important;
+    padding: 2px !important;
     background: #fafbfc !important;
     border-radius: 8px !important;
     border: 1px solid #e2e8f0 !important;

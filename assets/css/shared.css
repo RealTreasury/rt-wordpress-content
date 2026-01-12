@@ -288,6 +288,10 @@
     margin: 0 !important;
 }
 
+.portal-access-form .wpcf7:has(#1a045be) {
+    padding: 16px 24px !important;
+}
+
 /* Form groups and rows */
 .form-row-group {
     display: flex !important;

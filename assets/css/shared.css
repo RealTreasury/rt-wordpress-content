@@ -349,7 +349,7 @@
 .wpcf7-form {
     display: flex !important;
     flex-direction: column !important;
-    gap: 8px !important;
+    gap: 4px !important;
 }
 
 .wpcf7-form > p {
@@ -370,18 +370,18 @@
 
 .wpcf7-form-control-wrap {
     display: block !important;
-    margin-top: 4px !important;
+    margin-top: 2px !important;
 }
 
 /* Input fields */
 .form-control:not([type="checkbox"]),
 .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]) {
     width: 100% !important;
-    padding: 8px 12px !important;
+    padding: 4px 8px !important;
     border: 1px solid #e2e8f0 !important;
     border-radius: 8px !important;
     font-size: 14px !important;
-    line-height: 1.3 !important;
+    line-height: 1 !important;
     background: #ffffff !important;
     color: #281345 !important;
     transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
@@ -416,23 +416,23 @@
 
 /* Contact page CF7 spacing overrides */
 .rt-cf7--contact-us .wpcf7 {
-    padding: 24px !important;
+    padding: 8px !important;
 }
 
 .rt-cf7--contact-us .wpcf7-form {
-    row-gap: 8px !important;
+    row-gap: 2px !important;
 }
 
 .rt-cf7--contact-us .wpcf7-form p {
-    margin-bottom: 8px !important;
+    margin-bottom: 2px !important;
 }
 
 .rt-cf7--contact-us .wpcf7-form label {
-    margin-bottom: 8px !important;
+    margin-bottom: 2px !important;
 }
 
 .rt-cf7--contact-us .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]) {
-    padding: 12px 14px !important;
+    padding: 6px 8px !important;
 }
 
 /* Checkbox styling */
@@ -5121,7 +5121,7 @@ a[href="#openportalmodal"] {
     padding: 12px 14px;
     border-radius: 12px;
     font-size: 14px;
-    border: 1px solid transparent;
+    border: 0px solid transparent;
 }
 
 .rt-cf7 .wpcf7-form.invalid .wpcf7-response-output,

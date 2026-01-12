@@ -489,6 +489,13 @@ div.wpcf7 .wpcf7-form#1a045be .wpcf7-form-control:not(.wpcf7-submit):not([type="
     padding: 10px 12px !important;
 }
 
+.wpcf7-form#1a045be textarea,
+div.wpcf7 .wpcf7-form#1a045be textarea {
+    min-height: 120px !important;
+    line-height: 1.4 !important;
+    padding: 10px 12px !important;
+}
+
 .wpcf7-form#1a045be .checkbox-row,
 div.wpcf7 .wpcf7-form#1a045be .checkbox-row {
     gap: 8px !important;

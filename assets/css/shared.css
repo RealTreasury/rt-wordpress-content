@@ -295,7 +295,7 @@
 /* Form groups and rows */
 .form-row-group {
     display: flex !important;
-    gap: 8px !important;
+    gap: 4px !important;
     margin-bottom: 8px !important;
 }
 
@@ -306,7 +306,7 @@
 }
 
 .form-row {
-    margin-bottom: 8px !important;
+    margin-bottom: 4px !important;
 }
 
 /* Labels */
@@ -599,7 +599,7 @@ input[type=submit].wpcf7-submit:hover {
     }
     
     .form-row-group .form-row {
-        margin-bottom: 20px !important;
+        margin-bottom: 8px !important;
     }
     
     .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]) {
@@ -1516,14 +1516,14 @@ body.banner-closed.rt-no-body-padding .site-content {
             line-height: 1.5 !important;
         }
         .gated-download-form .form-row {
-            margin-bottom: 20px !important;
+            margin-bottom: 8px !important;
             position: relative !important;
             z-index: 3 !important;
         }
         .gated-download-form .form-row-group {
             display: flex !important;
             gap: 16px !important;
-            margin-bottom: 20px !important;
+            margin-bottom: 8px !important;
         }
         .gated-download-form .form-row-group .form-row {
             flex: 1 !important;
@@ -1629,7 +1629,7 @@ body.banner-closed.rt-no-body-padding .site-content {
                 gap: 0 !important;
             }
             .gated-download-form .form-row-group .form-row {
-                margin-bottom: 20px !important;
+                margin-bottom: 8px !important;
             }
         }
         .download-modal {

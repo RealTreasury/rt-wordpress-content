@@ -1522,8 +1522,8 @@ body.banner-closed.rt-no-body-padding .site-content {
         }
         .gated-download-form .form-row-group {
             display: flex !important;
-            gap: 16px !important;
-            margin-bottom: 8px !important;
+            gap: 8px !important;
+            margin-bottom: 4px !important;
         }
         .gated-download-form .form-row-group .form-row {
             flex: 1 !important;
@@ -1531,7 +1531,7 @@ body.banner-closed.rt-no-body-padding .site-content {
         }
         .gated-download-form .form-row label {
             display: block !important;
-            margin-bottom: 6px !important;
+            margin-bottom: 2px !important;
             font-weight: 500 !important;
             color: var(--dark-text) !important;
             font-size: 16px !important;

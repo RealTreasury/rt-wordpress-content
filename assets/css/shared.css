@@ -4986,17 +4986,17 @@ a[href="#openportalmodal"] {
 .rt-cf7--contact-us .wpcf7-form-control.wpcf7-tel,
 .rt-cf7--contact-us .wpcf7-form-control.wpcf7-textarea,
 .wpcf7-form#1a045be .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]) {
-    width: 100%;
-    height: 44px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    border: 1px solid var(--rt-cf7-border);
-    background-color: var(--rt-cf7-bg);
-    color: var(--rt-cf7-text);
-    font-size: 15px;
-    line-height: 1.4;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    box-sizing: border-box;
+    width: 100% !important;
+    height: 44px !important;
+    padding: 10px 12px !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--rt-cf7-border) !important;
+    background-color: var(--rt-cf7-bg) !important;
+    color: var(--rt-cf7-text) !important;
+    font-size: 15px !important;
+    line-height: 1.4 !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    box-sizing: border-box !important;
 }
 
 .rt-cf7 .wpcf7-form textarea.rt-input,
@@ -5010,15 +5010,15 @@ a[href="#openportalmodal"] {
 .rt-cf7 .wpcf7-form .rt-input:hover,
 .rt-cf7--contact-us .wpcf7-form .rt-input:hover,
 .wpcf7-form#1a045be .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]):hover {
-    border-color: var(--rt-cf7-border-hover);
+    border-color: var(--rt-cf7-border-hover) !important;
 }
 
 .rt-cf7 .wpcf7-form .rt-input:focus,
 .rt-cf7--contact-us .wpcf7-form .rt-input:focus,
 .wpcf7-form#1a045be .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]):focus {
-    outline: none;
-    border-color: var(--rt-cf7-primary);
-    box-shadow: var(--rt-cf7-shadow);
+    outline: none !important;
+    border-color: var(--rt-cf7-primary) !important;
+    box-shadow: var(--rt-cf7-shadow) !important;
 }
 
 .rt-cf7 .wpcf7-form .rt-btn,

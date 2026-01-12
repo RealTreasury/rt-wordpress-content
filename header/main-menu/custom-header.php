@@ -255,6 +255,10 @@ function add_my_custom_header_html() {
                 <div class="rt-nav-item">
                     <a href="https://realtreasury.com/treasury-tech-portal/" class="rt-cta-button tpa-btn-ready" id="portalAccessBtn">VIEW PORTAL</a>
                 </div>
+                <!-- Contact -->
+                <div class="rt-nav-item">
+                    <a href="https://realtreasury.com/contact/" class="rt-cta-button">CONTACT</a>
+                </div>
             </div>
         </div>
     </nav>

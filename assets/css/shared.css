@@ -1812,6 +1812,14 @@ body.banner-closed .rt-nav-container {
     padding: 0 !important;
 }
 
+.rt-nav-item-contact {
+    order: 4;
+}
+
+.rt-nav-item-portal {
+    order: 5;
+}
+
 .rt-nav-link {
     color: #ffffff !important;
     text-decoration: none !important;

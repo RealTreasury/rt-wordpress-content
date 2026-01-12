@@ -252,11 +252,11 @@ function add_my_custom_header_html() {
                     </div>
                 </div>
                 <!-- Contact -->
-                <div class="rt-nav-item">
+                <div class="rt-nav-item rt-nav-item-contact">
                     <a href="https://realtreasury.com/contact/" class="rt-nav-link">CONTACT</a>
                 </div>
                 <!-- View Portal -->
-                <div class="rt-nav-item">
+                <div class="rt-nav-item rt-nav-item-portal">
                     <a href="https://realtreasury.com/treasury-tech-portal/" class="rt-cta-button tpa-btn-ready" id="portalAccessBtn">VIEW PORTAL</a>
                 </div>
             </div>

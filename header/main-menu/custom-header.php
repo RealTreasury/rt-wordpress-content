@@ -257,7 +257,7 @@ function add_my_custom_header_html() {
                 </div>
                 <!-- Contact -->
                 <div class="rt-nav-item">
-                    <a href="https://realtreasury.com/contact/" class="rt-cta-button">CONTACT</a>
+                    <a href="https://realtreasury.com/contact/" class="rt-nav-link">CONTACT</a>
                 </div>
             </div>
         </div>

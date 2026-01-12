@@ -381,6 +381,27 @@
     opacity: 1 !important;
 }
 
+/* Contact page CF7 spacing overrides */
+.rt-cf7--contact-us .wpcf7 {
+    padding: 24px !important;
+}
+
+.rt-cf7--contact-us .wpcf7-form {
+    row-gap: 16px !important;
+}
+
+.rt-cf7--contact-us .wpcf7-form p {
+    margin-bottom: 16px !important;
+}
+
+.rt-cf7--contact-us .wpcf7-form label {
+    margin-bottom: 8px !important;
+}
+
+.rt-cf7--contact-us .wpcf7-form-control:not(.wpcf7-submit):not([type="checkbox"]) {
+    padding: 12px 14px !important;
+}
+
 /* Checkbox styling */
 .checkbox-row {
     display: flex !important;

@@ -349,11 +349,12 @@
 .wpcf7-form {
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
+    gap: 8px !important;
 }
 
 .wpcf7-form > p {
     margin: 0 !important;
+    padding: 0 !important;
 }
 
 .wpcf7-form br {
@@ -362,14 +363,14 @@
 
 .wpcf7-form label {
     display: block !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 4px !important;
     font-weight: 600 !important;
     color: #281345 !important;
 }
 
 .wpcf7-form-control-wrap {
     display: block !important;
-    margin-top: 6px !important;
+    margin-top: 4px !important;
 }
 
 /* Input fields */

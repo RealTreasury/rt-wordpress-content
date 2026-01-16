@@ -39,6 +39,10 @@
     }
     </script>
     <style>
+        html {
+            overflow: hidden;
+        }
+
         :root {
             --primary-purple: #7216f4;
             --secondary-purple: #8f47f6;
@@ -47,7 +51,7 @@
             --success-green: #10B981;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Helvetica, Arial, sans-serif; color: var(--dark-text); line-height: 1.6; }
+        body { font-family: Helvetica, Arial, sans-serif; color: var(--dark-text); line-height: 1.6; overflow: hidden; }
         .container { max-width: 960px; margin: 0 auto; padding: 0 20px; }
         .insight-hero { text-align: center; padding: 60px 0; }
         .hero-meta { color: var(--gray-text); font-size: 0.9rem; margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }

@@ -736,6 +736,28 @@
         /* ===============================================================
            Mobile Responsiveness
            =============================================================== */
+
+        /* Tablet optimizations (641px - 768px) */
+        @media (max-width: 768px) and (min-width: 641px) {
+            .cre-report-page .hero-header h1 {
+                font-size: 2.8rem;
+            }
+
+            .cre-report-page .section-title {
+                font-size: 2.2rem;
+            }
+
+            .cre-report-page .data-table {
+                font-size: 0.85rem;
+            }
+
+            .cre-report-page .data-table thead th,
+            .cre-report-page .data-table tbody td {
+                padding: 12px 10px;
+            }
+        }
+
+        /* Mobile & Tablet (max-width: 768px) */
         @media (max-width: 768px) {
             .cre-report-page .hero-header h1 {
                 font-size: 2.5rem;
@@ -802,30 +824,150 @@
 
         @media (max-width: 480px) {
             .cre-report-page .hero-header {
-                padding: 40px 0 50px;
+                padding: 30px 0 40px;
             }
 
             .cre-report-page .hero-header h1 {
-                font-size: 2rem;
+                font-size: 1.75rem;
+                line-height: 1.2;
             }
 
             .cre-report-page .hero-header .subtitle {
-                font-size: 1.1rem;
+                font-size: 1rem;
+                line-height: 1.5;
             }
 
             .cre-report-page .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .cre-report-page .stat-card {
+                padding: 20px;
+            }
+
+            .cre-report-page .stat-number {
+                font-size: 2rem;
+            }
+
+            .cre-report-page .stat-label {
+                font-size: 0.85rem;
             }
 
             .cre-report-page .share-btn {
-                min-width: 180px;
-                padding: 10px 16px;
+                min-width: 100%;
+                padding: 12px 16px;
                 font-size: 0.85rem;
             }
 
             .cre-report-page .share-icon {
                 width: 14px;
                 height: 14px;
+            }
+
+            .cre-report-page .section-title {
+                font-size: 1.5rem;
+            }
+
+            .cre-report-page .content-section {
+                padding: 20px 15px;
+            }
+
+            .cre-report-page .content-section p {
+                font-size: 1rem;
+            }
+
+            .cre-report-page .faq-question {
+                font-size: 1.1rem;
+            }
+
+            .cre-report-page .guideline-card {
+                padding: 20px;
+            }
+
+            .cre-report-page .guideline-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .cre-report-page .data-table {
+                font-size: 0.7rem;
+            }
+
+            .cre-report-page .data-table thead th,
+            .cre-report-page .data-table tbody td {
+                padding: 10px 6px;
+                font-size: 0.7rem;
+            }
+
+            .cre-report-page .table-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .cre-report-page .table-header p {
+                font-size: 0.8rem;
+            }
+
+            .cre-report-page .cta-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .cre-report-page .cta-section p {
+                font-size: 1rem;
+            }
+
+            .cre-report-page .cta-btn {
+                font-size: 1rem;
+                padding: 14px 24px;
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .cre-report-page .meta-item {
+                font-size: 0.85rem;
+                padding: 8px 15px;
+            }
+
+            .cre-report-page .highlight-box {
+                padding: 20px;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Ultra-small screens (max-width: 360px) */
+        @media (max-width: 360px) {
+            .cre-report-page .hero-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .cre-report-page .hero-header .subtitle {
+                font-size: 0.95rem;
+            }
+
+            .cre-report-page .section-title {
+                font-size: 1.3rem;
+            }
+
+            .cre-report-page .content-section {
+                padding: 15px 12px;
+            }
+
+            .cre-report-page .data-table {
+                font-size: 0.65rem;
+            }
+
+            .cre-report-page .data-table thead th,
+            .cre-report-page .data-table tbody td {
+                padding: 8px 5px;
+                font-size: 0.65rem;
+            }
+
+            .cre-report-page .stat-number {
+                font-size: 1.75rem;
+            }
+
+            .cre-report-page .cta-btn {
+                font-size: 0.95rem;
+                padding: 12px 20px;
             }
         }
 
@@ -899,6 +1041,12 @@
             box-shadow:
                 0 8px 32px rgba(114, 22, 244, 0.12),
                 inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .cre-report-page .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
         }
 
         .cre-report-page .data-table-container::before {
@@ -1042,13 +1190,71 @@
                 font-size: 1.5rem;
             }
 
+            .cre-report-page .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
             .cre-report-page .data-table {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+                min-width: 100%;
+                white-space: nowrap;
             }
 
             .cre-report-page .data-table thead th,
             .cre-report-page .data-table tbody td {
-                padding: 10px 8px;
+                padding: 12px 8px;
+                font-size: 0.75rem;
+            }
+
+            .cre-report-page .data-table thead th {
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                white-space: nowrap;
+            }
+
+            .cre-report-page .data-table tbody td {
+                white-space: nowrap;
+            }
+
+            .cre-report-page .bank-name {
+                min-width: 120px;
+                font-weight: 600;
+            }
+
+            .cre-report-page .assets {
+                min-width: 100px;
+            }
+
+            /* Add scroll indicator */
+            .cre-report-page .table-wrapper::after {
+                content: '← Scroll horizontally to view all data →';
+                display: block;
+                text-align: center;
+                padding: 15px;
+                background: rgba(114, 22, 244, 0.05);
+                color: var(--gray-text);
+                font-size: 0.85rem;
+                font-style: italic;
+                border-top: 1px solid rgba(199, 125, 255, 0.2);
+            }
+
+            /* Improve guideline cards mobile spacing */
+            .cre-report-page .guidelines {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            /* Better mobile CTA button layout */
+            .cre-report-page .cta-section > div {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .cre-report-page .cta-btn {
+                width: 100%;
+                max-width: 300px;
             }
         }
     </style>
@@ -1157,6 +1363,7 @@
                     <h2>Complete Bank CRE Data - Q3 2025</h2>
                     <p>Click column headers to sort • All 100 banks ranked by CRE exposure</p>
                 </div>
+                <div class="table-wrapper">
                 <table class="data-table" id="bankTable">
                     <thead>
                         <tr>
@@ -2073,6 +2280,7 @@
                     </tr>
                                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
 

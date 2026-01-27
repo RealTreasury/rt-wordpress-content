@@ -1058,7 +1058,7 @@
             border: 2px solid rgba(199, 125, 255, 0.2);
             border-radius: 16px;
             margin: 40px 0;
-            overflow: hidden;
+            overflow: clip;
             position: relative;
             box-shadow:
                 0 8px 32px rgba(114, 22, 244, 0.12),
@@ -1069,7 +1069,7 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             position: relative;
-            padding-bottom: 10px;
+            padding: 0 20px 10px 20px;
         }
 
         .cre-report-page .data-table-container::before {
@@ -1217,6 +1217,7 @@
             .cre-report-page .table-wrapper {
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
+                padding: 0 15px 10px 15px;
             }
 
             .cre-report-page .data-table {

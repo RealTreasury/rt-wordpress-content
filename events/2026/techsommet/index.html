@@ -391,5 +391,13 @@
             observer.observe(document.body, { childList: true, subtree: true, attributes: true });
         }
     </script>
+
+    <script>
+        window.addEventListener('load', function() {
+            var height = document.documentElement.scrollHeight;
+            window.parent.postMessage({height: height}, '*');
+        });
+    </script>
+
 </body>
 </html>

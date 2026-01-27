@@ -80,12 +80,21 @@
     </script>
 
     <style>
-        /* Iframe compatibility - prevent double scroll bars */
-        html, body {
-            overflow-x: hidden;
-            overflow-y: visible;
+        /* Iframe compatibility - prevent double scroll bars.
+           When embedded in an iframe with scrolling="yes", the iframe
+           handles scrolling. We ensure html/body don't create additional scrollbars. */
+        html {
+            overflow: hidden; /* Prevent html from scrolling - iframe handles it */
             height: auto;
             margin: 0;
+            padding: 0;
+        }
+
+        body {
+            overflow: visible; /* Content flows naturally, no scrollbar */
+            height: auto;
+            margin: 0;
+            padding: 0;
         }
 
         /* ===============================================================

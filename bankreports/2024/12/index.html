@@ -1318,5 +1318,11 @@ Best regards`);
         })();
     </script>
 </div>
+<script>
+    window.addEventListener('load', function() {
+        var height = document.documentElement.scrollHeight;
+        window.parent.postMessage({height: height}, '*');
+    });
+</script>
 </body>
 </html>

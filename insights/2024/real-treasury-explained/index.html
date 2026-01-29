@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Treasury Explained: Vendor-Neutral TMS Selection | Real Treasury</title>
-    <meta name="description" content="Learn how Real Treasury helps CFOs and treasurers select the right Treasury Management System with our vendor-neutral ERR NOT methodology in 4-6 weeks.">
-    <meta property="og:title" content="Real Treasury Explained: Vendor-Neutral TMS Selection">
-    <meta property="og:description" content="TMS selection in 4-6 weeks, not 6+ months. We don't resell software or take commissions - our recommendations serve only your interests.">
+    <title>Real Treasury Explained: Independent Treasury Technology Consulting | Real Treasury</title>
+    <meta name="description" content="Learn how Real Treasury helps treasury and finance teams select the right treasury technology with our vendor-neutral ERR NOT methodology in 4-6 weeks.">
+    <meta property="og:title" content="Real Treasury Explained: Independent Treasury Technology Consulting">
+    <meta property="og:description" content="Helping companies select and connect to the right treasury technology – fast, unbiased, and vendor-smart. 45+ years combined experience.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://realtreasury.com/insights/2024/real-treasury-explained/">
     <meta property="og:image" content="https://realtreasury.com/logo.png">
@@ -504,6 +504,126 @@
             opacity: 0.85;
         }
 
+        /* Team Section */
+        .team-section {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .team-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 40px;
+        }
+
+        .team-card {
+            background: #f8f4ff;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(199, 125, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.12);
+        }
+
+        .team-image {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid rgba(199, 125, 255, 0.3);
+            box-shadow: 0 8px 24px rgba(114, 22, 244, 0.15);
+        }
+
+        .team-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+        }
+
+        .team-image img[src*="TraceyHeadshot"] {
+            object-position: center 20%;
+            transform: scale(1.2);
+        }
+
+        .team-role {
+            font-size: 0.85rem;
+            color: #7216f4;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .team-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #281345;
+            margin-bottom: 16px;
+        }
+
+        .team-bio {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+
+        .team-contact {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            background: rgba(114, 22, 244, 0.08);
+            color: #7216f4;
+            border: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .contact-link:hover {
+            background: rgba(114, 22, 244, 0.15);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .contact-link.linkedin {
+            background: #0077b5;
+            color: white;
+            border-color: #0077b5;
+        }
+
+        .contact-link.linkedin:hover {
+            background: #005885;
+        }
+
+        .contact-link svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .section-container {
@@ -531,6 +651,33 @@
             .proof-box {
                 order: -1;
             }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .team-card {
+                padding: 32px 24px;
+            }
+
+            .team-image {
+                width: 140px;
+                height: 140px;
+            }
+
+            .team-name {
+                font-size: 1.3rem;
+            }
+
+            .team-bio {
+                font-size: 0.9rem;
+            }
+
+            .team-contact {
+                flex-direction: column;
+                gap: 8px;
+            }
         }
     </style>
 </head>
@@ -541,28 +688,32 @@
         <div class="hero-bg-animation"></div>
         <div class="section-container">
             <div class="hero-content">
-                <span class="hero-eyebrow">Vendor-Neutral TMS Selection</span>
-                <h1>Stop Wasting Months on Treasury Technology Decisions</h1>
-                <p class="hero-subtitle">Real Treasury helps CFOs and treasurers select the right Treasury Management System in 4-6 weeks. We don't resell software or take commissions - our recommendations serve only your interests.</p>
+                <span class="hero-eyebrow">Independent Treasury Technology Consulting</span>
+                <h1>Real Treasury, Real Results</h1>
+                <p class="hero-subtitle">Helping companies select and connect to the right treasury technology – fast, unbiased, and vendor-smart. We don't resell software or take commissions - our recommendations serve only your interests.</p>
 
                 <div class="hero-stats">
                     <div class="stat-item">
                         <span class="stat-number">4-6 Weeks</span>
-                        <span class="stat-label">vs. 6+ Months Industry Standard</span>
+                        <span class="stat-label">Average Selection Time</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number">100+</span>
-                        <span class="stat-label">Systems Evaluated</span>
+                        <span class="stat-label">Vendors Evaluated</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">$0</span>
-                        <span class="stat-label">Vendor Commissions</span>
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Independent & Unbiased</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">45+</span>
+                        <span class="stat-label">Years Experience</span>
                     </div>
                 </div>
 
                 <div class="hero-cta">
-                    <a href="/contact" class="btn-primary">Book a Discovery Call</a>
-                    <a href="/treasury-tech-portal/" class="btn-secondary">Explore the Tech Portal</a>
+                    <a href="https://realtreasury.com/treasury-tech-portal/" class="btn-primary">Access Portal</a>
+                    <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="btn-secondary">15-Min Strategy Call</a>
                 </div>
             </div>
         </div>
@@ -650,8 +801,8 @@
     <section class="why-section">
         <div class="section-container">
             <div class="section-header">
-                <h2 class="approach-title">Why Work With Real Treasury</h2>
-                <p class="approach-subtitle">We bring a fundamentally different approach to treasury technology consulting.</p>
+                <h2 class="approach-title">What Makes Real Treasury Different?</h2>
+                <p class="approach-subtitle">We're treasury professionals who built the tools we wished existed for selection. No vendor bias, just better decisions.</p>
             </div>
 
             <div class="why-grid">
@@ -661,7 +812,7 @@
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                         </svg>
                     </div>
-                    <h3 class="why-title">Truly Vendor-Neutral</h3>
+                    <h3 class="why-title">100% Independent & Unbiased</h3>
                     <p class="why-description">We don't resell software or accept vendor commissions. Our business model depends on giving you honest advice - not steering you toward a partner's product.</p>
                 </div>
 
@@ -671,8 +822,8 @@
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                         </svg>
                     </div>
-                    <h3 class="why-title">Practitioner-Led</h3>
-                    <p class="why-description">Founded by Tim Schultz with 15+ years doing the job - not just advising on it. We've been in your seat, managing cash, dealing with banks, and evaluating systems.</p>
+                    <h3 class="why-title">45+ Years Combined Experience</h3>
+                    <p class="why-description">Founded by treasury professionals Tim and Tracey with decades of hands-on experience. We've been in your seat, managing cash, dealing with banks, and evaluating systems.</p>
                 </div>
 
                 <div class="why-card">
@@ -692,7 +843,59 @@
                         </svg>
                     </div>
                     <h3 class="why-title">Both Sides of the Table</h3>
-                    <p class="why-description">Tracey has been the person giving the impressive demos. Now she shows you what questions to ask to get past the marketing and see reality.</p>
+                    <p class="why-description">Our team has been on both sides - as practitioners selecting systems and as vendors giving demos. We know what questions to ask to get past the marketing and see reality.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet the Founders Section -->
+    <section class="team-section">
+        <div class="section-container">
+            <div class="team-header">
+                <h2 class="approach-title">Meet the Founders</h2>
+                <p class="approach-subtitle">We're on your side of the table. Founded by treasury professionals, Real Treasury is built to support treasury and finance teams with selecting the best tools for your company with confidence.</p>
+            </div>
+
+            <div class="team-grid">
+                <!-- Tim -->
+                <div class="team-card">
+                    <div class="team-image">
+                        <img loading="lazy" src="https://realtreasury.com/wp-content/uploads/2025/08/Tim-Schultz-website-headshot.webp" alt="Tim Schultz, Co-Founder of Real Treasury">
+                    </div>
+                    <div class="team-role">Co-Founder & Principal Consultant</div>
+                    <h3 class="team-name">Tim</h3>
+                    <p class="team-bio">Former treasury lead with 15+ years optimizing cash management and risk operations. Tim founded Real Treasury to democratize access to treasury technology insights and help teams make confident, informed decisions without vendor bias.</p>
+                    <div class="team-contact">
+                        <a href="https://www.linkedin.com/in/schultzctp/" target="_blank" class="contact-link linkedin">
+                            <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            LinkedIn
+                        </a>
+                        <a href="mailto:tschultz@realtreasury.com" class="contact-link">
+                            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            Email
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tracey -->
+                <div class="team-card">
+                    <div class="team-image">
+                        <img loading="lazy" src="https://realtreasury.com/wp-content/uploads/2025/08/TraceyHeadshot-3.webp" alt="Tracey Knight, Co-Founder of Real Treasury">
+                    </div>
+                    <div class="team-role">Co-Founder & Principal Consultant</div>
+                    <h3 class="team-name">Tracey</h3>
+                    <p class="team-bio">With 30 years as a practitioner, vendor, and consultant, Tracey brings rare perspective—guiding treasury and finance teams through unbiased tech selection, hands-on workshops, and smarter decisions that drive adoption, insight, and lasting transformation.</p>
+                    <div class="team-contact">
+                        <a href="https://www.linkedin.com/in/traceyfergusonknight/" target="_blank" class="contact-link linkedin">
+                            <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            LinkedIn
+                        </a>
+                        <a href="mailto:tknight@realtreasury.com" class="contact-link">
+                            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            Email
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -751,12 +954,12 @@
     <section class="cta-section">
         <div class="section-container">
             <div class="cta-content">
-                <h2>Ready to Find the Right TMS Without the Usual Pain?</h2>
-                <p class="cta-description">Book a discovery call to discuss your treasury technology needs. No sales pitch - just an honest conversation about whether we can help.</p>
+                <h2>Ready to Transform Your Treasury Tech Search?</h2>
+                <p class="cta-description">Access our FREE Treasury Tech Portal and start narrowing your shortlist in minutes, not months.</p>
 
-                <a href="/contact" class="btn-white">Book a Discovery Call</a>
+                <a href="https://realtreasury.com/treasury-tech-portal/" class="btn-white">Access Portal</a>
 
-                <p class="cta-note">Typically 30 minutes. We'll tell you if we're not the right fit.</p>
+                <p class="cta-note">Or schedule a free 15-minute strategy call to discuss your treasury technology needs.</p>
             </div>
         </div>
     </section>

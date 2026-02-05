@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Tools Are Here | AFP Western New York Winter Half-Day Conference 2026</title>
+    <meta name="description" content="Join Tracey Knight at the AFP Western New York Winter Half-Day Conference on February 11, 2026. With 30+ years of FinTech experience, Tracey delivers a vendor-agnostic perspective on treasury technology and a requirements-first approach to selecting the right TMS or SaaS solution.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --light-purple: #c77dff;
+            --dark-text: #281345;
+            --gray-text: #615c73;
+            --soft-background: #f5f4ff;
+            --hero-gradient: linear-gradient(135deg, rgba(114, 22, 244, 0.95) 0%, rgba(143, 71, 246, 0.9) 50%, rgba(199, 125, 255, 0.85) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background: #ffffff;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--hero-gradient);
+            color: white;
+            padding: 60px 24px;
+            text-align: center;
+            border-radius: 0;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero h1 {
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            margin-bottom: 32px;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
+
+        .cta-primary,
+        .cta-secondary {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            display: inline-block;
+        }
+
+        .cta-primary {
+            background: white;
+            color: var(--primary-purple);
+            border: 2px solid white;
+        }
+
+        .cta-primary:hover {
+            background: var(--soft-background);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 48px 24px;
+        }
+
+        .content-card {
+            background: white;
+            border: 2px solid var(--light-purple);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(114, 22, 244, 0.08);
+        }
+
+        .content-card h2 {
+            color: var(--primary-purple);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .content-card h3 {
+            color: var(--dark-text);
+            font-size: 22px;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+
+        .content-card p {
+            color: var(--gray-text);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .content-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .content-card ul li {
+            color: var(--gray-text);
+            font-size: 16px;
+            padding: 12px 0 12px 32px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .content-card ul li::before {
+            content: "\2192";
+            position: absolute;
+            left: 0;
+            color: var(--primary-purple);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        /* Session Details */
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .session-time {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-purple);
+            background: var(--soft-background);
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .session-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .session-badge {
+            background: var(--soft-background);
+            color: var(--primary-purple);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Topics Grid */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .topic-item {
+            background: var(--soft-background);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-purple);
+        }
+
+        .topic-item h4 {
+            color: var(--primary-purple);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .topic-item p {
+            color: var(--gray-text);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Audience Section */
+        .audience-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .audience-item {
+            background: white;
+            border: 2px solid var(--light-purple);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-purple);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .content-card {
+                padding: 24px;
+            }
+
+            .session-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .audience-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page-container">
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-badges">
+                <span class="hero-badge">February 11, 2026</span>
+                <span class="hero-badge">Rochester, NY</span>
+                <span class="hero-badge">Half-Day Conference</span>
+            </div>
+            <h1>Cash Tools Are Here</h1>
+            <p class="hero-subtitle">Join Tracey Knight at the AFP of Western New York Winter Half-Day Conference for a vendor-agnostic look at how the treasury tech landscape is changing and where Cash Tools truly fit</p>
+            <div class="hero-actions">
+                <a class="cta-primary" href="https://www.afpwny.org/events/162/winter-half-day-conference" target="_blank" rel="noopener noreferrer">Register Now</a>
+                <a class="cta-secondary" href="https://realtreasury.com/book-a-demo" target="_blank" rel="noopener noreferrer">Book a Consultation</a>
+            </div>
+        </section>
+
+        <!-- SESSION DETAILS -->
+        <section class="content-section">
+            <article class="content-card">
+                <div class="session-header">
+                    <span class="session-time">Session Two</span>
+                    <div class="session-badges">
+                        <span class="session-badge">Treasury Technology</span>
+                        <span class="session-badge">Cash Management</span>
+                        <span class="session-badge">CTP &amp; FP&amp;A Credits</span>
+                    </div>
+                </div>
+
+                <h2>Session Overview</h2>
+                <p>Treasury technology has evolved quickly and keeping up can feel overwhelming. With more than 30 years of FinTech experience, Tracey Knight brings a clear, vendor-agnostic perspective on how the treasury tech landscape is changing and where Cash Tools truly fit.</p>
+
+                <p>You'll leave with a practical, requirements-first approach to selecting the right TMS or SaaS solution with confidence.</p>
+
+                <h3>What You'll Learn</h3>
+                <div class="topics-grid">
+                    <div class="topic-item">
+                        <h4>Treasury Tech Landscape</h4>
+                        <p>Understand how the treasury technology landscape has evolved and where it's headed</p>
+                    </div>
+                    <div class="topic-item">
+                        <h4>Where Cash Tools Fit</h4>
+                        <p>Get clarity on where Cash Tools belong in the broader treasury tech ecosystem</p>
+                    </div>
+                    <div class="topic-item">
+                        <h4>Requirements-First Approach</h4>
+                        <p>Learn a practical, vendor-agnostic framework for evaluating treasury solutions</p>
+                    </div>
+                    <div class="topic-item">
+                        <h4>TMS vs. SaaS Selection</h4>
+                        <p>Build confidence in selecting the right TMS or SaaS solution for your organization</p>
+                    </div>
+                </div>
+
+                <h3>About the Speaker</h3>
+                <p>Tracey Knight is a Principal at Real Treasury with more than 30 years of FinTech experience. She brings a vendor-agnostic perspective to treasury technology, helping organizations navigate the evolving landscape of cash management tools and treasury management systems.</p>
+
+                <h3>Who Should Attend</h3>
+                <div class="audience-list">
+                    <div class="audience-item">Treasury Professionals</div>
+                    <div class="audience-item">Cash Managers</div>
+                    <div class="audience-item">Finance Directors</div>
+                    <div class="audience-item">CFOs &amp; Controllers</div>
+                </div>
+
+                <h3>Event Details</h3>
+                <ul>
+                    <li>Registration and lunch begin at 12:00 PM</li>
+                    <li>Speaker sessions from 1:00 PM to 5:00 PM</li>
+                    <li>Networking reception to follow</li>
+                    <li>Qualifies for CTP and FP&amp;A continuing education credits</li>
+                </ul>
+            </article>
+
+            <article class="content-card" style="text-align: center; background: var(--soft-background); border: none;">
+                <h2>Ready to Rethink Your Treasury Technology?</h2>
+                <p>Register for the AFP of Western New York Winter Half-Day Conference and gain a practical framework for selecting the right treasury solution.</p>
+                <div class="hero-actions" style="margin-top: 24px;">
+                    <a class="cta-primary" href="https://www.afpwny.org/events/162/winter-half-day-conference" target="_blank" rel="noopener noreferrer">Register at afpwny.org</a>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!-- IFRAME HEIGHT SCRIPT for WordPress embedding -->
+    <script>
+        if (window !== window.parent) {
+            function sendHeight() {
+                const height = document.documentElement.scrollHeight;
+                const id = window.frameElement?.id || 'iframe-default';
+                window.parent.postMessage({ type: "setHeight", height: height, id: id }, "*");
+            }
+            window.addEventListener("load", sendHeight);
+            window.addEventListener("resize", sendHeight);
+
+            // Watch for content changes
+            const observer = new MutationObserver(sendHeight);
+            observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+        }
+    </script>
+
+    <script>
+        window.addEventListener('load', function() {
+            var height = document.documentElement.scrollHeight;
+            window.parent.postMessage({height: height}, '*');
+        });
+    </script>
+
+</body>
+</html>

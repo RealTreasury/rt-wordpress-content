@@ -577,7 +577,7 @@
             
             <div class="glass-card" style="margin-top: 3rem; text-align: center;">
                 <h3 style="color: var(--primary-purple); margin-bottom: 1rem;">Cash Tools vs. Advanced Systems</h3>
-                <p style="font-size: 1.1rem; line-height: 1.7;">Cash Tools provide the foundation for treasury management with these four core functions. Companies requiring more advanced capabilities like treasury payments, market data feeds, or derivatives management would benefit from <strong>TMS-LITE</strong> or <strong>Treasury Systems</strong> solutions.</p>
+                <p style="font-size: 1.1rem; line-height: 1.7;">Cash Tools provide the foundation for treasury management with these four core functions. Companies requiring more advanced capabilities like treasury payments, market data feeds, or derivatives management would benefit from <strong>TMS-Lite</strong> or <strong>TRMS (Treasury &amp; Risk Management Systems)</strong> solutions.</p>
                 <p style="margin-top: 1rem; font-style: italic; color: var(--gray-text);">Perfect for companies with simple cash structures and straightforward treasury needs.</p>
             </div>
         </div>
@@ -662,10 +662,10 @@
             
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFAQ(this)">
-                    What's the difference between Cash Tools and TMS-LITE systems?
+                    What's the difference between Cash Tools and TMS-Lite systems?
                 </div>
                 <div class="faq-answer">
-                    <p>Cash Tools include the four core functions: bank connectivity, basic forecasting, cash visibility, and transaction management. TMS-LITE systems include all Cash Tools functions plus cash positioning, market data feeds, and treasury payment capabilities.</p>
+                    <p>Cash Tools include the four core functions: bank connectivity, basic forecasting, cash visibility, and transaction management. TMS-Lite systems include all Cash Tools functions plus payment initiation, approval workflows, and payment file transmission.</p>
                 </div>
             </div>
             
@@ -881,49 +881,6 @@
     </script>
 
 </div>
-<script>
-(function () {
-  const providedId = "insights-2024-cash-tools-explained";
-  const fallbackId = document.body?.dataset?.iframeId || window.location.pathname;
-  const id = providedId || fallbackId;
 
-  const postHeight = () => {
-    const height = document.documentElement?.scrollHeight || document.body?.scrollHeight || 0;
-    if (window.parent && typeof window.parent.postMessage === 'function') {
-      window.parent.postMessage({ type: 'setHeight', height, id }, '*');
-    }
-  };
-
-  let frameId;
-  const schedulePostHeight = () => {
-    if (frameId) {
-      cancelAnimationFrame(frameId);
-    }
-    frameId = requestAnimationFrame(postHeight);
-  };
-
-  window.addEventListener('load', schedulePostHeight, { passive: true });
-  window.addEventListener('resize', schedulePostHeight, { passive: true });
-
-  if (typeof MutationObserver !== 'undefined' && document.body) {
-    const observer = new MutationObserver(schedulePostHeight);
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      characterData: true,
-    });
-  }
-
-  schedulePostHeight();
-})();
-</script>
-
-<script>
-window.addEventListener('load', function() {
-    var height = document.documentElement.scrollHeight;
-    window.parent.postMessage({height: height}, '*');
-});
-</script>
 </body>
 </html>

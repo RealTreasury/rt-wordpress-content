@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Treasury Tech Categories | Real Treasury</title>
+    <title>Treasury Tech Market Segments | Real Treasury</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -74,7 +74,7 @@
             margin: 0 auto 50px;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 
+            box-shadow:
                 0 20px 40px rgba(0, 0, 0, 0.12),
                 0 0 0 1px rgba(0, 0, 0, 0.05);
             transform: perspective(1000px) rotateX(2deg);
@@ -124,7 +124,6 @@
             box-shadow:
                 0 16px 32px rgba(0, 0, 0, 0.1),
                 0 0 0 1px rgba(0, 0, 0, 0.05);
-            
         }
 
         .market-image img {
@@ -143,13 +142,13 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             color: var(--dark-text);
-            padding: 16px 28px; /* Larger padding */
+            padding: 16px 28px;
             border-radius: 16px;
             z-index: 10;
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
             width: auto;
-            min-width: 400px; /* Larger width */
+            min-width: 400px;
             max-width: 90%;
             text-align: center;
             line-height: 1.3;
@@ -158,8 +157,8 @@
 
         .chart-title-overlay-large h3 {
             color: var(--dark-text);
-            font-size: 1.2rem; /* Larger text */
-            margin: 0 0 6px 0; /* Larger spacing */
+            font-size: 1.2rem;
+            margin: 0 0 6px 0;
             font-weight: 700;
             text-shadow: 0 2px 6px rgba(0,0,0,0.5);
             white-space: nowrap;
@@ -167,7 +166,7 @@
 
         .chart-title-overlay-large p {
             color: var(--light-purple);
-            font-size: 1.3rem; /* Larger text */
+            font-size: 1.3rem;
             margin: 0;
             opacity: 0.95;
             text-shadow: 0 1px 4px rgba(0,0,0,0.5);
@@ -245,7 +244,7 @@
 
         .category-card:hover {
             transform: translateY(-6px) scale(1.015);
-            box-shadow: 
+            box-shadow:
                 0 24px 48px rgba(0, 0, 0, 0.12),
                 0 0 0 1px rgba(0, 0, 0, 0.06);
         }
@@ -266,7 +265,7 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
-.category-title {
+        .category-title {
             font-size: 28px;
             font-weight: 800;
             margin-bottom: 8px;
@@ -280,6 +279,38 @@
             font-weight: 600;
             font-size: 16px;
             margin-bottom: 24px;
+        }
+
+        .category-description {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .category-bestfor {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border-left: 3px solid var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .category-bestfor .bestfor-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .category-bestfor .bestfor-text {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+            line-height: 1.5;
         }
 
         .category-features {
@@ -298,7 +329,7 @@
         }
 
         .category-features li::before {
-            content: '✓';
+            content: '\2713';
             background: var(--primary);
             color: white;
             width: 18px;
@@ -337,191 +368,341 @@
             line-height: 1.4;
         }
 
-        /* ENHANCED EXPAND BUTTON */
-        .expand-button {
-            width: 100%;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Decision Tree Section */
+        .decision-section {
+            padding: 80px 0;
+            background: #fafafa;
+        }
+
+        .decision-tree {
+            max-width: 900px;
+            margin: 0 auto;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-family: inherit;
-            position: relative;
-            overflow: hidden;
-            margin-top: auto;
-            margin-bottom: 16px;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        /* Remove bottom margin when expanded */
-        .category-card.expanded .expand-button {
-            margin-bottom: 0;
-        }
-
-        .expand-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(114, 22, 244, 0.03), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .expand-button:hover::before {
-            left: 100%;
-        }
-
-        .expand-button:hover {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-color: #cbd5e1;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .expand-button:active {
-            transform: translateY(0);
-            transition: transform 0.1s ease;
-        }
-
-        .expand-content {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-        }
-
-        .expand-text {
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text);
-            transition: color 0.3s ease;
-        }
-
-        .expand-button:hover .expand-text {
-            color: var(--primary);
-        }
-
-        /* ENHANCED EXPAND ICON */
-        .expand-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            box-shadow: 0 2px 8px rgba(114, 22, 244, 0.2);
-        }
-
-        .expand-icon::before,
-        .expand-icon::after {
-            content: '';
-            position: absolute;
+        .decision-step {
             background: white;
-            border-radius: 1px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Horizontal line */
-        .expand-icon::before {
-            width: 14px;
-            height: 2px;
-        }
-
-        /* Vertical line */
-        .expand-icon::after {
-            width: 2px;
-            height: 14px;
-        }
-
-        .expand-button:hover .expand-icon {
-            background: var(--primary-light);
-            transform: scale(1.05);
-            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.3);
-        }
-
-        /* When expanded, hide vertical line to create minus sign */
-        .category-card.expanded .expand-icon::after {
-            opacity: 0;
-            transform: rotate(90deg);
-        }
-
-        .category-card.expanded .expand-icon {
-            background: var(--success);
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
-        }
-
-        .category-card.expanded .expand-button:hover .expand-icon {
-            background: #047857;
-            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
-        }
-
-        .category-card.expanded .expand-text {
-            color: var(--success);
-        }
-
-        .category-card.expanded .expand-button:hover .expand-text {
-            color: #047857;
-        }
-
-        /* EXPANDABLE SECTION */
-        .expand-section {
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
-            border-radius: 0 0 12px 12px;
-            margin: 0 -36px -36px;
-            padding: 0;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .expand-section.expanded {
-            max-height: 800px;
-            opacity: 1;
-            padding: 24px 36px 36px;
-            margin-top: 16px;
-        }
-
-        /* Animation for list items - SIMPLIFIED */
-        .expand-section .category-features li {
-            opacity: 1;
-            transform: translateY(0);
+            border-radius: 16px;
+            padding: 28px 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(0, 0, 0, 0.04);
             transition: all 0.3s ease;
         }
 
-        /* Only hide when section is collapsed */
-        .expand-section:not(.expanded) .category-features li {
-            opacity: 0;
-            transform: translateY(20px);
+        .decision-step:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 24px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(0, 0, 0, 0.06);
         }
 
-        /* Show immediately when expanded */
-        .expand-section.expanded .category-features li {
-            opacity: 1;
-            transform: translateY(0);
+        .decision-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: white;
+            flex-shrink: 0;
         }
 
-        /* Staggered animation for visual appeal */
-        .expand-section.expanded .category-features li:nth-child(1) { transition-delay: 0.05s; }
-        .expand-section.expanded .category-features li:nth-child(2) { transition-delay: 0.1s; }
-        .expand-section.expanded .category-features li:nth-child(3) { transition-delay: 0.15s; }
-        .expand-section.expanded .category-features li:nth-child(4) { transition-delay: 0.2s; }
-        .expand-section.expanded .category-features li:nth-child(5) { transition-delay: 0.25s; }
-        .expand-section.expanded .category-features li:nth-child(6) { transition-delay: 0.3s; }
-        .expand-section.expanded .category-features li:nth-child(7) { transition-delay: 0.35s; }
-        .expand-section.expanded .category-features li:nth-child(8) { transition-delay: 0.4s; }
-        .expand-section.expanded .category-features li:nth-child(9) { transition-delay: 0.45s; }
-        .expand-section.expanded .category-features li:nth-child(10) { transition-delay: 0.5s; }
-        .expand-section.expanded .category-features li:nth-child(11) { transition-delay: 0.55s; }
+        .decision-body {
+            flex: 1;
+        }
+
+        .decision-question {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .decision-answer {
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            margin-top: 4px;
+        }
+
+        /* Framework Section */
+        .framework-section {
+            padding: 80px 0;
+        }
+
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .framework-item {
+            text-align: center;
+            background: white;
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+
+        .framework-symbol {
+            font-size: 36px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .framework-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .framework-desc {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* Core Requirements Section */
+        .core-section {
+            padding: 80px 0;
+            background: #fafafa;
+        }
+
+        .core-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 32px;
+        }
+
+        .core-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+
+        .core-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .core-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .core-card-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+
+        .core-card-subtitle {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
+            font-style: italic;
+            margin-bottom: 16px;
+        }
+
+        .core-features {
+            list-style: none;
+        }
+
+        .core-features li {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .core-features li::before {
+            content: '\2714';
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Add-Ons Section */
+        .addons-section {
+            padding: 80px 0;
+        }
+
+        .addons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .addon-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            box-shadow:
+                0 2px 8px rgba(0, 0, 0, 0.04),
+                0 0 0 1px rgba(0, 0, 0, 0.03);
+        }
+
+        .addon-marker {
+            color: var(--primary);
+            font-size: 18px;
+            flex-shrink: 0;
+            line-height: 1.4;
+        }
+
+        .addon-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .addon-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Capability Matrix */
+        .matrix-section {
+            padding: 80px 0;
+            background: #fafafa;
+        }
+
+        .matrix-legend {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .legend-symbol {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .matrix-wrapper {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow:
+                0 4px 16px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 15px;
+        }
+
+        .matrix-table thead th {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: white;
+            font-weight: 700;
+            padding: 16px 20px;
+            text-align: center;
+            font-size: 14px;
+            letter-spacing: 0.02em;
+        }
+
+        .matrix-table thead th:first-child {
+            text-align: left;
+            min-width: 280px;
+        }
+
+        .matrix-table .group-header td {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            font-weight: 800;
+            font-size: 13px;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .matrix-table tbody td {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .matrix-table tbody td:first-child {
+            text-align: left;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .matrix-table tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        .matrix-table .core-symbol {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .matrix-table .addon-symbol {
+            color: #f59e0b;
+            font-size: 18px;
+        }
+
+        .matrix-table .na-symbol {
+            color: #cbd5e1;
+            font-size: 18px;
+        }
 
         /* CTA Section */
         .cta-section {
@@ -539,7 +720,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background:
                 radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
         }
@@ -650,6 +831,7 @@
             .category-card {
                 padding: 28px;
             }
+
             .chart-title-overlay-large {
                 padding: 12px 20px;
                 top: -20px;
@@ -674,147 +856,478 @@
                 grid-template-columns: 1fr;
                 gap: 16px;
             }
+
+            .framework-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .core-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .decision-step {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+
+            .matrix-table {
+                font-size: 13px;
+            }
+
+            .matrix-table thead th,
+            .matrix-table tbody td {
+                padding: 10px 12px;
+            }
+
+            .matrix-table thead th:first-child {
+                min-width: 180px;
+            }
+
+            .matrix-legend {
+                gap: 16px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Hero -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h1>Treasury Tech<br>Made Simple</h1>
-                <p class="hero-subtitle">Three clear categories to help you navigate 32+ treasury technology solutions and find the perfect fit for your organization.</p>
-                
+                <h1>Treasury Tech<br>Market Segments</h1>
+                <p class="hero-subtitle">Three distinct segments define the treasury technology market. Understand which one fits your organization so you can evaluate solutions with clarity and confidence.</p>
+
                 <div class="hero-image">
                     <video src="https://realtreasury.com/wp-content/uploads/2025/07/Portal-Demo-1.mp4" autoplay loop muted playsinline></video>
                 </div>
-
             </div>
         </div>
     </section>
+
+    <!-- Segment Definitions -->
     <section class="categories-section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Three Categories</h2>
-                <p class="section-subtitle">Every treasury solution fits into one of these categories, each designed for different organizational needs and growth stages.</p>
+                <h2 class="section-title">Three Segments</h2>
+                <p class="section-subtitle">Every treasury solution fits into one of these segments, each built for a different level of treasury complexity.</p>
             </div>
 
             <div class="categories-grid">
+                <!-- Cash Tools -->
                 <div class="category-card">
                     <div class="category-icon" style="background: linear-gradient(135deg, #3b82f6, #1e40af); color: white;">💰</div>
                     <h3 class="category-title">Cash Tools</h3>
-                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 16px; margin-bottom: 32px;">Required Core Functions</div>
-                    <ul class="category-features">
-                        <li>Bank connectivity (API, SFTP)</li>
-                        <li>Basic forecasting tools</li>
-                        <li>Global cash visibility</li>
-                        <li>Transaction search, sort, tag, group</li>
-                    </ul>
-                    <div class="category-example">
-                        <div class="example-label">Real Example</div>
-                        <div class="example-text">A $50M regional manufacturer consolidates 5 bank accounts and builds 13-week cash forecasts to improve visibility</div>
+                    <p class="category-description">Cash Tools provide visibility into your money. They connect to your banks, pull in transaction data, and help you see where your cash is across accounts and entities. They include cash forecasting to help you project future cash positions.</p>
+                    <div class="category-bestfor">
+                        <div class="bestfor-label">Best For</div>
+                        <div class="bestfor-text">Companies with simple treasury needs with a few banks, needing better visibility and forecasting without more complex payment or risk requirements.</div>
                     </div>
-                    <button class="expand-button" onclick="toggleExpand(this)">
-                        <div class="expand-content">
-                            <span class="expand-text">Show Additional Features</span>
-                        </div>
-                        <div class="expand-icon"></div>
-                    </button>
-
-                    <div class="expand-section">
-                        <div class="expand-label">Additional Features</div>
-                        <ul class="category-features">
-                            <div class="expand-note">
-                                <span class="emoji">✨</span>
-                                <p>Cash Tools focus on core functionality. Additional features are available when you upgrade to TMS-Lite or Treasury Systems categories.</p>
-                            </div>
-                        </ul>
+                    <div class="category-example">
+                        <div class="example-label">Key Question It Answers</div>
+                        <div class="example-text">"How much cash do we have, where is it, and what is it going to be next month?"</div>
                     </div>
                 </div>
 
+                <!-- TMS-Lite -->
                 <div class="category-card">
                     <div class="category-icon" style="background: linear-gradient(135deg, #7216f4, #8f47f6); color: white;">⚡</div>
-                    <h3 class="category-title">Treasury Management System Lite (TMS-Lite)</h3>
-                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 16px; margin-bottom: 32px;">Required Core Functions</div>
-                    <ul class="category-features">
-                        <li>All Cash Tools functions</li>
-                        <li>Cash positioning & reconciliation</li>
-                        <li>Market data (FX spot rates)</li>
-                        <li>Treasury payments (API or SFTP)</li>
-                    </ul>
-
-                    <div class="category-example">
-                        <div class="example-label">Real Example</div>
-                        <div class="example-text">A $200M retailer automates daily payments across 15 locations with structured approval workflows</div>
+                    <h3 class="category-title">TMS-Lite</h3>
+                    <p class="category-description">TMS-Lite adds payment capabilities on top of visibility. Beyond seeing your cash, you can now move it—initiating, approving, and transmitting payments through structured workflows.</p>
+                    <div class="category-bestfor">
+                        <div class="bestfor-label">Best For</div>
+                        <div class="bestfor-text">Companies with growing treasury complexity and multi-entity structures needing payment automation, approval workflows, and operational treasury controls.</div>
                     </div>
-                    <button class="expand-button" onclick="toggleExpand(this)">
-                        <div class="expand-content">
-                            <span class="expand-text">Show Additional Features</span>
-                        </div>
-                        <div class="expand-icon"></div>
-                    </button>
-
-                    <div class="expand-section">
-                        <div class="expand-label">Optional Enhancements</div>
-                        <ul class="category-features">
-                            <li style="--item-index: 1">AI Forecasting</li>
-                            <li style="--item-index: 2">AI Insights</li>
-                            <li style="--item-index: 3">AP Payments</li>
-                            <li style="--item-index: 4">Bank Account Management</li>
-                            <li style="--item-index: 5">Basic FX (Spots, FWD)</li>
-                            <li style="--item-index: 6">Cash Accounting</li>
-                            <li style="--item-index: 7">Debt Management</li>
-                            <li style="--item-index: 8">Deal Accounting</li>
-                            <li style="--item-index: 9">In-House Banking</li>
-                            <li style="--item-index: 10">Investments</li>
-                            <li style="--item-index: 11">SWIFT Connectivity</li>
-                        </ul>
+                    <div class="category-example">
+                        <div class="example-label">Key Question It Answers</div>
+                        <div class="example-text">"How do we efficiently manage and move our cash?"</div>
                     </div>
                 </div>
 
+                <!-- TRMS -->
                 <div class="category-card">
                     <div class="category-icon" style="background: linear-gradient(135deg, #10b981, #047857); color: white;">🏢</div>
-                    <h3 class="category-title">Treasury Systems</h3>
-                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 16px; margin-bottom: 32px;">Required Core Functions</div>
-                    <ul class="category-features">
-                        <li>All TMS-Lite functions</li>
-                        <li>Derivatives (Interest & FX)</li>
-                        <li>Intercompany loan tracking</li>
-                        <li>Independent instrument valuations</li>
-                    </ul>
-                    <div class="category-example">
-                        <div class="example-label">Real Example</div>
-                        <div class="example-text">A $5B multinational manages FX exposure across 50+ entities with automated hedging strategies</div>
+                    <h3 class="category-title">TRMS</h3>
+                    <div class="category-price" style="color: var(--text-light); font-weight: 600; font-size: 14px; margin-bottom: 16px;">Treasury &amp; Risk Management Systems</div>
+                    <p class="category-description">TRMS is full-spectrum treasury technology that adds financial instrument trading and risk management for a complete treasury operations infrastructure. This includes debt, investment, and FX deal capture and valuations.</p>
+                    <div class="category-bestfor">
+                        <div class="bestfor-label">Best For</div>
+                        <div class="bestfor-text">Companies with complex treasury requirements, often with significant FX exposure, debt portfolios, and active risk management needs.</div>
                     </div>
-                    <button class="expand-button" onclick="toggleExpand(this)">
-                        <div class="expand-content">
-                            <span class="expand-text">Show Additional Features</span>
-                        </div>
-                        <div class="expand-icon"></div>
-                    </button>
-
-                    <div class="expand-section">
-                        <div class="expand-label">Advanced Capabilities</div>
-                        <ul class="category-features">
-                            <li style="--item-index: 1">Bank Fee Analysis</li>
-                            <li style="--item-index: 2">Commodities</li>
-                            <li style="--item-index: 3">Developer Portal</li>
-                            <li style="--item-index: 4">Excel Native Reporting</li>
-                            <li style="--item-index: 5">Hedge Management</li>
-                            <li style="--item-index: 6">Multilateral Netting</li>
-                            <li style="--item-index: 7">Payment Factory (POBO/ROBO)</li>
-                            <li style="--item-index: 8">Risk Management</li>
-                        </ul>
+                    <div class="category-example">
+                        <div class="example-label">Key Question It Answers</div>
+                        <div class="example-text">"How do we run a complete, institutional-grade treasury operation?"</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Quick Decision Tree -->
+    <section class="decision-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Which Segment Do You Need?</h2>
+                <p class="section-subtitle">Answer three questions to find your starting point.</p>
+            </div>
+
+            <div class="decision-tree">
+                <div class="decision-step">
+                    <div class="decision-number" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">1</div>
+                    <div class="decision-body">
+                        <div class="decision-question">Do you primarily need to SEE your cash and FORECAST?</div>
+                        <span class="decision-answer" style="background: #eff6ff; color: #1e40af;">Cash Tools</span>
+                    </div>
+                </div>
+                <div class="decision-step">
+                    <div class="decision-number" style="background: linear-gradient(135deg, #7216f4, #8f47f6);">2</div>
+                    <div class="decision-body">
+                        <div class="decision-question">Do you need to INITIATE and APPROVE payments from the system?</div>
+                        <span class="decision-answer" style="background: #f3e8ff; color: #7216f4;">TMS-Lite</span>
+                    </div>
+                </div>
+                <div class="decision-step">
+                    <div class="decision-number" style="background: linear-gradient(135deg, #10b981, #047857);">3</div>
+                    <div class="decision-body">
+                        <div class="decision-question">Do you need to HEDGE financial risks? (FX, interest rates, commodities, debt/investment accounting)</div>
+                        <span class="decision-answer" style="background: #ecfdf5; color: #047857;">TRMS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Classification Framework -->
+    <section class="framework-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Feature Classification</h2>
+                <p class="section-subtitle">Every capability in the treasury tech market falls into one of three classifications.</p>
+            </div>
+
+            <div class="framework-grid">
+                <div class="framework-item">
+                    <span class="framework-symbol">✔</span>
+                    <div class="framework-label">Core</div>
+                    <div class="framework-desc">Required and expected in this segment. Defines what the segment is.</div>
+                </div>
+                <div class="framework-item">
+                    <span class="framework-symbol">◐</span>
+                    <div class="framework-label">Add-On</div>
+                    <div class="framework-desc">Available in any segment, varies by vendor. Enhances but does not define the segment.</div>
+                </div>
+                <div class="framework-item">
+                    <span class="framework-symbol">—</span>
+                    <div class="framework-label">Not Available</div>
+                    <div class="framework-desc">Not typically offered in this segment.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Requirements by Segment -->
+    <section class="core-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Core Requirements by Segment</h2>
+                <p class="section-subtitle">The defining capabilities that separate each segment from the next.</p>
+            </div>
+
+            <div class="core-grid">
+                <div class="core-card">
+                    <div class="core-card-header">
+                        <div class="core-card-icon" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">💰</div>
+                        <div class="core-card-title">Cash Tools</div>
+                    </div>
+                    <ul class="core-features">
+                        <li>Bank connectivity</li>
+                        <li>Global cash visibility</li>
+                        <li>Transaction reporting (search, sort, filter, tag)</li>
+                        <li>Cash forecasting</li>
+                    </ul>
+                </div>
+                <div class="core-card">
+                    <div class="core-card-header">
+                        <div class="core-card-icon" style="background: linear-gradient(135deg, #7216f4, #8f47f6);">⚡</div>
+                        <div class="core-card-title">TMS-Lite</div>
+                    </div>
+                    <div class="core-card-subtitle">Includes all Cash Tools core, plus:</div>
+                    <ul class="core-features">
+                        <li>Payment initiation</li>
+                        <li>Payment approval workflows</li>
+                        <li>Payment file transmission</li>
+                    </ul>
+                </div>
+                <div class="core-card">
+                    <div class="core-card-header">
+                        <div class="core-card-icon" style="background: linear-gradient(135deg, #10b981, #047857);">🏢</div>
+                        <div class="core-card-title">TRMS</div>
+                    </div>
+                    <div class="core-card-subtitle">Includes all TMS-Lite core, plus:</div>
+                    <ul class="core-features">
+                        <li>Full support for debt, investment, and FX management</li>
+                        <li>Deal capture, accounting, and valuations</li>
+                        <li>Risk analytics, limit tracking &amp; exposure reporting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Common Add-Ons -->
+    <section class="addons-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Common Add-Ons</h2>
+                <p class="section-subtitle">Segment-independent capabilities available from vendors across the market. These enhance any segment but do not define it.</p>
+            </div>
+
+            <div class="addons-grid">
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">AI Forecasting</div>
+                        <div class="addon-desc">ML-powered cash flow predictions</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">AI Chatbot</div>
+                        <div class="addon-desc">Answers questions in natural language</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">AI Insights</div>
+                        <div class="addon-desc">Anomaly detection, commentary, and analysis</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">AP Payments Integration</div>
+                        <div class="addon-desc">Accounts payable data feeds through TMS</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">SWIFT Connectivity</div>
+                        <div class="addon-desc">Direct SWIFT network access</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Market Data</div>
+                        <div class="addon-desc">Vendor supplied data or connects to your subscription source</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Mobile App</div>
+                        <div class="addon-desc">iOS/Android apps for on-the-go visibility</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">ERP Integration</div>
+                        <div class="addon-desc">Bi-directional data sync with ERP systems for accounting and forecasting</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Bank Fee Analysis</div>
+                        <div class="addon-desc">Analyze and optimize banking fees</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Developer Portal / APIs</div>
+                        <div class="addon-desc">Custom integrations and extensions</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">G/L Reconciliation</div>
+                        <div class="addon-desc">Match bank statements to general ledger</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Cash Accounting / GL Posting</div>
+                        <div class="addon-desc">Post journal entries directly to accounting system</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Commodities Hedging</div>
+                        <div class="addon-desc">Manage price risk for commodities</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Multilateral Netting</div>
+                        <div class="addon-desc">Net multicurrency payables and receivables for settlements in desired currencies</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Collateral Management</div>
+                        <div class="addon-desc">Track and optimize collateral posted for derivatives</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Bank Account Management (BAM)</div>
+                        <div class="addon-desc">Centralize account data, signatories, KYC docs, etc.</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">In-House Banking (IHB)</div>
+                        <div class="addon-desc">Internal running participant balances with the ability to calculate interest</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Intercompany Loan Management</div>
+                        <div class="addon-desc">Track, calculate interest, settle and administer loans between legal entities</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Cash Application</div>
+                        <div class="addon-desc">Match A/R payments to customer subledgers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Capability Mapping Matrix -->
+    <section class="matrix-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Capability Mapping Matrix</h2>
+                <p class="section-subtitle">A complete view of what is core, optional, or not available across each segment.</p>
+            </div>
+
+            <div class="matrix-legend">
+                <div class="legend-item"><span class="legend-symbol" style="color: var(--primary);">✔</span> Core</div>
+                <div class="legend-item"><span class="legend-symbol" style="color: #f59e0b;">◐</span> Optional Add-On</div>
+                <div class="legend-item"><span class="legend-symbol" style="color: #cbd5e1;">—</span> Not Generally Available</div>
+            </div>
+
+            <div class="matrix-wrapper">
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th>Cash Tools</th>
+                            <th>TMS-Lite</th>
+                            <th>TRMS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="group-header">
+                            <td colspan="4">Cash Visibility &amp; Forecasting</td>
+                        </tr>
+                        <tr>
+                            <td>Bank connectivity</td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                        <tr>
+                            <td>Global cash visibility</td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                        <tr>
+                            <td>Transaction reporting</td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                        <tr>
+                            <td>Cash forecasting</td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                        <tr class="group-header">
+                            <td colspan="4">Payments</td>
+                        </tr>
+                        <tr>
+                            <td>Payment initiation</td>
+                            <td><span class="na-symbol">—</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                        <tr>
+                            <td>Payment approval workflows</td>
+                            <td><span class="na-symbol">—</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                        <tr>
+                            <td>Payment file transmission</td>
+                            <td><span class="na-symbol">—</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                        <tr class="group-header">
+                            <td colspan="4">Trading &amp; Risk Management</td>
+                        </tr>
+                        <tr>
+                            <td>Investment and debt management, FX support</td>
+                            <td><span class="addon-symbol">◐</span></td>
+                            <td><span class="addon-symbol">◐</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                        <tr>
+                            <td>Deal capture, accounting, and valuations</td>
+                            <td><span class="addon-symbol">◐</span></td>
+                            <td><span class="addon-symbol">◐</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                        <tr>
+                            <td>Risk analytics with limit tracking &amp; exposure reporting</td>
+                            <td><span class="addon-symbol">◐</span></td>
+                            <td><span class="addon-symbol">◐</span></td>
+                            <td><span class="core-symbol">✔</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Landscape -->
     <section class="market-section">
         <div class="container">
             <div class="market-content">
                 <div class="market-text">
                     <h2>The Treasury Tech Landscape</h2>
-                    <p>The treasury technology market has exploded with innovation, creating hundreds of solutions across different categories and price points. Understanding which category fits your needs is the first step to making the right investment.</p>
+                    <p>The treasury technology market has exploded with innovation, creating hundreds of solutions across different categories and price points. Understanding which segment fits your needs is the first step to making the right investment.</p>
                 </div>
                 <div class="market-image">
                     <div class="chart-title-overlay-large">
@@ -827,26 +1340,26 @@
         </div>
     </section>
 
-
+    <!-- CTA -->
     <section class="cta-section">
         <div class="container">
             <div class="cta-content">
                 <h2>Find Your Path</h2>
                 <p>Get personalized guidance on the right treasury technology strategy for your organization's unique needs and growth trajectory.</p>
-                
+
                 <div class="cta-grid">
                     <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" class="cta-card" target="_blank">
                         <span class="cta-icon">📞</span>
                         <div class="cta-title">Strategy Session</div>
                         <div class="cta-desc">15-minute consultation</div>
                     </a>
-                    
+
                     <a href="https://realtreasury.com/treasury-tech-portal/" class="cta-card tpa-btn-ready">
                         <span class="cta-icon">🎬</span>
                         <div class="cta-title">Tech Portal</div>
                         <div class="cta-desc">Curated solution demos</div>
                     </a>
-                    
+
                     <a href="https://realtreasury.com/tech-selection-workshop/" class="cta-card">
                         <span class="cta-icon">🎓</span>
                         <div class="cta-title">Workshop</div>
@@ -858,19 +1371,9 @@
     </section>
 
     <script>
-function toggleExpand(button) {
-    const card = button.closest('.category-card');
-    const expandSection = card.querySelector('.expand-section');
-    const expandText = button.querySelector('.expand-text');
-    const isExpanded = card.classList.toggle('expanded');
-
-    expandSection.classList.toggle('expanded', isExpanded);
-    expandText.textContent = isExpanded ? 'Hide Additional Features' : 'Show Additional Features';
-}
-
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Treasury categories initialized');
+    console.log('Treasury market segments initialized');
 });
     </script>
 </body>

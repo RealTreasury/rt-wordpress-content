@@ -287,12 +287,17 @@
             opacity: 0;
             transition: opacity 0.8s ease-in-out;
             pointer-events: none;
+            z-index: 1;
         }
 
         .chart-slide.active {
-            position: relative;
             opacity: 1;
             pointer-events: auto;
+            z-index: 2;
+        }
+
+        .chart-slide:first-child {
+            position: relative;
         }
 
         .carousel-dots {
@@ -1116,7 +1121,7 @@
                                     <h3>Treasury Systems</h3>
                                     <p>North American Vendors</p>
                                 </div>
-                                <img loading="lazy" src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-NORAM-01-2026-clean-2.png" alt="Treasury Tech Market Map - North America">
+                                <img src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-NORAM-01-2026-clean-2.png" alt="Treasury Tech Market Map - North America">
                             </a>
                         </div>
                         <div class="chart-slide">
@@ -1125,7 +1130,7 @@
                                     <h3>Treasury Systems</h3>
                                     <p>EMEA Vendors</p>
                                 </div>
-                                <img loading="lazy" src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-clean-EMEA-01-2026-1.png" alt="Treasury Tech Market Map - EMEA">
+                                <img src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-clean-EMEA-01-2026-1.png" alt="Treasury Tech Market Map - EMEA">
                             </a>
                         </div>
                         <div class="carousel-dots">

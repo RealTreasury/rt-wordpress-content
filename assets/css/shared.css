@@ -2566,19 +2566,24 @@ body.banner-closed .rt-nav-container {
     opacity: 0;
     transition: opacity 0.8s ease-in-out;
     pointer-events: none;
+    z-index: 1;
 }
 
 .nav-chart-carousel .chart-slide.active {
-    position: relative;
     opacity: 1;
     pointer-events: auto;
+    z-index: 2;
+}
+
+.nav-chart-carousel .chart-slide:first-child {
+    position: relative;
 }
 
 .nav-chart-carousel .carousel-dots {
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 10px;
+    margin-top: 18px;
 }
 
 .nav-chart-carousel .carousel-dot {

@@ -31,16 +31,36 @@ function add_my_custom_header_html() {
                         <div class="rt-dropdown-inner">
                             <div class="rt-main-menu">
                                 <div class="rt-main-menu-column">
-                                    <a href="https://realtreasury.com/treasury-tech-market/" class="rt-explore-link">
-                                        <div class="chart-title-overlay">
-                                            <h3>Treasury Systems</h3>
-                                            <p>North America</p>
+                                    <div class="chart-carousel nav-chart-carousel">
+                                        <div class="chart-slide active">
+                                            <a href="https://realtreasury.com/treasury-tech-market/" class="rt-explore-link">
+                                                <div class="chart-title-overlay">
+                                                    <h3>Treasury Systems</h3>
+                                                    <p>North America</p>
+                                                </div>
+                                                <img class="rt-explore-image"
+                                                    src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-NORAM-01-2026-clean-2.png"
+                                                     alt="Treasury Tech Market - North America"
+                                                     loading="lazy">
+                                            </a>
                                         </div>
-                                        <img class="rt-explore-image"
-                                            src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-NORAM-01-2026-clean-2.png"
-                                             alt="Treasury Tech Market"
-                                             loading="lazy">
-                                    </a>
+                                        <div class="chart-slide">
+                                            <a href="https://realtreasury.com/treasury-tech-market/" class="rt-explore-link">
+                                                <div class="chart-title-overlay">
+                                                    <h3>Treasury Systems</h3>
+                                                    <p>EMEA Vendors</p>
+                                                </div>
+                                                <img class="rt-explore-image"
+                                                    src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-clean-EMEA-01-2026-1.png"
+                                                     alt="Treasury Tech Market - EMEA"
+                                                     loading="lazy">
+                                            </a>
+                                        </div>
+                                        <div class="carousel-dots">
+                                            <button class="carousel-dot active" aria-label="Show North America chart"></button>
+                                            <button class="carousel-dot" aria-label="Show EMEA chart"></button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="rt-main-menu-column rt-topics-column">
                                     <h3>Topics</h3>
@@ -262,5 +282,50 @@ function add_my_custom_header_html() {
             </div>
         </div>
     </nav>
+    <script>
+    (function() {
+        var carousel = document.querySelector('.nav-chart-carousel');
+        if (!carousel) return;
+        var slides = carousel.querySelectorAll('.chart-slide');
+        var dots = carousel.querySelectorAll('.carousel-dot');
+        var current = 0;
+        var interval;
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = index;
+            slides[current].classList.add('active');
+            dots[current].classList.add('active');
+        }
+
+        function next() {
+            goTo((current + 1) % slides.length);
+        }
+
+        function startAutoRotate() {
+            interval = setInterval(next, 6000);
+        }
+
+        function resetAutoRotate() {
+            clearInterval(interval);
+            startAutoRotate();
+        }
+
+        dots.forEach(function(dot, i) {
+            dot.addEventListener('click', function() {
+                if (i !== current) {
+                    goTo(i);
+                    resetAutoRotate();
+                }
+            });
+        });
+
+        carousel.addEventListener('mouseenter', function() { clearInterval(interval); });
+        carousel.addEventListener('mouseleave', startAutoRotate);
+
+        startAutoRotate();
+    })();
+    </script>
     <?php
 }

@@ -274,12 +274,12 @@
         }
 
         /* Chart Carousel */
-        .chart-carousel {
+        .hero-image .chart-carousel {
             position: relative;
             width: 100%;
         }
 
-        .chart-slide {
+        .hero-image .chart-slide {
             position: absolute;
             top: 0;
             left: 0;
@@ -290,24 +290,24 @@
             z-index: 1;
         }
 
-        .chart-slide.active {
+        .hero-image .chart-slide.active {
             opacity: 1;
             pointer-events: auto;
             z-index: 2;
         }
 
-        .chart-slide:first-child {
+        .hero-image .chart-slide:first-child {
             position: relative;
         }
 
-        .carousel-dots {
+        .hero-image .carousel-dots {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin-top: 16px;
         }
 
-        .carousel-dot {
+        .hero-image .carousel-dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
@@ -318,13 +318,13 @@
             padding: 0;
         }
 
-        .carousel-dot.active {
+        .hero-image .carousel-dot.active {
             background: var(--primary-purple);
             border-color: var(--primary-purple);
             transform: scale(1.2);
         }
 
-        .carousel-dot:hover:not(.active) {
+        .hero-image .carousel-dot:hover:not(.active) {
             background: rgba(114, 22, 244, 0.4);
         }
 
@@ -1362,14 +1362,16 @@
 
     // Chart carousel
     (function() {
-        const slides = document.querySelectorAll('.chart-slide');
-        const dots = document.querySelectorAll('.carousel-dot');
-        let current = 0;
-        let interval;
+        var carousel = document.querySelector('.hero-image .chart-carousel');
+        if (!carousel) return;
+        var slides = carousel.querySelectorAll('.chart-slide');
+        var dots = carousel.querySelectorAll('.carousel-dot');
+        var current = 0;
+        var interval;
 
         function goTo(index) {
-            slides[current].classList.remove('active');
-            dots[current].classList.remove('active');
+            slides.forEach(function(s) { s.classList.remove('active'); });
+            dots.forEach(function(d) { d.classList.remove('active'); });
             current = index;
             slides[current].classList.add('active');
             dots[current].classList.add('active');
@@ -1397,12 +1399,8 @@
             });
         });
 
-        // Pause on hover
-        var carousel = document.querySelector('.chart-carousel');
-        if (carousel) {
-            carousel.addEventListener('mouseenter', function() { clearInterval(interval); });
-            carousel.addEventListener('mouseleave', startAutoRotate);
-        }
+        carousel.addEventListener('mouseenter', function() { clearInterval(interval); });
+        carousel.addEventListener('mouseleave', startAutoRotate);
 
         startAutoRotate();
     })();

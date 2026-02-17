@@ -2583,7 +2583,7 @@ body.banner-closed .rt-nav-container {
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 18px;
+    margin-top: 32px;
 }
 
 .nav-chart-carousel .carousel-dot {

@@ -2552,6 +2552,56 @@ body.banner-closed .rt-nav-container {
     font-size: 0.6rem;
 }
 
+/* Nav Chart Carousel */
+.nav-chart-carousel {
+    position: relative;
+    width: 100%;
+}
+
+.nav-chart-carousel .chart-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    pointer-events: none;
+}
+
+.nav-chart-carousel .chart-slide.active {
+    position: relative;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.nav-chart-carousel .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.nav-chart-carousel .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(114, 22, 244, 0.2);
+    border: 1px solid rgba(114, 22, 244, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.nav-chart-carousel .carousel-dot.active {
+    background: var(--primary-purple);
+    border-color: var(--primary-purple);
+    transform: scale(1.2);
+}
+
+.nav-chart-carousel .carousel-dot:hover:not(.active) {
+    background: rgba(114, 22, 244, 0.4);
+}
+
 /* Insights Widget */
 .rt-insights-widget {
     width: 100%;

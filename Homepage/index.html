@@ -273,6 +273,56 @@
                 0 0 0 1px rgba(199, 125, 255, 0.4);
         }
 
+        /* Chart Carousel */
+        .chart-carousel {
+            position: relative;
+            width: 100%;
+        }
+
+        .chart-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            pointer-events: none;
+        }
+
+        .chart-slide.active {
+            position: relative;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(114, 22, 244, 0.2);
+            border: 1.5px solid rgba(114, 22, 244, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .carousel-dot.active {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
+            transform: scale(1.2);
+        }
+
+        .carousel-dot:hover:not(.active) {
+            background: rgba(114, 22, 244, 0.4);
+        }
+
         /* Chart Title Overlay */
         .chart-title-overlay {
             position: absolute;
@@ -1059,13 +1109,30 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <a href="https://realtreasury.com/treasury-tech-market/">
-                        <div class="chart-title-overlay">
-                            <h3>Treasury Systems</h3>
-                            <p>North American Vendors</p>
+                    <div class="chart-carousel">
+                        <div class="chart-slide active">
+                            <a href="https://realtreasury.com/treasury-tech-market/">
+                                <div class="chart-title-overlay">
+                                    <h3>Treasury Systems</h3>
+                                    <p>North American Vendors</p>
+                                </div>
+                                <img loading="lazy" src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-NORAM-01-2026-clean-2.png" alt="Treasury Tech Market Map - North America">
+                            </a>
                         </div>
-                        <img loading="lazy" src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-NORAM-01-2026-clean-2.png" alt="Preview of the Treasury Tech Market dashboard">
-                    </a>
+                        <div class="chart-slide">
+                            <a href="https://realtreasury.com/treasury-tech-market/">
+                                <div class="chart-title-overlay">
+                                    <h3>Treasury Systems</h3>
+                                    <p>EMEA Vendors</p>
+                                </div>
+                                <img loading="lazy" src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-clean-EMEA-01-2026.png" alt="Treasury Tech Market Map - EMEA">
+                            </a>
+                        </div>
+                        <div class="carousel-dots">
+                            <button class="carousel-dot active" aria-label="Show North America chart"></button>
+                            <button class="carousel-dot" aria-label="Show EMEA chart"></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1287,6 +1354,53 @@
     </section>
 
 <script>
+
+    // Chart carousel
+    (function() {
+        const slides = document.querySelectorAll('.chart-slide');
+        const dots = document.querySelectorAll('.carousel-dot');
+        let current = 0;
+        let interval;
+
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = index;
+            slides[current].classList.add('active');
+            dots[current].classList.add('active');
+        }
+
+        function next() {
+            goTo((current + 1) % slides.length);
+        }
+
+        function startAutoRotate() {
+            interval = setInterval(next, 6000);
+        }
+
+        function resetAutoRotate() {
+            clearInterval(interval);
+            startAutoRotate();
+        }
+
+        dots.forEach(function(dot, i) {
+            dot.addEventListener('click', function() {
+                if (i !== current) {
+                    goTo(i);
+                    resetAutoRotate();
+                }
+            });
+        });
+
+        // Pause on hover
+        var carousel = document.querySelector('.chart-carousel');
+        if (carousel) {
+            carousel.addEventListener('mouseenter', function() { clearInterval(interval); });
+            carousel.addEventListener('mouseleave', startAutoRotate);
+        }
+
+        startAutoRotate();
+    })();
 
     // Script to send the document height to the parent window
     if (window.self !== window.top) {

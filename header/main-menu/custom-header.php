@@ -290,8 +290,8 @@ function add_my_custom_header_html() {
         var interval;
 
         function goTo(index) {
-            slides[current].classList.remove('active');
-            dots[current].classList.remove('active');
+            slides.forEach(function(s) { s.classList.remove('active'); });
+            dots.forEach(function(d) { d.classList.remove('active'); });
             current = index;
             slides[current].classList.add('active');
             dots[current].classList.add('active');

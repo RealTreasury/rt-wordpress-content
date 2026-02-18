@@ -1,554 +1,425 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Gated Workshop Video — Real Treasury</title>
-    <meta name="description" content="Fill out the form to unlock our exclusive on-demand workshop video from Real Treasury.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* ============================================================
-           REAL TREASURY — GATED VIDEO LANDING PAGE
-           Brand tokens from shared.css / Homepage
-           ============================================================ */
-        :root {
-            --primary-purple: #7216f4;
-            --secondary-purple: #8f47f6;
-            --deep-purple: #5b0acd;
-            --lavender-pink: #c77dff;
-            --soft-purple: #9d4edd;
-            --dark-text: #281345;
-            --gray-text: #7e7e7e;
-            --mid-grey: #7e7e7e;
-            --light-grey: #bebebe;
-            --dark-grey: #393939;
-            --black: #131313;
-            --white: #ffffff;
-            --off-white: #f8f8f8;
-            --light-bg: #f8f8f8;
-            --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
-            --gradient-light: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+<style>
+    /* ============================================================
+       REAL TREASURY — GATED VIDEO (WordPress Custom HTML Block)
+       No header/footer — paste directly into a Custom HTML block.
+       ============================================================ */
+
+    /* ---- Scoped Variables ---- */
+    .rt-gated-video {
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --deep-purple: #5b0acd;
+        --lavender-pink: #c77dff;
+        --soft-purple: #9d4edd;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        --white: #ffffff;
+        --off-white: #f8f8f8;
+        --black: #131313;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        --gradient-light: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .rt-gated-video *, .rt-gated-video *::before, .rt-gated-video *::after {
+        box-sizing: border-box;
+    }
+
+    .rt-gated-video img { max-width: 100%; height: auto; }
+    .rt-gated-video a { color: inherit; text-decoration: none; }
+
+    /* ---- Layout ---- */
+    .rt-gv-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    /* ---- Hero Section ---- */
+    .rt-gv-hero {
+        background: var(--gradient-light);
+        padding: 60px 0 48px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .rt-gv-hero::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background:
+            radial-gradient(circle at 30% 20%, rgba(114, 22, 244, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.06) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .rt-gv-hero .rt-gv-container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .rt-gv-badge {
+        display: inline-block;
+        background: rgba(199, 125, 255, 0.1);
+        border: 1px solid rgba(199, 125, 255, 0.25);
+        border-radius: 20px;
+        padding: 8px 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--primary-purple);
+        margin-bottom: 24px;
+    }
+
+    .rt-gv-title {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .rt-gv-subtitle {
+        font-size: 1.15rem;
+        color: var(--gray-text);
+        line-height: 1.6;
+        max-width: 720px;
+        margin: 0 auto;
+        font-weight: 400;
+    }
+
+    /* ---- Form Card ---- */
+    .rt-gv-form-section {
+        padding: 48px 0 0;
+    }
+
+    .rt-gv-form-card {
+        background: var(--white);
+        border: 2px solid rgba(199, 125, 255, 0.2);
+        border-radius: 20px;
+        padding: 48px 40px;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 8px 32px rgba(114, 22, 244, 0.1);
+        position: relative;
+        overflow: hidden;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .rt-gv-form-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--gradient-primary);
+    }
+
+    .rt-gv-form-heading {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    .rt-gv-form-subtext {
+        font-size: 0.95rem;
+        color: var(--gray-text);
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    /* CF7 form overrides scoped to .rt-gv-form-card */
+    .rt-gv-form-card .wpcf7 input[type="text"],
+    .rt-gv-form-card .wpcf7 input[type="email"],
+    .rt-gv-form-card .wpcf7 input[type="tel"],
+    .rt-gv-form-card .wpcf7 textarea,
+    .rt-gv-form-card .wpcf7 select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid rgba(199, 125, 255, 0.2);
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        color: var(--dark-text);
+        background: var(--white);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .rt-gv-form-card .wpcf7 input[type="text"]:focus,
+    .rt-gv-form-card .wpcf7 input[type="email"]:focus,
+    .rt-gv-form-card .wpcf7 input[type="tel"]:focus,
+    .rt-gv-form-card .wpcf7 textarea:focus,
+    .rt-gv-form-card .wpcf7 select:focus {
+        outline: none;
+        border-color: var(--primary-purple);
+        box-shadow: 0 0 0 3px rgba(114, 22, 244, 0.12);
+    }
+
+    .rt-gv-form-card .wpcf7 input[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 16px 36px;
+        margin-top: 8px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--white);
+        background: linear-gradient(135deg, rgba(114, 22, 244, 0.9) 0%, rgba(143, 71, 246, 0.9) 100%);
+        border: 1px solid rgba(199, 125, 255, 0.4);
+        border-radius: 12px;
+        cursor: pointer;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .rt-gv-form-card .wpcf7 input[type="submit"]:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, rgba(143, 71, 246, 0.95) 0%, rgba(157, 78, 221, 0.95) 100%);
+        box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .rt-gv-form-card .wpcf7 input[type="submit"]:focus-visible {
+        outline: 3px solid var(--lavender-pink);
+        outline-offset: 2px;
+    }
+
+    .rt-gv-form-card .wpcf7 label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 6px;
+    }
+
+    .rt-gv-form-card .wpcf7 p {
+        margin-bottom: 16px;
+    }
+
+    .rt-gv-form-card .wpcf7-not-valid-tip {
+        color: #e53e3e;
+        font-size: 0.8rem;
+        margin-top: 4px;
+    }
+
+    .rt-gv-form-card .wpcf7-response-output {
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.875rem;
+        margin-top: 16px;
+    }
+
+    /* ---- Video Card ---- */
+    .rt-gv-video-card {
+        display: none;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+        max-width: 100%;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .rt-gv-video-welcome {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 24px;
+    }
+
+    .rt-gv-video-player {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 12px 48px rgba(114, 22, 244, 0.15);
+        border: 2px solid rgba(199, 125, 255, 0.2);
+        background: var(--black);
+    }
+
+    .rt-gv-video-player iframe {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        border: 0;
+    }
+
+    .rt-gv-video-cta {
+        margin-top: 40px;
+    }
+
+    .rt-gv-cta-heading {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 16px;
+    }
+
+    .rt-gv-btn-primary {
+        display: inline-block;
+        padding: 18px 36px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--white);
+        background: linear-gradient(135deg, rgba(114, 22, 244, 0.9) 0%, rgba(143, 71, 246, 0.9) 100%);
+        border: 1px solid rgba(199, 125, 255, 0.4);
+        border-radius: 16px;
+        text-decoration: none;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .rt-gv-btn-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        background: linear-gradient(135deg, rgba(143, 71, 246, 0.95) 0%, rgba(157, 78, 221, 0.95) 100%);
+        box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .rt-gv-btn-primary:focus-visible {
+        outline: 3px solid var(--lavender-pink);
+        outline-offset: 2px;
+    }
+
+    /* ---- Bottom padding (replaces footer margin) ---- */
+    .rt-gv-form-section {
+        padding-bottom: 48px;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 768px) {
+        .rt-gv-hero {
+            padding: 40px 0 32px;
         }
 
-        /* ---- Reset & Base ---- */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .rt-gv-title {
+            font-size: 2.25rem;
         }
 
-        html {
-            scroll-behavior: smooth;
+        .rt-gv-subtitle {
+            font-size: 1.05rem;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: var(--dark-text);
-            line-height: 1.6;
-            background: var(--white);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
+        .rt-gv-form-card {
+            padding: 32px 24px;
         }
 
-        img { max-width: 100%; height: auto; }
-        a { color: inherit; text-decoration: none; }
-
-        /* ---- Skip Link (Accessibility) ---- */
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: var(--primary-purple);
-            color: var(--white);
-            padding: 8px 16px;
-            z-index: 100;
-            font-size: 0.875rem;
-            border-radius: 0 0 8px 0;
-            transition: top 0.3s ease;
+        .rt-gv-cta-heading {
+            font-size: 1.1rem;
         }
 
-        .skip-link:focus {
-            top: 0;
+        .rt-gv-btn-primary {
+            padding: 16px 28px;
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .rt-gv-title {
+            font-size: 1.85rem;
         }
 
-        /* ---- Layout ---- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* ---- Branding Bar ---- */
-        .brand-bar {
-            background: var(--dark-text);
-            padding: 16px 0;
-        }
-
-        .brand-bar .container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .brand-bar__logo img {
-            height: 36px;
-            width: auto;
-        }
-
-        .brand-bar__link {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .brand-bar__link:hover {
-            color: var(--lavender-pink);
-        }
-
-        /* ---- Hero Section ---- */
-        .hero {
-            background: var(--gradient-light);
-            padding: 80px 0 60px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background:
-                radial-gradient(circle at 30% 20%, rgba(114, 22, 244, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.06) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .hero .container {
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero__badge {
-            display: inline-block;
-            background: rgba(199, 125, 255, 0.1);
-            border: 1px solid rgba(199, 125, 255, 0.25);
-            border-radius: 20px;
-            padding: 8px 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--primary-purple);
-            margin-bottom: 24px;
-        }
-
-        .hero__title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero__subtitle {
-            font-size: 1.25rem;
-            color: var(--gray-text);
-            line-height: 1.6;
-            max-width: 720px;
-            margin: 0 auto;
-            font-weight: 400;
-        }
-
-        /* ---- Form Card ---- */
-        .form-section {
-            padding: 60px 0 0;
-        }
-
-        .form-card {
-            background: var(--white);
-            border: 2px solid rgba(199, 125, 255, 0.2);
-            border-radius: 20px;
-            padding: 48px 40px;
-            max-width: 600px;
-            margin: 0 auto;
-            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.1);
-            position: relative;
-            overflow: hidden;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .form-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: var(--gradient-primary);
-        }
-
-        .form-card__heading {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--dark-text);
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .form-card__subtext {
-            font-size: 0.95rem;
-            color: var(--gray-text);
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        /* CF7 form overrides scoped to .form-card */
-        .form-card .wpcf7 input[type="text"],
-        .form-card .wpcf7 input[type="email"],
-        .form-card .wpcf7 input[type="tel"],
-        .form-card .wpcf7 textarea,
-        .form-card .wpcf7 select {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid rgba(199, 125, 255, 0.2);
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            color: var(--dark-text);
-            background: var(--white);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .form-card .wpcf7 input[type="text"]:focus,
-        .form-card .wpcf7 input[type="email"]:focus,
-        .form-card .wpcf7 input[type="tel"]:focus,
-        .form-card .wpcf7 textarea:focus,
-        .form-card .wpcf7 select:focus {
-            outline: none;
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 0 3px rgba(114, 22, 244, 0.12);
-        }
-
-        .form-card .wpcf7 input[type="submit"] {
-            display: block;
-            width: 100%;
-            padding: 16px 36px;
-            margin-top: 8px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--white);
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.9) 0%, rgba(143, 71, 246, 0.9) 100%);
-            border: 1px solid rgba(199, 125, 255, 0.4);
-            border-radius: 12px;
-            cursor: pointer;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-        }
-
-        .form-card .wpcf7 input[type="submit"]:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, rgba(143, 71, 246, 0.95) 0%, rgba(157, 78, 221, 0.95) 100%);
-            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-
-        .form-card .wpcf7 input[type="submit"]:focus-visible {
-            outline: 3px solid var(--lavender-pink);
-            outline-offset: 2px;
-        }
-
-        .form-card .wpcf7 label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--dark-text);
-            margin-bottom: 6px;
-        }
-
-        .form-card .wpcf7 p {
-            margin-bottom: 16px;
-        }
-
-        .form-card .wpcf7-not-valid-tip {
-            color: #e53e3e;
+        .rt-gv-badge {
             font-size: 0.8rem;
-            margin-top: 4px;
+            padding: 6px 14px;
         }
 
-        .form-card .wpcf7-response-output {
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 0.875rem;
-            margin-top: 16px;
-        }
-
-        /* ---- Video Card ---- */
-        .video-card {
-            display: none;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .video-card__welcome {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--dark-text);
-            margin-bottom: 24px;
-        }
-
-        .video-card__player {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        .rt-gv-form-card {
+            padding: 24px 18px;
             border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 12px 48px rgba(114, 22, 244, 0.15);
-            border: 2px solid rgba(199, 125, 255, 0.2);
-            background: var(--black);
         }
+    }
+</style>
 
-        .video-card__player iframe {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border: 0;
-        }
+<!-- ============================================================
+     GATED VIDEO — WordPress Custom HTML Block
+     ============================================================ -->
+<div class="rt-gated-video">
 
-        .video-card__cta {
-            margin-top: 40px;
-        }
-
-        .video-card__cta-heading {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--dark-text);
-            margin-bottom: 16px;
-        }
-
-        .btn-primary {
-            display: inline-block;
-            padding: 18px 36px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--white);
-            background: linear-gradient(135deg, rgba(114, 22, 244, 0.9) 0%, rgba(143, 71, 246, 0.9) 100%);
-            border: 1px solid rgba(199, 125, 255, 0.4);
-            border-radius: 16px;
-            text-decoration: none;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px) scale(1.02);
-            background: linear-gradient(135deg, rgba(143, 71, 246, 0.95) 0%, rgba(157, 78, 221, 0.95) 100%);
-            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-primary:focus-visible {
-            outline: 3px solid var(--lavender-pink);
-            outline-offset: 2px;
-        }
-
-        /* ---- Footer Strip ---- */
-        .footer-strip {
-            background: var(--dark-text);
-            color: rgba(255, 255, 255, 0.7);
-            padding: 24px 0;
-            text-align: center;
-            font-size: 0.8125rem;
-            margin-top: 80px;
-        }
-
-        .footer-strip a {
-            color: var(--lavender-pink);
-            text-decoration: none;
-        }
-
-        .footer-strip a:hover {
-            text-decoration: underline;
-        }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
-        @media (max-width: 768px) {
-            .hero {
-                padding: 60px 0 40px;
-            }
-
-            .hero__title {
-                font-size: 2.5rem;
-            }
-
-            .hero__subtitle {
-                font-size: 1.1rem;
-            }
-
-            .form-card {
-                padding: 32px 24px;
-            }
-
-            .video-card__cta-heading {
-                font-size: 1.1rem;
-            }
-
-            .btn-primary {
-                padding: 16px 28px;
-                font-size: 0.9rem;
-            }
-
-            .brand-bar__link {
-                display: none;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero__title {
-                font-size: 2rem;
-            }
-
-            .hero__badge {
-                font-size: 0.8rem;
-                padding: 6px 14px;
-            }
-
-            .form-card {
-                padding: 24px 18px;
-                border-radius: 16px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Skip Navigation (Accessibility) -->
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-
-    <!-- ============================================================
-         BRANDING BAR
-         ============================================================ -->
-    <header class="brand-bar" role="banner">
-        <div class="container">
-            <a href="https://realtreasury.com/" class="brand-bar__logo">
-                <img src="https://realtreasury.com/wp-content/uploads/2025/06/White-logo-no-background.png"
-                     alt="Real Treasury"
-                     onerror="this.onerror=null;this.src='https://placehold.co/200x50/281345/ffffff?text=Real+Treasury';">
-            </a>
-            <a href="https://realtreasury.com/" class="brand-bar__link">realtreasury.com &rarr;</a>
-        </div>
-    </header>
-
-    <!-- ============================================================
-         HERO SECTION
-         ============================================================ -->
-    <section class="hero" aria-labelledby="hero-heading">
-        <div class="container">
-            <span class="hero__badge">Free On-Demand Workshop</span>
-            <h1 id="hero-heading" class="hero__title">Unlock Your Workshop Recording</h1>
-            <p class="hero__subtitle">
+    <!-- Hero Section -->
+    <section class="rt-gv-hero" aria-labelledby="rt-gv-hero-heading">
+        <div class="rt-gv-container">
+            <span class="rt-gv-badge">Free On-Demand Workshop</span>
+            <h2 id="rt-gv-hero-heading" class="rt-gv-title">Unlock Your Workshop Recording</h2>
+            <p class="rt-gv-subtitle">
                 Complete the short form below to get instant access to our exclusive on-demand workshop
                 &mdash; packed with actionable insights for treasury teams.
             </p>
         </div>
     </section>
 
-    <!-- ============================================================
-         FORM / VIDEO SECTION
-         ============================================================ -->
-    <main id="main-content">
-        <section class="form-section" aria-labelledby="form-heading">
-            <div class="container">
+    <!-- Form / Video Section -->
+    <section class="rt-gv-form-section" aria-labelledby="rt-gv-form-heading">
+        <div class="rt-gv-container">
 
-                <!-- FORM CARD (visible by default) -->
-                <div id="formCard" class="form-card" role="region" aria-labelledby="form-heading">
-                    <h2 id="form-heading" class="form-card__heading">Watch the Recording</h2>
-                    <p class="form-card__subtext">Fill out the form below for instant access.</p>
+            <!-- FORM CARD (visible by default) -->
+            <div id="rtGvFormCard" class="rt-gv-form-card" role="region" aria-labelledby="rt-gv-form-heading">
+                <h3 id="rt-gv-form-heading" class="rt-gv-form-heading">Watch the Recording</h3>
+                <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
-                    [contact-form-7 id="1266631" title="On-Demand Workshop"]
-                </div>
-
-                <!-- VIDEO CARD (hidden until form is submitted) -->
-                <div id="videoCard" class="video-card" role="region" aria-labelledby="video-heading">
-                    <p id="video-heading" class="video-card__welcome">You're in &mdash; enjoy the recording</p>
-
-                    <div class="video-card__player">
-                        <iframe
-                            src="https://www.youtube.com/embed/zpDBPTp6_gU?start=28&rel=0"
-                            title="On-Demand Workshop — Real Treasury"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen
-                            loading="lazy"
-                        ></iframe>
-                    </div>
-
-                    <div class="video-card__cta">
-                        <p class="video-card__cta-heading">Ready to take the next step?</p>
-                        <a href="https://realtreasury.com/contact/" class="btn-primary">
-                            Schedule a Discovery Call
-                        </a>
-                    </div>
-                </div>
-
+                [contact-form-7 id="1266631" title="On-Demand Workshop"]
             </div>
-        </section>
-    </main>
 
-    <!-- ============================================================
-         FOOTER STRIP
-         ============================================================ -->
-    <footer class="footer-strip" role="contentinfo">
-        <div class="container">
-            &copy; 2026 Real Treasury. All rights reserved.
-            &nbsp;&middot;&nbsp;
-            <a href="https://realtreasury.com/privacy-policy/">Privacy Policy</a>
-            &nbsp;&middot;&nbsp;
-            <a href="https://realtreasury.com/terms-of-service/">Terms of Service</a>
+            <!-- VIDEO CARD (hidden until form is submitted) -->
+            <div id="rtGvVideoCard" class="rt-gv-video-card" role="region" aria-labelledby="rt-gv-video-heading">
+                <p id="rt-gv-video-heading" class="rt-gv-video-welcome">You're in &mdash; enjoy the recording</p>
+
+                <div class="rt-gv-video-player">
+                    <iframe
+                        src="https://www.youtube.com/embed/zpDBPTp6_gU?start=28&rel=0"
+                        title="On-Demand Workshop — Real Treasury"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen
+                        loading="lazy"
+                    ></iframe>
+                </div>
+
+                <div class="rt-gv-video-cta">
+                    <p class="rt-gv-cta-heading">Ready to take the next step?</p>
+                    <a href="https://realtreasury.com/contact/" class="rt-gv-btn-primary">
+                        Schedule a Discovery Call
+                    </a>
+                </div>
+            </div>
+
         </div>
-    </footer>
+    </section>
 
-    <!-- ============================================================
-         FORM → VIDEO SWAP (CF7 wpcf7mailsent event)
-         ============================================================ -->
-    <script>
-        document.addEventListener('wpcf7mailsent', function(event) {
-            var formCard = document.getElementById('formCard');
-            var videoCard = document.getElementById('videoCard');
+</div>
 
-            // Fade and slide the form card out
-            formCard.style.opacity = '0';
-            formCard.style.transform = 'translateY(-20px)';
+<!-- Form → Video Swap (CF7 wpcf7mailsent event) -->
+<script>
+    document.addEventListener('wpcf7mailsent', function(event) {
+        var formCard = document.getElementById('rtGvFormCard');
+        var videoCard = document.getElementById('rtGvVideoCard');
 
-            setTimeout(function() {
-                // Hide the form card completely
-                formCard.style.display = 'none';
+        formCard.style.opacity = '0';
+        formCard.style.transform = 'translateY(-20px)';
 
-                // Reveal the video card
-                videoCard.style.display = 'block';
+        setTimeout(function() {
+            formCard.style.display = 'none';
+            videoCard.style.display = 'block';
 
-                // Trigger reflow then animate in
-                requestAnimationFrame(function() {
-                    videoCard.style.opacity = '1';
-                    videoCard.style.transform = 'translateY(0)';
-                    videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                });
-            }, 500);
-        }, false);
-    </script>
-
-</body>
-</html>
+            requestAnimationFrame(function() {
+                videoCard.style.opacity = '1';
+                videoCard.style.transform = 'translateY(0)';
+                videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        }, 500);
+    }, false);
+</script>

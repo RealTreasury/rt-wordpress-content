@@ -248,11 +248,12 @@
         background: var(--black);
     }
 
-    .rt-gv-video-player iframe {
+    .rt-gv-video-player video {
         position: absolute;
         top: 0; left: 0;
         width: 100%; height: 100%;
         border: 0;
+        object-fit: contain;
     }
 
     .rt-gv-video-cta {
@@ -380,13 +381,15 @@
                 <p id="rt-gv-video-heading" class="rt-gv-video-welcome">You're in &mdash; enjoy the recording</p>
 
                 <div class="rt-gv-video-player">
-                    <iframe
-                        src="https://www.youtube.com/embed/zpDBPTp6_gU?start=28&rel=0"
+                    <video
+                        src="https://realtreasury.com/wp-content/uploads/2025/08/TRMS-Intro.mp4"
+                        controls
+                        playsinline
+                        preload="metadata"
                         title="On-Demand Workshop — Real Treasury"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen
-                        loading="lazy"
-                    ></iframe>
+                    >
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
 
                 <div class="rt-gv-video-cta">
@@ -401,6 +404,21 @@
     </section>
 
 </div>
+
+<!-- Replace personal placeholder names with generic ones -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var formCard = document.getElementById('rtGvFormCard');
+        if (!formCard) return;
+        var inputs = formCard.querySelectorAll('input');
+        inputs.forEach(function(input) {
+            if (input.placeholder === 'Tim') input.placeholder = 'Jane';
+            if (input.placeholder === 'Schultz') input.placeholder = 'Smith';
+            if (input.value === 'Tim') { input.value = ''; input.placeholder = 'Jane'; }
+            if (input.value === 'Schultz') { input.value = ''; input.placeholder = 'Smith'; }
+        });
+    });
+</script>
 
 <!-- Form → Video Swap (CF7 wpcf7mailsent event) -->
 <script>

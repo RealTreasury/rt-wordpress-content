@@ -373,7 +373,33 @@
                 <h3 id="rt-gv-form-heading" class="rt-gv-form-heading">Watch the Recording</h3>
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
-                [contact-form-7 id="1266631" title="On-Demand Workshop"]
+                <div class="wpcf7">
+                    <form id="rtGvLeadForm" class="rt-gv-inline-form" novalidate>
+                        <p>
+                            <label for="rtGvFirstName">First Name *</label>
+                            <input id="rtGvFirstName" name="first_name" type="text" placeholder="Jane" required>
+                        </p>
+
+                        <p>
+                            <label for="rtGvLastName">Last Name *</label>
+                            <input id="rtGvLastName" name="last_name" type="text" placeholder="Smith" required>
+                        </p>
+
+                        <p>
+                            <label for="rtGvWorkEmail">Work Email *</label>
+                            <input id="rtGvWorkEmail" name="work_email" type="email" placeholder="you@company.com" required>
+                        </p>
+
+                        <p>
+                            <label for="rtGvCompany">Company *</label>
+                            <input id="rtGvCompany" name="company" type="text" placeholder="Company Name" required>
+                        </p>
+
+                        <p>
+                            <input type="submit" value="Watch now">
+                        </p>
+                    </form>
+                </div>
             </div>
 
             <!-- VIDEO CARD (hidden until form is submitted) -->
@@ -430,7 +456,7 @@
     });
 </script>
 
-<!-- Form → Video Swap (CF7 wpcf7mailsent event) -->
+<!-- Form → Video Swap (native fallback + CF7 wpcf7mailsent event) -->
 <script>
     (function() {
         var STORAGE_KEY = 'rt_gv_video_access';
@@ -470,7 +496,28 @@
             } catch (e) { /* localStorage unavailable — fall through to form */ }
         });
 
-        /* On successful CF7 submission, persist access and swap to video */
+        /* Native form submission support for static/GitHub embeds */
+        document.addEventListener('DOMContentLoaded', function() {
+            var leadForm = document.getElementById('rtGvLeadForm');
+            if (!leadForm) return;
+
+            leadForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                if (!leadForm.checkValidity()) {
+                    leadForm.reportValidity();
+                    return;
+                }
+
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
+                } catch (e) { /* localStorage unavailable — still show video for this session */ }
+
+                showVideo(true);
+            });
+        });
+
+        /* Keep support for CF7 if this page is rendered inside WordPress */
         document.addEventListener('wpcf7mailsent', function() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));

@@ -394,8 +394,8 @@
 
                 <div class="rt-gv-video-cta">
                     <p class="rt-gv-cta-heading">Ready to take the next step?</p>
-                    <a href="https://realtreasury.com/contact/" class="rt-gv-btn-primary">
-                        Schedule a Discovery Call
+                    <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" class="rt-gv-btn-primary" target="_blank" rel="noopener noreferrer">
+                        Book a Call
                     </a>
                 </div>
             </div>
@@ -405,7 +405,7 @@
 
 </div>
 
-<!-- Replace personal placeholder names with generic ones -->
+<!-- Replace personal placeholder names with generic ones + disable email autofill -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var formCard = document.getElementById('rtGvFormCard');
@@ -417,27 +417,65 @@
             if (input.value === 'Tim') { input.value = ''; input.placeholder = 'Jane'; }
             if (input.value === 'Schultz') { input.value = ''; input.placeholder = 'Smith'; }
         });
+
+        /* Disable autofill on the Work Email field */
+        var emailInputs = formCard.querySelectorAll('input[type="email"], input[name*="email"], input[name*="Email"]');
+        emailInputs.forEach(function(input) {
+            input.setAttribute('autocomplete', 'off');
+            input.setAttribute('autocorrect', 'off');
+            input.setAttribute('autocapitalize', 'off');
+            /* Chrome ignores autocomplete="off", so use a non-standard value */
+            input.setAttribute('autocomplete', 'new-password');
+        });
     });
 </script>
 
 <!-- Form → Video Swap (CF7 wpcf7mailsent event) -->
 <script>
-    document.addEventListener('wpcf7mailsent', function(event) {
-        var formCard = document.getElementById('rtGvFormCard');
-        var videoCard = document.getElementById('rtGvVideoCard');
+    (function() {
+        var STORAGE_KEY = 'rt_gv_video_access';
 
-        formCard.style.opacity = '0';
-        formCard.style.transform = 'translateY(-20px)';
+        function showVideo(animate) {
+            var formCard = document.getElementById('rtGvFormCard');
+            var videoCard = document.getElementById('rtGvVideoCard');
+            if (!formCard || !videoCard) return;
 
-        setTimeout(function() {
-            formCard.style.display = 'none';
-            videoCard.style.display = 'block';
-
-            requestAnimationFrame(function() {
+            if (animate) {
+                formCard.style.opacity = '0';
+                formCard.style.transform = 'translateY(-20px)';
+                setTimeout(function() {
+                    formCard.style.display = 'none';
+                    videoCard.style.display = 'block';
+                    requestAnimationFrame(function() {
+                        videoCard.style.opacity = '1';
+                        videoCard.style.transform = 'translateY(0)';
+                        videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                }, 500);
+            } else {
+                formCard.style.display = 'none';
+                videoCard.style.display = 'block';
                 videoCard.style.opacity = '1';
                 videoCard.style.transform = 'translateY(0)';
-                videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-        }, 500);
-    }, false);
+            }
+        }
+
+        /* On page load, check if user already submitted the form */
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var access = localStorage.getItem(STORAGE_KEY);
+                if (access) {
+                    showVideo(false);
+                }
+            } catch (e) { /* localStorage unavailable — fall through to form */ }
+        });
+
+        /* On successful CF7 submission, persist access and swap to video */
+        document.addEventListener('wpcf7mailsent', function() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
+            } catch (e) { /* localStorage unavailable — still show video for this session */ }
+            showVideo(true);
+        }, false);
+    })();
 </script>

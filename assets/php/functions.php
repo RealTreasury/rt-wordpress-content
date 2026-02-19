@@ -570,7 +570,7 @@ add_action('rest_api_init', function() {
         $allowed_origins = [
             'https://realtreasury.com',
             'https://www.realtreasury.com',
-            // Add any other trusted subdomains here
+            'https://realtreasury.github.io',
         ];
 
         // Only allow requests from the whitelist
@@ -843,6 +843,7 @@ add_action('init', function() {
         $allowed_origins = [
             'https://realtreasury.com',
             'https://www.realtreasury.com',
+            'https://realtreasury.github.io',
         ];
 
         // Only allow specific origins

@@ -374,7 +374,7 @@
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
                 <div class="wpcf7">
-                    <form id="rtGvLeadForm" class="rt-gv-inline-form" novalidate>
+                    <form id="rtGvLeadForm" class="rt-gv-inline-form" data-cf7-id="1266631" novalidate>
                         <p>
                             <label for="rtGvFirstName">First Name *</label>
                             <input id="rtGvFirstName" name="first_name" type="text" placeholder="Jane" required>
@@ -545,6 +545,30 @@
                 if (!leadForm.checkValidity()) {
                     leadForm.reportValidity();
                     return;
+                }
+
+                /* Submit to Contact Form 7 REST API so the email is sent
+                   through CF7 (editable in WP Admin → Contact → Forms).
+                   The CF7 form ID comes from the data-cf7-id attribute. */
+                var cf7Id = leadForm.getAttribute('data-cf7-id');
+                if (cf7Id) {
+                    var apiBase = (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.root)
+                        ? window.wpApiSettings.root
+                        : '/wp-json/';
+                    var endpoint = apiBase + 'contact-form-7/v1/contact-forms/' + cf7Id + '/feedback';
+
+                    /* CF7 expects multipart/form-data with field names matching the form tags */
+                    var fd = new FormData();
+                    fd.append('first-name',    leadForm.querySelector('[name="first_name"]').value);
+                    fd.append('last-name',     leadForm.querySelector('[name="last_name"]').value);
+                    fd.append('your-email',    leadForm.querySelector('[name="work_email"]').value);
+                    fd.append('company-name',  leadForm.querySelector('[name="company"]').value);
+
+                    /* Fire-and-forget — video shows immediately, email sends in background */
+                    try {
+                        fetch(endpoint, { method: 'POST', body: fd })
+                            .catch(function() { /* network error — non-critical */ });
+                    } catch (e) { /* fetch unavailable — non-critical */ }
                 }
 
                 try {

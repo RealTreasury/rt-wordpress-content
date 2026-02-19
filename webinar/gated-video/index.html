@@ -373,33 +373,7 @@
                 <h3 id="rt-gv-form-heading" class="rt-gv-form-heading">Watch the Recording</h3>
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
-                <div class="wpcf7">
-                    <form id="rtGvLeadForm" class="rt-gv-inline-form" data-cf7-id="1266631" data-api-root="https://realtreasury.com/wp-json/" novalidate>
-                        <p>
-                            <label for="rtGvFirstName">First Name *</label>
-                            <input id="rtGvFirstName" name="first_name" type="text" placeholder="Jane" required>
-                        </p>
-
-                        <p>
-                            <label for="rtGvLastName">Last Name *</label>
-                            <input id="rtGvLastName" name="last_name" type="text" placeholder="Smith" required>
-                        </p>
-
-                        <p>
-                            <label for="rtGvWorkEmail">Work Email *</label>
-                            <input id="rtGvWorkEmail" name="work_email" type="email" placeholder="you@company.com" required>
-                        </p>
-
-                        <p>
-                            <label for="rtGvCompany">Company *</label>
-                            <input id="rtGvCompany" name="company" type="text" placeholder="Company Name" required>
-                        </p>
-
-                        <p>
-                            <input type="submit" value="Watch now">
-                        </p>
-                    </form>
-                </div>
+                [contact-form-7 id="1266631" title="On-Demand Webinar Form"]
             </div>
 
             <!-- VIDEO CARD (hidden until form is submitted) -->
@@ -430,31 +404,6 @@
     </section>
 
 </div>
-
-<!-- Replace personal placeholder names with generic ones + disable email autofill -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var formCard = document.getElementById('rtGvFormCard');
-        if (!formCard) return;
-        var inputs = formCard.querySelectorAll('input');
-        inputs.forEach(function(input) {
-            if (input.placeholder === 'Tim') input.placeholder = 'Jane';
-            if (input.placeholder === 'Schultz') input.placeholder = 'Smith';
-            if (input.value === 'Tim') { input.value = ''; input.placeholder = 'Jane'; }
-            if (input.value === 'Schultz') { input.value = ''; input.placeholder = 'Smith'; }
-        });
-
-        /* Disable autofill on the Work Email field */
-        var emailInputs = formCard.querySelectorAll('input[type="email"], input[name*="email"], input[name*="Email"]');
-        emailInputs.forEach(function(input) {
-            input.setAttribute('autocomplete', 'off');
-            input.setAttribute('autocorrect', 'off');
-            input.setAttribute('autocapitalize', 'off');
-            /* Chrome ignores autocomplete="off", so use a non-standard value */
-            input.setAttribute('autocomplete', 'new-password');
-        });
-    });
-</script>
 
 <!-- iFrame auto-resize support -->
 <script>
@@ -494,10 +443,11 @@
     })();
 </script>
 
-<!-- Form → Video Swap (native fallback + CF7 wpcf7mailsent event) -->
+<!-- Form → Video Swap (CF7 wpcf7mailsent event) -->
 <script>
     (function() {
         var STORAGE_KEY = 'rt_gv_video_access';
+        var WEBINAR_FORM_ID = 1266631;
 
         function showVideo(animate) {
             var formCard = document.getElementById('rtGvFormCard');
@@ -534,142 +484,11 @@
             } catch (e) { /* localStorage unavailable — fall through to form */ }
         });
 
-        /* Native form submission support for static/GitHub embeds */
-        document.addEventListener('DOMContentLoaded', function() {
-            var leadForm = document.getElementById('rtGvLeadForm');
-            if (!leadForm) return;
+        document.addEventListener('wpcf7mailsent', function(event) {
+            if (!event || !event.detail || Number(event.detail.contactFormId) !== WEBINAR_FORM_ID) {
+                return;
+            }
 
-            leadForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-
-                if (!leadForm.checkValidity()) {
-                    leadForm.reportValidity();
-                    return;
-                }
-
-                var submitBtn = leadForm.querySelector('input[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.value = 'Sending...';
-                }
-
-                /* Submit to Contact Form 7 REST API so the email is sent
-                   through CF7 (editable in WP Admin → Contact → Forms).
-                   The CF7 form ID comes from the data-cf7-id attribute. */
-                var cf7Id = leadForm.getAttribute('data-cf7-id');
-                if (!cf7Id) {
-                    if (submitBtn) {
-                        submitBtn.disabled = false;
-                        submitBtn.value = 'Watch now';
-                    }
-                    return;
-                }
-
-                var apiBase = leadForm.getAttribute('data-api-root') || '/wp-json/';
-                if (typeof window.wpcf7 !== 'undefined' && window.wpcf7.apiSettings && window.wpcf7.apiSettings.root) {
-                    apiBase = window.wpcf7.apiSettings.root;
-                } else if (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.root) {
-                    apiBase = window.wpApiSettings.root;
-                }
-                if (apiBase.slice(-1) !== '/') {
-                    apiBase += '/';
-                }
-                var endpoint = apiBase + 'contact-form-7/v1/contact-forms/' + cf7Id + '/feedback';
-
-                /* CF7 expects multipart/form-data with field names matching the form tags.
-                   Include hidden fields that CF7 expects so the configured Mail tab
-                   for this exact form ID handles the submission correctly. */
-                var locale = (document.documentElement.lang || 'en-US').replace('-', '_');
-                var fd = new FormData();
-                fd.append('_wpcf7', cf7Id);
-                fd.append('_wpcf7_locale', locale);
-                fd.append('_wpcf7_unit_tag', 'wpcf7-f' + cf7Id + '-p0-o1');
-                fd.append('_wpcf7_container_post', '0');
-                var firstName = leadForm.querySelector('[name="first_name"]').value;
-                var lastName = leadForm.querySelector('[name="last_name"]').value;
-                var workEmail = leadForm.querySelector('[name="work_email"]').value;
-                var company = leadForm.querySelector('[name="company"]').value;
-
-                function appendFieldAliases(formData, aliases, value) {
-                    aliases.forEach(function(alias) {
-                        formData.append(alias, value);
-                    });
-                }
-
-                /* Keep aliases so this embed works even if CF7 tag names were
-                   configured with underscores, dashes, or the default "your-*" names. */
-                appendFieldAliases(fd, ['first-name', 'first_name', 'your-first-name'], firstName);
-                appendFieldAliases(fd, ['last-name', 'last_name', 'your-last-name'], lastName);
-                appendFieldAliases(fd, ['your-email', 'work-email', 'work_email', 'email'], workEmail);
-                appendFieldAliases(fd, ['company-name', 'company_name', 'company'], company);
-
-                var headers = {};
-                if (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.nonce) {
-                    headers['X-WP-Nonce'] = window.wpApiSettings.nonce;
-                }
-
-                var requestOptions = { method: 'POST', body: fd, headers: headers };
-
-                function unlockVideo() {
-                    try {
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
-                    } catch (e) { /* localStorage unavailable — still show video for this session */ }
-                    showVideo(true);
-                }
-
-                fetch(endpoint, requestOptions)
-                    .then(function(r) {
-                        if (!r.ok) throw new Error('CF7 HTTP ' + r.status);
-                        return r.json();
-                    })
-                    .then(function(data) {
-                        if (data && data.status === 'mail_sent') {
-                            unlockVideo();
-                            return;
-                        }
-
-                        console.warn('[RT Gated Video] CF7 submission failed:', data && data.status, data && data.message, data);
-                        alert('We could not submit the form right now. Please try again in a moment.');
-                    })
-                    .catch(function(err) {
-                        var endpointUrl;
-                        try {
-                            endpointUrl = new URL(endpoint, window.location.href);
-                        } catch (urlErr) {
-                            endpointUrl = null;
-                        }
-
-                        var endpointIsCrossOrigin = endpointUrl && endpointUrl.origin !== window.location.origin;
-                        var isCorsLikeFailure = err && err.name === 'TypeError' && endpointIsCrossOrigin;
-
-                        if (isCorsLikeFailure) {
-                            var noCorsOptions = { method: 'POST', body: fd, mode: 'no-cors' };
-                            fetch(endpoint, noCorsOptions)
-                                .then(function() {
-                                    console.warn('[RT Gated Video] CORS-blocked CF7 response; assuming submission reached server.');
-                                    unlockVideo();
-                                })
-                                .catch(function(fallbackErr) {
-                                    console.warn('[RT Gated Video] CF7 network error:', fallbackErr);
-                                    alert('Network error while submitting the form. Please try again.');
-                                });
-                            return;
-                        }
-
-                        console.warn('[RT Gated Video] CF7 network error:', err);
-                        alert('Network error while submitting the form. Please try again.');
-                    })
-                    .finally(function() {
-                        if (submitBtn) {
-                            submitBtn.disabled = false;
-                            submitBtn.value = 'Watch now';
-                        }
-                    });
-            });
-        });
-
-        /* Keep support for CF7 if this page is rendered inside WordPress */
-        document.addEventListener('wpcf7mailsent', function() {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
             } catch (e) { /* localStorage unavailable — still show video for this session */ }

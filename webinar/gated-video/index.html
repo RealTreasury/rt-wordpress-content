@@ -416,6 +416,12 @@
                 <div class="wpcf7" id="wpcf7-f1266631-o1" lang="en-US" dir="ltr">
                     <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p></div>
                     <form class="wpcf7-form" novalidate="novalidate" data-status="init">
+                        <input type="hidden" name="_wpcf7" value="1266631">
+                        <input type="hidden" name="_wpcf7_version" value="5.9">
+                        <input type="hidden" name="_wpcf7_locale" value="en_US">
+                        <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f1266631-o1">
+                        <input type="hidden" name="_wpcf7_container_post" value="0">
+                        <input type="hidden" name="_wpcf7_posted_data_hash" value="">
                         <p>
                             <label>First Name<br>
                                 <span class="wpcf7-form-control-wrap" data-name="first-name">
@@ -586,6 +592,8 @@
         var WP_SITE = 'https://realtreasury.com';
         var API_PATH = WP_SITE + '/wp-json/contact-form-7/v1/contact-forms/' + FORM_ID + '/feedback';
         var MAX_RETRIES = 2;
+        var CF7_VERSION = '5.9';
+        var CF7_LOCALE = 'en_US';
 
         var wrapper = document.getElementById(UNIT_TAG);
         if (!wrapper) return;
@@ -595,6 +603,10 @@
         var submitBtn = form.querySelector('input[type="submit"]');
         var responseDiv = form.querySelector('.wpcf7-response-output');
         var originalLabel = submitBtn ? submitBtn.value : 'Watch Now';
+
+        if (window.location && window.location.hostname && window.location.hostname !== 'realtreasury.com') {
+            console.warn('CF7 API requests are pinned to canonical host realtreasury.com for form ' + FORM_ID + '. Current host:', window.location.hostname);
+        }
 
         /* Clear previous field-level validation errors */
         function clearValidation() {
@@ -636,9 +648,23 @@
         /* Build a fresh FormData from the live form (needed for retries) */
         function buildPayload() {
             var formData = new FormData(form);
-            /* Append CF7 metadata */
-            formData.append('_wpcf7', FORM_ID);
-            formData.append('_wpcf7_unit_tag', UNIT_TAG);
+
+            var requiredHiddenFields = {
+                _wpcf7: String(FORM_ID),
+                _wpcf7_version: CF7_VERSION,
+                _wpcf7_locale: CF7_LOCALE,
+                _wpcf7_unit_tag: UNIT_TAG,
+                _wpcf7_container_post: '0',
+                _wpcf7_posted_data_hash: ''
+            };
+
+            Object.keys(requiredHiddenFields).forEach(function(fieldName) {
+                var existingValue = formData.get(fieldName);
+                if (existingValue === null || existingValue === undefined || existingValue === '') {
+                    formData.set(fieldName, requiredHiddenFields[fieldName]);
+                }
+            });
+
             return formData;
         }
 
@@ -718,6 +744,10 @@
                 }
                 submitBtn.disabled = false;
                 submitBtn.value = originalLabel;
+            } else if (data.status === 'mail_failed') {
+                showError(data.message || 'Mail delivery failed. Please try again.');
+            } else if (data.status === 'spam') {
+                showError(data.message || 'Submission flagged as spam.');
             } else {
                 showError(data.message || 'There was an error. Please try again.');
             }

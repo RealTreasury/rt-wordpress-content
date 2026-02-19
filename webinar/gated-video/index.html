@@ -374,7 +374,7 @@
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
                 <div class="wpcf7">
-                    <form id="rtGvLeadForm" class="rt-gv-inline-form" data-cf7-id="1266631" novalidate>
+                    <form id="rtGvLeadForm" class="rt-gv-inline-form" data-cf7-id="1266631" data-api-root="https://realtreasury.com/wp-json/" novalidate>
                         <p>
                             <label for="rtGvFirstName">First Name *</label>
                             <input id="rtGvFirstName" name="first_name" type="text" placeholder="Jane" required>
@@ -565,7 +565,7 @@
                     return;
                 }
 
-                var apiBase = '/wp-json/';
+                var apiBase = leadForm.getAttribute('data-api-root') || '/wp-json/';
                 if (typeof window.wpcf7 !== 'undefined' && window.wpcf7.apiSettings && window.wpcf7.apiSettings.root) {
                     apiBase = window.wpcf7.apiSettings.root;
                 } else if (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.root) {
@@ -608,17 +608,23 @@
                     headers['X-WP-Nonce'] = window.wpApiSettings.nonce;
                 }
 
-                fetch(endpoint, { method: 'POST', body: fd, headers: headers })
+                var requestOptions = { method: 'POST', body: fd, headers: headers };
+
+                function unlockVideo() {
+                    try {
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
+                    } catch (e) { /* localStorage unavailable — still show video for this session */ }
+                    showVideo(true);
+                }
+
+                fetch(endpoint, requestOptions)
                     .then(function(r) {
                         if (!r.ok) throw new Error('CF7 HTTP ' + r.status);
                         return r.json();
                     })
                     .then(function(data) {
                         if (data && data.status === 'mail_sent') {
-                            try {
-                                localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
-                            } catch (e) { /* localStorage unavailable — still show video for this session */ }
-                            showVideo(true);
+                            unlockVideo();
                             return;
                         }
 
@@ -626,6 +632,30 @@
                         alert('We could not submit the form right now. Please try again in a moment.');
                     })
                     .catch(function(err) {
+                        var endpointUrl;
+                        try {
+                            endpointUrl = new URL(endpoint, window.location.href);
+                        } catch (urlErr) {
+                            endpointUrl = null;
+                        }
+
+                        var endpointIsCrossOrigin = endpointUrl && endpointUrl.origin !== window.location.origin;
+                        var isCorsLikeFailure = err && err.name === 'TypeError' && endpointIsCrossOrigin;
+
+                        if (isCorsLikeFailure) {
+                            var noCorsOptions = { method: 'POST', body: fd, mode: 'no-cors' };
+                            fetch(endpoint, noCorsOptions)
+                                .then(function() {
+                                    console.warn('[RT Gated Video] CORS-blocked CF7 response; assuming submission reached server.');
+                                    unlockVideo();
+                                })
+                                .catch(function(fallbackErr) {
+                                    console.warn('[RT Gated Video] CF7 network error:', fallbackErr);
+                                    alert('Network error while submitting the form. Please try again.');
+                                });
+                            return;
+                        }
+
                         console.warn('[RT Gated Video] CF7 network error:', err);
                         alert('Network error while submitting the form. Please try again.');
                     })

@@ -456,6 +456,44 @@
     });
 </script>
 
+<!-- iFrame auto-resize support -->
+<script>
+    (function() {
+        var fallbackId = (document.body && document.body.dataset && document.body.dataset.iframeId) || window.location.pathname;
+        var id = fallbackId;
+
+        function postHeight() {
+            var height = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0;
+            if (window.parent && typeof window.parent.postMessage === 'function') {
+                window.parent.postMessage({ type: 'setHeight', height: height, id: id }, '*');
+            }
+        }
+
+        var frameId;
+        function schedulePostHeight() {
+            if (frameId) {
+                cancelAnimationFrame(frameId);
+            }
+            frameId = requestAnimationFrame(postHeight);
+        }
+
+        window.addEventListener('load', schedulePostHeight, { passive: true });
+        window.addEventListener('resize', schedulePostHeight, { passive: true });
+
+        if (typeof MutationObserver !== 'undefined' && document.body) {
+            var observer = new MutationObserver(schedulePostHeight);
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                characterData: true
+            });
+        }
+
+        schedulePostHeight();
+    })();
+</script>
+
 <!-- Form → Video Swap (native fallback + CF7 wpcf7mailsent event) -->
 <script>
     (function() {

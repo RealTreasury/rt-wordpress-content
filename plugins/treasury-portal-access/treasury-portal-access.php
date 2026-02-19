@@ -175,7 +175,7 @@ final class Treasury_Portal_Access {
         $email = sanitize_email($posted_data['email-address'] ?? '');
         $first_name = sanitize_text_field($posted_data['first-name'] ?? '');
 
-        // ✅ SECURITY FIX: Check honeypot field
+        // ✅ SECURITY FIX: Check honeypot field (intentionally sent by the iframe form for server-side validation)
         $honeypot = sanitize_text_field($posted_data['website-url'] ?? '');
         if (!empty($honeypot)) {
             error_log('🍯 TPA: Honeypot triggered - bot detected from IP: ' . ($_SERVER['REMOTE_ADDR'] ?? 'unknown'));

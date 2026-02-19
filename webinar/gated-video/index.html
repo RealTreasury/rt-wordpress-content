@@ -557,17 +557,27 @@
                         : '/wp-json/';
                     var endpoint = apiBase + 'contact-form-7/v1/contact-forms/' + cf7Id + '/feedback';
 
-                    /* CF7 expects multipart/form-data with field names matching the form tags */
+                    /* CF7 expects multipart/form-data with field names matching the form tags.
+                       The _wpcf7 and _wpcf7_unit_tag hidden fields are required for CF7
+                       to process the submission and trigger the email notification. */
                     var fd = new FormData();
-                    fd.append('first-name',    leadForm.querySelector('[name="first_name"]').value);
-                    fd.append('last-name',     leadForm.querySelector('[name="last_name"]').value);
-                    fd.append('your-email',    leadForm.querySelector('[name="work_email"]').value);
-                    fd.append('company-name',  leadForm.querySelector('[name="company"]').value);
+                    fd.append('_wpcf7',          cf7Id);
+                    fd.append('_wpcf7_unit_tag', 'wpcf7-f' + cf7Id + '-o1');
+                    fd.append('first-name',      leadForm.querySelector('[name="first_name"]').value);
+                    fd.append('last-name',       leadForm.querySelector('[name="last_name"]').value);
+                    fd.append('your-email',      leadForm.querySelector('[name="work_email"]').value);
+                    fd.append('company-name',    leadForm.querySelector('[name="company"]').value);
 
-                    /* Fire-and-forget — video shows immediately, email sends in background */
+                    /* Video shows immediately; email sends in background */
                     try {
                         fetch(endpoint, { method: 'POST', body: fd })
-                            .catch(function() { /* network error — non-critical */ });
+                            .then(function(r) { return r.json(); })
+                            .then(function(data) {
+                                if (data && data.status && data.status !== 'mail_sent') {
+                                    console.warn('[RT Gated Video] CF7 submission status:', data.status, data.message);
+                                }
+                            })
+                            .catch(function(err) { console.warn('[RT Gated Video] CF7 network error:', err); });
                     } catch (e) { /* fetch unavailable — non-critical */ }
                 }
 

@@ -416,6 +416,12 @@
                 <div class="wpcf7" id="wpcf7-f1266631-o1" lang="en-US" dir="ltr">
                     <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p></div>
                     <form class="wpcf7-form" novalidate="novalidate" data-status="init">
+                        <input type="hidden" name="_wpcf7" value="1266631">
+                        <input type="hidden" name="_wpcf7_version" value="5.9">
+                        <input type="hidden" name="_wpcf7_locale" value="en_US">
+                        <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f1266631-o1">
+                        <input type="hidden" name="_wpcf7_container_post" value="0">
+                        <input type="hidden" name="_wpcf7_posted_data_hash" value="">
                         <p>
                             <label>First Name<br>
                                 <span class="wpcf7-form-control-wrap" data-name="first-name">
@@ -583,6 +589,11 @@
     (function() {
         var FORM_ID = 1266631;
         var UNIT_TAG = 'wpcf7-f' + FORM_ID + '-o1';
+        var CF7_VERSION = '5.9';
+        var CF7_LOCALE = 'en_US';
+        var CF7_CONTAINER_POST = '0';
+        var CF7_POSTED_DATA_HASH = '';
+        /* Keep API requests on the canonical WP host that owns this form ID. */
         var WP_SITE = 'https://realtreasury.com';
         var API_PATH = WP_SITE + '/wp-json/contact-form-7/v1/contact-forms/' + FORM_ID + '/feedback';
         var MAX_RETRIES = 2;
@@ -638,9 +649,14 @@
             var formData = new FormData(form);
             /* Remove honeypot from payload */
             formData.delete('website-url');
-            /* Append CF7 metadata */
-            formData.append('_wpcf7', FORM_ID);
-            formData.append('_wpcf7_unit_tag', UNIT_TAG);
+
+            /* Ensure all required CF7 metadata is present in every request payload. */
+            formData.set('_wpcf7', String(FORM_ID));
+            formData.set('_wpcf7_unit_tag', UNIT_TAG);
+            formData.set('_wpcf7_container_post', CF7_CONTAINER_POST);
+            formData.set('_wpcf7_version', CF7_VERSION);
+            formData.set('_wpcf7_locale', CF7_LOCALE);
+            formData.set('_wpcf7_posted_data_hash', CF7_POSTED_DATA_HASH);
             return formData;
         }
 
@@ -704,8 +720,8 @@
                 document.dispatchEvent(new CustomEvent('wpcf7mailsent', {
                     detail: {
                         contactFormId: FORM_ID,
-                        pluginVersion: '5.9',
-                        contactFormLocale: 'en_US',
+                        pluginVersion: CF7_VERSION,
+                        contactFormLocale: CF7_LOCALE,
                         unitTag: UNIT_TAG,
                         apiResponse: data
                     }
@@ -716,6 +732,17 @@
                 if (responseDiv) {
                     responseDiv.textContent = data.message || 'Please correct the highlighted fields.';
                     responseDiv.className = 'wpcf7-response-output wpcf7-validation-errors';
+                    responseDiv.style.display = 'block';
+                }
+                submitBtn.disabled = false;
+                submitBtn.value = originalLabel;
+            } else if (data.status === 'mail_failed') {
+                showError(data.message || 'Mail delivery failed. Please try again.');
+            } else if (data.status === 'spam') {
+                form.setAttribute('data-status', 'spam');
+                if (responseDiv) {
+                    responseDiv.textContent = data.message || 'Submission blocked as spam.';
+                    responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
                     responseDiv.style.display = 'block';
                 }
                 submitBtn.disabled = false;

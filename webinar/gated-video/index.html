@@ -547,45 +547,70 @@
                     return;
                 }
 
+                var submitBtn = leadForm.querySelector('input[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.value = 'Sending...';
+                }
+
                 /* Submit to Contact Form 7 REST API so the email is sent
                    through CF7 (editable in WP Admin → Contact → Forms).
                    The CF7 form ID comes from the data-cf7-id attribute. */
                 var cf7Id = leadForm.getAttribute('data-cf7-id');
-                if (cf7Id) {
-                    var apiBase = (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.root)
-                        ? window.wpApiSettings.root
-                        : '/wp-json/';
-                    var endpoint = apiBase + 'contact-form-7/v1/contact-forms/' + cf7Id + '/feedback';
-
-                    /* CF7 expects multipart/form-data with field names matching the form tags.
-                       The _wpcf7 and _wpcf7_unit_tag hidden fields are required for CF7
-                       to process the submission and trigger the email notification. */
-                    var fd = new FormData();
-                    fd.append('_wpcf7',          cf7Id);
-                    fd.append('_wpcf7_unit_tag', 'wpcf7-f' + cf7Id + '-o1');
-                    fd.append('first-name',      leadForm.querySelector('[name="first_name"]').value);
-                    fd.append('last-name',       leadForm.querySelector('[name="last_name"]').value);
-                    fd.append('your-email',      leadForm.querySelector('[name="work_email"]').value);
-                    fd.append('company-name',    leadForm.querySelector('[name="company"]').value);
-
-                    /* Video shows immediately; email sends in background */
-                    try {
-                        fetch(endpoint, { method: 'POST', body: fd })
-                            .then(function(r) { return r.json(); })
-                            .then(function(data) {
-                                if (data && data.status && data.status !== 'mail_sent') {
-                                    console.warn('[RT Gated Video] CF7 submission status:', data.status, data.message);
-                                }
-                            })
-                            .catch(function(err) { console.warn('[RT Gated Video] CF7 network error:', err); });
-                    } catch (e) { /* fetch unavailable — non-critical */ }
+                if (!cf7Id) {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.value = 'Watch now';
+                    }
+                    return;
                 }
 
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
-                } catch (e) { /* localStorage unavailable — still show video for this session */ }
+                var apiBase = (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.root)
+                    ? window.wpApiSettings.root
+                    : '/wp-json/';
+                var endpoint = apiBase + 'contact-form-7/v1/contact-forms/' + cf7Id + '/feedback';
 
-                showVideo(true);
+                /* CF7 expects multipart/form-data with field names matching the form tags.
+                   Include hidden fields that CF7 expects so the configured Mail tab
+                   for this exact form ID handles the submission correctly. */
+                var locale = (document.documentElement.lang || 'en-US').replace('-', '_');
+                var fd = new FormData();
+                fd.append('_wpcf7', cf7Id);
+                fd.append('_wpcf7_locale', locale);
+                fd.append('_wpcf7_unit_tag', 'wpcf7-f' + cf7Id + '-p0-o1');
+                fd.append('_wpcf7_container_post', '0');
+                fd.append('first-name', leadForm.querySelector('[name="first_name"]').value);
+                fd.append('last-name', leadForm.querySelector('[name="last_name"]').value);
+                fd.append('your-email', leadForm.querySelector('[name="work_email"]').value);
+                fd.append('company-name', leadForm.querySelector('[name="company"]').value);
+
+                fetch(endpoint, { method: 'POST', body: fd })
+                    .then(function(r) {
+                        if (!r.ok) throw new Error('CF7 HTTP ' + r.status);
+                        return r.json();
+                    })
+                    .then(function(data) {
+                        if (data && data.status === 'mail_sent') {
+                            try {
+                                localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
+                            } catch (e) { /* localStorage unavailable — still show video for this session */ }
+                            showVideo(true);
+                            return;
+                        }
+
+                        console.warn('[RT Gated Video] CF7 submission failed:', data && data.status, data && data.message, data);
+                        alert('We could not submit the form right now. Please try again in a moment.');
+                    })
+                    .catch(function(err) {
+                        console.warn('[RT Gated Video] CF7 network error:', err);
+                        alert('Network error while submitting the form. Please try again.');
+                    })
+                    .finally(function() {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.value = 'Watch now';
+                        }
+                    });
             });
         });
 

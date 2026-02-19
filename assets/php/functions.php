@@ -1103,35 +1103,27 @@ function rt_handle_webinar_lead($request) {
         return new WP_Error('missing_fields', 'First name and work email are required.', array('status' => 400));
     }
 
-    // Send confirmation email
-    $subject = 'Your On-Demand Workshop Recording — Real Treasury';
+    // Send admin notification (mirrors the CF7 mail template)
+    $to      = 'contact@realtreasury.com';
+    $subject = 'New On-Demand Webinar Registration: ' . $first_name . ' ' . $last_name . ' (' . $company . ')';
 
-    $message  = "Hi " . esc_html($first_name) . ",\n\n";
-    $message .= "Thank you for your interest! Your on-demand workshop recording is ready to watch.\n\n";
-    $message .= "You can access it anytime by visiting the workshop page:\n";
-    $message .= esc_url(home_url('/on-demand-webinar/')) . "\n\n";
-    $message .= "Ready to take the next step? Book a call with our team:\n";
-    $message .= "https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2\n\n";
-    $message .= "Best regards,\n" . get_bloginfo('name');
+    $message  = "A new visitor has registered to view the on-demand webinar.\n\n";
+    $message .= "Name: " . $first_name . " " . $last_name . "\n";
+    $message .= "Email: " . $email . "\n";
+    $message .= "Company: " . $company . "\n";
 
-    $headers = array('Reply-To: hello@realtreasury.com');
+    $headers = array(
+        'From: ' . get_bloginfo('name') . ' <contact@realtreasury.com>',
+        'Reply-To: ' . $email,
+    );
 
-    $sent = wp_mail($email, $subject, $message, $headers);
+    $sent = wp_mail($to, $subject, $message, $headers);
 
     if (!$sent) {
-        error_log('RT Webinar: Failed to send confirmation email to ' . $email);
+        error_log('RT Webinar: Failed to send admin notification for ' . $email);
     } else {
-        error_log('RT Webinar: Confirmation email sent to ' . $email);
+        error_log('RT Webinar: Admin notification sent for ' . $email);
     }
-
-    // Log the lead
-    error_log(sprintf(
-        'RT Webinar Lead: %s %s <%s> — %s',
-        $first_name,
-        $last_name,
-        $email,
-        $company
-    ));
 
     return new WP_REST_Response(array(
         'success' => true,

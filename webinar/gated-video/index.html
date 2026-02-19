@@ -565,9 +565,15 @@
                     return;
                 }
 
-                var apiBase = (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.root)
-                    ? window.wpApiSettings.root
-                    : '/wp-json/';
+                var apiBase = '/wp-json/';
+                if (typeof window.wpcf7 !== 'undefined' && window.wpcf7.apiSettings && window.wpcf7.apiSettings.root) {
+                    apiBase = window.wpcf7.apiSettings.root;
+                } else if (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.root) {
+                    apiBase = window.wpApiSettings.root;
+                }
+                if (apiBase.slice(-1) !== '/') {
+                    apiBase += '/';
+                }
                 var endpoint = apiBase + 'contact-form-7/v1/contact-forms/' + cf7Id + '/feedback';
 
                 /* CF7 expects multipart/form-data with field names matching the form tags.
@@ -579,12 +585,30 @@
                 fd.append('_wpcf7_locale', locale);
                 fd.append('_wpcf7_unit_tag', 'wpcf7-f' + cf7Id + '-p0-o1');
                 fd.append('_wpcf7_container_post', '0');
-                fd.append('first-name', leadForm.querySelector('[name="first_name"]').value);
-                fd.append('last-name', leadForm.querySelector('[name="last_name"]').value);
-                fd.append('your-email', leadForm.querySelector('[name="work_email"]').value);
-                fd.append('company-name', leadForm.querySelector('[name="company"]').value);
+                var firstName = leadForm.querySelector('[name="first_name"]').value;
+                var lastName = leadForm.querySelector('[name="last_name"]').value;
+                var workEmail = leadForm.querySelector('[name="work_email"]').value;
+                var company = leadForm.querySelector('[name="company"]').value;
 
-                fetch(endpoint, { method: 'POST', body: fd })
+                function appendFieldAliases(formData, aliases, value) {
+                    aliases.forEach(function(alias) {
+                        formData.append(alias, value);
+                    });
+                }
+
+                /* Keep aliases so this embed works even if CF7 tag names were
+                   configured with underscores, dashes, or the default "your-*" names. */
+                appendFieldAliases(fd, ['first-name', 'first_name', 'your-first-name'], firstName);
+                appendFieldAliases(fd, ['last-name', 'last_name', 'your-last-name'], lastName);
+                appendFieldAliases(fd, ['your-email', 'work-email', 'work_email', 'email'], workEmail);
+                appendFieldAliases(fd, ['company-name', 'company_name', 'company'], company);
+
+                var headers = {};
+                if (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.nonce) {
+                    headers['X-WP-Nonce'] = window.wpApiSettings.nonce;
+                }
+
+                fetch(endpoint, { method: 'POST', body: fd, headers: headers })
                     .then(function(r) {
                         if (!r.ok) throw new Error('CF7 HTTP ' + r.status);
                         return r.json();

@@ -1,9 +1,8 @@
 <style>
     /* ============================================================
        REAL TREASURY — GATED VIDEO
-       Paste into the WordPress page using a Custom HTML block for
-       the style/script portions. The CF7 shortcode goes in its own
-       Shortcode block between the form-card wrapper divs.
+       Loaded via iframe in a WordPress Custom HTML block.
+       Submits to CF7 REST API (shortcodes don't render in iframes).
        ============================================================ */
 
     /* ---- Scoped Variables ---- */
@@ -413,8 +412,55 @@
                 <h3 id="rt-gv-form-heading" class="rt-gv-form-heading">Watch the Recording</h3>
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
-                <!-- CF7 form — managed via WP Admin > Contact > Forms -->
-                [contact-form-7 id="1266631" title="On-Demand Webinar Form"]
+                <!-- CF7 form rendered as HTML (Custom HTML blocks don't process shortcodes) -->
+                <div class="wpcf7" id="wpcf7-f1266631-o1" lang="en-US" dir="ltr">
+                    <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p></div>
+                    <form class="wpcf7-form" novalidate="novalidate" data-status="init">
+                        <input type="hidden" name="_wpcf7" value="1266631">
+                        <input type="hidden" name="_wpcf7_version" value="5.9">
+                        <input type="hidden" name="_wpcf7_locale" value="en_US">
+                        <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f1266631-o1">
+                        <input type="hidden" name="_wpcf7_container_post" value="0">
+                        <input type="hidden" name="_wpcf7_posted_data_hash" value="">
+                        <p>
+                            <label>First Name<br>
+                                <span class="wpcf7-form-control-wrap" data-name="first-name">
+                                    <input type="text" name="first-name" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="given-name" aria-required="true" aria-invalid="false" placeholder="Jane" required>
+                                </span>
+                            </label>
+                        </p>
+                        <p>
+                            <label>Last Name<br>
+                                <span class="wpcf7-form-control-wrap" data-name="last-name">
+                                    <input type="text" name="last-name" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="family-name" aria-required="true" aria-invalid="false" placeholder="Smith" required>
+                                </span>
+                            </label>
+                        </p>
+                        <p>
+                            <label>Work Email<br>
+                                <span class="wpcf7-form-control-wrap" data-name="your-email">
+                                    <input type="email" name="your-email" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="you@company.com" required>
+                                </span>
+                            </label>
+                        </p>
+                        <p>
+                            <label>Company<br>
+                                <span class="wpcf7-form-control-wrap" data-name="company-name">
+                                    <input type="text" name="company-name" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your company name" required>
+                                </span>
+                            </label>
+                        </p>
+                        <!-- Honeypot anti-spam (hidden from real users) -->
+                        <div style="position:absolute;left:-9999px;" aria-hidden="true">
+                            <label>Leave blank <input type="text" name="website-url" tabindex="-1" autocomplete="off"></label>
+                        </div>
+                        <p>
+                            <input type="submit" value="Watch Now" class="wpcf7-form-control wpcf7-submit">
+                            <span class="wpcf7-spinner"></span>
+                        </p>
+                        <div class="wpcf7-response-output" aria-live="polite" role="status" style="display:none;"></div>
+                    </form>
+                </div>
             </div>
 
             <!-- VIDEO CARD (hidden until form is submitted) -->
@@ -445,6 +491,44 @@
     </section>
 
 </div>
+
+<!-- iFrame auto-resize support -->
+<script>
+    (function() {
+        var fallbackId = (document.body && document.body.dataset && document.body.dataset.iframeId) || window.location.pathname;
+        var id = fallbackId;
+
+        function postHeight() {
+            var height = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0;
+            if (window.parent && typeof window.parent.postMessage === 'function') {
+                window.parent.postMessage({ type: 'setHeight', height: height, id: id }, '*');
+            }
+        }
+
+        var frameId;
+        function schedulePostHeight() {
+            if (frameId) {
+                cancelAnimationFrame(frameId);
+            }
+            frameId = requestAnimationFrame(postHeight);
+        }
+
+        window.addEventListener('load', schedulePostHeight, { passive: true });
+        window.addEventListener('resize', schedulePostHeight, { passive: true });
+
+        if (typeof MutationObserver !== 'undefined' && document.body) {
+            var observer = new MutationObserver(schedulePostHeight);
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                characterData: true
+            });
+        }
+
+        schedulePostHeight();
+    })();
+</script>
 
 <!-- Form → Video Swap (CF7 wpcf7mailsent event) -->
 <script>
@@ -487,7 +571,6 @@
             } catch (e) { /* localStorage unavailable — fall through to form */ }
         });
 
-        /* CF7 fires this event natively when mail is sent successfully */
         document.addEventListener('wpcf7mailsent', function(event) {
             if (!event || !event.detail || Number(event.detail.contactFormId) !== WEBINAR_FORM_ID) {
                 return;
@@ -498,5 +581,191 @@
             } catch (e) { /* localStorage unavailable — still show video for this session */ }
             showVideo(true);
         }, false);
+    })();
+</script>
+
+<!-- CF7 REST API form submission handler -->
+<script>
+    (function() {
+        var FORM_ID = 1266631;
+        var UNIT_TAG = 'wpcf7-f' + FORM_ID + '-o1';
+        var WP_SITE = 'https://realtreasury.com';
+        var API_PATH = WP_SITE + '/wp-json/contact-form-7/v1/contact-forms/' + FORM_ID + '/feedback';
+        var MAX_RETRIES = 2;
+        var CF7_VERSION = '5.9';
+        var CF7_LOCALE = 'en_US';
+
+        var wrapper = document.getElementById(UNIT_TAG);
+        if (!wrapper) return;
+        var form = wrapper.querySelector('form');
+        if (!form) return;
+
+        var submitBtn = form.querySelector('input[type="submit"]');
+        var responseDiv = form.querySelector('.wpcf7-response-output');
+        var originalLabel = submitBtn ? submitBtn.value : 'Watch Now';
+
+        if (window.location && window.location.hostname && window.location.hostname !== 'realtreasury.com') {
+            console.warn('CF7 API requests are pinned to canonical host realtreasury.com for form ' + FORM_ID + '. Current host:', window.location.hostname);
+        }
+
+        /* Clear previous field-level validation errors */
+        function clearValidation() {
+            var tips = form.querySelectorAll('.wpcf7-not-valid-tip');
+            for (var i = 0; i < tips.length; i++) tips[i].parentNode.removeChild(tips[i]);
+            var invalids = form.querySelectorAll('.wpcf7-not-valid');
+            for (var j = 0; j < invalids.length; j++) invalids[j].classList.remove('wpcf7-not-valid');
+            if (responseDiv) responseDiv.style.display = 'none';
+        }
+
+        /* Show field-level validation errors returned by CF7 */
+        function showFieldErrors(fields) {
+            if (!fields || !fields.length) return;
+            for (var i = 0; i < fields.length; i++) {
+                var f = fields[i];
+                var wrap = form.querySelector('.wpcf7-form-control-wrap[data-name="' + f.field + '"]');
+                if (!wrap) continue;
+                var input = wrap.querySelector('input, textarea, select');
+                if (input) input.classList.add('wpcf7-not-valid');
+                var tip = document.createElement('span');
+                tip.className = 'wpcf7-not-valid-tip';
+                tip.setAttribute('role', 'alert');
+                tip.textContent = f.message;
+                wrap.appendChild(tip);
+            }
+        }
+
+        function showError(message) {
+            form.setAttribute('data-status', 'failed');
+            if (responseDiv) {
+                responseDiv.textContent = message;
+                responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
+                responseDiv.style.display = 'block';
+            }
+            submitBtn.disabled = false;
+            submitBtn.value = originalLabel;
+        }
+
+        /* Build a fresh FormData from the live form (needed for retries) */
+        function buildPayload() {
+            var formData = new FormData(form);
+
+            var requiredHiddenFields = {
+                _wpcf7: String(FORM_ID),
+                _wpcf7_version: CF7_VERSION,
+                _wpcf7_locale: CF7_LOCALE,
+                _wpcf7_unit_tag: UNIT_TAG,
+                _wpcf7_container_post: '0',
+                _wpcf7_posted_data_hash: ''
+            };
+
+            Object.keys(requiredHiddenFields).forEach(function(fieldName) {
+                var existingValue = formData.get(fieldName);
+                if (existingValue === null || existingValue === undefined || existingValue === '') {
+                    formData.set(fieldName, requiredHiddenFields[fieldName]);
+                }
+            });
+
+            return formData;
+        }
+
+        /* Submit with retry for transient network failures */
+        function submitWithRetry(attempt) {
+            fetch(API_PATH, {
+                method: 'POST',
+                body: buildPayload(),
+                credentials: 'include'
+            })
+            .then(function(res) {
+                /* Check HTTP status before parsing */
+                if (!res.ok) {
+                    return res.text().then(function(body) {
+                        /* Try to parse as JSON in case CF7 sent a structured error */
+                        try {
+                            var data = JSON.parse(body);
+                            if (data.message) {
+                                showError(data.message);
+                            } else {
+                                showError('Server error (HTTP ' + res.status + '). Please try again.');
+                            }
+                        } catch (e) {
+                            showError('Server error (HTTP ' + res.status + '). Please try again.');
+                        }
+                    });
+                }
+                /* Read body as text first, then parse — avoids unguarded .json() throw */
+                return res.text().then(function(body) {
+                    var data;
+                    try {
+                        data = JSON.parse(body);
+                    } catch (e) {
+                        showError('Unexpected server response. Please try again.');
+                        return;
+                    }
+                    handleResponse(data);
+                });
+            })
+            .catch(function() {
+                /* Actual network failure — retry with back-off */
+                if (attempt < MAX_RETRIES) {
+                    var delay = Math.pow(2, attempt) * 1000; /* 1s, 2s */
+                    setTimeout(function() { submitWithRetry(attempt + 1); }, delay);
+                    return;
+                }
+                showError('Network error. Please check your connection and try again.');
+            });
+        }
+
+        /* Process the parsed CF7 JSON response */
+        function handleResponse(data) {
+            if (data.status === 'mail_sent') {
+                form.setAttribute('data-status', 'sent');
+                if (responseDiv) {
+                    responseDiv.textContent = data.message || 'Thank you! Loading your video\u2026';
+                    responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ok';
+                    responseDiv.style.display = 'block';
+                }
+                /* Dispatch wpcf7mailsent so the video-swap logic fires */
+                document.dispatchEvent(new CustomEvent('wpcf7mailsent', {
+                    detail: {
+                        contactFormId: FORM_ID,
+                        pluginVersion: '5.9',
+                        contactFormLocale: 'en_US',
+                        unitTag: UNIT_TAG,
+                        apiResponse: data
+                    }
+                }));
+            } else if (data.status === 'validation_failed') {
+                form.setAttribute('data-status', 'invalid');
+                showFieldErrors(data.invalid_fields);
+                if (responseDiv) {
+                    responseDiv.textContent = data.message || 'Please correct the highlighted fields.';
+                    responseDiv.className = 'wpcf7-response-output wpcf7-validation-errors';
+                    responseDiv.style.display = 'block';
+                }
+                submitBtn.disabled = false;
+                submitBtn.value = originalLabel;
+            } else if (data.status === 'mail_failed') {
+                showError(data.message || 'Mail delivery failed. Please try again.');
+            } else if (data.status === 'spam') {
+                showError(data.message || 'Submission flagged as spam.');
+            } else {
+                showError(data.message || 'There was an error. Please try again.');
+            }
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearValidation();
+
+            /* Honeypot check — bots fill hidden fields */
+            var honeypot = form.querySelector('input[name="website-url"]');
+            if (honeypot && honeypot.value) return;
+
+            submitBtn.disabled = true;
+            submitBtn.value = 'Submitting\u2026';
+            form.setAttribute('data-status', 'submitting');
+
+            submitWithRetry(0);
+        });
     })();
 </script>

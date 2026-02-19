@@ -1,7 +1,8 @@
 <style>
     /* ============================================================
-       REAL TREASURY — GATED VIDEO (WordPress Custom HTML Block)
-       No header/footer — paste directly into a Custom HTML block.
+       REAL TREASURY — GATED VIDEO
+       Loaded via iframe in a WordPress Custom HTML block.
+       Submits to CF7 REST API (shortcodes don't render in iframes).
        ============================================================ */
 
     /* ---- Scoped Variables ---- */
@@ -219,6 +220,44 @@
         margin-top: 16px;
     }
 
+    .rt-gv-form-card .wpcf7-response-output.wpcf7-mail-sent-ok {
+        border: 2px solid #38a169;
+        color: #276749;
+        background: #f0fff4;
+    }
+
+    .rt-gv-form-card .wpcf7-response-output.wpcf7-mail-sent-ng,
+    .rt-gv-form-card .wpcf7-response-output.wpcf7-validation-errors {
+        border: 2px solid #e53e3e;
+        color: #9b2c2c;
+        background: #fff5f5;
+    }
+
+    .rt-gv-form-card .wpcf7-spinner {
+        display: none;
+    }
+
+    .rt-gv-form-card .wpcf7-form[data-status="submitting"] .wpcf7-spinner {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(114, 22, 244, 0.2);
+        border-top-color: var(--primary-purple);
+        border-radius: 50%;
+        animation: rt-gv-spin 0.7s linear infinite;
+        vertical-align: middle;
+        margin-left: 8px;
+    }
+
+    @keyframes rt-gv-spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .rt-gv-form-card .wpcf7 input.wpcf7-not-valid {
+        border-color: #e53e3e;
+        box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
+    }
+
     /* ---- Video Card ---- */
     .rt-gv-video-card {
         display: none;
@@ -373,7 +412,49 @@
                 <h3 id="rt-gv-form-heading" class="rt-gv-form-heading">Watch the Recording</h3>
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
-                [contact-form-7 id="1266631" title="On-Demand Webinar Form"]
+                <!-- CF7 form rendered as HTML (Custom HTML blocks don't process shortcodes) -->
+                <div class="wpcf7" id="wpcf7-f1266631-o1" lang="en-US" dir="ltr">
+                    <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p></div>
+                    <form class="wpcf7-form" novalidate="novalidate" data-status="init">
+                        <p>
+                            <label>First Name<br>
+                                <span class="wpcf7-form-control-wrap" data-name="first-name">
+                                    <input type="text" name="first-name" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="given-name" aria-required="true" aria-invalid="false" placeholder="Jane" required>
+                                </span>
+                            </label>
+                        </p>
+                        <p>
+                            <label>Last Name<br>
+                                <span class="wpcf7-form-control-wrap" data-name="last-name">
+                                    <input type="text" name="last-name" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="family-name" aria-required="true" aria-invalid="false" placeholder="Smith" required>
+                                </span>
+                            </label>
+                        </p>
+                        <p>
+                            <label>Work Email<br>
+                                <span class="wpcf7-form-control-wrap" data-name="your-email">
+                                    <input type="email" name="your-email" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="you@company.com" required>
+                                </span>
+                            </label>
+                        </p>
+                        <p>
+                            <label>Company<br>
+                                <span class="wpcf7-form-control-wrap" data-name="company-name">
+                                    <input type="text" name="company-name" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your company name" required>
+                                </span>
+                            </label>
+                        </p>
+                        <!-- Honeypot anti-spam (hidden from real users) -->
+                        <div style="position:absolute;left:-9999px;" aria-hidden="true">
+                            <label>Leave blank <input type="text" name="website-url" tabindex="-1" autocomplete="off"></label>
+                        </div>
+                        <p>
+                            <input type="submit" value="Watch Now" class="wpcf7-form-control wpcf7-submit">
+                            <span class="wpcf7-spinner"></span>
+                        </p>
+                        <div class="wpcf7-response-output" aria-live="polite" role="status" style="display:none;"></div>
+                    </form>
+                </div>
             </div>
 
             <!-- VIDEO CARD (hidden until form is submitted) -->
@@ -494,5 +575,122 @@
             } catch (e) { /* localStorage unavailable — still show video for this session */ }
             showVideo(true);
         }, false);
+    })();
+</script>
+
+<!-- CF7 REST API form submission handler -->
+<script>
+    (function() {
+        var FORM_ID = 1266631;
+        var UNIT_TAG = 'wpcf7-f' + FORM_ID + '-o1';
+        var WP_SITE = 'https://realtreasury.com';
+        var API_PATH = WP_SITE + '/wp-json/contact-form-7/v1/contact-forms/' + FORM_ID + '/feedback';
+
+        var wrapper = document.getElementById(UNIT_TAG);
+        if (!wrapper) return;
+        var form = wrapper.querySelector('form');
+        if (!form) return;
+
+        var submitBtn = form.querySelector('input[type="submit"]');
+        var responseDiv = form.querySelector('.wpcf7-response-output');
+        var originalLabel = submitBtn ? submitBtn.value : 'Watch Now';
+
+        /* Clear previous field-level validation errors */
+        function clearValidation() {
+            var tips = form.querySelectorAll('.wpcf7-not-valid-tip');
+            for (var i = 0; i < tips.length; i++) tips[i].parentNode.removeChild(tips[i]);
+            var invalids = form.querySelectorAll('.wpcf7-not-valid');
+            for (var j = 0; j < invalids.length; j++) invalids[j].classList.remove('wpcf7-not-valid');
+            if (responseDiv) responseDiv.style.display = 'none';
+        }
+
+        /* Show field-level validation errors returned by CF7 */
+        function showFieldErrors(fields) {
+            if (!fields || !fields.length) return;
+            for (var i = 0; i < fields.length; i++) {
+                var f = fields[i];
+                var wrap = form.querySelector('.wpcf7-form-control-wrap[data-name="' + f.field + '"]');
+                if (!wrap) continue;
+                var input = wrap.querySelector('input, textarea, select');
+                if (input) input.classList.add('wpcf7-not-valid');
+                var tip = document.createElement('span');
+                tip.className = 'wpcf7-not-valid-tip';
+                tip.setAttribute('role', 'alert');
+                tip.textContent = f.message;
+                wrap.appendChild(tip);
+            }
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            clearValidation();
+
+            /* Honeypot check — bots fill hidden fields */
+            var honeypot = form.querySelector('input[name="website-url"]');
+            if (honeypot && honeypot.value) return;
+
+            var formData = new FormData(form);
+            /* Remove honeypot from payload */
+            formData.delete('website-url');
+            /* Append CF7 metadata */
+            formData.append('_wpcf7', FORM_ID);
+            formData.append('_wpcf7_unit_tag', UNIT_TAG);
+
+            submitBtn.disabled = true;
+            submitBtn.value = 'Submitting\u2026';
+            form.setAttribute('data-status', 'submitting');
+
+            fetch(API_PATH, { method: 'POST', body: formData })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.status === 'mail_sent') {
+                        form.setAttribute('data-status', 'sent');
+                        if (responseDiv) {
+                            responseDiv.textContent = data.message || 'Thank you! Loading your video\u2026';
+                            responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ok';
+                            responseDiv.style.display = 'block';
+                        }
+                        /* Dispatch wpcf7mailsent so the video-swap logic fires */
+                        document.dispatchEvent(new CustomEvent('wpcf7mailsent', {
+                            detail: {
+                                contactFormId: FORM_ID,
+                                pluginVersion: '5.9',
+                                contactFormLocale: 'en_US',
+                                unitTag: UNIT_TAG,
+                                apiResponse: data
+                            }
+                        }));
+                    } else if (data.status === 'validation_failed') {
+                        form.setAttribute('data-status', 'invalid');
+                        showFieldErrors(data.invalid_fields);
+                        if (responseDiv) {
+                            responseDiv.textContent = data.message || 'Please correct the highlighted fields.';
+                            responseDiv.className = 'wpcf7-response-output wpcf7-validation-errors';
+                            responseDiv.style.display = 'block';
+                        }
+                        submitBtn.disabled = false;
+                        submitBtn.value = originalLabel;
+                    } else {
+                        form.setAttribute('data-status', 'failed');
+                        if (responseDiv) {
+                            responseDiv.textContent = data.message || 'There was an error. Please try again.';
+                            responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
+                            responseDiv.style.display = 'block';
+                        }
+                        submitBtn.disabled = false;
+                        submitBtn.value = originalLabel;
+                    }
+                })
+                .catch(function() {
+                    form.setAttribute('data-status', 'failed');
+                    if (responseDiv) {
+                        responseDiv.textContent = 'Network error. Please check your connection and try again.';
+                        responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
+                        responseDiv.style.display = 'block';
+                    }
+                    submitBtn.disabled = false;
+                    submitBtn.value = originalLabel;
+                });
+        });
     })();
 </script>

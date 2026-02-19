@@ -1063,6 +1063,82 @@ add_action('rest_api_init', function() {
 
 // ✅ SECURITY FIX: Removed duplicate wildcard CORS handler (now handled above)
 
+// Webinar gated-video lead capture + confirmation email
+add_action('rest_api_init', function() {
+    register_rest_route('rt/v1', '/webinar-lead', array(
+        'methods'  => 'POST',
+        'callback' => 'rt_handle_webinar_lead',
+        'permission_callback' => 'rt_rest_permission_check',
+        'args' => array(
+            'first_name' => array(
+                'required' => true,
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'last_name' => array(
+                'required' => true,
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'work_email' => array(
+                'required' => true,
+                'sanitize_callback' => 'sanitize_email',
+                'validate_callback' => function($value) {
+                    return is_email($value);
+                },
+            ),
+            'company' => array(
+                'required' => true,
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+        ),
+    ));
+});
+
+function rt_handle_webinar_lead($request) {
+    $first_name = $request->get_param('first_name');
+    $last_name  = $request->get_param('last_name');
+    $email      = $request->get_param('work_email');
+    $company    = $request->get_param('company');
+
+    if (empty($first_name) || empty($email)) {
+        return new WP_Error('missing_fields', 'First name and work email are required.', array('status' => 400));
+    }
+
+    // Send confirmation email
+    $subject = 'Your On-Demand Workshop Recording — Real Treasury';
+
+    $message  = "Hi " . esc_html($first_name) . ",\n\n";
+    $message .= "Thank you for your interest! Your on-demand workshop recording is ready to watch.\n\n";
+    $message .= "You can access it anytime by visiting the workshop page:\n";
+    $message .= esc_url(home_url('/on-demand-webinar/')) . "\n\n";
+    $message .= "Ready to take the next step? Book a call with our team:\n";
+    $message .= "https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2\n\n";
+    $message .= "Best regards,\n" . get_bloginfo('name');
+
+    $headers = array('Reply-To: hello@realtreasury.com');
+
+    $sent = wp_mail($email, $subject, $message, $headers);
+
+    if (!$sent) {
+        error_log('RT Webinar: Failed to send confirmation email to ' . $email);
+    } else {
+        error_log('RT Webinar: Confirmation email sent to ' . $email);
+    }
+
+    // Log the lead
+    error_log(sprintf(
+        'RT Webinar Lead: %s %s <%s> — %s',
+        $first_name,
+        $last_name,
+        $email,
+        $company
+    ));
+
+    return new WP_REST_Response(array(
+        'success' => true,
+        'message' => 'Thank you! Check your email for confirmation.',
+    ), 200);
+}
+
 add_action('rest_api_init', function() {
     add_filter('rest_request_before_callbacks', function($response, $handler, $request) {
         if (strpos($request->get_route(), '/rt/v1/') === 0) {

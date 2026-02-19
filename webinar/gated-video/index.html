@@ -547,6 +547,30 @@
                     return;
                 }
 
+                /* Collect form data and send to the REST API for email confirmation */
+                var formData = {
+                    first_name: leadForm.querySelector('[name="first_name"]').value,
+                    last_name:  leadForm.querySelector('[name="last_name"]').value,
+                    work_email: leadForm.querySelector('[name="work_email"]').value,
+                    company:    leadForm.querySelector('[name="company"]').value
+                };
+
+                /* Resolve the REST API base — works inside WP or standalone */
+                var apiBase = (typeof window.wpApiSettings !== 'undefined' && window.wpApiSettings.root)
+                    ? window.wpApiSettings.root
+                    : '/wp-json/';
+                var endpoint = apiBase + 'rt/v1/webinar-lead';
+
+                /* Fire-and-forget: send the lead data so the server can email the user.
+                   We don't block the UI on this request — the video shows immediately. */
+                try {
+                    fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    }).catch(function() { /* network error — non-critical */ });
+                } catch (e) { /* fetch unavailable — non-critical */ }
+
                 try {
                     localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
                 } catch (e) { /* localStorage unavailable — still show video for this session */ }

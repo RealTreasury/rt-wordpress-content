@@ -585,6 +585,7 @@
         var UNIT_TAG = 'wpcf7-f' + FORM_ID + '-o1';
         var WP_SITE = 'https://realtreasury.com';
         var API_PATH = WP_SITE + '/wp-json/contact-form-7/v1/contact-forms/' + FORM_ID + '/feedback';
+        var MAX_RETRIES = 2;
 
         var wrapper = document.getElementById(UNIT_TAG);
         if (!wrapper) return;
@@ -621,6 +622,109 @@
             }
         }
 
+        function showError(message) {
+            form.setAttribute('data-status', 'failed');
+            if (responseDiv) {
+                responseDiv.textContent = message;
+                responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
+                responseDiv.style.display = 'block';
+            }
+            submitBtn.disabled = false;
+            submitBtn.value = originalLabel;
+        }
+
+        /* Build a fresh FormData from the live form (needed for retries) */
+        function buildPayload() {
+            var formData = new FormData(form);
+            /* Remove honeypot from payload */
+            formData.delete('website-url');
+            /* Append CF7 metadata */
+            formData.append('_wpcf7', FORM_ID);
+            formData.append('_wpcf7_unit_tag', UNIT_TAG);
+            return formData;
+        }
+
+        /* Submit with retry for transient network failures */
+        function submitWithRetry(attempt) {
+            fetch(API_PATH, {
+                method: 'POST',
+                body: buildPayload(),
+                credentials: 'include'
+            })
+            .then(function(res) {
+                /* Check HTTP status before parsing */
+                if (!res.ok) {
+                    return res.text().then(function(body) {
+                        /* Try to parse as JSON in case CF7 sent a structured error */
+                        try {
+                            var data = JSON.parse(body);
+                            if (data.message) {
+                                showError(data.message);
+                            } else {
+                                showError('Server error (HTTP ' + res.status + '). Please try again.');
+                            }
+                        } catch (e) {
+                            showError('Server error (HTTP ' + res.status + '). Please try again.');
+                        }
+                    });
+                }
+                /* Read body as text first, then parse — avoids unguarded .json() throw */
+                return res.text().then(function(body) {
+                    var data;
+                    try {
+                        data = JSON.parse(body);
+                    } catch (e) {
+                        showError('Unexpected server response. Please try again.');
+                        return;
+                    }
+                    handleResponse(data);
+                });
+            })
+            .catch(function() {
+                /* Actual network failure — retry with back-off */
+                if (attempt < MAX_RETRIES) {
+                    var delay = Math.pow(2, attempt) * 1000; /* 1s, 2s */
+                    setTimeout(function() { submitWithRetry(attempt + 1); }, delay);
+                    return;
+                }
+                showError('Network error. Please check your connection and try again.');
+            });
+        }
+
+        /* Process the parsed CF7 JSON response */
+        function handleResponse(data) {
+            if (data.status === 'mail_sent') {
+                form.setAttribute('data-status', 'sent');
+                if (responseDiv) {
+                    responseDiv.textContent = data.message || 'Thank you! Loading your video\u2026';
+                    responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ok';
+                    responseDiv.style.display = 'block';
+                }
+                /* Dispatch wpcf7mailsent so the video-swap logic fires */
+                document.dispatchEvent(new CustomEvent('wpcf7mailsent', {
+                    detail: {
+                        contactFormId: FORM_ID,
+                        pluginVersion: '5.9',
+                        contactFormLocale: 'en_US',
+                        unitTag: UNIT_TAG,
+                        apiResponse: data
+                    }
+                }));
+            } else if (data.status === 'validation_failed') {
+                form.setAttribute('data-status', 'invalid');
+                showFieldErrors(data.invalid_fields);
+                if (responseDiv) {
+                    responseDiv.textContent = data.message || 'Please correct the highlighted fields.';
+                    responseDiv.className = 'wpcf7-response-output wpcf7-validation-errors';
+                    responseDiv.style.display = 'block';
+                }
+                submitBtn.disabled = false;
+                submitBtn.value = originalLabel;
+            } else {
+                showError(data.message || 'There was an error. Please try again.');
+            }
+        }
+
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             clearValidation();
@@ -629,68 +733,11 @@
             var honeypot = form.querySelector('input[name="website-url"]');
             if (honeypot && honeypot.value) return;
 
-            var formData = new FormData(form);
-            /* Remove honeypot from payload */
-            formData.delete('website-url');
-            /* Append CF7 metadata */
-            formData.append('_wpcf7', FORM_ID);
-            formData.append('_wpcf7_unit_tag', UNIT_TAG);
-
             submitBtn.disabled = true;
             submitBtn.value = 'Submitting\u2026';
             form.setAttribute('data-status', 'submitting');
 
-            fetch(API_PATH, { method: 'POST', body: formData })
-                .then(function(res) { return res.json(); })
-                .then(function(data) {
-                    if (data.status === 'mail_sent') {
-                        form.setAttribute('data-status', 'sent');
-                        if (responseDiv) {
-                            responseDiv.textContent = data.message || 'Thank you! Loading your video\u2026';
-                            responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ok';
-                            responseDiv.style.display = 'block';
-                        }
-                        /* Dispatch wpcf7mailsent so the video-swap logic fires */
-                        document.dispatchEvent(new CustomEvent('wpcf7mailsent', {
-                            detail: {
-                                contactFormId: FORM_ID,
-                                pluginVersion: '5.9',
-                                contactFormLocale: 'en_US',
-                                unitTag: UNIT_TAG,
-                                apiResponse: data
-                            }
-                        }));
-                    } else if (data.status === 'validation_failed') {
-                        form.setAttribute('data-status', 'invalid');
-                        showFieldErrors(data.invalid_fields);
-                        if (responseDiv) {
-                            responseDiv.textContent = data.message || 'Please correct the highlighted fields.';
-                            responseDiv.className = 'wpcf7-response-output wpcf7-validation-errors';
-                            responseDiv.style.display = 'block';
-                        }
-                        submitBtn.disabled = false;
-                        submitBtn.value = originalLabel;
-                    } else {
-                        form.setAttribute('data-status', 'failed');
-                        if (responseDiv) {
-                            responseDiv.textContent = data.message || 'There was an error. Please try again.';
-                            responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
-                            responseDiv.style.display = 'block';
-                        }
-                        submitBtn.disabled = false;
-                        submitBtn.value = originalLabel;
-                    }
-                })
-                .catch(function() {
-                    form.setAttribute('data-status', 'failed');
-                    if (responseDiv) {
-                        responseDiv.textContent = 'Network error. Please check your connection and try again.';
-                        responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
-                        responseDiv.style.display = 'block';
-                    }
-                    submitBtn.disabled = false;
-                    submitBtn.value = originalLabel;
-                });
+            submitWithRetry(0);
         });
     })();
 </script>

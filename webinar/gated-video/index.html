@@ -373,33 +373,8 @@
                 <h3 id="rt-gv-form-heading" class="rt-gv-form-heading">Watch the Recording</h3>
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
-                <div class="wpcf7">
-                    <form id="rtGvLeadForm" class="rt-gv-inline-form" data-cf7-id="1266631" data-api-root="https://realtreasury.com/wp-json/" novalidate>
-                        <p>
-                            <label for="rtGvFirstName">First Name *</label>
-                            <input id="rtGvFirstName" name="first_name" type="text" placeholder="Jane" required>
-                        </p>
-
-                        <p>
-                            <label for="rtGvLastName">Last Name *</label>
-                            <input id="rtGvLastName" name="last_name" type="text" placeholder="Smith" required>
-                        </p>
-
-                        <p>
-                            <label for="rtGvWorkEmail">Work Email *</label>
-                            <input id="rtGvWorkEmail" name="work_email" type="email" placeholder="you@company.com" required>
-                        </p>
-
-                        <p>
-                            <label for="rtGvCompany">Company *</label>
-                            <input id="rtGvCompany" name="company" type="text" placeholder="Company Name" required>
-                        </p>
-
-                        <p>
-                            <input type="submit" value="Watch now">
-                        </p>
-                    </form>
-                </div>
+                <!-- Render the production Contact Form 7 form instead of a custom REST form. -->
+                [contact-form-7 id="1266631" title="On-Demand Webinar" html_class="rt-gv-inline-form rt-cf7 rt-cf7--v2"]
             </div>
 
             <!-- VIDEO CARD (hidden until form is submitted) -->
@@ -534,7 +509,7 @@
             } catch (e) { /* localStorage unavailable — fall through to form */ }
         });
 
-        /* Native form submission support for static/GitHub embeds */
+        /* Legacy custom form submission support (kept for non-WP static previews only). */
         document.addEventListener('DOMContentLoaded', function() {
             var leadForm = document.getElementById('rtGvLeadForm');
             if (!leadForm) return;
@@ -632,30 +607,6 @@
                         alert('We could not submit the form right now. Please try again in a moment.');
                     })
                     .catch(function(err) {
-                        var endpointUrl;
-                        try {
-                            endpointUrl = new URL(endpoint, window.location.href);
-                        } catch (urlErr) {
-                            endpointUrl = null;
-                        }
-
-                        var endpointIsCrossOrigin = endpointUrl && endpointUrl.origin !== window.location.origin;
-                        var isCorsLikeFailure = err && err.name === 'TypeError' && endpointIsCrossOrigin;
-
-                        if (isCorsLikeFailure) {
-                            var noCorsOptions = { method: 'POST', body: fd, mode: 'no-cors' };
-                            fetch(endpoint, noCorsOptions)
-                                .then(function() {
-                                    console.warn('[RT Gated Video] CORS-blocked CF7 response; assuming submission reached server.');
-                                    unlockVideo();
-                                })
-                                .catch(function(fallbackErr) {
-                                    console.warn('[RT Gated Video] CF7 network error:', fallbackErr);
-                                    alert('Network error while submitting the form. Please try again.');
-                                });
-                            return;
-                        }
-
                         console.warn('[RT Gated Video] CF7 network error:', err);
                         alert('Network error while submitting the form. Please try again.');
                     })
@@ -669,7 +620,10 @@
         });
 
         /* Keep support for CF7 if this page is rendered inside WordPress */
-        document.addEventListener('wpcf7mailsent', function() {
+        document.addEventListener('wpcf7mailsent', function(event) {
+            if (!event || !event.detail || String(event.detail.contactFormId) !== '1266631') {
+                return;
+            }
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
             } catch (e) { /* localStorage unavailable — still show video for this session */ }

@@ -636,8 +636,6 @@
         /* Build a fresh FormData from the live form (needed for retries) */
         function buildPayload() {
             var formData = new FormData(form);
-            /* Remove honeypot from payload */
-            formData.delete('website-url');
             /* Append CF7 metadata */
             formData.append('_wpcf7', FORM_ID);
             formData.append('_wpcf7_unit_tag', UNIT_TAG);

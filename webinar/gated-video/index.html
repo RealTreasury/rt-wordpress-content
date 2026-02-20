@@ -644,6 +644,8 @@
             })
             .then(function(res) { return res.json(); })
             .then(function(data) {
+                console.log('CF7 response:', data.status, data);
+
                 if (data.status === 'mail_sent') {
                     grantAccess(true);
                 } else if (data.status === 'validation_failed') {
@@ -660,15 +662,39 @@
                     }
                     if (submitBtn) submitBtn.disabled = false;
                     form.setAttribute('data-status', 'invalid');
+                } else if (data.status === 'mail_failed') {
+                    /* CF7 processed the form but failed to send mail.
+                       Still grant video access — the data was captured — but
+                       warn so the admin can investigate server mail config. */
+                    console.warn('CF7: mail_failed — server could not send email. Check mail config (SMTP plugin, etc.).');
+                    grantAccess(true);
+                } else if (data.status === 'spam') {
+                    /* CF7 flagged submission as spam — show error */
+                    console.warn('CF7: submission flagged as spam', data);
+                    var resp = form.querySelector('.wpcf7-response-output');
+                    if (resp) {
+                        resp.textContent = data.message || 'Submission could not be processed. Please try again.';
+                        resp.style.display = 'block';
+                        resp.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
+                    }
+                    if (submitBtn) submitBtn.disabled = false;
+                    form.setAttribute('data-status', 'failed');
                 } else {
-                    /* Unexpected status but form data was submitted — grant access */
+                    /* Unexpected status — grant access but log for debugging */
+                    console.warn('CF7: unexpected status "' + data.status + '"', data);
                     grantAccess(true);
                 }
             })
-            .catch(function() {
-                /* Network error or REST API unavailable — still grant access
-                   so the user isn't blocked from the video by a server issue. */
-                grantAccess(true);
+            .catch(function(err) {
+                console.error('CF7 fetch error:', err);
+                var resp = form.querySelector('.wpcf7-response-output');
+                if (resp) {
+                    resp.textContent = 'Network error — please check your connection and try again.';
+                    resp.style.display = 'block';
+                    resp.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
+                }
+                if (submitBtn) submitBtn.disabled = false;
+                form.setAttribute('data-status', 'failed');
             });
         });
 

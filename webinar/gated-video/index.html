@@ -436,10 +436,12 @@
                                 </span>
                             </label>
                         </p>
+                        <!-- Hidden dummy to absorb browser autofill for email -->
+                        <input type="email" name="dummy-email-autofill" autocomplete="email" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;width:0;height:0;overflow:hidden;">
                         <p>
                             <label>Work Email<br>
                                 <span class="wpcf7-form-control-wrap" data-name="your-email">
-                                    <input type="email" name="your-email" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" autocomplete="email" aria-required="true" aria-invalid="false" placeholder="you@company.com" required>
+                                    <input type="email" name="your-email" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" autocomplete="off" aria-required="true" aria-invalid="false" placeholder="you@company.com" required>
                                 </span>
                             </label>
                         </p>
@@ -530,17 +532,11 @@
     })();
 </script>
 
-<!-- Form gate + CF7 REST API submission + video swap -->
+<!-- Form gate + CF7 DOM event listener + video swap -->
 <script>
     (function() {
         var STORAGE_KEY = 'rt_gv_video_access';
-        var FORM_ID = 1266631;
-        var UNIT_TAG = 'wpcf7-f' + FORM_ID + '-o1';
-        var WP_SITE = 'https://realtreasury.com';
-        var API_PATH = WP_SITE + '/wp-json/contact-form-7/v1/contact-forms/' + FORM_ID + '/feedback';
-        var MAX_RETRIES = 2;
-        var CF7_VERSION = '5.9';
-        var CF7_LOCALE = 'en_US';
+        var UNIT_TAG = 'wpcf7-f1266631-o1';
 
         /* ---- Video swap ---- */
 
@@ -586,161 +582,18 @@
             } catch (e) { /* localStorage unavailable — fall through to form */ }
         });
 
-        /* ---- CF7 REST API form handler ---- */
+        /* ---- CF7 native DOM event listeners ----
+           CF7's own JS handles submission via its AJAX pipeline and
+           dispatches custom DOM events on the .wpcf7 wrapper element.
+           We listen for those instead of intercepting fetch/API calls,
+           which avoids the 404 issues on the REST API endpoints. */
 
         var wrapper = document.getElementById(UNIT_TAG);
         if (!wrapper) return;
-        var form = wrapper.querySelector('form');
-        if (!form) return;
 
-        var submitBtn = form.querySelector('input[type="submit"]');
-        var responseDiv = form.querySelector('.wpcf7-response-output');
-        var originalLabel = submitBtn ? submitBtn.value : 'Watch Now';
-
-        function clearValidation() {
-            var tips = form.querySelectorAll('.wpcf7-not-valid-tip');
-            for (var i = 0; i < tips.length; i++) tips[i].parentNode.removeChild(tips[i]);
-            var invalids = form.querySelectorAll('.wpcf7-not-valid');
-            for (var j = 0; j < invalids.length; j++) invalids[j].classList.remove('wpcf7-not-valid');
-            if (responseDiv) responseDiv.style.display = 'none';
-        }
-
-        function showFieldErrors(fields) {
-            if (!fields || !fields.length) return;
-            for (var i = 0; i < fields.length; i++) {
-                var f = fields[i];
-                var wrap = form.querySelector('.wpcf7-form-control-wrap[data-name="' + f.field + '"]');
-                if (!wrap) continue;
-                var input = wrap.querySelector('input, textarea, select');
-                if (input) input.classList.add('wpcf7-not-valid');
-                var tip = document.createElement('span');
-                tip.className = 'wpcf7-not-valid-tip';
-                tip.setAttribute('role', 'alert');
-                tip.textContent = f.message;
-                wrap.appendChild(tip);
-            }
-        }
-
-        function showError(message) {
-            form.setAttribute('data-status', 'failed');
-            if (responseDiv) {
-                responseDiv.textContent = message;
-                responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
-                responseDiv.style.display = 'block';
-            }
-            submitBtn.disabled = false;
-            submitBtn.value = originalLabel;
-        }
-
-        function buildPayload() {
-            var formData = new FormData(form);
-
-            var requiredHiddenFields = {
-                _wpcf7: String(FORM_ID),
-                _wpcf7_version: CF7_VERSION,
-                _wpcf7_locale: CF7_LOCALE,
-                _wpcf7_unit_tag: UNIT_TAG,
-                _wpcf7_container_post: '0',
-                _wpcf7_posted_data_hash: ''
-            };
-
-            Object.keys(requiredHiddenFields).forEach(function(fieldName) {
-                var existingValue = formData.get(fieldName);
-                if (existingValue === null || existingValue === undefined || existingValue === '') {
-                    formData.set(fieldName, requiredHiddenFields[fieldName]);
-                }
-            });
-
-            return formData;
-        }
-
-        /* Submit with retry for transient network failures.
-           credentials omitted — CF7 public forms don't need cookies,
-           and 'include' on cross-origin fetches can be blocked by
-           third-party-cookie policies, causing an opaque CORS failure
-           that hides the response even though the server sent the mail. */
-        function submitWithRetry(attempt) {
-            fetch(API_PATH, {
-                method: 'POST',
-                body: buildPayload()
-            })
-            .then(function(res) {
-                if (!res.ok) {
-                    return res.text().then(function(body) {
-                        try {
-                            var data = JSON.parse(body);
-                            if (data.message) {
-                                showError(data.message);
-                            } else {
-                                showError('Server error (HTTP ' + res.status + '). Please try again.');
-                            }
-                        } catch (e) {
-                            showError('Server error (HTTP ' + res.status + '). Please try again.');
-                        }
-                    });
-                }
-                return res.text().then(function(body) {
-                    var data;
-                    try {
-                        data = JSON.parse(body);
-                    } catch (e) {
-                        showError('Unexpected server response. Please try again.');
-                        return;
-                    }
-                    handleResponse(data);
-                });
-            })
-            .catch(function() {
-                if (attempt < MAX_RETRIES) {
-                    var delay = Math.pow(2, attempt) * 1000;
-                    setTimeout(function() { submitWithRetry(attempt + 1); }, delay);
-                    return;
-                }
-                showError('Network error. Please check your connection and try again.');
-            });
-        }
-
-        function handleResponse(data) {
-            if (data.status === 'mail_sent') {
-                form.setAttribute('data-status', 'sent');
-                if (responseDiv) {
-                    responseDiv.textContent = data.message || 'Thank you! Loading your video\u2026';
-                    responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ok';
-                    responseDiv.style.display = 'block';
-                }
-                /* Show the video directly — no cross-IIFE event indirection */
-                grantAccess(true);
-            } else if (data.status === 'validation_failed') {
-                form.setAttribute('data-status', 'invalid');
-                showFieldErrors(data.invalid_fields);
-                if (responseDiv) {
-                    responseDiv.textContent = data.message || 'Please correct the highlighted fields.';
-                    responseDiv.className = 'wpcf7-response-output wpcf7-validation-errors';
-                    responseDiv.style.display = 'block';
-                }
-                submitBtn.disabled = false;
-                submitBtn.value = originalLabel;
-            } else if (data.status === 'mail_failed') {
-                showError(data.message || 'Mail delivery failed. Please try again.');
-            } else if (data.status === 'spam') {
-                showError(data.message || 'Submission flagged as spam.');
-            } else {
-                showError(data.message || 'There was an error. Please try again.');
-            }
-        }
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            clearValidation();
-
-            var honeypot = form.querySelector('input[name="website-url"]');
-            if (honeypot && honeypot.value) return;
-
-            submitBtn.disabled = true;
-            submitBtn.value = 'Submitting\u2026';
-            form.setAttribute('data-status', 'submitting');
-
-            submitWithRetry(0);
+        /* wpcf7mailsent — fires after CF7 confirms the mail was sent */
+        wrapper.addEventListener('wpcf7mailsent', function() {
+            grantAccess(true);
         });
     })();
 </script>

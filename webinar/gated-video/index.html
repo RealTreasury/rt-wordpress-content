@@ -441,7 +441,7 @@
                         <p>
                             <label>Work Email<br>
                                 <span class="wpcf7-form-control-wrap" data-name="your-email">
-                                    <input type="email" name="your-email" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" autocomplete="off" aria-required="true" aria-invalid="false" placeholder="you@company.com" required>
+                                    <input type="email" name="your-email" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" autocomplete="new-password" aria-required="true" aria-invalid="false" placeholder="you@company.com" required>
                                 </span>
                             </label>
                         </p>
@@ -532,11 +532,13 @@
     })();
 </script>
 
-<!-- Form gate + CF7 DOM event listener + video swap -->
+<!-- Form gate + submission handler + video swap -->
 <script>
     (function() {
         var STORAGE_KEY = 'rt_gv_video_access';
         var UNIT_TAG = 'wpcf7-f1266631-o1';
+        var CF7_FORM_ID = '1266631';
+        var CF7_API_URL = 'https://realtreasury.com/wp-json/contact-form-7/v1/contact-forms/' + CF7_FORM_ID + '/feedback';
 
         /* ---- Video swap ---- */
 
@@ -573,25 +575,104 @@
             showVideo(animate);
         }
 
-        /* On page load, check if user already submitted the form */
+        /* On page load: restore access if already granted + clear autofilled email */
         document.addEventListener('DOMContentLoaded', function() {
             try {
                 if (localStorage.getItem(STORAGE_KEY)) {
                     showVideo(false);
                 }
             } catch (e) { /* localStorage unavailable — fall through to form */ }
+
+            /* Clear any browser-autofilled value from the Work Email field */
+            var emailField = document.querySelector('input[name="your-email"]');
+            if (emailField) { emailField.value = ''; }
         });
 
-        /* ---- CF7 native DOM event listeners ----
-           CF7's own JS handles submission via its AJAX pipeline and
-           dispatches custom DOM events on the .wpcf7 wrapper element.
-           We listen for those instead of intercepting fetch/API calls,
-           which avoids the 404 issues on the REST API endpoints. */
+        /* ---- Form submission handler ----
+           CF7's own JS is not available inside this iframe, so we handle
+           submission directly: validate required fields, skip the honeypot,
+           POST to the CF7 REST API, and reveal the video on success. */
 
         var wrapper = document.getElementById(UNIT_TAG);
         if (!wrapper) return;
 
-        /* wpcf7mailsent — fires after CF7 confirms the mail was sent */
+        var form = wrapper.querySelector('form.wpcf7-form');
+        if (!form) return;
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            /* ---- Client-side validation (required fields only) ---- */
+            var requiredFields = ['first-name', 'last-name', 'your-email', 'company-name'];
+            var valid = true;
+
+            requiredFields.forEach(function(name) {
+                var input = form.querySelector('[name="' + name + '"]');
+                if (!input) return;
+                var val = input.value.trim();
+                /* Remove previous error state */
+                input.classList.remove('wpcf7-not-valid');
+
+                if (!val) {
+                    input.classList.add('wpcf7-not-valid');
+                    valid = false;
+                }
+                /* Basic email format check */
+                if (name === 'your-email' && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                    input.classList.add('wpcf7-not-valid');
+                    valid = false;
+                }
+            });
+
+            if (!valid) return;
+
+            /* ---- Honeypot check ---- */
+            var honeypot = form.querySelector('[name="website-url"]');
+            if (honeypot && honeypot.value) return; /* silently reject bots */
+
+            /* ---- Submit to CF7 REST API ---- */
+            var submitBtn = form.querySelector('input[type="submit"]');
+            var spinner = form.querySelector('.wpcf7-spinner');
+            if (submitBtn) submitBtn.disabled = true;
+            form.setAttribute('data-status', 'submitting');
+
+            var formData = new FormData(form);
+
+            fetch(CF7_API_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.status === 'mail_sent') {
+                    grantAccess(true);
+                } else if (data.status === 'validation_failed') {
+                    /* Show server-side validation errors */
+                    (data.invalid_fields || []).forEach(function(field) {
+                        var input = form.querySelector('[name="' + field.field + '"]');
+                        if (input) input.classList.add('wpcf7-not-valid');
+                    });
+                    var resp = form.querySelector('.wpcf7-response-output');
+                    if (resp) {
+                        resp.textContent = data.message || 'Please correct the highlighted fields.';
+                        resp.style.display = 'block';
+                        resp.className = 'wpcf7-response-output wpcf7-validation-errors';
+                    }
+                    if (submitBtn) submitBtn.disabled = false;
+                    form.setAttribute('data-status', 'invalid');
+                } else {
+                    /* Unexpected status but form data was submitted — grant access */
+                    grantAccess(true);
+                }
+            })
+            .catch(function() {
+                /* Network error or REST API unavailable — still grant access
+                   so the user isn't blocked from the video by a server issue. */
+                grantAccess(true);
+            });
+        });
+
+        /* Also listen for wpcf7mailsent in case CF7 JS loads in future */
         wrapper.addEventListener('wpcf7mailsent', function() {
             grantAccess(true);
         });

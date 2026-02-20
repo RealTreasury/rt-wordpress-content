@@ -530,11 +530,19 @@
     })();
 </script>
 
-<!-- Form → Video Swap (CF7 wpcf7mailsent event) -->
+<!-- Form gate + CF7 REST API submission + video swap -->
 <script>
     (function() {
         var STORAGE_KEY = 'rt_gv_video_access';
-        var WEBINAR_FORM_ID = 1266631;
+        var FORM_ID = 1266631;
+        var UNIT_TAG = 'wpcf7-f' + FORM_ID + '-o1';
+        var WP_SITE = 'https://realtreasury.com';
+        var API_PATH = WP_SITE + '/wp-json/contact-form-7/v1/contact-forms/' + FORM_ID + '/feedback';
+        var MAX_RETRIES = 2;
+        var CF7_VERSION = '5.9';
+        var CF7_LOCALE = 'en_US';
+
+        /* ---- Video swap ---- */
 
         function showVideo(animate) {
             var formCard = document.getElementById('rtGvFormCard');
@@ -547,11 +555,12 @@
                 setTimeout(function() {
                     formCard.style.display = 'none';
                     videoCard.style.display = 'block';
-                    requestAnimationFrame(function() {
-                        videoCard.style.opacity = '1';
-                        videoCard.style.transform = 'translateY(0)';
-                        videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    });
+                    /* Force a layout pass so the browser registers display:block
+                       before transitioning opacity — single rAF is unreliable. */
+                    void videoCard.offsetHeight;
+                    videoCard.style.opacity = '1';
+                    videoCard.style.transform = 'translateY(0)';
+                    videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 500);
             } else {
                 formCard.style.display = 'none';
@@ -561,39 +570,23 @@
             }
         }
 
+        function grantAccess(animate) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
+            } catch (e) { /* localStorage unavailable — still show video for this session */ }
+            showVideo(animate);
+        }
+
         /* On page load, check if user already submitted the form */
         document.addEventListener('DOMContentLoaded', function() {
             try {
-                var access = localStorage.getItem(STORAGE_KEY);
-                if (access) {
+                if (localStorage.getItem(STORAGE_KEY)) {
                     showVideo(false);
                 }
             } catch (e) { /* localStorage unavailable — fall through to form */ }
         });
 
-        document.addEventListener('wpcf7mailsent', function(event) {
-            if (!event || !event.detail || Number(event.detail.contactFormId) !== WEBINAR_FORM_ID) {
-                return;
-            }
-
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
-            } catch (e) { /* localStorage unavailable — still show video for this session */ }
-            showVideo(true);
-        }, false);
-    })();
-</script>
-
-<!-- CF7 REST API form submission handler -->
-<script>
-    (function() {
-        var FORM_ID = 1266631;
-        var UNIT_TAG = 'wpcf7-f' + FORM_ID + '-o1';
-        var WP_SITE = 'https://realtreasury.com';
-        var API_PATH = WP_SITE + '/wp-json/contact-form-7/v1/contact-forms/' + FORM_ID + '/feedback';
-        var MAX_RETRIES = 2;
-        var CF7_VERSION = '5.9';
-        var CF7_LOCALE = 'en_US';
+        /* ---- CF7 REST API form handler ---- */
 
         var wrapper = document.getElementById(UNIT_TAG);
         if (!wrapper) return;
@@ -604,11 +597,6 @@
         var responseDiv = form.querySelector('.wpcf7-response-output');
         var originalLabel = submitBtn ? submitBtn.value : 'Watch Now';
 
-        if (window.location && window.location.hostname && window.location.hostname !== 'realtreasury.com') {
-            console.warn('CF7 API requests are pinned to canonical host realtreasury.com for form ' + FORM_ID + '. Current host:', window.location.hostname);
-        }
-
-        /* Clear previous field-level validation errors */
         function clearValidation() {
             var tips = form.querySelectorAll('.wpcf7-not-valid-tip');
             for (var i = 0; i < tips.length; i++) tips[i].parentNode.removeChild(tips[i]);
@@ -617,7 +605,6 @@
             if (responseDiv) responseDiv.style.display = 'none';
         }
 
-        /* Show field-level validation errors returned by CF7 */
         function showFieldErrors(fields) {
             if (!fields || !fields.length) return;
             for (var i = 0; i < fields.length; i++) {
@@ -645,7 +632,6 @@
             submitBtn.value = originalLabel;
         }
 
-        /* Build a fresh FormData from the live form (needed for retries) */
         function buildPayload() {
             var formData = new FormData(form);
 
@@ -668,18 +654,19 @@
             return formData;
         }
 
-        /* Submit with retry for transient network failures */
+        /* Submit with retry for transient network failures.
+           credentials omitted — CF7 public forms don't need cookies,
+           and 'include' on cross-origin fetches can be blocked by
+           third-party-cookie policies, causing an opaque CORS failure
+           that hides the response even though the server sent the mail. */
         function submitWithRetry(attempt) {
             fetch(API_PATH, {
                 method: 'POST',
-                body: buildPayload(),
-                credentials: 'include'
+                body: buildPayload()
             })
             .then(function(res) {
-                /* Check HTTP status before parsing */
                 if (!res.ok) {
                     return res.text().then(function(body) {
-                        /* Try to parse as JSON in case CF7 sent a structured error */
                         try {
                             var data = JSON.parse(body);
                             if (data.message) {
@@ -692,7 +679,6 @@
                         }
                     });
                 }
-                /* Read body as text first, then parse — avoids unguarded .json() throw */
                 return res.text().then(function(body) {
                     var data;
                     try {
@@ -705,9 +691,8 @@
                 });
             })
             .catch(function() {
-                /* Actual network failure — retry with back-off */
                 if (attempt < MAX_RETRIES) {
-                    var delay = Math.pow(2, attempt) * 1000; /* 1s, 2s */
+                    var delay = Math.pow(2, attempt) * 1000;
                     setTimeout(function() { submitWithRetry(attempt + 1); }, delay);
                     return;
                 }
@@ -715,7 +700,6 @@
             });
         }
 
-        /* Process the parsed CF7 JSON response */
         function handleResponse(data) {
             if (data.status === 'mail_sent') {
                 form.setAttribute('data-status', 'sent');
@@ -724,16 +708,8 @@
                     responseDiv.className = 'wpcf7-response-output wpcf7-mail-sent-ok';
                     responseDiv.style.display = 'block';
                 }
-                /* Dispatch wpcf7mailsent so the video-swap logic fires */
-                document.dispatchEvent(new CustomEvent('wpcf7mailsent', {
-                    detail: {
-                        contactFormId: FORM_ID,
-                        pluginVersion: '5.9',
-                        contactFormLocale: 'en_US',
-                        unitTag: UNIT_TAG,
-                        apiResponse: data
-                    }
-                }));
+                /* Show the video directly — no cross-IIFE event indirection */
+                grantAccess(true);
             } else if (data.status === 'validation_failed') {
                 form.setAttribute('data-status', 'invalid');
                 showFieldErrors(data.invalid_fields);
@@ -757,7 +733,6 @@
             e.preventDefault();
             clearValidation();
 
-            /* Honeypot check — bots fill hidden fields */
             var honeypot = form.querySelector('input[name="website-url"]');
             if (honeypot && honeypot.value) return;
 

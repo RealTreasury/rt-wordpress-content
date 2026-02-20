@@ -172,7 +172,7 @@ final class Treasury_Portal_Access {
         }
 
         $posted_data = $submission->get_posted_data();
-        $email = sanitize_email($posted_data['your-email'] ?? '');
+        $email = sanitize_email($posted_data['email-address'] ?? '');
         $first_name = sanitize_text_field($posted_data['first-name'] ?? '');
 
         // ✅ SECURITY FIX: Check honeypot field (intentionally sent by the iframe form for server-side validation)
@@ -202,7 +202,7 @@ final class Treasury_Portal_Access {
             'first_name'      => $first_name,
             'last_name'       => sanitize_text_field($posted_data['last-name'] ?? ''),
             'email'           => $email,
-            'company'         => sanitize_text_field($posted_data['company-name'] ?? ''),
+            'company'         => sanitize_text_field($posted_data['company'] ?? ''),
             'terms_agreement' => isset($posted_data['terms-agreement']) ? 'yes' : 'no',
             'ip_address'      => $_SERVER['REMOTE_ADDR'] ?? '',
             'user_agent'      => $_SERVER['HTTP_USER_AGENT'] ?? ''

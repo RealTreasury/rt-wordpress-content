@@ -535,10 +535,7 @@
 <script>
     (function() {
         var STORAGE_KEY = 'rt_gv_video_access';
-        var UNIT_TAG = 'wpcf7-f1266631-o1';
-        var CF7_FORM_ID = '1266631';
-        var CF7_REST_URL = 'https://realtreasury.com/wp-json/contact-form-7/v1/contact-forms/' + CF7_FORM_ID + '/feedback';
-        var CF7_AJAX_URL = 'https://realtreasury.com/wp-admin/admin-ajax.php';
+        var FALLBACK_ORIGIN = 'https://realtreasury.com';
 
         /* ---- Video swap ---- */
 
@@ -593,11 +590,29 @@
            submission directly: validate required fields, skip the honeypot,
            POST to the CF7 REST API, and reveal the video on success. */
 
-        var wrapper = document.getElementById(UNIT_TAG);
+        var wrapper = document.querySelector('.wpcf7[id^="wpcf7-f"]');
         if (!wrapper) return;
 
         var form = wrapper.querySelector('form.wpcf7-form');
         if (!form) return;
+
+        var unitTagInput = form.querySelector('input[name="_wpcf7_unit_tag"]');
+        var formIdInput = form.querySelector('input[name="_wpcf7"]');
+        var UNIT_TAG = (unitTagInput && unitTagInput.value) || wrapper.id;
+        var CF7_FORM_ID = (formIdInput && formIdInput.value) || '';
+
+        if (!CF7_FORM_ID) {
+            console.error('CF7: missing hidden _wpcf7 form id field.');
+            return;
+        }
+
+        var originsToTry = [];
+        if (window.location && window.location.origin) {
+            originsToTry.push(window.location.origin);
+        }
+        if (originsToTry.indexOf(FALLBACK_ORIGIN) === -1) {
+            originsToTry.push(FALLBACK_ORIGIN);
+        }
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -685,21 +700,21 @@
                 form.setAttribute('data-status', 'failed');
             }
 
-            /* Try the REST API first; fall back to admin-ajax.php if it 404s */
-            function submitViaRest() {
-                return fetch(CF7_REST_URL, { method: 'POST', body: formData })
+            function submitViaRest(origin) {
+                var restUrl = origin + '/wp-json/contact-form-7/v1/contact-forms/' + CF7_FORM_ID + '/feedback';
+                return fetch(restUrl, { method: 'POST', body: formData })
                     .then(function(res) {
-                        if (res.status === 404) {
-                            /* REST API route doesn't exist — try admin-ajax fallback */
-                            console.warn('CF7 REST API returned 404 — falling back to admin-ajax.php');
-                            return submitViaAjax();
+                        if (res.status === 404 || res.status === 403) {
+                            /* REST route unavailable/forbidden — try admin-ajax fallback */
+                            console.warn('CF7 REST API returned HTTP ' + res.status + ' at ' + origin + ' — falling back to admin-ajax.php');
+                            return submitViaAjax(origin);
                         }
                         if (!res.ok) {
                             return res.json().then(function(errData) {
-                                console.error('CF7 REST API error (HTTP ' + res.status + '):', errData);
-                                showFormError('Server error — please try again shortly.');
-                                resetFormState();
-                                return null;
+                                console.error('CF7 REST API error (HTTP ' + res.status + ') at ' + origin + ':', errData);
+                                throw new Error('CF7 REST HTTP ' + res.status + ' at ' + origin);
+                            }).catch(function() {
+                                throw new Error('CF7 REST HTTP ' + res.status + ' at ' + origin);
                             });
                         }
                         return res.json();
@@ -710,24 +725,31 @@
                 return fetch(CF7_AJAX_URL, { method: 'POST', body: formData })
                     .then(function(res) {
                         if (!res.ok) {
-                            console.error('admin-ajax.php error (HTTP ' + res.status + ')');
-                            showFormError(
-                                'The form could not be submitted. The contact form (ID ' + CF7_FORM_ID + ') may not exist. Please contact us directly.'
-                            );
-                            resetFormState();
-                            return null;
+                            throw new Error('admin-ajax.php HTTP ' + res.status + ' at ' + origin);
                         }
                         return res.json();
                     });
             }
 
-            submitViaRest()
+            function submitAcrossOrigins(index) {
+                if (index >= originsToTry.length) {
+                    throw new Error('All CF7 endpoints failed');
+                }
+
+                var origin = originsToTry[index];
+                return submitViaRest(origin).catch(function(err) {
+                    console.warn('CF7 submission attempt failed for ' + origin + ':', err);
+                    return submitAcrossOrigins(index + 1);
+                });
+            }
+
+            submitAcrossOrigins(0)
                 .then(function(data) {
                     if (data) handleCF7Response(data);
                 })
                 .catch(function(err) {
                     console.error('CF7 submission error:', err);
-                    showFormError('Network error — please check your connection and try again.');
+                    showFormError('Form connection error. Confirm the CF7 form ID and endpoint domain are correct, then try again.');
                     resetFormState();
                 });
         });

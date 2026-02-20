@@ -137,11 +137,11 @@
     }
 
     /* CF7 form overrides scoped to .rt-gv-form-card */
-    .rt-gv-form-card .wpcf7 input[type="text"],
-    .rt-gv-form-card .wpcf7 input[type="email"],
-    .rt-gv-form-card .wpcf7 input[type="tel"],
-    .rt-gv-form-card .wpcf7 textarea,
-    .rt-gv-form-card .wpcf7 select {
+    .rt-gv-form-card .rt-cf7 input[type="text"],
+    .rt-gv-form-card .rt-cf7 input[type="email"],
+    .rt-gv-form-card .rt-cf7 input[type="tel"],
+    .rt-gv-form-card .rt-cf7 textarea,
+    .rt-gv-form-card .rt-cf7 select {
         width: 100%;
         padding: 14px 16px;
         border: 2px solid rgba(199, 125, 255, 0.2);
@@ -153,17 +153,17 @@
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .rt-gv-form-card .wpcf7 input[type="text"]:focus,
-    .rt-gv-form-card .wpcf7 input[type="email"]:focus,
-    .rt-gv-form-card .wpcf7 input[type="tel"]:focus,
-    .rt-gv-form-card .wpcf7 textarea:focus,
-    .rt-gv-form-card .wpcf7 select:focus {
+    .rt-gv-form-card .rt-cf7 input[type="text"]:focus,
+    .rt-gv-form-card .rt-cf7 input[type="email"]:focus,
+    .rt-gv-form-card .rt-cf7 input[type="tel"]:focus,
+    .rt-gv-form-card .rt-cf7 textarea:focus,
+    .rt-gv-form-card .rt-cf7 select:focus {
         outline: none;
         border-color: var(--primary-purple);
         box-shadow: 0 0 0 3px rgba(114, 22, 244, 0.12);
     }
 
-    .rt-gv-form-card .wpcf7 input[type="submit"] {
+    .rt-gv-form-card .rt-cf7 input[type="submit"] {
         display: block;
         width: 100%;
         padding: 16px 36px;
@@ -182,18 +182,18 @@
         box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 
-    .rt-gv-form-card .wpcf7 input[type="submit"]:hover {
+    .rt-gv-form-card .rt-cf7 input[type="submit"]:hover {
         transform: translateY(-2px);
         background: linear-gradient(135deg, rgba(143, 71, 246, 0.95) 0%, rgba(157, 78, 221, 0.95) 100%);
         box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
-    .rt-gv-form-card .wpcf7 input[type="submit"]:focus-visible {
+    .rt-gv-form-card .rt-cf7 input[type="submit"]:focus-visible {
         outline: 3px solid var(--lavender-pink);
         outline-offset: 2px;
     }
 
-    .rt-gv-form-card .wpcf7 label {
+    .rt-gv-form-card .rt-cf7 label {
         display: block;
         font-size: 0.875rem;
         font-weight: 600;
@@ -201,41 +201,41 @@
         margin-bottom: 6px;
     }
 
-    .rt-gv-form-card .wpcf7 p {
+    .rt-gv-form-card .rt-cf7 p {
         margin-bottom: 16px;
     }
 
-    .rt-gv-form-card .wpcf7-not-valid-tip {
+    .rt-gv-form-card .rt-cf7 .wpcf7-not-valid-tip {
         color: #e53e3e;
         font-size: 0.8rem;
         margin-top: 4px;
     }
 
-    .rt-gv-form-card .wpcf7-response-output {
+    .rt-gv-form-card .rt-cf7 .wpcf7-response-output {
         border-radius: 8px;
         padding: 12px 16px;
         font-size: 0.875rem;
         margin-top: 16px;
     }
 
-    .rt-gv-form-card .wpcf7-response-output.wpcf7-mail-sent-ok {
+    .rt-gv-form-card .rt-cf7 .wpcf7-response-output.wpcf7-mail-sent-ok {
         border: 2px solid #38a169;
         color: #276749;
         background: #f0fff4;
     }
 
-    .rt-gv-form-card .wpcf7-response-output.wpcf7-mail-sent-ng,
-    .rt-gv-form-card .wpcf7-response-output.wpcf7-validation-errors {
+    .rt-gv-form-card .rt-cf7 .wpcf7-response-output.wpcf7-mail-sent-ng,
+    .rt-gv-form-card .rt-cf7 .wpcf7-response-output.wpcf7-validation-errors {
         border: 2px solid #e53e3e;
         color: #9b2c2c;
         background: #fff5f5;
     }
 
-    .rt-gv-form-card .wpcf7-spinner {
+    .rt-gv-form-card .rt-cf7 .wpcf7-spinner {
         display: none;
     }
 
-    .rt-gv-form-card .wpcf7-form[data-status="submitting"] .wpcf7-spinner {
+    .rt-gv-form-card .rt-cf7 .wpcf7-form[data-status="submitting"] .wpcf7-spinner {
         display: inline-block;
         width: 24px;
         height: 24px;
@@ -251,7 +251,7 @@
         to { transform: rotate(360deg); }
     }
 
-    .rt-gv-form-card .wpcf7 input.wpcf7-not-valid {
+    .rt-gv-form-card .rt-cf7 input.wpcf7-not-valid {
         border-color: #e53e3e;
         box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
     }
@@ -411,7 +411,7 @@
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
                 <!-- CF7 form rendered as HTML (Custom HTML blocks don't process shortcodes) -->
-                <div class="wpcf7" id="wpcf7-f1266631-o1" lang="en-US" dir="ltr">
+                <div class="rt-cf7" id="wpcf7-f1266631-o1" lang="en-US" dir="ltr">
                     <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p></div>
                     <form class="wpcf7-form" novalidate="novalidate" data-status="init" method="post" action="https://realtreasury.com/wp-admin/admin-ajax.php">
                         <input type="hidden" name="action" value="wpcf7_submit">
@@ -590,7 +590,7 @@
            submission directly: validate required fields, skip the honeypot,
            POST to the CF7 REST API, and reveal the video on success. */
 
-        var wrapper = document.querySelector('.wpcf7[id^="wpcf7-f"]');
+        var wrapper = document.querySelector('.rt-cf7[id^="wpcf7-f"]');
         if (!wrapper) return;
 
         var form = wrapper.querySelector('form.wpcf7-form');

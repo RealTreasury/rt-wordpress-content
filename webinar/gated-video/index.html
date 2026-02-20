@@ -415,7 +415,7 @@
                     <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p></div>
                     <form class="wpcf7-form" novalidate="novalidate" data-status="init">
                         <input type="hidden" name="_wpcf7" value="1266631">
-                        <input type="hidden" name="_wpcf7_version" value="5.9">
+                        <input type="hidden" name="_wpcf7_version" value="6.1.5">
                         <input type="hidden" name="_wpcf7_locale" value="en_US">
                         <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f1266631-o1">
                         <input type="hidden" name="_wpcf7_container_post" value="0">
@@ -536,7 +536,8 @@
         var STORAGE_KEY = 'rt_gv_video_access';
         var UNIT_TAG = 'wpcf7-f1266631-o1';
         var CF7_FORM_ID = '1266631';
-        var CF7_API_URL = 'https://realtreasury.com/wp-json/contact-form-7/v1/contact-forms/' + CF7_FORM_ID + '/feedback';
+        var CF7_REST_URL = 'https://realtreasury.com/wp-json/contact-form-7/v1/contact-forms/' + CF7_FORM_ID + '/feedback';
+        var CF7_AJAX_URL = 'https://realtreasury.com/wp-admin/admin-ajax.php';
 
         /* ---- Video swap ---- */
 
@@ -636,28 +637,17 @@
 
             var formData = new FormData(form);
 
-            fetch(CF7_API_URL, {
-                method: 'POST',
-                body: formData
-            })
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
+            function handleCF7Response(data) {
                 console.log('CF7 response:', data.status, data);
 
                 if (data.status === 'mail_sent') {
                     grantAccess(true);
                 } else if (data.status === 'validation_failed') {
-                    /* Show server-side validation errors */
                     (data.invalid_fields || []).forEach(function(field) {
                         var input = form.querySelector('[name="' + field.field + '"]');
                         if (input) input.classList.add('wpcf7-not-valid');
                     });
-                    var resp = form.querySelector('.wpcf7-response-output');
-                    if (resp) {
-                        resp.textContent = data.message || 'Please correct the highlighted fields.';
-                        resp.style.display = 'block';
-                        resp.className = 'wpcf7-response-output wpcf7-validation-errors';
-                    }
+                    showFormError(data.message || 'Please correct the highlighted fields.', 'wpcf7-validation-errors');
                     if (submitBtn) submitBtn.disabled = false;
                     form.setAttribute('data-status', 'invalid');
                 } else if (data.status === 'mail_failed') {
@@ -667,33 +657,79 @@
                     console.warn('CF7: mail_failed — server could not send email. Check mail config (SMTP plugin, etc.).');
                     grantAccess(true);
                 } else if (data.status === 'spam') {
-                    /* CF7 flagged submission as spam — show error */
                     console.warn('CF7: submission flagged as spam', data);
-                    var resp = form.querySelector('.wpcf7-response-output');
-                    if (resp) {
-                        resp.textContent = data.message || 'Submission could not be processed. Please try again.';
-                        resp.style.display = 'block';
-                        resp.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
-                    }
+                    showFormError(data.message || 'Submission could not be processed. Please try again.');
                     if (submitBtn) submitBtn.disabled = false;
                     form.setAttribute('data-status', 'failed');
                 } else {
-                    /* Unexpected status — grant access but log for debugging */
-                    console.warn('CF7: unexpected status "' + data.status + '"', data);
-                    grantAccess(true);
+                    /* Unexpected status — do NOT grant access */
+                    console.error('CF7: unexpected status "' + data.status + '"', data);
+                    showFormError('Something went wrong. Please try again or contact us directly.');
+                    if (submitBtn) submitBtn.disabled = false;
+                    form.setAttribute('data-status', 'failed');
                 }
-            })
-            .catch(function(err) {
-                console.error('CF7 fetch error:', err);
+            }
+
+            function showFormError(message, extraClass) {
                 var resp = form.querySelector('.wpcf7-response-output');
                 if (resp) {
-                    resp.textContent = 'Network error — please check your connection and try again.';
+                    resp.textContent = message;
                     resp.style.display = 'block';
-                    resp.className = 'wpcf7-response-output wpcf7-mail-sent-ng';
+                    resp.className = 'wpcf7-response-output ' + (extraClass || 'wpcf7-mail-sent-ng');
                 }
+            }
+
+            function resetFormState() {
                 if (submitBtn) submitBtn.disabled = false;
                 form.setAttribute('data-status', 'failed');
-            });
+            }
+
+            /* Try the REST API first; fall back to admin-ajax.php if it 404s */
+            function submitViaRest() {
+                return fetch(CF7_REST_URL, { method: 'POST', body: formData })
+                    .then(function(res) {
+                        if (res.status === 404) {
+                            /* REST API route doesn't exist — try admin-ajax fallback */
+                            console.warn('CF7 REST API returned 404 — falling back to admin-ajax.php');
+                            return submitViaAjax();
+                        }
+                        if (!res.ok) {
+                            return res.json().then(function(errData) {
+                                console.error('CF7 REST API error (HTTP ' + res.status + '):', errData);
+                                showFormError('Server error — please try again shortly.');
+                                resetFormState();
+                                return null;
+                            });
+                        }
+                        return res.json();
+                    });
+            }
+
+            function submitViaAjax() {
+                formData.append('action', 'wpcf7_submit');
+                return fetch(CF7_AJAX_URL, { method: 'POST', body: formData })
+                    .then(function(res) {
+                        if (!res.ok) {
+                            console.error('admin-ajax.php error (HTTP ' + res.status + ')');
+                            showFormError(
+                                'The form could not be submitted. The contact form (ID ' + CF7_FORM_ID + ') may not exist. Please contact us directly.'
+                            );
+                            resetFormState();
+                            return null;
+                        }
+                        return res.json();
+                    });
+            }
+
+            submitViaRest()
+                .then(function(data) {
+                    if (data) handleCF7Response(data);
+                })
+                .catch(function(err) {
+                    console.error('CF7 submission error:', err);
+                    showFormError('Network error — please check your connection and try again.');
+                    resetFormState();
+                });
         });
 
         /* Also listen for wpcf7mailsent in case CF7 JS loads in future */

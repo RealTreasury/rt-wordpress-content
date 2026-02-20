@@ -1374,4 +1374,105 @@ function rt_rest_permission_check() {
     // Passed rate limiting
     return true;
 }
+
+/**
+ * ===============================================================
+ * GATED VIDEO FORM — Direct AJAX handler
+ * Processes the on-demand workshop form when CF7 is unavailable.
+ * Validates fields, sends notification email, and returns a
+ * CF7-compatible JSON response so the existing frontend JS works.
+ * ===============================================================
+ */
+add_action( 'wp_ajax_rt_gated_video_submit', 'rt_gated_video_submit' );
+add_action( 'wp_ajax_nopriv_rt_gated_video_submit', 'rt_gated_video_submit' );
+
+function rt_gated_video_submit() {
+    // Rate limiting: 5 submissions per 10 minutes per IP.
+    $ip   = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $key  = 'rt_gv_rate_' . md5( $ip );
+    $hits = (int) get_transient( $key );
+
+    if ( $hits >= 5 ) {
+        wp_send_json( array(
+            'status'  => 'spam',
+            'message' => 'Too many submissions. Please wait a few minutes and try again.',
+        ), 429 );
+    }
+    set_transient( $key, $hits + 1, 10 * MINUTE_IN_SECONDS );
+
+    // Honeypot check.
+    if ( ! empty( $_POST['website-url'] ) ) {
+        // Return fake success to bots so they move on.
+        wp_send_json( array( 'status' => 'mail_sent', 'message' => 'Thank you.' ) );
+    }
+
+    // Sanitize inputs.
+    $first_name = sanitize_text_field( $_POST['first-name']    ?? '' );
+    $last_name  = sanitize_text_field( $_POST['last-name']     ?? '' );
+    $email      = sanitize_email(      $_POST['your-email']    ?? '' );
+    $company    = sanitize_text_field( $_POST['company-name']  ?? '' );
+
+    // Validate required fields.
+    $invalid = array();
+    if ( empty( $first_name ) ) {
+        $invalid[] = array( 'field' => 'first-name', 'message' => 'First name is required.' );
+    }
+    if ( empty( $last_name ) ) {
+        $invalid[] = array( 'field' => 'last-name', 'message' => 'Last name is required.' );
+    }
+    if ( empty( $email ) || ! is_email( $email ) ) {
+        $invalid[] = array( 'field' => 'your-email', 'message' => 'A valid work email is required.' );
+    }
+    if ( empty( $company ) ) {
+        $invalid[] = array( 'field' => 'company-name', 'message' => 'Company is required.' );
+    }
+
+    if ( ! empty( $invalid ) ) {
+        wp_send_json( array(
+            'status'         => 'validation_failed',
+            'message'        => 'Please correct the highlighted fields.',
+            'invalid_fields' => $invalid,
+        ) );
+    }
+
+    // Build and send admin notification email.
+    $site_name = get_bloginfo( 'name' );
+    $admin_to  = get_option( 'admin_email' );
+
+    $admin_subject = sprintf( '[%s] New Workshop Recording Request', $site_name );
+    $admin_body    = "A visitor requested access to the on-demand workshop recording.\n\n"
+        . "Name:    {$first_name} {$last_name}\n"
+        . "Email:   {$email}\n"
+        . "Company: {$company}\n"
+        . "IP:      {$ip}\n"
+        . "Time:    " . current_time( 'mysql' ) . "\n";
+
+    $admin_sent = wp_mail( $admin_to, $admin_subject, $admin_body );
+
+    // Send confirmation email to the visitor.
+    $visitor_subject = 'Your Workshop Recording — ' . $site_name;
+    $visitor_body    = "Hi {$first_name},\n\n"
+        . "Thanks for your interest! You now have access to our on-demand workshop recording.\n\n"
+        . "Watch it here: " . home_url( '/on-demand-workshop/' ) . "\n\n"
+        . "If you'd like to take the next step, book a call with us:\n"
+        . "https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2\n\n"
+        . "Best,\n"
+        . "The Real Treasury Team";
+
+    $visitor_sent = wp_mail( $email, $visitor_subject, $visitor_body );
+
+    if ( $admin_sent || $visitor_sent ) {
+        wp_send_json( array(
+            'status'  => 'mail_sent',
+            'message' => 'Thank you! Enjoy the recording.',
+        ) );
+    } else {
+        // Mail config issue on server — still grant access since data was captured.
+        error_log( 'rt_gated_video_submit: wp_mail failed for ' . $email );
+        wp_send_json( array(
+            'status'  => 'mail_failed',
+            'message' => 'Your access has been granted, but the confirmation email could not be sent.',
+        ) );
+    }
+}
 ?>

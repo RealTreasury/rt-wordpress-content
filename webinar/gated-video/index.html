@@ -706,13 +706,23 @@
             }
 
             function submitViaAjax() {
-                formData.append('action', 'wpcf7_submit');
-                return fetch(CF7_AJAX_URL, { method: 'POST', body: formData })
+                /* Use the theme's direct AJAX handler instead of CF7's
+                   non-existent admin-ajax action. Build a clean FormData
+                   with only the fields the handler expects. */
+                var directData = new FormData();
+                directData.append('action', 'rt_gated_video_submit');
+                directData.append('first-name',   formData.get('first-name')   || '');
+                directData.append('last-name',    formData.get('last-name')    || '');
+                directData.append('your-email',   formData.get('your-email')   || '');
+                directData.append('company-name', formData.get('company-name') || '');
+                directData.append('website-url',  formData.get('website-url')  || '');
+
+                return fetch(CF7_AJAX_URL, { method: 'POST', body: directData })
                     .then(function(res) {
-                        if (!res.ok) {
+                        if (!res.ok && res.status !== 429) {
                             console.error('admin-ajax.php error (HTTP ' + res.status + ')');
                             showFormError(
-                                'The form could not be submitted. The contact form (ID ' + CF7_FORM_ID + ') may not exist. Please contact us directly.'
+                                'The form could not be submitted. Please contact us directly.'
                             );
                             resetFormState();
                             return null;

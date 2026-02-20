@@ -411,14 +411,14 @@
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
                 <!-- CF7 form rendered as HTML (Custom HTML blocks don't process shortcodes) -->
-                <div class="rt-cf7" id="wpcf7-f1266631-o1" lang="en-US" dir="ltr">
+                <div class="rt-cf7" id="rt-cf7-f1266631-o1" data-rt-cf7="true" lang="en-US" dir="ltr">
                     <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p></div>
-                    <form class="wpcf7-form" novalidate="novalidate" data-status="init" method="post" action="https://realtreasury.com/wp-admin/admin-ajax.php">
+                    <form class="rt-cf7-form wpcf7-form" novalidate="novalidate" data-status="init" method="post" action="https://realtreasury.com/wp-admin/admin-ajax.php">
                         <input type="hidden" name="action" value="wpcf7_submit">
                         <input type="hidden" name="_wpcf7" value="1266631">
                         <input type="hidden" name="_wpcf7_version" value="6.1.5">
                         <input type="hidden" name="_wpcf7_locale" value="en_US">
-                        <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f1266631-o1">
+                        <input type="hidden" name="_wpcf7_unit_tag" value="rt-cf7-f1266631-o1">
                         <input type="hidden" name="_wpcf7_container_post" value="0">
                         <input type="hidden" name="_wpcf7_posted_data_hash" value="">
                         <p>
@@ -590,7 +590,7 @@
            submission directly: validate required fields, skip the honeypot,
            POST to the CF7 REST API, and reveal the video on success. */
 
-        var wrapper = document.querySelector('.rt-cf7[id^="wpcf7-f"]');
+        var wrapper = document.querySelector('.rt-cf7[data-rt-cf7="true"]');
         if (!wrapper) return;
 
         var form = wrapper.querySelector('form.wpcf7-form');
@@ -721,8 +721,8 @@
                     });
             }
 
-            function submitViaAjax() {
-                return fetch(CF7_AJAX_URL, { method: 'POST', body: formData })
+            function submitViaAjax(origin) {
+                return fetch(origin + '/wp-admin/admin-ajax.php', { method: 'POST', body: formData })
                     .then(function(res) {
                         if (!res.ok) {
                             throw new Error('admin-ajax.php HTTP ' + res.status + ' at ' + origin);

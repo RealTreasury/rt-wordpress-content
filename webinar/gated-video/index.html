@@ -584,6 +584,19 @@
         var FORM_ID     = 1;
         var STORAGE_KEY = 'rtg_gv_access';
 
+        /* Default form schema used when the GET /form/{id} endpoint is
+           unreachable (e.g. route not yet deployed).  Keeps the form
+           functional while the dynamic schema endpoint is unavailable. */
+        var DEFAULT_SCHEMA = {
+            form_id: FORM_ID,
+            fields: [
+                { key: 'email',     label: 'Work Email',  type: 'email', required: true,  autocomplete: true, placeholder: 'you@company.com' },
+                { key: 'full_name', label: 'Full Name',   type: 'text',  required: true,  autocomplete: true, placeholder: 'Jane Smith' },
+                { key: 'company',   label: 'Company',     type: 'company', required: false, autocomplete: true, placeholder: 'Acme Inc.' }
+            ],
+            consent_text: 'I agree to receive communications from Real Treasury and accept the privacy policy.'
+        };
+
         /* ================================================================
            UTILITY HELPERS
            ================================================================ */
@@ -1024,19 +1037,8 @@
                     renderForm(schema);
                 })
                 .catch(function(err) {
-                    console.error('RTG: failed to load form schema:', err);
-                    var detail = err.message || '';
-                    var userMsg = 'Unable to load the form. Please refresh the page or try again later.';
-                    if (detail.indexOf('403') !== -1) {
-                        userMsg = 'Access to the form service is blocked (403). A server security rule may be preventing API access.';
-                    } else if (detail.indexOf('404') !== -1) {
-                        userMsg = 'Form not found (404). Please verify the form exists in WP Admin \u2192 Real Treasury Gate \u2192 Forms.';
-                    } else if (detail.indexOf('429') !== -1) {
-                        userMsg = 'Too many requests. Please wait a moment and refresh the page.';
-                    } else if (err.name === 'TypeError') {
-                        userMsg = 'Unable to reach the form service. This may be a network or CORS issue.';
-                    }
-                    showFormError(userMsg);
+                    console.warn('RTG: form schema endpoint unavailable, using default schema:', err.message || err);
+                    renderForm(DEFAULT_SCHEMA);
                 });
         }
 

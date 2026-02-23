@@ -1,7 +1,7 @@
 <style>
     /* ============================================================
-       REAL TREASURY — GATED VIDEO
-            ============================================================ */
+       REAL TREASURY — GATED VIDEO  (rt-gate integration)
+       ============================================================ */
 
     /* ---- Scoped Variables ---- */
     .rt-gated-video {
@@ -136,12 +136,27 @@
         margin-bottom: 32px;
     }
 
-    /* CF7 form overrides scoped to .rt-gv-form-card */
-    .rt-gv-form-card .rt-cf7 input[type="text"],
-    .rt-gv-form-card .rt-cf7 input[type="email"],
-    .rt-gv-form-card .rt-cf7 input[type="tel"],
-    .rt-gv-form-card .rt-cf7 textarea,
-    .rt-gv-form-card .rt-cf7 select {
+    /* ---- Dynamic form field styles ---- */
+    .rt-gv-form-card .rtg-field-group {
+        margin-bottom: 16px;
+    }
+
+    .rt-gv-form-card .rtg-field-group label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 6px;
+    }
+
+    .rt-gv-form-card .rtg-field-group input[type="text"],
+    .rt-gv-form-card .rtg-field-group input[type="email"],
+    .rt-gv-form-card .rtg-field-group input[type="tel"],
+    .rt-gv-form-card .rtg-field-group input[type="url"],
+    .rt-gv-form-card .rtg-field-group input[type="number"],
+    .rt-gv-form-card .rtg-field-group input[type="date"],
+    .rt-gv-form-card .rtg-field-group textarea,
+    .rt-gv-form-card .rtg-field-group select {
         width: 100%;
         padding: 14px 16px;
         border: 2px solid rgba(199, 125, 255, 0.2);
@@ -153,17 +168,84 @@
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .rt-gv-form-card .rt-cf7 input[type="text"]:focus,
-    .rt-gv-form-card .rt-cf7 input[type="email"]:focus,
-    .rt-gv-form-card .rt-cf7 input[type="tel"]:focus,
-    .rt-gv-form-card .rt-cf7 textarea:focus,
-    .rt-gv-form-card .rt-cf7 select:focus {
+    .rt-gv-form-card .rtg-field-group input:focus,
+    .rt-gv-form-card .rtg-field-group textarea:focus,
+    .rt-gv-form-card .rtg-field-group select:focus {
         outline: none;
         border-color: var(--primary-purple);
         box-shadow: 0 0 0 3px rgba(114, 22, 244, 0.12);
     }
 
-    .rt-gv-form-card .rt-cf7 input[type="submit"] {
+    .rt-gv-form-card .rtg-field-group input.rtg-invalid,
+    .rt-gv-form-card .rtg-field-group textarea.rtg-invalid,
+    .rt-gv-form-card .rtg-field-group select.rtg-invalid {
+        border-color: #e53e3e;
+        box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
+    }
+
+    .rt-gv-form-card .rtg-field-group textarea {
+        min-height: 80px;
+        resize: vertical;
+    }
+
+    .rt-gv-form-card .rtg-field-group select {
+        appearance: auto;
+    }
+
+    /* Radio / checkbox groups */
+    .rt-gv-form-card .rtg-option-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 4px;
+    }
+
+    .rt-gv-form-card .rtg-option-group label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 400;
+        font-size: 0.95rem;
+        cursor: pointer;
+    }
+
+    .rt-gv-form-card .rtg-option-group input[type="radio"],
+    .rt-gv-form-card .rtg-option-group input[type="checkbox"] {
+        accent-color: var(--primary-purple);
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Consent checkbox */
+    .rt-gv-form-card .rtg-consent-group {
+        margin: 20px 0 8px;
+    }
+
+    .rt-gv-form-card .rtg-consent-group label {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-weight: 400;
+        font-size: 0.85rem;
+        color: var(--gray-text);
+        cursor: pointer;
+    }
+
+    .rt-gv-form-card .rtg-consent-group input[type="checkbox"] {
+        accent-color: var(--primary-purple);
+        width: 18px;
+        height: 18px;
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .rt-gv-form-card .rtg-consent-group a {
+        color: var(--primary-purple);
+        text-decoration: underline;
+    }
+
+    /* Submit button */
+    .rt-gv-form-card .rtg-submit-btn {
         display: block;
         width: 100%;
         padding: 16px 36px;
@@ -182,61 +264,26 @@
         box-shadow: 0 8px 32px rgba(114, 22, 244, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 
-    .rt-gv-form-card .rt-cf7 input[type="submit"]:hover {
+    .rt-gv-form-card .rtg-submit-btn:hover {
         transform: translateY(-2px);
         background: linear-gradient(135deg, rgba(143, 71, 246, 0.95) 0%, rgba(157, 78, 221, 0.95) 100%);
         box-shadow: 0 12px 40px rgba(114, 22, 244, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
-    .rt-gv-form-card .rt-cf7 input[type="submit"]:focus-visible {
+    .rt-gv-form-card .rtg-submit-btn:focus-visible {
         outline: 3px solid var(--lavender-pink);
         outline-offset: 2px;
     }
 
-    .rt-gv-form-card .rt-cf7 label {
-        display: block;
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--dark-text);
-        margin-bottom: 6px;
+    .rt-gv-form-card .rtg-submit-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
     }
 
-    .rt-gv-form-card .rt-cf7 p {
-        margin-bottom: 16px;
-    }
-
-    .rt-gv-form-card .rt-cf7 .wpcf7-not-valid-tip {
-        color: #e53e3e;
-        font-size: 0.8rem;
-        margin-top: 4px;
-    }
-
-    .rt-gv-form-card .rt-cf7 .wpcf7-response-output {
-        border-radius: 8px;
-        padding: 12px 16px;
-        font-size: 0.875rem;
-        margin-top: 16px;
-    }
-
-    .rt-gv-form-card .rt-cf7 .wpcf7-response-output.wpcf7-mail-sent-ok {
-        border: 2px solid #38a169;
-        color: #276749;
-        background: #f0fff4;
-    }
-
-    .rt-gv-form-card .rt-cf7 .wpcf7-response-output.wpcf7-mail-sent-ng,
-    .rt-gv-form-card .rt-cf7 .wpcf7-response-output.wpcf7-validation-errors {
-        border: 2px solid #e53e3e;
-        color: #9b2c2c;
-        background: #fff5f5;
-    }
-
-    .rt-gv-form-card .rt-cf7 .wpcf7-spinner {
+    /* Spinner */
+    .rt-gv-form-card .rtg-spinner {
         display: none;
-    }
-
-    .rt-gv-form-card .rt-cf7 .wpcf7-form[data-status="submitting"] .wpcf7-spinner {
-        display: inline-block;
         width: 24px;
         height: 24px;
         border: 3px solid rgba(114, 22, 244, 0.2);
@@ -247,13 +294,52 @@
         margin-left: 8px;
     }
 
+    .rt-gv-form-card .rtg-submitting .rtg-spinner {
+        display: inline-block;
+    }
+
     @keyframes rt-gv-spin {
         to { transform: rotate(360deg); }
     }
 
-    .rt-gv-form-card .rt-cf7 input.wpcf7-not-valid {
-        border-color: #e53e3e;
-        box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
+    /* Response message */
+    .rt-gv-form-card .rtg-response {
+        display: none;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.875rem;
+        margin-top: 16px;
+    }
+
+    .rt-gv-form-card .rtg-response.rtg-error {
+        display: block;
+        border: 2px solid #e53e3e;
+        color: #9b2c2c;
+        background: #fff5f5;
+    }
+
+    /* Loading skeleton while fetching form schema */
+    .rt-gv-form-card .rtg-loading {
+        text-align: center;
+        padding: 24px 0;
+        color: var(--gray-text);
+        font-size: 0.95rem;
+    }
+
+    .rt-gv-form-card .rtg-loading-bar {
+        height: 12px;
+        background: rgba(199, 125, 255, 0.15);
+        border-radius: 6px;
+        margin-bottom: 16px;
+        animation: rtg-pulse 1.4s ease-in-out infinite;
+    }
+
+    .rt-gv-form-card .rtg-loading-bar:nth-child(2) { width: 85%; }
+    .rt-gv-form-card .rtg-loading-bar:nth-child(3) { width: 70%; }
+
+    @keyframes rtg-pulse {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
     }
 
     /* ---- Video Card ---- */
@@ -332,7 +418,7 @@
         outline-offset: 2px;
     }
 
-    /* ---- Bottom padding (replaces footer margin) ---- */
+    /* ---- Bottom padding ---- */
     .rt-gv-form-section {
         padding-bottom: 48px;
     }
@@ -385,7 +471,7 @@
 </style>
 
 <!-- ============================================================
-     GATED VIDEO — WordPress Custom HTML Block
+     GATED VIDEO — WordPress Custom HTML Block (rt-gate powered)
      ============================================================ -->
 <div class="rt-gated-video">
 
@@ -405,72 +491,28 @@
     <section class="rt-gv-form-section" aria-labelledby="rt-gv-form-heading">
         <div class="rt-gv-container">
 
-            <!-- FORM CARD (visible by default) -->
+            <!-- FORM CARD (visible by default; fields rendered dynamically) -->
             <div id="rtGvFormCard" class="rt-gv-form-card" role="region" aria-labelledby="rt-gv-form-heading">
                 <h3 id="rt-gv-form-heading" class="rt-gv-form-heading">Watch the Recording</h3>
                 <p class="rt-gv-form-subtext">Fill out the form below for instant access.</p>
 
-                <!-- CF7 form rendered as HTML (Custom HTML blocks don't process shortcodes) -->
-                <div class="rt-cf7" id="rt-cf7-f1266631-o1" data-rt-cf7="true" lang="en-US" dir="ltr">
-                    <div class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p></div>
-                    <form class="rt-cf7-form wpcf7-form" novalidate="novalidate" data-status="init" method="post" action="https://realtreasury.com/wp-admin/admin-ajax.php">
-                        <input type="hidden" name="action" value="wpcf7_submit">
-                        <input type="hidden" name="_wpcf7" value="1266631">
-                        <input type="hidden" name="_wpcf7_version" value="6.1.5">
-                        <input type="hidden" name="_wpcf7_locale" value="en_US">
-                        <input type="hidden" name="_wpcf7_unit_tag" value="rt-cf7-f1266631-o1">
-                        <input type="hidden" name="_wpcf7_container_post" value="0">
-                        <input type="hidden" name="_wpcf7_posted_data_hash" value="">
-                        <p>
-                            <label>First Name<br>
-                                <span class="wpcf7-form-control-wrap" data-name="first-name">
-                                    <input type="text" name="first-name" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="given-name" aria-required="true" aria-invalid="false" placeholder="Jane" required>
-                                </span>
-                            </label>
-                        </p>
-                        <p>
-                            <label>Last Name<br>
-                                <span class="wpcf7-form-control-wrap" data-name="last-name">
-                                    <input type="text" name="last-name" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" autocomplete="family-name" aria-required="true" aria-invalid="false" placeholder="Smith" required>
-                                </span>
-                            </label>
-                        </p>
-                        <!-- Hidden dummy to absorb browser autofill for email -->
-                        <input type="email" name="dummy-email-autofill" autocomplete="email" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;width:0;height:0;overflow:hidden;">
-                        <p>
-                            <label>Work Email<br>
-                                <span class="wpcf7-form-control-wrap" data-name="your-email">
-                                    <input type="email" name="your-email" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" autocomplete="new-password" aria-required="true" aria-invalid="false" placeholder="you@company.com" required>
-                                </span>
-                            </label>
-                        </p>
-                        <p>
-                            <label>Company<br>
-                                <span class="wpcf7-form-control-wrap" data-name="company-name">
-                                    <input type="text" name="company-name" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your company name" required>
-                                </span>
-                            </label>
-                        </p>
-                        <!-- Honeypot anti-spam (hidden from real users) -->
-                        <div style="position:absolute;left:-9999px;" aria-hidden="true">
-                            <label>Leave blank <input type="text" name="website-url" tabindex="-1" autocomplete="off"></label>
-                        </div>
-                        <p>
-                            <input type="submit" value="Watch Now" class="wpcf7-form-control wpcf7-submit">
-                            <span class="wpcf7-spinner"></span>
-                        </p>
-                        <div class="wpcf7-response-output" aria-live="polite" role="status" style="display:none;"></div>
-                    </form>
+                <!-- Dynamic form container -->
+                <div id="rtGvFormContainer">
+                    <div class="rtg-loading">
+                        <div class="rtg-loading-bar" style="width:100%"></div>
+                        <div class="rtg-loading-bar"></div>
+                        <div class="rtg-loading-bar"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- VIDEO CARD (hidden until form is submitted) -->
+            <!-- VIDEO CARD (hidden until form is submitted + token validated) -->
             <div id="rtGvVideoCard" class="rt-gv-video-card" role="region" aria-labelledby="rt-gv-video-heading">
                 <p id="rt-gv-video-heading" class="rt-gv-video-welcome">You're in &mdash; enjoy the recording</p>
 
                 <div class="rt-gv-video-player">
                     <video
-                        src="https://realtreasury.com/wp-content/uploads/2025/08/TRMS-Intro.mp4"
+                        id="rtGvVideo"
                         controls
                         playsinline
                         preload="metadata"
@@ -531,18 +573,94 @@
     })();
 </script>
 
-<!-- Form gate + submission handler + video swap -->
+<!-- rt-gate form + submission handler + video swap + event tracking -->
 <script>
     (function() {
-        var STORAGE_KEY = 'rt_gv_video_access';
-        var FALLBACK_ORIGIN = 'https://realtreasury.com';
+        /* ================================================================
+           CONFIGURATION
+           ================================================================ */
+        var WP_SITE_URL = 'https://realtreasury.com';
+        var API_BASE    = WP_SITE_URL + '/wp-json/rtg/v1';
+        var FORM_ID     = 1;
+        var STORAGE_KEY = 'rtg_gv_access';
 
-        /* ---- Video swap ---- */
+        /* ================================================================
+           UTILITY HELPERS
+           ================================================================ */
 
-        function showVideo(animate) {
-            var formCard = document.getElementById('rtGvFormCard');
-            var videoCard = document.getElementById('rtGvVideoCard');
-            if (!formCard || !videoCard) return;
+        function parseJsonOrThrow(response) {
+            return response.text().then(function(text) {
+                var json = {};
+                try {
+                    json = text ? JSON.parse(text) : {};
+                } catch (e) {
+                    throw new Error('Invalid JSON response (' + response.status + ')');
+                }
+                if (!response.ok) {
+                    throw new Error(json.message || 'Request failed (' + response.status + ')');
+                }
+                return json;
+            });
+        }
+
+        function getStoredAccess() {
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return null;
+                return JSON.parse(raw);
+            } catch (e) { return null; }
+        }
+
+        function storeAccess(data) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            } catch (e) { /* localStorage unavailable */ }
+        }
+
+        function clearAccess() {
+            try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* noop */ }
+        }
+
+        /* Map field schema type to HTML input type */
+        function fieldTypeToInputType(schemaType) {
+            var map = {
+                text: 'text', email: 'email', tel: 'tel', company: 'text',
+                url: 'url', number: 'number', date: 'date'
+            };
+            return map[schemaType] || 'text';
+        }
+
+        /* Map field schema type to autocomplete attribute */
+        function fieldAutocomplete(field) {
+            if (field.autocomplete === false) return 'off';
+            var map = {
+                email: 'email', tel: 'tel', company: 'organization',
+                url: 'url'
+            };
+            if (field.key === 'full_name') return 'name';
+            if (field.key === 'first_name') return 'given-name';
+            if (field.key === 'last_name') return 'family-name';
+            return map[field.type] || 'on';
+        }
+
+        /* ================================================================
+           DOM REFERENCES
+           ================================================================ */
+        var formCard      = document.getElementById('rtGvFormCard');
+        var videoCard     = document.getElementById('rtGvVideoCard');
+        var formContainer = document.getElementById('rtGvFormContainer');
+        var videoEl       = document.getElementById('rtGvVideo');
+
+        /* ================================================================
+           VIDEO SWAP
+           ================================================================ */
+
+        function showVideo(videoUrl, animate) {
+            if (!formCard || !videoCard || !videoEl) return;
+
+            if (videoUrl) {
+                videoEl.src = videoUrl;
+            }
 
             if (animate) {
                 formCard.style.opacity = '0';
@@ -550,8 +668,6 @@
                 setTimeout(function() {
                     formCard.style.display = 'none';
                     videoCard.style.display = 'block';
-                    /* Force a layout pass so the browser registers display:block
-                       before transitioning opacity — single rAF is unreliable. */
                     void videoCard.offsetHeight;
                     videoCard.style.opacity = '1';
                     videoCard.style.transform = 'translateY(0)';
@@ -565,198 +681,353 @@
             }
         }
 
-        function grantAccess(animate) {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify({ timestamp: new Date().toISOString() }));
-            } catch (e) { /* localStorage unavailable — still show video for this session */ }
-            showVideo(animate);
+        /* ================================================================
+           API CALLS
+           ================================================================ */
+
+        function fetchFormSchema() {
+            return fetch(API_BASE + '/form/' + FORM_ID)
+                .then(parseJsonOrThrow);
         }
 
-        /* On page load: restore access if already granted + clear autofilled email */
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                if (localStorage.getItem(STORAGE_KEY)) {
-                    showVideo(false);
+        function submitForm(fields) {
+            return fetch(API_BASE + '/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    form_id: FORM_ID,
+                    fields: fields,
+                    consent: true,
+                    honeypot: ''
+                })
+            }).then(parseJsonOrThrow);
+        }
+
+        function validateToken(token, assetSlug) {
+            return fetch(API_BASE + '/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: token, asset_slug: assetSlug })
+            }).then(parseJsonOrThrow);
+        }
+
+        function sendEvent(token, assetSlug, eventType, meta) {
+            return fetch(API_BASE + '/event', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    token: token,
+                    asset_slug: assetSlug,
+                    event_type: eventType,
+                    meta: meta || {}
+                })
+            }).then(parseJsonOrThrow).catch(function(err) {
+                console.warn('RTG event failed (' + eventType + '):', err);
+            });
+        }
+
+        /* ================================================================
+           FORM RENDERING
+           ================================================================ */
+
+        function renderForm(schema) {
+            var fields = schema.fields || [];
+            var consentText = schema.consent_text || '';
+
+            var html = '<form id="rtGvForm" novalidate>';
+
+            fields.forEach(function(field) {
+                var required = field.required ? ' required' : '';
+                var requiredMark = field.required ? ' <span style="color:#e53e3e;">*</span>' : '';
+                var placeholder = field.placeholder ? ' placeholder="' + escAttr(field.placeholder) + '"' : '';
+                var ac = ' autocomplete="' + fieldAutocomplete(field) + '"';
+
+                html += '<div class="rtg-field-group">';
+                html += '<label for="rtg_' + escAttr(field.key) + '">' + escHtml(field.label) + requiredMark + '</label>';
+
+                if (field.type === 'textarea') {
+                    html += '<textarea id="rtg_' + escAttr(field.key) + '" name="' + escAttr(field.key) + '"'
+                        + placeholder + ac + required + '></textarea>';
+                } else if (field.type === 'select' && field.options) {
+                    html += '<select id="rtg_' + escAttr(field.key) + '" name="' + escAttr(field.key) + '"' + ac + required + '>';
+                    html += '<option value="">Select...</option>';
+                    field.options.forEach(function(opt) {
+                        html += '<option value="' + escAttr(opt) + '">' + escHtml(opt) + '</option>';
+                    });
+                    html += '</select>';
+                } else if ((field.type === 'radio' || field.type === 'checkbox') && field.options) {
+                    html += '<div class="rtg-option-group">';
+                    field.options.forEach(function(opt, i) {
+                        var inputType = field.type === 'radio' ? 'radio' : 'checkbox';
+                        var inputName = field.type === 'radio' ? field.key : field.key + '[]';
+                        html += '<label><input type="' + inputType + '" name="' + escAttr(inputName) + '" value="' + escAttr(opt) + '"' + (i === 0 && field.required ? required : '') + '> ' + escHtml(opt) + '</label>';
+                    });
+                    html += '</div>';
+                } else {
+                    html += '<input type="' + fieldTypeToInputType(field.type) + '" id="rtg_' + escAttr(field.key) + '" name="' + escAttr(field.key) + '"'
+                        + placeholder + ac + required + '>';
                 }
-            } catch (e) { /* localStorage unavailable — fall through to form */ }
 
-            /* Clear any browser-autofilled value from the Work Email field */
-            var emailField = document.querySelector('input[name="your-email"]');
-            if (emailField) { emailField.value = ''; }
-        });
+                html += '</div>';
+            });
 
-        /* ---- Form submission handler ----
-           CF7's own JS is not available inside this iframe, so we handle
-           submission directly: validate required fields, skip the honeypot,
-           POST to the CF7 REST API, and reveal the video on success. */
+            /* Consent checkbox */
+            if (consentText) {
+                html += '<div class="rtg-consent-group">';
+                html += '<label><input type="checkbox" id="rtGvConsent" required> <span>' + escHtml(consentText) + '</span></label>';
+                html += '</div>';
+            }
 
-        var wrapper = document.querySelector('.rt-cf7[data-rt-cf7="true"]');
-        if (!wrapper) return;
+            /* Honeypot (hidden from real users) */
+            html += '<div style="position:absolute;left:-9999px;" aria-hidden="true">';
+            html += '<label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label>';
+            html += '</div>';
 
-        var form = wrapper.querySelector('form.wpcf7-form');
-        if (!form) return;
+            /* Submit */
+            html += '<div class="rtg-submit-wrap">';
+            html += '<button type="submit" class="rtg-submit-btn">Watch Now</button>';
+            html += '<span class="rtg-spinner"></span>';
+            html += '</div>';
 
-        var unitTagInput = form.querySelector('input[name="_wpcf7_unit_tag"]');
-        var formIdInput = form.querySelector('input[name="_wpcf7"]');
-        var UNIT_TAG = (unitTagInput && unitTagInput.value) || wrapper.id;
-        var CF7_FORM_ID = (formIdInput && formIdInput.value) || '';
+            /* Response area */
+            html += '<div class="rtg-response" id="rtGvResponse" aria-live="polite" role="status"></div>';
 
-        if (!CF7_FORM_ID) {
-            console.error('CF7: missing hidden _wpcf7 form id field.');
-            return;
+            html += '</form>';
+
+            formContainer.innerHTML = html;
+            attachFormHandler(fields);
         }
 
-        var originsToTry = [];
-        if (window.location && window.location.origin) {
-            originsToTry.push(window.location.origin);
-        }
-        if (originsToTry.indexOf(FALLBACK_ORIGIN) === -1) {
-            originsToTry.push(FALLBACK_ORIGIN);
+        function escHtml(str) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
         }
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+        function escAttr(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
 
-            /* ---- Client-side validation (required fields only) ---- */
-            var requiredFields = ['first-name', 'last-name', 'your-email', 'company-name'];
-            var valid = true;
+        /* ================================================================
+           FORM SUBMISSION
+           ================================================================ */
 
-            requiredFields.forEach(function(name) {
-                var input = form.querySelector('[name="' + name + '"]');
-                if (!input) return;
-                var val = input.value.trim();
-                /* Remove previous error state */
-                input.classList.remove('wpcf7-not-valid');
+        function attachFormHandler(fieldDefs) {
+            var form = document.getElementById('rtGvForm');
+            if (!form) return;
 
-                if (!val) {
-                    input.classList.add('wpcf7-not-valid');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                /* Honeypot check */
+                var hp = form.querySelector('[name="_rtg_hp"]');
+                if (hp && hp.value) return;
+
+                /* Client-side validation */
+                var valid = true;
+                form.querySelectorAll('.rtg-invalid').forEach(function(el) {
+                    el.classList.remove('rtg-invalid');
+                });
+
+                var collectedFields = {};
+
+                fieldDefs.forEach(function(field) {
+                    if (field.type === 'checkbox' && field.options) {
+                        var checked = [];
+                        form.querySelectorAll('[name="' + field.key + '[]"]:checked').forEach(function(cb) {
+                            checked.push(cb.value);
+                        });
+                        if (field.required && checked.length === 0) {
+                            valid = false;
+                            var group = form.querySelector('[name="' + field.key + '[]"]');
+                            if (group) group.classList.add('rtg-invalid');
+                        }
+                        collectedFields[field.key] = checked.join(', ');
+                    } else if (field.type === 'radio') {
+                        var selected = form.querySelector('[name="' + field.key + '"]:checked');
+                        var val = selected ? selected.value : '';
+                        if (field.required && !val) {
+                            valid = false;
+                            var first = form.querySelector('[name="' + field.key + '"]');
+                            if (first) first.classList.add('rtg-invalid');
+                        }
+                        collectedFields[field.key] = val;
+                    } else {
+                        var input = form.querySelector('[name="' + field.key + '"]');
+                        if (!input) return;
+                        var val = input.value.trim();
+                        if (field.required && !val) {
+                            input.classList.add('rtg-invalid');
+                            valid = false;
+                        }
+                        if (field.type === 'email' && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                            input.classList.add('rtg-invalid');
+                            valid = false;
+                        }
+                        collectedFields[field.key] = val;
+                    }
+                });
+
+                /* Consent */
+                var consentCb = document.getElementById('rtGvConsent');
+                if (consentCb && !consentCb.checked) {
                     valid = false;
+                    consentCb.classList.add('rtg-invalid');
                 }
-                /* Basic email format check */
-                if (name === 'your-email' && val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
-                    input.classList.add('wpcf7-not-valid');
-                    valid = false;
+
+                if (!valid) return;
+
+                /* Submit */
+                var submitBtn = form.querySelector('.rtg-submit-btn');
+                var submitWrap = form.querySelector('.rtg-submit-wrap');
+                var respEl = document.getElementById('rtGvResponse');
+                if (submitBtn) submitBtn.disabled = true;
+                if (submitWrap) submitWrap.classList.add('rtg-submitting');
+                if (respEl) { respEl.style.display = 'none'; respEl.className = 'rtg-response'; }
+
+                submitForm(collectedFields)
+                    .then(function(data) {
+                        if (!data.assets || data.assets.length === 0) {
+                            throw new Error('No assets returned. Check the form-to-asset mapping in WP Admin.');
+                        }
+
+                        var firstAsset = data.assets[0];
+                        return validateToken(firstAsset.token, firstAsset.slug).then(function(validation) {
+                            return { asset: firstAsset, validation: validation };
+                        });
+                    })
+                    .then(function(result) {
+                        if (!result.validation.valid) {
+                            throw new Error('Token validation failed. Please try again.');
+                        }
+
+                        var assetConfig = result.validation.asset || {};
+                        var videoUrl = '';
+                        if (assetConfig.type === 'video' && assetConfig.config) {
+                            videoUrl = assetConfig.config.embed_url || '';
+                        } else if (assetConfig.type === 'link' && assetConfig.config) {
+                            videoUrl = assetConfig.config.target_url || '';
+                        }
+
+                        if (!videoUrl) {
+                            throw new Error('No video URL found in asset configuration.');
+                        }
+
+                        storeAccess({
+                            token: result.asset.token,
+                            asset_slug: result.asset.slug,
+                            video_url: videoUrl,
+                            expires_at: result.asset.expires_at,
+                            stored_at: new Date().toISOString()
+                        });
+
+                        showVideo(videoUrl, true);
+                        sendEvent(result.asset.token, result.asset.slug, 'page_view', { source: 'gated-video' });
+                        initVideoTracking(result.asset.token, result.asset.slug);
+                    })
+                    .catch(function(err) {
+                        console.error('RTG submission error:', err);
+                        if (respEl) {
+                            respEl.textContent = err.message || 'Something went wrong. Please try again.';
+                            respEl.className = 'rtg-response rtg-error';
+                        }
+                        if (submitBtn) submitBtn.disabled = false;
+                        if (submitWrap) submitWrap.classList.remove('rtg-submitting');
+                    });
+            });
+        }
+
+        /* ================================================================
+           VIDEO EVENT TRACKING
+           ================================================================ */
+
+        function initVideoTracking(token, assetSlug) {
+            if (!videoEl) return;
+
+            var playTracked = false;
+            var milestones = { 25: false, 50: false, 75: false, 90: false, 100: false };
+
+            videoEl.addEventListener('play', function() {
+                if (!playTracked) {
+                    playTracked = true;
+                    sendEvent(token, assetSlug, 'video_play', { source: 'gated-video' });
                 }
             });
 
-            if (!valid) return;
+            videoEl.addEventListener('timeupdate', function() {
+                if (!videoEl.duration || videoEl.duration === 0) return;
+                var pct = (videoEl.currentTime / videoEl.duration) * 100;
 
-            /* ---- Honeypot check ---- */
-            var honeypot = form.querySelector('[name="website-url"]');
-            if (honeypot && honeypot.value) return; /* silently reject bots */
-
-            /* ---- Submit to CF7 REST API ---- */
-            var submitBtn = form.querySelector('input[type="submit"]');
-            var spinner = form.querySelector('.wpcf7-spinner');
-            if (submitBtn) submitBtn.disabled = true;
-            form.setAttribute('data-status', 'submitting');
-
-            var formData = new FormData(form);
-
-            function handleCF7Response(data) {
-                console.log('CF7 response:', data.status, data);
-
-                if (data.status === 'mail_sent') {
-                    grantAccess(true);
-                } else if (data.status === 'validation_failed') {
-                    (data.invalid_fields || []).forEach(function(field) {
-                        var input = form.querySelector('[name="' + field.field + '"]');
-                        if (input) input.classList.add('wpcf7-not-valid');
-                    });
-                    showFormError(data.message || 'Please correct the highlighted fields.', 'wpcf7-validation-errors');
-                    if (submitBtn) submitBtn.disabled = false;
-                    form.setAttribute('data-status', 'invalid');
-                } else if (data.status === 'mail_failed') {
-                    /* CF7 processed the form but failed to send mail.
-                       Still grant video access — the data was captured — but
-                       warn so the admin can investigate server mail config. */
-                    console.warn('CF7: mail_failed — server could not send email. Check mail config (SMTP plugin, etc.).');
-                    grantAccess(true);
-                } else if (data.status === 'spam') {
-                    console.warn('CF7: submission flagged as spam', data);
-                    showFormError(data.message || 'Submission could not be processed. Please try again.');
-                    if (submitBtn) submitBtn.disabled = false;
-                    form.setAttribute('data-status', 'failed');
-                } else {
-                    /* Unexpected status — do NOT grant access */
-                    console.error('CF7: unexpected status "' + data.status + '"', data);
-                    showFormError('Something went wrong. Please try again or contact us directly.');
-                    if (submitBtn) submitBtn.disabled = false;
-                    form.setAttribute('data-status', 'failed');
-                }
-            }
-
-            function showFormError(message, extraClass) {
-                var resp = form.querySelector('.wpcf7-response-output');
-                if (resp) {
-                    resp.textContent = message;
-                    resp.style.display = 'block';
-                    resp.className = 'wpcf7-response-output ' + (extraClass || 'wpcf7-mail-sent-ng');
-                }
-            }
-
-            function resetFormState() {
-                if (submitBtn) submitBtn.disabled = false;
-                form.setAttribute('data-status', 'failed');
-            }
-
-            function submitViaRest(origin) {
-                var restUrl = origin + '/wp-json/contact-form-7/v1/contact-forms/' + CF7_FORM_ID + '/feedback';
-                return fetch(restUrl, { method: 'POST', body: formData })
-                    .then(function(res) {
-                        if (res.status === 404 || res.status === 403) {
-                            /* REST route unavailable/forbidden — try admin-ajax fallback */
-                            console.warn('CF7 REST API returned HTTP ' + res.status + ' at ' + origin + ' — falling back to admin-ajax.php');
-                            return submitViaAjax(origin);
-                        }
-                        if (!res.ok) {
-                            return res.json().then(function(errData) {
-                                console.error('CF7 REST API error (HTTP ' + res.status + ') at ' + origin + ':', errData);
-                                throw new Error('CF7 REST HTTP ' + res.status + ' at ' + origin);
-                            }).catch(function() {
-                                throw new Error('CF7 REST HTTP ' + res.status + ' at ' + origin);
-                            });
-                        }
-                        return res.json();
-                    });
-            }
-
-            function submitViaAjax(origin) {
-                return fetch(origin + '/wp-admin/admin-ajax.php', { method: 'POST', body: formData })
-                    .then(function(res) {
-                        if (!res.ok) {
-                            throw new Error('admin-ajax.php HTTP ' + res.status + ' at ' + origin);
-                        }
-                        return res.json();
-                    });
-            }
-
-            function submitAcrossOrigins(index) {
-                if (index >= originsToTry.length) {
-                    throw new Error('All CF7 endpoints failed');
-                }
-
-                var origin = originsToTry[index];
-                return submitViaRest(origin).catch(function(err) {
-                    console.warn('CF7 submission attempt failed for ' + origin + ':', err);
-                    return submitAcrossOrigins(index + 1);
+                [25, 50, 75, 90, 100].forEach(function(m) {
+                    if (pct >= m && !milestones[m]) {
+                        milestones[m] = true;
+                        sendEvent(token, assetSlug, 'video_progress', { progress: m });
+                    }
                 });
-            }
+            });
 
-            submitAcrossOrigins(0)
-                .then(function(data) {
-                    if (data) handleCF7Response(data);
+            videoEl.addEventListener('ended', function() {
+                if (!milestones[100]) {
+                    milestones[100] = true;
+                    sendEvent(token, assetSlug, 'video_progress', { progress: 100 });
+                }
+            });
+        }
+
+        /* ================================================================
+           ERROR FORM RENDERING (fallback when API is unreachable)
+           ================================================================ */
+
+        function showFormError(message) {
+            formContainer.innerHTML = '<div class="rtg-response rtg-error" style="display:block;">'
+                + escHtml(message) + '</div>';
+        }
+
+        /* ================================================================
+           INIT
+           ================================================================ */
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var stored = getStoredAccess();
+
+            if (stored && stored.token && stored.asset_slug) {
+                /* Try to restore previous access */
+                validateToken(stored.token, stored.asset_slug)
+                    .then(function(validation) {
+                        if (validation.valid) {
+                            var videoUrl = stored.video_url || '';
+                            if (!videoUrl && validation.asset && validation.asset.config) {
+                                videoUrl = validation.asset.config.embed_url || validation.asset.config.target_url || '';
+                            }
+                            if (videoUrl) {
+                                showVideo(videoUrl, false);
+                                initVideoTracking(stored.token, stored.asset_slug);
+                                return;
+                            }
+                        }
+                        /* Token expired or invalid — clear and show form */
+                        clearAccess();
+                        loadForm();
+                    })
+                    .catch(function() {
+                        clearAccess();
+                        loadForm();
+                    });
+            } else {
+                loadForm();
+            }
+        });
+
+        function loadForm() {
+            fetchFormSchema()
+                .then(function(schema) {
+                    renderForm(schema);
                 })
                 .catch(function(err) {
-                    console.error('CF7 submission error:', err);
-                    showFormError('Form connection error. Confirm the CF7 form ID and endpoint domain are correct, then try again.');
-                    resetFormState();
+                    console.error('RTG: failed to load form schema:', err);
+                    showFormError('Unable to load the form. Please refresh the page or try again later.');
                 });
-        });
+        }
 
-        /* Also listen for wpcf7mailsent in case CF7 JS loads in future */
-        wrapper.addEventListener('wpcf7mailsent', function() {
-            grantAccess(true);
-        });
     })();
 </script>

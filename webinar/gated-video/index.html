@@ -1025,7 +1025,18 @@
                 })
                 .catch(function(err) {
                     console.error('RTG: failed to load form schema:', err);
-                    showFormError('Unable to load the form. Please refresh the page or try again later.');
+                    var detail = err.message || '';
+                    var userMsg = 'Unable to load the form. Please refresh the page or try again later.';
+                    if (detail.indexOf('403') !== -1) {
+                        userMsg = 'Access to the form service is blocked (403). A server security rule may be preventing API access.';
+                    } else if (detail.indexOf('404') !== -1) {
+                        userMsg = 'Form not found (404). Please verify the form exists in WP Admin \u2192 Real Treasury Gate \u2192 Forms.';
+                    } else if (detail.indexOf('429') !== -1) {
+                        userMsg = 'Too many requests. Please wait a moment and refresh the page.';
+                    } else if (err.name === 'TypeError') {
+                        userMsg = 'Unable to reach the form service. This may be a network or CORS issue.';
+                    }
+                    showFormError(userMsg);
                 });
         }
 

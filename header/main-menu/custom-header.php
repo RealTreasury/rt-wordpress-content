@@ -302,7 +302,7 @@ function add_my_custom_header_html() {
         }
 
         function startAutoRotate() {
-            interval = setInterval(next, 6000);
+            interval = setInterval(next, 15000);
         }
 
         function resetAutoRotate() {

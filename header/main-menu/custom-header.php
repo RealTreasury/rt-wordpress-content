@@ -120,9 +120,9 @@ function add_my_custom_header_html() {
                                             <div class="rt-step-number">1</div>
                                             <div class="rt-step-text">Explore tech portal</div>
                                         </a>
-                                        <a href="https://realtreasury.com/tech-selection-workshop/" class="rt-journey-step">
+                                        <a href="https://realtreasury.com/on-demand-workshop/" class="rt-journey-step">
                                             <div class="rt-step-number">2</div>
-                                            <div class="rt-step-text">Join insights workshop</div>
+                                            <div class="rt-step-text">Watch on-demand workshop</div>
                                         </a>
                                         <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" class="rt-journey-step" target="_blank">
                                             <div class="rt-step-number">3</div>
@@ -152,13 +152,13 @@ function add_my_custom_header_html() {
                                             <span class="rt-service-cta">Request Access →</span>
                                         </a>
 
-                                        <a href="https://realtreasury.com/tech-selection-workshop/" class="rt-service-item">
+                                        <a href="https://realtreasury.com/on-demand-workshop/" class="rt-service-item">
                                             <div class="rt-service-header">
-                                                <div class="rt-service-icon">💡</div>
-                                                <div class="rt-service-title">Treasury Insights Workshop</div>
+                                                <div class="rt-service-icon">▶️</div>
+                                                <div class="rt-service-title">On-Demand Workshop</div>
                                             </div>
-                                            <div class="rt-service-desc">25-minute deep dive sharing real-world insights and best practices from industry experts.</div>
-                                            <span class="rt-service-cta">Join Workshop →</span>
+                                            <div class="rt-service-desc">Watch our expert-led workshop recording — real-world insights and best practices, on your schedule.</div>
+                                            <span class="rt-service-cta">Watch Workshop →</span>
                                         </a>
 
                                         <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="rt-service-item">

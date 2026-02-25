@@ -432,20 +432,20 @@ body.banner-minimized .rt-nav-container {
         <button class="close-btn" onclick="closeBanner(event)" aria-label="Close banner">&times;</button>
         
         <div class="banner-content">
-            <div class="banner-icon">🔍</div>
-            
+            <div class="banner-icon">▶️</div>
+
             <div class="banner-text">
                 <div class="banner-title">
-                    <span class="banner-highlight">3 Segments, 1 Smart Choice</span>
+                    <span class="banner-highlight">On-Demand Workshop Available</span>
                 </div>
                 <div class="banner-subtitle">
-                    Tue, Feb 24 • 2:00–2:30 PM ET • Online workshop
+                    Watch free: 3 Segments, 1 Smart Choice — stream anytime
                 </div>
             </div>
         </div>
 
-        <a href="#register" class="banner-cta" onclick="registerWorkshop(event)">
-            Register
+        <a href="https://realtreasury.com/on-demand-workshop/" class="banner-cta" onclick="registerWorkshop(event)">
+            Watch Now
             <span>→</span>
         </a>
     </div>
@@ -529,8 +529,8 @@ function expandBanner(event) {
 
 function registerWorkshop(event) {
     event.stopPropagation();
-    // Redirect to the actual workshop registration
-    window.open('https://events.teams.microsoft.com/event/7cac0955-e19d-403d-9b0e-e449871c11b6@cdc422ca-d271-4ba3-856d-77081c6a7f04', '_blank');
+    // Redirect to the on-demand workshop recording
+    window.open('https://realtreasury.com/on-demand-workshop/', '_blank');
 }
 
 

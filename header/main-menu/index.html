@@ -57,7 +57,7 @@ body.banner-closed { min-height: auto; }
     /* Remove complex animations - start in final state */
     opacity: 1 !important;
     transform: translateY(0) !important;
-    transition: min-height 0.3s ease, background 0.3s ease !important;
+    transition: min-height 0.3s ease, background 0.3s ease, padding 0.3s ease !important;
 }
 
 .workshop-banner:before {
@@ -541,6 +541,27 @@ window.addEventListener('load', function() {
 
     // Make the entire banner clickable to navigate to the workshop
     banner.addEventListener('click', expandBanner);
+
+    // Expand banner on hover when minimized, collapse on mouse leave
+    banner.addEventListener('mouseenter', function() {
+        if (!banner.classList.contains('minimized')) return;
+        banner.classList.remove('minimized');
+        document.body.classList.remove('banner-minimized');
+        document.body.classList.add('banner-present');
+        updateBannerState();
+        const closeBtn = banner.querySelector('.close-btn');
+        if (closeBtn) closeBtn.style.display = '';
+    });
+
+    banner.addEventListener('mouseleave', function() {
+        // Re-minimize when mouse leaves (only if it was auto-minimized)
+        if (banner.classList.contains('minimized')) return;
+        banner.classList.add('minimized');
+        document.body.classList.add('banner-minimized');
+        updateBannerState();
+        const closeBtn = banner.querySelector('.close-btn');
+        if (closeBtn) closeBtn.style.display = 'none';
+    });
 
     // Auto-minimize after 3 seconds (no initial animation needed)
     setTimeout(() => {

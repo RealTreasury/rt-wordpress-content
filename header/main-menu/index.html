@@ -53,6 +53,7 @@ body.banner-closed { min-height: auto; }
     align-items: center;
     justify-content: space-between;
     gap: 20px;
+    cursor: pointer;
     /* Remove complex animations - start in final state */
     opacity: 1 !important;
     transform: translateY(0) !important;
@@ -496,35 +497,16 @@ function closeBanner(event) {
 
     const closeBtn = banner.querySelector('.close-btn');
     if (closeBtn) closeBtn.style.display = 'none';
-
-    // Set up click to expand
-    setTimeout(() => {
-        banner.addEventListener('click', expandBanner);
-    }, 300);
 }
 
 function expandBanner(event) {
-    // Don't expand if clicking close button or CTA
+    // Don't navigate if clicking close button or CTA (CTA has its own link)
     if (event.target.closest('.close-btn') || event.target.closest('.banner-cta')) {
         return;
     }
-    
-    const banner = document.getElementById('workshopBanner');
-    if (!banner) return;
 
-    banner.classList.remove('minimized');
-    document.body.classList.remove('banner-minimized');
-    updateBannerState(); // Add this line
-    banner.removeEventListener('click', expandBanner);
-    const closeBtn = banner.querySelector('.close-btn');
-    if (closeBtn) closeBtn.style.display = '';
-
-    // Auto-minimize again after 4 seconds
-    setTimeout(() => {
-        if (!banner.classList.contains('minimized')) {
-            closeBanner({ stopPropagation: () => {} });
-        }
-    }, 4000);
+    // Navigate to the on-demand workshop
+    window.open('https://realtreasury.com/on-demand-workshop/', '_blank');
 }
 
 function registerWorkshop(event) {
@@ -556,6 +538,9 @@ window.addEventListener('load', function() {
 
     document.body.classList.add('banner-present'); // Add this line
     updateBannerState(); // Add this line
+
+    // Make the entire banner clickable to navigate to the workshop
+    banner.addEventListener('click', expandBanner);
 
     // Auto-minimize after 3 seconds (no initial animation needed)
     setTimeout(() => {

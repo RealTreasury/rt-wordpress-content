@@ -379,6 +379,12 @@
         object-fit: contain;
     }
 
+    /* Hide the native download button (Chrome / Edge) */
+    .rt-gv-video-player video::-webkit-media-controls-download-button,
+    .rt-gv-video-player video::-webkit-media-controls-overflow-menu-list-item:last-child {
+        display: none !important;
+    }
+
     .rt-gv-video-cta {
         margin-top: 40px;
     }
@@ -514,9 +520,11 @@
                     <video
                         id="rtGvVideo"
                         controls
+                        controlsList="nodownload"
                         playsinline
                         preload="metadata"
                         title="On-Demand Workshop — Real Treasury"
+                        oncontextmenu="return false;"
                     >
                         Your browser does not support the video tag.
                     </video>
@@ -534,6 +542,63 @@
     </section>
 
 </div>
+
+<!-- Prevent video downloads (allow only on elements with the "Download" class) -->
+<script>
+    (function () {
+        'use strict';
+        var ALLOW_CLASS = 'Download';
+
+        function hasAllowClass(el) {
+            var node = el;
+            while (node && node !== document.documentElement) {
+                if (node.classList && node.classList.contains(ALLOW_CLASS)) return true;
+                node = node.parentElement;
+            }
+            return false;
+        }
+
+        function protect(el) {
+            if (hasAllowClass(el)) return;
+            if (typeof el.controlsList !== 'undefined') {
+                el.controlsList.add('nodownload');
+            } else {
+                el.setAttribute('controlsList', 'nodownload');
+            }
+            el.addEventListener('contextmenu', function (e) {
+                if (!hasAllowClass(el)) e.preventDefault();
+            });
+        }
+
+        function scan(root) {
+            var els = (root || document).querySelectorAll('video, audio');
+            for (var i = 0; i < els.length; i++) protect(els[i]);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () { scan(); });
+        } else {
+            scan();
+        }
+
+        if (typeof MutationObserver !== 'undefined') {
+            new MutationObserver(function (mutations) {
+                for (var i = 0; i < mutations.length; i++) {
+                    var added = mutations[i].addedNodes;
+                    for (var j = 0; j < added.length; j++) {
+                        var node = added[j];
+                        if (node.nodeType !== 1) continue;
+                        if (node.matches && node.matches('video, audio')) protect(node);
+                        if (node.querySelectorAll) {
+                            var nested = node.querySelectorAll('video, audio');
+                            for (var k = 0; k < nested.length; k++) protect(nested[k]);
+                        }
+                    }
+                }
+            }).observe(document.documentElement, { childList: true, subtree: true });
+        }
+    })();
+</script>
 
 <!-- iFrame auto-resize support -->
 <script>

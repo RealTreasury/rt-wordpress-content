@@ -53,10 +53,11 @@ body.banner-closed { min-height: auto; }
     align-items: center;
     justify-content: space-between;
     gap: 20px;
+    cursor: pointer;
     /* Remove complex animations - start in final state */
     opacity: 1 !important;
     transform: translateY(0) !important;
-    transition: min-height 0.3s ease, background 0.3s ease !important;
+    transition: min-height 0.3s ease, background 0.3s ease, padding 0.3s ease !important;
 }
 
 .workshop-banner:before {
@@ -496,35 +497,16 @@ function closeBanner(event) {
 
     const closeBtn = banner.querySelector('.close-btn');
     if (closeBtn) closeBtn.style.display = 'none';
-
-    // Set up click to expand
-    setTimeout(() => {
-        banner.addEventListener('click', expandBanner);
-    }, 300);
 }
 
 function expandBanner(event) {
-    // Don't expand if clicking close button or CTA
+    // Don't navigate if clicking close button or CTA (CTA has its own link)
     if (event.target.closest('.close-btn') || event.target.closest('.banner-cta')) {
         return;
     }
-    
-    const banner = document.getElementById('workshopBanner');
-    if (!banner) return;
 
-    banner.classList.remove('minimized');
-    document.body.classList.remove('banner-minimized');
-    updateBannerState(); // Add this line
-    banner.removeEventListener('click', expandBanner);
-    const closeBtn = banner.querySelector('.close-btn');
-    if (closeBtn) closeBtn.style.display = '';
-
-    // Auto-minimize again after 4 seconds
-    setTimeout(() => {
-        if (!banner.classList.contains('minimized')) {
-            closeBanner({ stopPropagation: () => {} });
-        }
-    }, 4000);
+    // Navigate to the on-demand workshop
+    window.open('https://realtreasury.com/on-demand-workshop/', '_blank');
 }
 
 function registerWorkshop(event) {
@@ -556,6 +538,30 @@ window.addEventListener('load', function() {
 
     document.body.classList.add('banner-present'); // Add this line
     updateBannerState(); // Add this line
+
+    // Make the entire banner clickable to navigate to the workshop
+    banner.addEventListener('click', expandBanner);
+
+    // Expand banner on hover when minimized, collapse on mouse leave
+    banner.addEventListener('mouseenter', function() {
+        if (!banner.classList.contains('minimized')) return;
+        banner.classList.remove('minimized');
+        document.body.classList.remove('banner-minimized');
+        document.body.classList.add('banner-present');
+        updateBannerState();
+        const closeBtn = banner.querySelector('.close-btn');
+        if (closeBtn) closeBtn.style.display = '';
+    });
+
+    banner.addEventListener('mouseleave', function() {
+        // Re-minimize when mouse leaves (only if it was auto-minimized)
+        if (banner.classList.contains('minimized')) return;
+        banner.classList.add('minimized');
+        document.body.classList.add('banner-minimized');
+        updateBannerState();
+        const closeBtn = banner.querySelector('.close-btn');
+        if (closeBtn) closeBtn.style.display = 'none';
+    });
 
     // Auto-minimize after 3 seconds (no initial animation needed)
     setTimeout(() => {

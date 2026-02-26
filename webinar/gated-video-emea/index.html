@@ -646,14 +646,15 @@
            ================================================================ */
         var WP_SITE_URL = 'https://realtreasury.com';
         var API_BASE    = WP_SITE_URL + '/wp-json/rtg/v1';
-        var FORM_ID     = 3;
+        var ASSET_SLUG  = 'gated-video-emea';
+        var FORM_ID     = null;
         var STORAGE_KEY = 'rtg_gv_access_emea';
 
         /* Default form schema used when the GET /form/{id} endpoint is
            unreachable (e.g. route not yet deployed).  Keeps the form
            functional while the dynamic schema endpoint is unavailable. */
         var DEFAULT_SCHEMA = {
-            form_id: FORM_ID,
+            form_id: 3,
             fields: [
                 { key: 'email',     label: 'Work Email',  type: 'email', required: true,  autocomplete: true, placeholder: 'you@company.com' },
                 { key: 'full_name', label: 'Full Name',   type: 'text',  required: true,  autocomplete: true, placeholder: 'Jane Smith' },
@@ -764,7 +765,7 @@
            ================================================================ */
 
         function fetchFormSchema() {
-            return fetch(API_BASE + '/form/' + FORM_ID)
+            return fetch(API_BASE + '/gate/' + ASSET_SLUG)
                 .then(parseJsonOrThrow);
         }
 
@@ -1099,10 +1100,12 @@
         function loadForm() {
             fetchFormSchema()
                 .then(function(schema) {
+                    FORM_ID = schema.form_id;
                     renderForm(schema);
                 })
                 .catch(function(err) {
-                    console.warn('RTG: form schema endpoint unavailable, using default schema:', err.message || err);
+                    console.warn('RTG: gate endpoint unavailable, using default schema:', err.message || err);
+                    FORM_ID = DEFAULT_SCHEMA.form_id;
                     renderForm(DEFAULT_SCHEMA);
                 });
         }

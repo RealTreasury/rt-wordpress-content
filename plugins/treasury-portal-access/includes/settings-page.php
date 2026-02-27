@@ -90,7 +90,9 @@ if (class_exists('WPCF7_ContactForm')) {
                 <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
                     <h3 style="color: #7216f4; margin-top: 0;">Shortcode Reference</h3>
                     <p><strong>Protected Content:</strong><br><code>[protected_content]...[/protected_content]</code></p>
+                    <p><strong>With asset mapping:</strong><br><code>[protected_content asset="my-asset-slug"]...[/protected_content]</code><br><small>Loads the CF7 form mapped to this asset in Real Treasury Gate &rarr; Mappings.</small></p>
                     <p><strong>Portal Button:</strong><br><code>[portal_button text="Access Portal"]</code></p>
+                    <p><strong>Button with asset:</strong><br><code>[portal_button text="Watch Webinar" asset="webinar-recording"]</code></p>
                     <p><strong>Manual Trigger:</strong><br><code>&lt;a href="#openPortalModal"&gt;Open Modal&lt;/a&gt;</code></p>
                 </div>
             </div>

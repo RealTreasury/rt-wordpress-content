@@ -4,12 +4,14 @@
  */
 if (!defined('ABSPATH')) exit;
 
-$form_id = get_option('tpa_form_id');
+// Use the effective form ID which respects per-page asset overrides from rt-gate mappings.
+$tpa_instance = Treasury_Portal_Access::get_instance();
+$form_id = $tpa_instance->get_effective_form_id();
 // Critical: Don't output anything if no form is selected in settings.
 if (empty($form_id)) {
     // Log an error for the admin to see if they are logged in.
     if (current_user_can('manage_options')) {
-        error_log('TPA Notice: Modal not loaded because no form is selected in Portal Access settings.');
+        error_log('TPA Notice: Modal not loaded because no form is selected in Portal Access settings and no asset mapping provides a CF7 form.');
     }
     return;
 }

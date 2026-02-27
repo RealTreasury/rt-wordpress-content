@@ -6,7 +6,7 @@
 <script>
 window.RTG_CONFIG = {
     assetSlug:    'gated-video',          // RT Gate asset slug — resolves the form via Mappings
-    formId:       2,                       // RT Gate form ID — direct override (optional, remove to use mapping)
+    mappingId:    1,                       // RT Gate Mapping ID for NORAM asset+form pairing
     storageKey:   'rtg_gv_access',
     badgeText:    'Free On-Demand Workshop',
     heroTitle:    'Unlock Your Workshop Recording',
@@ -33,7 +33,8 @@ window.RTG_CONFIG = {
      <script>
      window.RTG_CONFIG = {
          assetSlug:   'my-asset-slug',       // Must match the asset slug in RT Gate > Assets
-         formId:      2,                      // (Optional) RT Gate form ID — overrides the mapping lookup
+         formId:      2,                      // (Optional) RT Gate form ID
+         mappingId:   1,                      // (Optional) RT Gate Mapping ID (preferred to scope submit/email)
          storageKey:  'rtg_my_asset_access',  // Unique localStorage key for this page
          badgeText:   'Free On-Demand Workshop',
          heroTitle:   'Unlock Your Workshop Recording',
@@ -54,14 +55,15 @@ window.RTG_CONFIG = {
      c. A Mapping linking the Form to the Asset
 
   HOW THE FORM + ASSET MAPPING WORKS:
-  - Each page specifies an assetSlug (required) and optionally a formId.
+  - Each page specifies an assetSlug (required), and can optionally set formId and/or mappingId.
+  - If mappingId is set: it is sent on submit to scope token issuance to that mapping.
   - If formId is set: the page loads that specific form directly via GET /form/{formId}.
   - If formId is NOT set: the page calls GET /gate/{assetSlug}, which resolves
     the correct form via the mapping table (RT Gate > Mappings).
   - On submit, the form_id is sent to POST /submit, which issues tokens
     for ALL assets mapped to that form.
-  - Different pages can use different form+asset combos by setting different
-    assetSlug/formId values in their config.
+  - Different pages can use different form+asset combos by setting
+    assetSlug/formId/mappingId values in their config.
 
   4. Done — the page loads the correct form from the mapping (or direct formId).
   ============================================================
@@ -231,9 +233,10 @@ window.RTG_CONFIG = {
     var API_BASE    = (C.wpSiteUrl || 'https://realtreasury.com') + '/wp-json/rtg/v1';
     var ASSET_SLUG  = C.assetSlug;
     var CONFIG_FORM_ID = C.formId || null;   // Optional: directly specify the rt-gate form ID
+    var CONFIG_MAPPING_ID = C.mappingId || null; // Optional: explicitly specify mapping ID
     var STORAGE_KEY = C.storageKey || ('rtg_' + ASSET_SLUG.replace(/-/g, '_') + '_access');
     var FORM_ID     = null;
-    var MAPPING_ID  = null;
+    var MAPPING_ID  = CONFIG_MAPPING_ID ? Number(CONFIG_MAPPING_ID) : null;
 
     /* ---- Populate page text from config ---- */
     function setText(id, text) { var el = document.getElementById(id); if (el && text) el.textContent = text; }
@@ -300,13 +303,49 @@ window.RTG_CONFIG = {
     }
 
     /* ---- API ---- */
+    function fetchGateSchema() { return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow); }
+    function fetchFormSchemaById(formId) { return fetch(API_BASE + '/form/' + formId).then(parseJsonOrThrow); }
     function fetchFormSchema() {
-        return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow)
-            .catch(function() {
-                if (CONFIG_FORM_ID) {
-                    return fetch(API_BASE + '/form/' + CONFIG_FORM_ID).then(parseJsonOrThrow);
+        if (CONFIG_FORM_ID && CONFIG_MAPPING_ID) {
+            return fetchFormSchemaById(CONFIG_FORM_ID).then(function(formSchema) {
+                formSchema.mapping_id = Number(CONFIG_MAPPING_ID);
+                formSchema.form_id = formSchema.form_id || CONFIG_FORM_ID;
+                return formSchema;
+            });
+        }
+        if (!CONFIG_FORM_ID) {
+            return fetchGateSchema().then(function(gateSchema) {
+                if (CONFIG_MAPPING_ID && gateSchema.mapping_id && Number(gateSchema.mapping_id) !== Number(CONFIG_MAPPING_ID)) {
+                    console.warn('RTG: Configured mappingId', CONFIG_MAPPING_ID, 'does not match mapped ID', gateSchema.mapping_id, 'for asset', ASSET_SLUG);
                 }
+                if (CONFIG_MAPPING_ID) gateSchema.mapping_id = Number(CONFIG_MAPPING_ID);
+                return gateSchema;
+            }).catch(function() {
                 throw new Error('No form mapping found for asset "' + ASSET_SLUG + '"');
+            });
+        }
+        return Promise.all([fetchGateSchema(), fetchFormSchemaById(CONFIG_FORM_ID)])
+            .then(function(results) {
+                var gateSchema = results[0] || {}, formSchema = results[1] || {};
+                if (gateSchema.form_id && Number(gateSchema.form_id) !== Number(CONFIG_FORM_ID)) {
+                    console.warn('RTG: Configured formId', CONFIG_FORM_ID, 'does not match mapped form', gateSchema.form_id, 'for asset', ASSET_SLUG);
+                }
+                if (CONFIG_MAPPING_ID && gateSchema.mapping_id && Number(gateSchema.mapping_id) !== Number(CONFIG_MAPPING_ID)) {
+                    console.warn('RTG: Configured mappingId', CONFIG_MAPPING_ID, 'does not match mapped ID', gateSchema.mapping_id, 'for asset', ASSET_SLUG);
+                }
+                formSchema.mapping_id = CONFIG_MAPPING_ID ? Number(CONFIG_MAPPING_ID) : (gateSchema.mapping_id || null);
+                formSchema.form_id = formSchema.form_id || CONFIG_FORM_ID;
+                return formSchema;
+            })
+            .catch(function(err) {
+                if (CONFIG_MAPPING_ID) {
+                    return fetchFormSchemaById(CONFIG_FORM_ID).then(function(formSchema) {
+                        formSchema.mapping_id = Number(CONFIG_MAPPING_ID);
+                        formSchema.form_id = formSchema.form_id || CONFIG_FORM_ID;
+                        return formSchema;
+                    });
+                }
+                throw new Error((err && err.message) || 'Unable to load gate/form schema.');
             });
     }
     function submitForm(fields) { var payload = { form_id: FORM_ID, fields: fields, consent: true, honeypot: '' }; if (MAPPING_ID) { payload.mapping_id = MAPPING_ID; } return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(parseJsonOrThrow); }

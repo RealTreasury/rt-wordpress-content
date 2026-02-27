@@ -6,7 +6,6 @@
 <script>
 window.RTG_CONFIG = {
     assetSlug:    'gated-video-emea',     // RT Gate asset slug — resolves the form via Mappings
-    formId:       3,                       // RT Gate form ID — direct override (optional, remove to use mapping)
     storageKey:   'rtg_gv_access_emea',
     badgeText:    'Free On-Demand Workshop',
     heroTitle:    'Unlock Your Workshop Recording',
@@ -301,7 +300,8 @@ window.RTG_CONFIG = {
     /* ---- API ---- */
     function fetchFormSchema() {
         if (CONFIG_FORM_ID) {
-            return fetch(API_BASE + '/form/' + CONFIG_FORM_ID).then(parseJsonOrThrow);
+            return fetch(API_BASE + '/form/' + CONFIG_FORM_ID).then(parseJsonOrThrow)
+                .catch(function() { return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow); });
         }
         return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow);
     }

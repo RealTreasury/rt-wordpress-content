@@ -333,7 +333,7 @@
             var btn = form.querySelector('.rtg-submit-btn'), wrap = form.querySelector('.rtg-submit-wrap'), resp = document.getElementById('rtGvResponse');
             if (btn) btn.disabled = true; if (wrap) wrap.classList.add('rtg-submitting'); if (resp) { resp.style.display = 'none'; resp.className = 'rtg-response'; }
             submitForm(collected)
-                .then(function(data) { if (!data.assets || data.assets.length === 0) throw new Error('No assets returned. Check the form-to-asset mapping in WP Admin.'); var first = data.assets[0]; return validateToken(first.token, first.slug).then(function(v) { return { asset: first, validation: v }; }); })
+                .then(function(data) { if (!data.assets || data.assets.length === 0) throw new Error('No assets returned. Check the form-to-asset mapping in WP Admin.'); var target = null; for (var i = 0; i < data.assets.length; i++) { if (data.assets[i].slug === ASSET_SLUG) { target = data.assets[i]; break; } } if (!target) target = data.assets[0]; return validateToken(target.token, target.slug).then(function(v) { return { asset: target, validation: v }; }); })
                 .then(function(r) {
                     if (!r.validation.valid) throw new Error('Token validation failed.');
                     var cfg = r.validation.asset || {}, url = '';

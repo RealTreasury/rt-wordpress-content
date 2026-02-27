@@ -6,8 +6,7 @@
 <script>
 window.RTG_CONFIG = {
     assetSlug:    'on-demand-webinar-emea', // RT Gate asset slug — resolves the form via Mappings
-    // formId intentionally omitted so the page resolves the form from the asset mapping.
-    // This avoids hard failures when form IDs differ between environments.
+    formId:       3,                         // EMEA form override to avoid pulling the NORAM mapping when mappings drift
     storageKey:   'rtg_gv_access_emea',
     badgeText:    'Free On-Demand Workshop',
     heroTitle:    'Unlock Your Workshop Recording',

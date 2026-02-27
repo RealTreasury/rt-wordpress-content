@@ -32,14 +32,6 @@ final class Treasury_Portal_Access {
     private static $instance = null;
     private $table_name;
     private $attempt_table;
-    /**
-     * Page-level CF7 form ID override resolved from rt-gate asset mappings.
-     * Set by shortcodes with an asset attribute; used by the modal renderer.
-     *
-     * @var int
-     */
-    private $page_cf7_form_override = 0;
-    
     public static function get_instance() {
         if (null === self::$instance) {
             self::$instance = new self();
@@ -553,10 +545,6 @@ final class Treasury_Portal_Access {
     public function protected_content_shortcode($atts, $content = null) {
         $atts = shortcode_atts(['content_ids' => '', 'asset' => ''], $atts, 'protected_content');
 
-        if (!empty($atts['asset'])) {
-            $this->resolve_form_override_for_asset($atts['asset']);
-        }
-
         if (!$this->has_portal_access()) {
             return $this->render_access_required_message();
         }
@@ -627,61 +615,16 @@ final class Treasury_Portal_Access {
     public function portal_button_shortcode($atts) {
         $atts = shortcode_atts(['text' => 'Access Portal', 'class' => '', 'asset' => ''], $atts, 'portal_button');
 
-        if (!empty($atts['asset'])) {
-            $this->resolve_form_override_for_asset($atts['asset']);
-        }
-
         $classes = 'tpa-btn tpa-btn-primary open-portal-modal ' . esc_attr($atts['class']);
         return '<button class="' . trim($classes) . '">' . esc_html($atts['text']) . '</button>';
     }
     
     /**
-     * Look up the CF7 form ID for a given asset slug via the rt-gate mappings table.
-     *
-     * If a mapping with a non-zero cf7_form_id exists for the asset, the page-level
-     * form override is set so the modal renders that form instead of the default.
-     *
-     * @param string $asset_slug The rt-gate asset slug.
-     * @return void
-     */
-    private function resolve_form_override_for_asset($asset_slug) {
-        global $wpdb;
-
-        $asset_slug = sanitize_title($asset_slug);
-        if (empty($asset_slug)) {
-            return;
-        }
-
-        $assets_table   = $wpdb->prefix . 'rtg_assets';
-        $mappings_table = $wpdb->prefix . 'rtg_mappings';
-
-        $cf7_form_id = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT m.cf7_form_id
-             FROM {$mappings_table} m
-             INNER JOIN {$assets_table} a ON a.id = m.asset_id
-             WHERE a.slug = %s AND m.cf7_form_id > 0
-             ORDER BY m.id ASC
-             LIMIT 1",
-            $asset_slug
-        ));
-
-        if ($cf7_form_id > 0) {
-            $this->page_cf7_form_override = $cf7_form_id;
-        }
-    }
-
-    /**
-     * Get the effective CF7 form ID for the current page.
-     *
-     * Returns the asset-mapped form if a shortcode set an override,
-     * otherwise returns the global default from settings.
+     * Get the CF7 form ID from settings.
      *
      * @return string
      */
     public function get_effective_form_id() {
-        if ($this->page_cf7_form_override > 0) {
-            return (string) $this->page_cf7_form_override;
-        }
         return get_option('tpa_form_id', '');
     }
 

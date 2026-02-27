@@ -6,7 +6,8 @@
 <script>
 window.RTG_CONFIG = {
     assetSlug:    'gated-video-emea',     // RT Gate asset slug — resolves the form via Mappings
-    formId:       3,                       // Fallback form ID — General Form (matches WP Admin mapping)
+    // formId intentionally omitted so the page resolves the form from the asset mapping.
+    // This avoids hard failures when form IDs differ between environments.
     storageKey:   'rtg_gv_access_emea',
     badgeText:    'Free On-Demand Workshop',
     heroTitle:    'Unlock Your Workshop Recording',

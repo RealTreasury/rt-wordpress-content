@@ -233,6 +233,7 @@ window.RTG_CONFIG = {
     var CONFIG_FORM_ID = C.formId || null;   // Optional: directly specify the rt-gate form ID
     var STORAGE_KEY = C.storageKey || ('rtg_' + ASSET_SLUG.replace(/-/g, '_') + '_access');
     var FORM_ID     = null;
+    var MAPPING_ID  = null;
 
     /* ---- Populate page text from config ---- */
     function setText(id, text) { var el = document.getElementById(id); if (el && text) el.textContent = text; }
@@ -308,7 +309,7 @@ window.RTG_CONFIG = {
                 throw new Error('No form mapping found for asset "' + ASSET_SLUG + '"');
             });
     }
-    function submitForm(fields) { return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ form_id: FORM_ID, fields: fields, consent: true, honeypot: '' }) }).then(parseJsonOrThrow); }
+    function submitForm(fields) { var payload = { form_id: FORM_ID, fields: fields, consent: true, honeypot: '' }; if (MAPPING_ID) { payload.mapping_id = MAPPING_ID; } return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(parseJsonOrThrow); }
     function validateToken(token, slug) { return fetch(API_BASE + '/validate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug }) }).then(parseJsonOrThrow); }
     function sendEvent(token, slug, type, meta) { return fetch(API_BASE + '/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug, event_type: type, meta: meta || {} }) }).then(parseJsonOrThrow).catch(function(e) { console.warn('RTG event failed (' + type + '):', e); }); }
 
@@ -396,7 +397,7 @@ window.RTG_CONFIG = {
 
     function loadForm() {
         fetchFormSchema()
-            .then(function(schema) { FORM_ID = schema.form_id; renderForm(schema); })
+            .then(function(schema) { FORM_ID = schema.form_id; MAPPING_ID = schema.mapping_id || null; renderForm(schema); })
             .catch(function(err) {
                 var source = CONFIG_FORM_ID ? 'form ID ' + CONFIG_FORM_ID : 'asset "' + ASSET_SLUG + '"';
                 console.error('RTG: Failed to load form for ' + source + ':', err.message || err);

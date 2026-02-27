@@ -286,7 +286,7 @@
                 throw new Error('No form mapping found for asset "' + ASSET_SLUG + '"');
             });
     }
-    function submitForm(fields) { var payload = { form_id: FORM_ID, fields: fields, consent: true, honeypot: '' }; if (MAPPING_ID) { payload.mapping_id = MAPPING_ID; } return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(parseJsonOrThrow); }
+    function submitForm(fields) { var payload = { form_id: FORM_ID, fields: fields, consent: true, honeypot: '', asset_slug: ASSET_SLUG }; if (MAPPING_ID) { payload.mapping_id = MAPPING_ID; } return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(parseJsonOrThrow); }
     function validateToken(token, slug) { return fetch(API_BASE + '/validate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug }) }).then(parseJsonOrThrow); }
     function sendEvent(token, slug, type, meta) { return fetch(API_BASE + '/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug, event_type: type, meta: meta || {} }) }).then(parseJsonOrThrow).catch(function(e) { console.warn('RTG event failed (' + type + '):', e); }); }
 

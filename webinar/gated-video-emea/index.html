@@ -105,6 +105,11 @@ window.RTG_CONFIG = {
     .rt-gv-title { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .rt-gv-subtitle { font-size: 1.15rem; color: var(--gray-text); line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
 
+    /* ---- Market Chart ---- */
+    .rt-gv-chart { max-width: 600px; margin: 32px auto 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); }
+    .rt-gv-chart img { width: 100%; height: auto; border-radius: 8px; display: block; }
+    .rt-gv-chart-label { font-size: 0.9rem; font-weight: 600; color: var(--dark-text); text-align: center; margin-bottom: 12px; }
+
     /* ---- Form Card ---- */
     .rt-gv-form-section { padding: 48px 0; }
     .rt-gv-form-card { background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 20px; padding: 48px 40px; max-width: 600px; margin: 0 auto; box-shadow: 0 8px 32px rgba(114,22,244,0.1); position: relative; overflow: hidden; transition: opacity 0.5s ease, transform 0.5s ease; }
@@ -188,6 +193,10 @@ window.RTG_CONFIG = {
             <span class="rt-gv-badge" id="rtGvBadge"></span>
             <h2 id="rt-gv-hero-heading" class="rt-gv-title"></h2>
             <p class="rt-gv-subtitle" id="rtGvSubtitle"></p>
+            <div class="rt-gv-chart">
+                <p class="rt-gv-chart-label">TMS Market Landscape — EMEA</p>
+                <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/02/tms-market-clean-EMEA-01-2026-1.png" alt="TMS Market Landscape - EMEA, January 2026" loading="lazy">
+            </div>
         </div>
     </section>
     <section class="rt-gv-form-section" aria-labelledby="rt-gv-form-heading">

@@ -105,14 +105,17 @@ window.RTG_CONFIG = {
     .rt-gv-title { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .rt-gv-subtitle { font-size: 1.15rem; color: var(--gray-text); line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
 
+    /* ---- Side-by-side row (chart + form) ---- */
+    .rt-gv-content-row { display: flex; gap: 32px; align-items: flex-start; transition: opacity 0.5s ease, transform 0.5s ease; }
+
     /* ---- Market Chart ---- */
-    .rt-gv-chart { max-width: 600px; margin: 32px auto 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); }
+    .rt-gv-chart { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); }
     .rt-gv-chart img { width: 100%; height: auto; border-radius: 8px; display: block; }
     .rt-gv-chart-label { font-size: 0.9rem; font-weight: 600; color: var(--dark-text); text-align: center; margin-bottom: 12px; }
 
     /* ---- Form Card ---- */
     .rt-gv-form-section { padding: 48px 0; }
-    .rt-gv-form-card { background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 20px; padding: 48px 40px; max-width: 600px; margin: 0 auto; box-shadow: 0 8px 32px rgba(114,22,244,0.1); position: relative; overflow: hidden; transition: opacity 0.5s ease, transform 0.5s ease; }
+    .rt-gv-form-card { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 20px; padding: 48px 40px; margin: 0; box-shadow: 0 8px 32px rgba(114,22,244,0.1); position: relative; overflow: hidden; }
     .rt-gv-form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-primary); }
     .rt-gv-form-heading { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin-bottom: 8px; text-align: center; }
     .rt-gv-form-subtext { font-size: 0.95rem; color: var(--gray-text); text-align: center; margin-bottom: 32px; }
@@ -176,6 +179,7 @@ window.RTG_CONFIG = {
         .rt-gv-hero { padding: 40px 0 32px; }
         .rt-gv-title { font-size: 2.25rem; }
         .rt-gv-subtitle { font-size: 1.05rem; }
+        .rt-gv-content-row { flex-direction: column; }
         .rt-gv-form-card { padding: 32px 24px; }
         .rt-gv-cta-heading { font-size: 1.1rem; }
         .rt-gv-btn-primary { padding: 16px 28px; font-size: 0.9rem; }
@@ -193,14 +197,15 @@ window.RTG_CONFIG = {
             <span class="rt-gv-badge" id="rtGvBadge"></span>
             <h2 id="rt-gv-hero-heading" class="rt-gv-title"></h2>
             <p class="rt-gv-subtitle" id="rtGvSubtitle"></p>
-            <div class="rt-gv-chart">
-                <p class="rt-gv-chart-label">TMS Market Landscape — EMEA</p>
-                <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/02/tms-market-clean-EMEA-01-2026-1.png" alt="TMS Market Landscape - EMEA, January 2026" loading="lazy">
-            </div>
         </div>
     </section>
     <section class="rt-gv-form-section" aria-labelledby="rt-gv-form-heading">
         <div class="rt-gv-container">
+            <div id="rtGvContentRow" class="rt-gv-content-row">
+            <div class="rt-gv-chart">
+                <p class="rt-gv-chart-label">TMS Market Landscape — EMEA</p>
+                <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/02/tms-market-clean-EMEA-01-2026-1.png" alt="TMS Market Landscape - EMEA, January 2026" loading="lazy">
+            </div>
             <div id="rtGvFormCard" class="rt-gv-form-card" role="region" aria-labelledby="rt-gv-form-heading">
                 <h3 id="rt-gv-form-heading" class="rt-gv-form-heading"></h3>
                 <p class="rt-gv-form-subtext" id="rtGvFormSubtext"></p>
@@ -211,6 +216,7 @@ window.RTG_CONFIG = {
                         <div class="rtg-loading-bar"></div>
                     </div>
                 </div>
+            </div>
             </div>
             <div id="rtGvVideoCard" class="rt-gv-video-card" role="region" aria-labelledby="rt-gv-video-heading">
                 <p id="rt-gv-video-heading" class="rt-gv-video-welcome">You're in &mdash; enjoy the recording</p>
@@ -287,6 +293,7 @@ window.RTG_CONFIG = {
 
     /* ---- Helpers ---- */
     var formCard      = document.getElementById('rtGvFormCard');
+    var contentRow    = document.getElementById('rtGvContentRow');
     var videoCard     = document.getElementById('rtGvVideoCard');
     var formContainer = document.getElementById('rtGvFormContainer');
 
@@ -301,13 +308,14 @@ window.RTG_CONFIG = {
 
     /* ---- Video swap ---- */
     function showVideo(videoUrl, animate) {
-        if (!formCard || !videoCard || !videoEl) return;
+        var hideTarget = contentRow || formCard;
+        if (!hideTarget || !videoCard || !videoEl) return;
         if (videoUrl) videoEl.src = videoUrl;
         if (animate) {
-            formCard.style.opacity = '0'; formCard.style.transform = 'translateY(-20px)';
-            setTimeout(function() { formCard.style.display = 'none'; videoCard.style.display = 'block'; void videoCard.offsetHeight; videoCard.style.opacity = '1'; videoCard.style.transform = 'translateY(0)'; videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500);
+            hideTarget.style.opacity = '0'; hideTarget.style.transform = 'translateY(-20px)';
+            setTimeout(function() { hideTarget.style.display = 'none'; videoCard.style.display = 'block'; void videoCard.offsetHeight; videoCard.style.opacity = '1'; videoCard.style.transform = 'translateY(0)'; videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500);
         } else {
-            formCard.style.display = 'none'; videoCard.style.display = 'block'; videoCard.style.opacity = '1'; videoCard.style.transform = 'translateY(0)';
+            hideTarget.style.display = 'none'; videoCard.style.display = 'block'; videoCard.style.opacity = '1'; videoCard.style.transform = 'translateY(0)';
         }
     }
 

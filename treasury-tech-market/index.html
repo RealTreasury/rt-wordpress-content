@@ -321,45 +321,104 @@
             padding: 80px 0;
         }
 
-        .addons-grid {
+        .addons-categories {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .addon-item {
+        .addon-category:nth-child(-n+3) {
+            grid-column: span 2;
+        }
+
+        .addon-category:nth-child(n+4) {
+            grid-column: span 3;
+        }
+
+        .addon-category {
             background: white;
-            border-radius: 12px;
-            padding: 16px 20px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
+            border-radius: 16px;
+            overflow: hidden;
             box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.04),
-                0 0 0 1px rgba(0, 0, 0, 0.03);
+                0 2px 12px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(0, 0, 0, 0.04);
         }
 
-        .addon-marker {
-            color: var(--primary);
-            font-size: 18px;
+        .addon-category-header {
+            padding: 18px 22px;
+            background: linear-gradient(135deg, #f8f4ff 0%, #f0e8ff 100%);
+            border-bottom: 1px solid #ede5ff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .addon-category-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
-            line-height: 1.4;
         }
 
-        .addon-name {
+        .addon-category-meta {
+            flex: 1;
+        }
+
+        .addon-category-title {
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        .addon-category-count {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .addon-list-item {
+            padding: 13px 22px;
+            border-bottom: 1px solid #f5f3ff;
+        }
+
+        .addon-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .addon-list-name {
             font-weight: 700;
             font-size: 14px;
             color: var(--text);
-            margin-bottom: 2px;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
         }
 
-        .addon-desc {
-            font-size: 13px;
+        .addon-list-name::before {
+            content: '◐';
+            color: var(--primary);
+            font-size: 11px;
+            opacity: 0.6;
+            flex-shrink: 0;
+        }
+
+        .addon-list-desc {
+            font-size: 12px;
             color: var(--text-light);
+            line-height: 1.5;
             font-weight: 500;
-            line-height: 1.4;
+            padding-left: 18px;
         }
 
         /* Capability Matrix */
@@ -622,6 +681,15 @@
                 grid-template-columns: 1fr;
             }
 
+            .addons-categories {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .addon-category:nth-child(-n+3),
+            .addon-category:nth-child(n+4) {
+                grid-column: span 1;
+            }
+
             .matrix-table {
                 font-size: 13px;
             }
@@ -712,119 +780,147 @@
                 <p class="section-subtitle">The core requirements define which segment a vendor belongs to, these add-ons enhance the product.</p>
             </div>
 
-            <div class="addons-grid">
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">AI Assistant / Agents</div>
-                        <div class="addon-desc">Answers questions in natural language and surfaces insights, anomaly detection, and analysis</div>
+            <div class="addons-categories">
+
+                <!-- AI & Intelligence -->
+                <div class="addon-category">
+                    <div class="addon-category-header">
+                        <div class="addon-category-icon">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 2V6M8 10V14M2 8H6M10 8H14M4.1 4.1L6.2 6.2M9.8 9.8L11.9 11.9M11.9 4.1L9.8 6.2M6.2 9.8L4.1 11.9" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="addon-category-meta">
+                            <div class="addon-category-title">AI & Intelligence</div>
+                            <div class="addon-category-count">2 capabilities</div>
+                        </div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">AI Assistant / Agents</div>
+                        <div class="addon-list-desc">Answers questions in natural language and surfaces insights, anomaly detection, and analysis</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">AI Forecasting</div>
+                        <div class="addon-list-desc">ML-powered cash flow predictions</div>
                     </div>
                 </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">AI Forecasting</div>
-                        <div class="addon-desc">ML-powered cash flow predictions</div>
+
+                <!-- Cash & Payments -->
+                <div class="addon-category">
+                    <div class="addon-category-header">
+                        <div class="addon-category-icon">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 5.5H13M13 5.5L10 2.5M13 5.5L10 8.5M14 10.5H3M3 10.5L6 7.5M3 10.5L6 13.5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="addon-category-meta">
+                            <div class="addon-category-title">Cash & Payments</div>
+                            <div class="addon-category-count">4 capabilities</div>
+                        </div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">AP Payments Integration</div>
+                        <div class="addon-list-desc">Accounts payable data feeds through TMS</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Cash Accounting</div>
+                        <div class="addon-list-desc">Dual-entry journal entries posted to accounting system (not just cash tagging)</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Cash Application</div>
+                        <div class="addon-list-desc">Match A/R payments to customer subledgers</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">G/L Reconciliation</div>
+                        <div class="addon-list-desc">Match bank statements to general ledger</div>
                     </div>
                 </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">AP Payments Integration</div>
-                        <div class="addon-desc">Accounts payable data feeds through TMS</div>
+
+                <!-- Banking & Accounts -->
+                <div class="addon-category">
+                    <div class="addon-category-header">
+                        <div class="addon-category-icon">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 13.5H15M8 2L15 5.5H1L8 2ZM3.5 6.5V12.5M8 6.5V12.5M12.5 6.5V12.5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="addon-category-meta">
+                            <div class="addon-category-title">Banking & Accounts</div>
+                            <div class="addon-category-count">3 capabilities</div>
+                        </div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Bank Account Management</div>
+                        <div class="addon-list-desc">Centralized account data, signatories, KYC docs, FBAR tracking</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Bank Fee Analysis</div>
+                        <div class="addon-list-desc">Analyze and optimize banking fees</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">In-House Banking (IHB)</div>
+                        <div class="addon-list-desc">Internal running participant balances with the ability to calculate interest</div>
                     </div>
                 </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Bank Account Management</div>
-                        <div class="addon-desc">Centralized account data, signatories, KYC docs, FBAR tracking</div>
+
+                <!-- Risk & Treasury -->
+                <div class="addon-category">
+                    <div class="addon-category-header">
+                        <div class="addon-category-icon">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 1.5L2.5 4V9C2.5 12 5 14 8 14.5C11 14 13.5 12 13.5 9V4L8 1.5Z" stroke="white" stroke-width="1.7" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="addon-category-meta">
+                            <div class="addon-category-title">Risk & Treasury</div>
+                            <div class="addon-category-count">4 capabilities</div>
+                        </div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Collateral Management</div>
+                        <div class="addon-list-desc">Track and optimize collateral posted for derivatives</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Commodity Management</div>
+                        <div class="addon-list-desc">Manage price risk for commodities</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Intercompany Loan Management</div>
+                        <div class="addon-list-desc">Track, calculate interest, settle and administer loans between legal entities</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Multilateral Netting</div>
+                        <div class="addon-list-desc">Net multicurrency payables and receivables for settlements in desired currencies</div>
                     </div>
                 </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Bank Fee Analysis</div>
-                        <div class="addon-desc">Analyze and optimize banking fees</div>
+
+                <!-- Technology -->
+                <div class="addon-category">
+                    <div class="addon-category-header">
+                        <div class="addon-category-icon">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 4L1 8L5 12M11 4L15 8L11 12M9.5 2.5L6.5 13.5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="addon-category-meta">
+                            <div class="addon-category-title">Technology</div>
+                            <div class="addon-category-count">3 capabilities</div>
+                        </div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Developer Portal / APIs</div>
+                        <div class="addon-list-desc">Custom integrations and extensions</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Mobile App</div>
+                        <div class="addon-list-desc">iOS/Android apps for on-the-go visibility</div>
+                    </div>
+                    <div class="addon-list-item">
+                        <div class="addon-list-name">Vendor-Supplied Market Data</div>
+                        <div class="addon-list-desc">Distinct from connectivity to a client's existing subscription — vendor provides proprietary data</div>
                     </div>
                 </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Cash Accounting</div>
-                        <div class="addon-desc">Dual-entry journal entries posted to accounting system (not just cash tagging)</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Cash Application</div>
-                        <div class="addon-desc">Match A/R payments to customer subledgers</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Collateral Management</div>
-                        <div class="addon-desc">Track and optimize collateral posted for derivatives</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Commodity Management</div>
-                        <div class="addon-desc">Manage price risk for commodities</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Developer Portal / APIs</div>
-                        <div class="addon-desc">Custom integrations and extensions</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">G/L Reconciliation</div>
-                        <div class="addon-desc">Match bank statements to general ledger</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">In-House Banking (IHB)</div>
-                        <div class="addon-desc">Internal running participant balances with the ability to calculate interest</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Intercompany Loan Management</div>
-                        <div class="addon-desc">Track, calculate interest, settle and administer loans between legal entities</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Mobile App</div>
-                        <div class="addon-desc">iOS/Android apps for on-the-go visibility</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Multilateral Netting</div>
-                        <div class="addon-desc">Net multicurrency payables and receivables for settlements in desired currencies</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Vendor-Supplied Market Data</div>
-                        <div class="addon-desc">Distinct from connectivity to a client's existing subscription — vendor provides proprietary data</div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </section>

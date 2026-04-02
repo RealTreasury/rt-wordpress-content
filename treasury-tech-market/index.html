@@ -279,6 +279,13 @@
             letter-spacing: -0.01em;
         }
 
+        .segment-intro {
+            font-size: 15px;
+            color: var(--text-light);
+            margin-bottom: 32px;
+            font-style: italic;
+        }
+
         .core-card-subtitle {
             font-size: 13px;
             color: var(--text-light);
@@ -645,134 +652,6 @@
         </div>
     </section>
 
-    <!-- Capability Mapping Matrix -->
-    <section class="matrix-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Capability Mapping Matrix</h2>
-                <p class="section-subtitle">A complete view of what is core, optional, or not available across each segment.</p>
-            </div>
-
-            <div class="matrix-legend">
-                <div class="legend-item"><span class="legend-symbol" style="color: var(--primary);">✔</span> Core</div>
-                <div class="legend-item"><span class="legend-symbol" style="color: #f59e0b;">◐</span> Optional Add-On</div>
-                <div class="legend-item"><span class="legend-symbol" style="color: #cbd5e1;">—</span> Not Generally Available</div>
-            </div>
-
-            <div class="matrix-wrapper">
-                <table class="matrix-table">
-                    <thead>
-                        <tr>
-                            <th>Capability</th>
-                            <th>Cash Tools</th>
-                            <th>TMS-Lite</th>
-                            <th>TRMS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="group-header">
-                            <td colspan="4">Cash Visibility &amp; Forecasting</td>
-                        </tr>
-                        <tr>
-                            <td>Bank connectivity</td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                        <tr>
-                            <td>Global cash visibility</td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                        <tr>
-                            <td>Transaction reporting</td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                        <tr>
-                            <td>Cash forecasting</td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                        <tr class="group-header">
-                            <td colspan="4">Payments</td>
-                        </tr>
-                        <tr>
-                            <td>Payment initiation</td>
-                            <td><span class="na-symbol">—</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                        <tr>
-                            <td>Payment approval workflows</td>
-                            <td><span class="na-symbol">—</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                        <tr>
-                            <td>Payment file transmission</td>
-                            <td><span class="na-symbol">—</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                        <tr class="group-header">
-                            <td colspan="4">Trading &amp; Risk Management</td>
-                        </tr>
-                        <tr>
-                            <td>Investment and debt management, FX support</td>
-                            <td><span class="addon-symbol">◐</span></td>
-                            <td><span class="addon-symbol">◐</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                        <tr>
-                            <td>Deal capture, accounting, and valuations</td>
-                            <td><span class="addon-symbol">◐</span></td>
-                            <td><span class="addon-symbol">◐</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                        <tr>
-                            <td>Risk analytics with limit tracking &amp; exposure reporting</td>
-                            <td><span class="addon-symbol">◐</span></td>
-                            <td><span class="addon-symbol">◐</span></td>
-                            <td><span class="core-symbol">✔</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- Feature Classification Framework -->
-    <section class="framework-section">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Feature Classification</h2>
-                <p class="section-subtitle">Every capability in the treasury tech market falls into one of three classifications.</p>
-            </div>
-
-            <div class="framework-grid">
-                <div class="framework-item">
-                    <span class="framework-symbol">✔</span>
-                    <div class="framework-label">Core</div>
-                    <div class="framework-desc">Required and expected in this segment. Defines what the segment is.</div>
-                </div>
-                <div class="framework-item">
-                    <span class="framework-symbol">◐</span>
-                    <div class="framework-label">Add-On</div>
-                    <div class="framework-desc">Available in any segment, varies by vendor. Enhances but does not define the segment.</div>
-                </div>
-                <div class="framework-item">
-                    <span class="framework-symbol">—</span>
-                    <div class="framework-label">Not Available</div>
-                    <div class="framework-desc">Not typically offered in this segment.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Core Requirements by Segment -->
     <section class="core-section">
         <div class="container">
@@ -780,6 +659,8 @@
                 <h2 class="section-title">Core Requirements by Segment</h2>
                 <p class="section-subtitle">The defining capabilities that separate each segment from the next.</p>
             </div>
+
+            <p class="segment-intro">We define market segments by the capabilities a system must have — not by company size, price, or marketing claims.</p>
 
             <div class="core-grid">
                 <div class="core-card">
@@ -799,7 +680,7 @@
                         <div class="core-card-icon" style="background: linear-gradient(135deg, #7216f4, #8f47f6);">⚡</div>
                         <div class="core-card-title">TMS-Lite</div>
                     </div>
-                    <div class="core-card-subtitle">Includes all Cash Tools core, plus:</div>
+                    <div class="core-card-subtitle">Includes all Cash Tools plus:</div>
                     <ul class="core-features">
                         <li>Payment initiation</li>
                         <li>Payment approval workflows</li>
@@ -811,7 +692,7 @@
                         <div class="core-card-icon" style="background: linear-gradient(135deg, #10b981, #047857);">🏢</div>
                         <div class="core-card-title">TRMS</div>
                     </div>
-                    <div class="core-card-subtitle">Includes all TMS-Lite core, plus:</div>
+                    <div class="core-card-subtitle">Includes all TMS-Lite plus:</div>
                     <ul class="core-features">
                         <li>Full support for debt, investment, and FX management</li>
                         <li>Deal capture, accounting, and valuations</li>
@@ -828,28 +709,22 @@
             <div class="section-header">
                 <h2 class="section-title">Common Add-Ons</h2>
                 <p class="section-subtitle">Segment-independent capabilities available from vendors across the market. These enhance any segment but do not define it.</p>
+                <p class="section-subtitle">The core requirements define which segment a vendor belongs to, these add-ons enhance the product.</p>
             </div>
 
             <div class="addons-grid">
                 <div class="addon-item">
                     <span class="addon-marker">◐</span>
                     <div>
+                        <div class="addon-name">AI Assistant / Agents</div>
+                        <div class="addon-desc">Answers questions in natural language and surfaces insights, anomaly detection, and analysis</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
                         <div class="addon-name">AI Forecasting</div>
                         <div class="addon-desc">ML-powered cash flow predictions</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">AI Chatbot</div>
-                        <div class="addon-desc">Answers questions in natural language</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">AI Insights</div>
-                        <div class="addon-desc">Anomaly detection, commentary, and analysis</div>
                     </div>
                 </div>
                 <div class="addon-item">
@@ -862,29 +737,8 @@
                 <div class="addon-item">
                     <span class="addon-marker">◐</span>
                     <div>
-                        <div class="addon-name">SWIFT Connectivity</div>
-                        <div class="addon-desc">Direct SWIFT network access</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Market Data</div>
-                        <div class="addon-desc">Vendor supplied data or connects to your subscription source</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Mobile App</div>
-                        <div class="addon-desc">iOS/Android apps for on-the-go visibility</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">ERP Integration</div>
-                        <div class="addon-desc">Bi-directional data sync with ERP systems for accounting and forecasting</div>
+                        <div class="addon-name">Bank Account Management</div>
+                        <div class="addon-desc">Centralized account data, signatories, KYC docs, FBAR tracking</div>
                     </div>
                 </div>
                 <div class="addon-item">
@@ -892,6 +746,34 @@
                     <div>
                         <div class="addon-name">Bank Fee Analysis</div>
                         <div class="addon-desc">Analyze and optimize banking fees</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Cash Accounting</div>
+                        <div class="addon-desc">Dual-entry journal entries posted to accounting system (not just cash tagging)</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Cash Application</div>
+                        <div class="addon-desc">Match A/R payments to customer subledgers</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Collateral Management</div>
+                        <div class="addon-desc">Track and optimize collateral posted for derivatives</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Commodity Management</div>
+                        <div class="addon-desc">Manage price risk for commodities</div>
                     </div>
                 </div>
                 <div class="addon-item">
@@ -911,41 +793,6 @@
                 <div class="addon-item">
                     <span class="addon-marker">◐</span>
                     <div>
-                        <div class="addon-name">Cash Accounting / GL Posting</div>
-                        <div class="addon-desc">Post journal entries directly to accounting system</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Commodities Hedging</div>
-                        <div class="addon-desc">Manage price risk for commodities</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Multilateral Netting</div>
-                        <div class="addon-desc">Net multicurrency payables and receivables for settlements in desired currencies</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Collateral Management</div>
-                        <div class="addon-desc">Track and optimize collateral posted for derivatives</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
-                        <div class="addon-name">Bank Account Management (BAM)</div>
-                        <div class="addon-desc">Centralize account data, signatories, KYC docs, etc.</div>
-                    </div>
-                </div>
-                <div class="addon-item">
-                    <span class="addon-marker">◐</span>
-                    <div>
                         <div class="addon-name">In-House Banking (IHB)</div>
                         <div class="addon-desc">Internal running participant balances with the ability to calculate interest</div>
                     </div>
@@ -960,8 +807,22 @@
                 <div class="addon-item">
                     <span class="addon-marker">◐</span>
                     <div>
-                        <div class="addon-name">Cash Application</div>
-                        <div class="addon-desc">Match A/R payments to customer subledgers</div>
+                        <div class="addon-name">Mobile App</div>
+                        <div class="addon-desc">iOS/Android apps for on-the-go visibility</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Multilateral Netting</div>
+                        <div class="addon-desc">Net multicurrency payables and receivables for settlements in desired currencies</div>
+                    </div>
+                </div>
+                <div class="addon-item">
+                    <span class="addon-marker">◐</span>
+                    <div>
+                        <div class="addon-name">Vendor-Supplied Market Data</div>
+                        <div class="addon-desc">Distinct from connectivity to a client's existing subscription — vendor provides proprietary data</div>
                     </div>
                 </div>
             </div>

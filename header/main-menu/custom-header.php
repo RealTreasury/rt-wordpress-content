@@ -120,16 +120,20 @@ function add_my_custom_header_html() {
                                             <div class="rt-step-number">1</div>
                                             <div class="rt-step-text">Explore tech portal</div>
                                         </a>
-                                        <a href="https://realtreasury.com/on-demand-workshop/" class="rt-journey-step">
+                                        <a href="https://events.teams.microsoft.com/event/9936fa3a-9c2b-4907-b759-b8b9795acf1c@cdc422ca-d271-4ba3-856d-77081c6a7f04" class="rt-journey-step" target="_blank" rel="noopener noreferrer">
                                             <div class="rt-step-number">2</div>
+                                            <div class="rt-step-text">Register for live webinar</div>
+                                        </a>
+                                        <a href="https://realtreasury.com/on-demand-workshop/" class="rt-journey-step">
+                                            <div class="rt-step-number">3</div>
                                             <div class="rt-step-text">Watch on-demand workshop</div>
                                         </a>
                                         <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" class="rt-journey-step" target="_blank">
-                                            <div class="rt-step-number">3</div>
+                                            <div class="rt-step-number">4</div>
                                             <div class="rt-step-text">Get expert guidance</div>
                                         </a>
                                         <a href="https://realtreasury.com/errnot/" class="rt-journey-step">
-                                            <div class="rt-step-number">4</div>
+                                            <div class="rt-step-number">5</div>
                                             <div class="rt-step-text">Select ideal platform</div>
                                         </a>
                                     </div>
@@ -152,13 +156,13 @@ function add_my_custom_header_html() {
                                             <span class="rt-service-cta">Request Access →</span>
                                         </a>
 
-                                        <a href="https://realtreasury.com/on-demand-workshop/" class="rt-service-item">
+                                        <a href="https://events.teams.microsoft.com/event/9936fa3a-9c2b-4907-b759-b8b9795acf1c@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="rt-service-item">
                                             <div class="rt-service-header">
                                                 <div class="rt-service-icon">▶️</div>
-                                                <div class="rt-service-title">On-Demand Workshop</div>
+                                                <div class="rt-service-title">Live Webinar + On-Demand</div>
                                             </div>
-                                            <div class="rt-service-desc">Watch our expert-led workshop recording — real-world insights and best practices, on your schedule.</div>
-                                            <span class="rt-service-cta">Watch Workshop →</span>
+                                            <div class="rt-service-desc">Register for the upcoming live session, then watch the workshop recording on your schedule.</div>
+                                            <span class="rt-service-cta">Register Now →</span>
                                         </a>
 
                                         <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="rt-service-item">

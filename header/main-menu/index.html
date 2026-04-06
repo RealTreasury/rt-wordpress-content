@@ -546,15 +546,17 @@ function expandBanner(event) {
 }
 
 function registerWebinar(event) {
+    event.preventDefault();
     event.stopPropagation();
-    // Redirect to webinar registration page
+    // Open webinar registration in a new tab only
     window.open(WEBINAR_REGISTRATION_URL, '_blank');
 }
 
 function watchOnDemand(event) {
+    event.preventDefault();
     event.stopPropagation();
-    // Redirect to on-demand workshop recording
-    window.open(ON_DEMAND_WORKSHOP_URL, '_blank');
+    // Navigate in the current tab to on-demand workshop
+    window.location.href = ON_DEMAND_WORKSHOP_URL;
 }
 
 

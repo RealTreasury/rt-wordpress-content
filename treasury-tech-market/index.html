@@ -124,7 +124,8 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 0;
+            padding-top: 40px;
             border-radius: 16px;
             overflow: visible;
             box-shadow:
@@ -140,11 +141,10 @@
 
         /* Chart Title Overlay */
         .chart-title-overlay-large {
-            position: relative;
-            top: auto;
-            left: auto;
-            transform: none;
-            align-self: center;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);

@@ -31,14 +31,14 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 32px;
         }
 
         /* Hero */
         .hero {
-            padding: 60px 0 40px;
+            padding: 48px 0 32px;
             background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
         }
 
@@ -72,7 +72,7 @@
 
         /* Market Section */
         .market-section {
-            padding: 80px 0;
+            padding: 56px 0;
             background: #fafafa;
             overflow: visible;
         }
@@ -80,7 +80,7 @@
         .market-content {
             display: flex;
             flex-direction: column;
-            gap: 40px;
+            gap: 28px;
             margin-bottom: 0;
             overflow: visible;
         }
@@ -109,8 +109,15 @@
         .market-maps {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 32px;
+            gap: 20px;
             overflow: visible;
+        }
+
+        .market-maps,
+        .core-grid,
+        .addons-grid {
+            max-width: 1080px;
+            margin: 0 auto;
         }
 
         .market-image {
@@ -171,7 +178,7 @@
         /* Shared Section Styles */
         .section-header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
         }
 
         .section-title {
@@ -191,13 +198,13 @@
 
         /* Framework Section */
         .framework-section {
-            padding: 80px 0;
+            padding: 56px 0;
         }
 
         .framework-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            gap: 18px;
             max-width: 900px;
             margin: 0 auto;
         }
@@ -205,8 +212,8 @@
         .framework-item {
             text-align: center;
             background: white;
-            border-radius: 16px;
-            padding: 32px 24px;
+            border-radius: 14px;
+            padding: 24px 20px;
             box-shadow:
                 0 4px 16px rgba(0, 0, 0, 0.05),
                 0 0 0 1px rgba(0, 0, 0, 0.04);
@@ -226,7 +233,7 @@
         }
 
         .framework-desc {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-light);
             font-weight: 500;
             line-height: 1.5;
@@ -234,20 +241,20 @@
 
         /* Core Requirements Section */
         .core-section {
-            padding: 80px 0;
+            padding: 56px 0;
             background: #fafafa;
         }
 
         .core-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
         }
 
         .core-card {
             background: white;
-            border-radius: 16px;
-            padding: 32px;
+            border-radius: 14px;
+            padding: 24px;
             box-shadow:
                 0 4px 16px rgba(0, 0, 0, 0.05),
                 0 0 0 1px rgba(0, 0, 0, 0.04);
@@ -282,7 +289,7 @@
         .segment-intro {
             font-size: 15px;
             color: var(--text-light);
-            margin-bottom: 32px;
+            margin-bottom: 20px;
             font-style: italic;
         }
 
@@ -311,28 +318,28 @@
             content: '\2714';
             color: var(--primary);
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             margin-right: 12px;
             flex-shrink: 0;
         }
 
         /* Add-Ons Section */
         .addons-section {
-            padding: 80px 0;
+            padding: 56px 0;
         }
 
         .addons-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .addon-card {
             background: white;
-            border-radius: 12px;
-            padding: 18px 20px;
+            border-radius: 10px;
+            padding: 14px 16px;
             box-shadow:
                 0 2px 12px rgba(0, 0, 0, 0.05),
                 0 0 0 1px rgba(0, 0, 0, 0.04);
@@ -340,9 +347,9 @@
 
         .addon-card-name {
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             display: flex;
             align-items: flex-start;
             gap: 8px;
@@ -360,24 +367,24 @@
         }
 
         .addon-card-desc {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-light);
-            line-height: 1.55;
+            line-height: 1.4;
             font-weight: 500;
             padding-left: 15px;
         }
 
         /* Capability Matrix */
         .matrix-section {
-            padding: 80px 0;
+            padding: 56px 0;
             background: #fafafa;
         }
 
         .matrix-legend {
             display: flex;
-            gap: 32px;
+            gap: 20px;
             justify-content: center;
-            margin-bottom: 32px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
 
@@ -385,7 +392,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--text);
         }
@@ -417,7 +424,7 @@
             font-weight: 700;
             padding: 16px 20px;
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
             letter-spacing: 0.02em;
         }
 
@@ -472,7 +479,7 @@
 
         /* CTA Section */
         .cta-section {
-            padding: 80px 0;
+            padding: 64px 0;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
             position: relative;
@@ -507,7 +514,7 @@
         .cta-content p {
             font-size: 18px;
             color: #ffffff;
-            margin-bottom: 48px;
+            margin-bottom: 32px;
             font-weight: 500;
             max-width: 600px;
             margin-left: auto;
@@ -517,7 +524,7 @@
         .cta-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 24px;
+            gap: 18px;
             max-width: 850px;
             margin: 0 auto;
         }
@@ -526,8 +533,8 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(0, 0, 0, 0.05);
-            border-radius: 16px;
-            padding: 32px 24px;
+            border-radius: 14px;
+            padding: 24px 20px;
             text-decoration: none;
             color: var(--text);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -556,7 +563,7 @@
         }
 
         .cta-desc {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.8;
             font-weight: 500;
             color: var(--text-light);
@@ -577,12 +584,12 @@
             }
 
             .market-content {
-                gap: 24px;
+                gap: 18px;
             }
 
             .market-maps {
                 grid-template-columns: 1fr;
-                gap: 40px;
+                gap: 28px;
             }
 
             .market-text h2 {
@@ -615,12 +622,12 @@
 
             .cta-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
+                gap: 12px;
             }
 
             .framework-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
+                gap: 12px;
             }
 
             .core-grid {
@@ -628,7 +635,7 @@
             }
 
             .addons-grid {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .matrix-table {
@@ -645,7 +652,7 @@
             }
 
             .matrix-legend {
-                gap: 16px;
+                gap: 12px;
             }
         }
     </style>

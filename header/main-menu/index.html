@@ -163,10 +163,6 @@ body.banner-closed { min-height: auto; }
     display: none !important;
 }
 
-.workshop-banner.minimized .banner-actions .banner-cta.secondary {
-    display: none !important;
-}
-
 .workshop-banner.minimized .close-btn {
     display: none !important;
 }
@@ -288,22 +284,6 @@ body.banner-closed { min-height: auto; }
     gap: 10px;
     position: relative;
     z-index: 2;
-}
-
-.banner-cta.secondary {
-    background: rgba(114, 22, 244, 0.08);
-    color: #7216f4;
-    border: 1px solid rgba(114, 22, 244, 0.2);
-    box-shadow: none;
-    text-transform: none;
-    letter-spacing: 0;
-}
-
-.banner-cta.secondary:hover {
-    background: rgba(114, 22, 244, 0.15);
-    color: #5a11c4;
-    border-color: rgba(114, 22, 244, 0.35);
-    box-shadow: none;
 }
 
 .banner-cta:before {
@@ -465,21 +445,18 @@ body.banner-minimized .rt-nav-container {
 
             <div class="banner-text">
                 <div class="banner-title">
-                    <span class="banner-highlight">Upcoming Webinar Registration is Open</span>
+                    <span class="banner-highlight">Reminder: Watch the workshop on demand</span>
                 </div>
                 <div class="banner-subtitle">
-                    Join live or watch the on-demand workshop anytime.
+                    Quick refresher available anytime.
                 </div>
             </div>
         </div>
 
         <div class="banner-actions">
-            <a href="https://events.teams.microsoft.com/event/9936fa3a-9c2b-4907-b759-b8b9795acf1c@cdc422ca-d271-4ba3-856d-77081c6a7f04" class="banner-cta" onclick="registerWebinar(event)">
-                Register
+            <a href="https://realtreasury.com/on-demand-workshop/" class="banner-cta" onclick="watchOnDemand(event)">
+                Watch now
                 <span>→</span>
-            </a>
-            <a href="https://realtreasury.com/on-demand-workshop/" class="banner-cta secondary" onclick="watchOnDemand(event)">
-                On-Demand
             </a>
         </div>
     </div>
@@ -487,7 +464,6 @@ body.banner-minimized .rt-nav-container {
     <div class="site-content"></div>
 
 <script>
-const WEBINAR_REGISTRATION_URL = 'https://events.teams.microsoft.com/event/9936fa3a-9c2b-4907-b759-b8b9795acf1c@cdc422ca-d271-4ba3-856d-77081c6a7f04';
 const ON_DEMAND_WORKSHOP_URL = 'https://realtreasury.com/on-demand-workshop/';
 
 // Add banner state management
@@ -541,15 +517,8 @@ function expandBanner(event) {
         return;
     }
 
-    // Navigate to the webinar registration page
-    window.open(WEBINAR_REGISTRATION_URL, '_blank');
-}
-
-function registerWebinar(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    // Open webinar registration in a new tab only
-    window.open(WEBINAR_REGISTRATION_URL, '_blank');
+    // Navigate to the on-demand workshop page
+    window.location.href = ON_DEMAND_WORKSHOP_URL;
 }
 
 function watchOnDemand(event) {

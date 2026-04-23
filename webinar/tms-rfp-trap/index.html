@@ -1,0 +1,466 @@
+<!-- ============================================================
+     GATED VIDEO — Config for this page
+     Form + Asset resolved via RT Gate mapping (or direct formId).
+     See templates/partials/gated-video.html for full docs.
+     ============================================================ -->
+<script>
+window.RTG_CONFIG = {
+    assetSlug:    'library-tms-rfp-trap-clarity', // RT Gate asset slug — resolves the form via Mappings
+    // mappingId: 4,                        // Optional: set when you want to force a specific mapping ID
+    storageKey:   'rtg_library_tms_rfp_trap_clarity_access',
+    badgeText:    'Gated Library Video',
+    heroTitle:    'Unlock The TMS RFP Trap Recording',
+    heroSubtitle: 'Complete the short form below to get instant access to The TMS RFP Trap: All Yes and No, Real Clarity.',
+    formHeading:  'Watch The TMS RFP Trap',
+    formSubtext:  'Fill out the form below for instant access.',
+    ctaHeading:   'Ready to take the next step?',
+    ctaUrl:       'https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled',
+    ctaLabel:     'Book a Call',
+    videoTitle:   'The TMS RFP Trap: All Yes and No, Real Clarity',
+    wpSiteUrl:    'https://realtreasury.com'
+};
+</script>
+
+<!--
+  ============================================================
+  GATED VIDEO TEMPLATE (rt-gate powered)
+  ============================================================
+
+  HOW TO CREATE A NEW GATED PAGE:
+  1. Copy this template into a new file (e.g. webinar/my-new-video/index.html)
+  2. Add a <script> block BEFORE this template that sets window.RTG_CONFIG:
+
+     <script>
+     window.RTG_CONFIG = {
+         assetSlug:   'my-asset-slug',       // Must match the asset slug in RT Gate > Assets
+         formId:      2,                      // (Optional) RT Gate form ID
+         mappingId:   1,                      // (Optional) RT Gate Mapping ID (preferred to scope submit/email)
+         storageKey:  'rtg_my_asset_access',  // Unique localStorage key for this page
+         badgeText:   'Free On-Demand Workshop',
+         heroTitle:   'Unlock Your Workshop Recording',
+         heroSubtitle:'Complete the form below for instant access.',
+         formHeading: 'Watch the Recording',
+         formSubtext: 'Fill out the form below for instant access.',
+         ctaHeading:  'Ready to take the next step?',
+         ctaUrl:      'https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled',
+         ctaLabel:    'Book a Call',
+         videoTitle:  'On-Demand Workshop',
+         wpSiteUrl:   'https://realtreasury.com'
+     };
+     </script>
+
+  3. In WP Admin > Real Treasury Gate, create:
+     a. An Asset with the matching slug (e.g. 'my-asset-slug')
+     b. A Form with the fields you want (the form ID is shown in the Forms list)
+     c. A Mapping linking the Form to the Asset
+
+  HOW THE FORM + ASSET MAPPING WORKS:
+  - Each page specifies an assetSlug (required), and can optionally set formId and/or mappingId.
+  - If mappingId is set: it is sent on submit to scope token issuance to that mapping.
+  - If formId is set: the page loads that specific form directly via GET /form/{formId}.
+  - If formId is NOT set: the page calls GET /gate/{assetSlug}, which resolves
+    the correct form via the mapping table (RT Gate > Mappings).
+  - On submit, the form_id is sent to POST /submit, which issues tokens
+    for ALL assets mapped to that form.
+  - Different pages can use different form+asset combos by setting
+    assetSlug/formId/mappingId values in their config.
+
+  4. Done — the page loads the correct form from the mapping (or direct formId).
+  ============================================================
+-->
+
+<style>
+    /* ---- Scoped Variables ---- */
+    .rt-gated-video {
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --deep-purple: #5b0acd;
+        --lavender-pink: #c77dff;
+        --soft-purple: #9d4edd;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        --white: #ffffff;
+        --off-white: #f8f8f8;
+        --black: #131313;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        --gradient-light: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .rt-gated-video *, .rt-gated-video *::before, .rt-gated-video *::after { box-sizing: border-box; }
+    .rt-gated-video img { max-width: 100%; height: auto; }
+    .rt-gated-video a { color: inherit; text-decoration: none; }
+
+    /* ---- Layout ---- */
+    .rt-gv-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---- Hero ---- */
+    .rt-gv-hero { background: var(--gradient-light); padding: 60px 0 48px; text-align: center; position: relative; overflow: hidden; }
+    .rt-gv-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 20%, rgba(114,22,244,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(143,71,246,0.06) 0%, transparent 50%); pointer-events: none; }
+    .rt-gv-hero .rt-gv-container { position: relative; z-index: 2; }
+    .rt-gv-badge { display: inline-block; background: rgba(199,125,255,0.1); border: 1px solid rgba(199,125,255,0.25); border-radius: 20px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; color: var(--primary-purple); margin-bottom: 24px; }
+    .rt-gv-title { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .rt-gv-subtitle { font-size: 1.15rem; color: var(--gray-text); line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
+
+    /* ---- Side-by-side row (chart + form) ---- */
+    .rt-gv-content-row { display: flex; gap: 32px; align-items: flex-start; transition: opacity 0.5s ease, transform 0.5s ease; }
+
+    /* ---- Market Chart ---- */
+    .rt-gv-chart { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); }
+    .rt-gv-chart img { width: 100%; height: auto; border-radius: 8px; display: block; }
+    .rt-gv-chart-label { font-size: 0.9rem; font-weight: 600; color: var(--dark-text); text-align: center; margin-bottom: 12px; }
+
+    /* ---- Form Card ---- */
+    .rt-gv-form-section { padding: 48px 0; }
+    .rt-gv-form-card { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 20px; padding: 48px 40px; margin: 0; box-shadow: 0 8px 32px rgba(114,22,244,0.1); position: relative; overflow: hidden; }
+    .rt-gv-form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-primary); }
+    .rt-gv-form-heading { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin-bottom: 8px; text-align: center; }
+    .rt-gv-form-subtext { font-size: 0.95rem; color: var(--gray-text); text-align: center; margin-bottom: 32px; }
+
+    /* ---- Dynamic form fields ---- */
+    .rt-gv-form-card .rtg-field-group { margin-bottom: 16px; }
+    .rt-gv-form-card .rtg-field-group label { display: block; font-size: 0.875rem; font-weight: 600; color: var(--dark-text); margin-bottom: 6px; }
+    .rt-gv-form-card .rtg-field-group input[type="text"],
+    .rt-gv-form-card .rtg-field-group input[type="email"],
+    .rt-gv-form-card .rtg-field-group input[type="tel"],
+    .rt-gv-form-card .rtg-field-group input[type="url"],
+    .rt-gv-form-card .rtg-field-group input[type="number"],
+    .rt-gv-form-card .rtg-field-group input[type="date"],
+    .rt-gv-form-card .rtg-field-group textarea,
+    .rt-gv-form-card .rtg-field-group select { width: 100%; padding: 14px 16px; border: 2px solid rgba(199,125,255,0.2); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--dark-text); background: var(--white); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+    .rt-gv-form-card .rtg-field-group input:focus,
+    .rt-gv-form-card .rtg-field-group textarea:focus,
+    .rt-gv-form-card .rtg-field-group select:focus { outline: none; border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(114,22,244,0.12); }
+    .rt-gv-form-card .rtg-field-group input.rtg-invalid,
+    .rt-gv-form-card .rtg-field-group textarea.rtg-invalid,
+    .rt-gv-form-card .rtg-field-group select.rtg-invalid { border-color: #e53e3e; box-shadow: 0 0 0 3px rgba(229,62,62,0.12); }
+    .rt-gv-form-card .rtg-field-group textarea { min-height: 80px; resize: vertical; }
+    .rt-gv-form-card .rtg-field-group select { appearance: auto; }
+    .rt-gv-form-card .rtg-option-group { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .rt-gv-form-card .rtg-option-group label { display: flex; align-items: center; gap: 8px; font-weight: 400; font-size: 0.95rem; cursor: pointer; }
+    .rt-gv-form-card .rtg-option-group input[type="radio"],
+    .rt-gv-form-card .rtg-option-group input[type="checkbox"] { accent-color: var(--primary-purple); width: 18px; height: 18px; }
+    .rt-gv-form-card .rtg-consent-group { margin: 20px 0 8px; }
+    .rt-gv-form-card .rtg-consent-group label { display: flex; align-items: flex-start; gap: 10px; font-weight: 400; font-size: 0.85rem; color: var(--gray-text); cursor: pointer; }
+    .rt-gv-form-card .rtg-consent-group input[type="checkbox"] { accent-color: var(--primary-purple); width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
+    .rt-gv-form-card .rtg-consent-group a { color: var(--primary-purple); text-decoration: underline; }
+    .rt-gv-form-card .rtg-submit-btn { display: block; width: 100%; padding: 16px 36px; margin-top: 8px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1rem; color: var(--white); background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%); border: 1px solid rgba(199,125,255,0.4); border-radius: 12px; cursor: pointer; letter-spacing: 0.3px; text-transform: uppercase; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 8px 32px rgba(114,22,244,0.3), inset 0 1px 0 rgba(255,255,255,0.25); }
+    .rt-gv-form-card .rtg-submit-btn:hover { transform: translateY(-2px); background: linear-gradient(135deg, rgba(143,71,246,0.95) 0%, rgba(157,78,221,0.95) 100%); box-shadow: 0 12px 40px rgba(114,22,244,0.4), inset 0 1px 0 rgba(255,255,255,0.3); }
+    .rt-gv-form-card .rtg-submit-btn:focus-visible { outline: 3px solid var(--lavender-pink); outline-offset: 2px; }
+    .rt-gv-form-card .rtg-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .rt-gv-form-card .rtg-spinner { display: none; width: 24px; height: 24px; border: 3px solid rgba(114,22,244,0.2); border-top-color: var(--primary-purple); border-radius: 50%; animation: rt-gv-spin 0.7s linear infinite; vertical-align: middle; margin-left: 8px; }
+    .rt-gv-form-card .rtg-submitting .rtg-spinner { display: inline-block; }
+    @keyframes rt-gv-spin { to { transform: rotate(360deg); } }
+    .rt-gv-form-card .rtg-response { display: none; border-radius: 8px; padding: 12px 16px; font-size: 0.875rem; margin-top: 16px; }
+    .rt-gv-form-card .rtg-response.rtg-error { display: block; border: 2px solid #e53e3e; color: #9b2c2c; background: #fff5f5; }
+    .rt-gv-form-card .rtg-loading { text-align: center; padding: 24px 0; color: var(--gray-text); font-size: 0.95rem; }
+    .rt-gv-form-card .rtg-loading-bar { height: 12px; background: rgba(199,125,255,0.15); border-radius: 6px; margin-bottom: 16px; animation: rtg-pulse 1.4s ease-in-out infinite; }
+    .rt-gv-form-card .rtg-loading-bar:nth-child(2) { width: 85%; }
+    .rt-gv-form-card .rtg-loading-bar:nth-child(3) { width: 70%; }
+    @keyframes rtg-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    /* ---- Video Card ---- */
+    .rt-gv-video-card { display: none; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; max-width: 100%; margin: 0 auto; text-align: center; }
+    .rt-gv-video-welcome { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin-bottom: 24px; }
+    .rt-gv-video-player { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(114,22,244,0.15); border: 2px solid rgba(199,125,255,0.2); background: var(--black); }
+    .rt-gv-video-player video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; }
+    .rt-gv-video-player video::-webkit-media-controls-download-button,
+    .rt-gv-video-player video::-webkit-media-controls-overflow-menu-list-item:last-child { display: none !important; }
+    .rt-gv-video-cta { margin-top: 40px; }
+    .rt-gv-cta-heading { font-size: 1.25rem; font-weight: 700; color: var(--dark-text); margin-bottom: 16px; }
+    .rt-gv-btn-primary { display: inline-block; padding: 18px 36px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1rem; color: var(--white); background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%); border: 1px solid rgba(199,125,255,0.4); border-radius: 16px; text-decoration: none; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 8px 32px rgba(114,22,244,0.3), inset 0 1px 0 rgba(255,255,255,0.25); }
+    .rt-gv-btn-primary:hover { transform: translateY(-3px) scale(1.02); background: linear-gradient(135deg, rgba(143,71,246,0.95) 0%, rgba(157,78,221,0.95) 100%); box-shadow: 0 12px 40px rgba(114,22,244,0.4), inset 0 1px 0 rgba(255,255,255,0.3); }
+    .rt-gv-btn-primary:focus-visible { outline: 3px solid var(--lavender-pink); outline-offset: 2px; }
+
+    @media (max-width: 768px) {
+        .rt-gv-hero { padding: 40px 0 32px; }
+        .rt-gv-title { font-size: 2.25rem; }
+        .rt-gv-subtitle { font-size: 1.05rem; }
+        .rt-gv-content-row { flex-direction: column; }
+        .rt-gv-form-card { padding: 32px 24px; }
+        .rt-gv-cta-heading { font-size: 1.1rem; }
+        .rt-gv-btn-primary { padding: 16px 28px; font-size: 0.9rem; }
+    }
+    @media (max-width: 480px) {
+        .rt-gv-title { font-size: 1.85rem; }
+        .rt-gv-badge { font-size: 0.8rem; padding: 6px 14px; }
+        .rt-gv-form-card { padding: 24px 18px; border-radius: 16px; }
+    }
+</style>
+
+<div class="rt-gated-video">
+    <section class="rt-gv-hero" aria-labelledby="rt-gv-hero-heading">
+        <div class="rt-gv-container">
+            <span class="rt-gv-badge" id="rtGvBadge"></span>
+            <h2 id="rt-gv-hero-heading" class="rt-gv-title"></h2>
+            <p class="rt-gv-subtitle" id="rtGvSubtitle"></p>
+        </div>
+    </section>
+    <section class="rt-gv-form-section" aria-labelledby="rt-gv-form-heading">
+        <div class="rt-gv-container">
+            <div id="rtGvContentRow" class="rt-gv-content-row">
+            <div class="rt-gv-chart">
+                <p class="rt-gv-chart-label">The TMS RFP Trap — Featured Session</p>
+                <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/02/tms-market-NORAM-01-2026-clean-2.png" alt="Featured content visual for The TMS RFP Trap session" loading="lazy">
+            </div>
+            <div id="rtGvFormCard" class="rt-gv-form-card" role="region" aria-labelledby="rt-gv-form-heading">
+                <h3 id="rt-gv-form-heading" class="rt-gv-form-heading"></h3>
+                <p class="rt-gv-form-subtext" id="rtGvFormSubtext"></p>
+                <div id="rtGvFormContainer">
+                    <div class="rtg-loading">
+                        <div class="rtg-loading-bar" style="width:100%"></div>
+                        <div class="rtg-loading-bar"></div>
+                        <div class="rtg-loading-bar"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div id="rtGvVideoCard" class="rt-gv-video-card" role="region" aria-labelledby="rt-gv-video-heading">
+                <p id="rt-gv-video-heading" class="rt-gv-video-welcome">You're in &mdash; enjoy the recording</p>
+                <div class="rt-gv-video-player">
+                    <video id="rtGvVideo" controls controlsList="nodownload" playsinline preload="metadata" oncontextmenu="return false;">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="rt-gv-video-cta">
+                    <p class="rt-gv-cta-heading" id="rtGvCtaHeading"></p>
+                    <a id="rtGvCtaLink" class="rt-gv-btn-primary" target="_blank" rel="noopener noreferrer"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    /* ---- Read config ---- */
+    var C = window.RTG_CONFIG;
+    if (!C || !C.assetSlug) {
+        console.error('RTG: window.RTG_CONFIG.assetSlug is required');
+        return;
+    }
+
+    var API_BASE    = (C.wpSiteUrl || 'https://realtreasury.com') + '/wp-json/rtg/v1';
+    var ASSET_SLUG  = C.assetSlug;
+    var CONFIG_FORM_ID = C.formId || null;   // Optional: directly specify the rt-gate form ID
+    var CONFIG_MAPPING_ID = C.mappingId || null; // Optional: explicitly specify mapping ID
+    var STORAGE_KEY = C.storageKey || ('rtg_' + ASSET_SLUG.replace(/-/g, '_') + '_access');
+    var FORM_ID     = null;
+    var MAPPING_ID  = CONFIG_MAPPING_ID ? Number(CONFIG_MAPPING_ID) : null;
+
+    /* ---- Populate page text from config ---- */
+    function setText(id, text) { var el = document.getElementById(id); if (el && text) el.textContent = text; }
+    setText('rtGvBadge',       C.badgeText    || 'Free On-Demand Workshop');
+    setText('rtGvSubtitle',    C.heroSubtitle || 'Complete the short form below to get instant access.');
+    setText('rtGvFormSubtext', C.formSubtext  || 'Fill out the form below for instant access.');
+    setText('rtGvCtaHeading',  C.ctaHeading   || 'Ready to take the next step?');
+
+    var heroTitle = document.getElementById('rt-gv-hero-heading');
+    if (heroTitle) heroTitle.textContent = C.heroTitle || 'Unlock Your Workshop Recording';
+    var formHeading = document.getElementById('rt-gv-form-heading');
+    if (formHeading) formHeading.textContent = C.formHeading || 'Watch the Recording';
+    var ctaLink = document.getElementById('rtGvCtaLink');
+    if (ctaLink) { ctaLink.href = C.ctaUrl || '#'; ctaLink.textContent = C.ctaLabel || 'Book a Call'; }
+    var videoEl = document.getElementById('rtGvVideo');
+    if (videoEl) videoEl.title = (C.videoTitle || 'On-Demand Workshop') + ' \u2014 Real Treasury';
+
+    /* ---- Prevent video downloads ---- */
+    (function() {
+        var ALLOW_CLASS = 'Download';
+        function hasAllowClass(el) { var n = el; while (n && n !== document.documentElement) { if (n.classList && n.classList.contains(ALLOW_CLASS)) return true; n = n.parentElement; } return false; }
+        function protect(el) { if (hasAllowClass(el)) return; if (typeof el.controlsList !== 'undefined') { el.controlsList.add('nodownload'); } else { el.setAttribute('controlsList', 'nodownload'); } el.addEventListener('contextmenu', function(e) { if (!hasAllowClass(el)) e.preventDefault(); }); }
+        function scan(root) { var els = (root || document).querySelectorAll('video, audio'); for (var i = 0; i < els.length; i++) protect(els[i]); }
+        if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function() { scan(); }); } else { scan(); }
+        if (typeof MutationObserver !== 'undefined') { new MutationObserver(function(mutations) { for (var i = 0; i < mutations.length; i++) { var added = mutations[i].addedNodes; for (var j = 0; j < added.length; j++) { var node = added[j]; if (node.nodeType !== 1) continue; if (node.matches && node.matches('video, audio')) protect(node); if (node.querySelectorAll) { var nested = node.querySelectorAll('video, audio'); for (var k = 0; k < nested.length; k++) protect(nested[k]); } } } }).observe(document.documentElement, { childList: true, subtree: true }); }
+    })();
+
+    /* ---- iFrame auto-resize ---- */
+    (function() {
+        var id = (document.body && document.body.dataset && document.body.dataset.iframeId) || window.location.pathname;
+        function postHeight() { var h = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0; if (window.parent && typeof window.parent.postMessage === 'function') { window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*'); } }
+        var frameId;
+        function schedule() { if (frameId) cancelAnimationFrame(frameId); frameId = requestAnimationFrame(postHeight); }
+        window.addEventListener('load', schedule, { passive: true });
+        window.addEventListener('resize', schedule, { passive: true });
+        if (typeof MutationObserver !== 'undefined' && document.body) { new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true }); }
+        schedule();
+    })();
+
+    /* ---- Helpers ---- */
+    var formCard      = document.getElementById('rtGvFormCard');
+    var contentRow    = document.getElementById('rtGvContentRow');
+    var videoCard     = document.getElementById('rtGvVideoCard');
+    var formContainer = document.getElementById('rtGvFormContainer');
+
+    function parseJsonOrThrow(response) { return response.text().then(function(text) { var json = {}; try { json = text ? JSON.parse(text) : {}; } catch (e) { throw new Error('Invalid JSON (' + response.status + ')'); } if (!response.ok) { throw new Error(json.message || 'Request failed (' + response.status + ')'); } return json; }); }
+    function getStoredAccess() { try { var raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
+    function storeAccess(data) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { /* noop */ } }
+    function clearAccess() { try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* noop */ } }
+    function fieldTypeToInputType(t) { return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
+    function fieldAutocomplete(f) { if (f.autocomplete === false) return 'off'; if (f.key === 'full_name') return 'name'; if (f.key === 'first_name') return 'given-name'; if (f.key === 'last_name') return 'family-name'; return ({ email:'email', tel:'tel', company:'organization', url:'url' })[f.type] || 'on'; }
+    function escHtml(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s)); return d.innerHTML; }
+    function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    /* ---- Video swap ---- */
+    function showVideo(videoUrl, animate) {
+        var hideTarget = contentRow || formCard;
+        if (!hideTarget || !videoCard || !videoEl) return;
+        if (videoUrl) videoEl.src = videoUrl;
+        if (animate) {
+            hideTarget.style.opacity = '0'; hideTarget.style.transform = 'translateY(-20px)';
+            setTimeout(function() { hideTarget.style.display = 'none'; videoCard.style.display = 'block'; void videoCard.offsetHeight; videoCard.style.opacity = '1'; videoCard.style.transform = 'translateY(0)'; videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500);
+        } else {
+            hideTarget.style.display = 'none'; videoCard.style.display = 'block'; videoCard.style.opacity = '1'; videoCard.style.transform = 'translateY(0)';
+        }
+    }
+
+    /* ---- API ---- */
+    function fetchGateSchema() { return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow); }
+    function fetchFormSchemaById(formId) { return fetch(API_BASE + '/form/' + formId).then(parseJsonOrThrow); }
+    function fetchFormSchema() {
+        if (CONFIG_FORM_ID && CONFIG_MAPPING_ID) {
+            return fetchFormSchemaById(CONFIG_FORM_ID).then(function(formSchema) {
+                formSchema.mapping_id = Number(CONFIG_MAPPING_ID);
+                formSchema.form_id = formSchema.form_id || CONFIG_FORM_ID;
+                return formSchema;
+            });
+        }
+        if (!CONFIG_FORM_ID) {
+            return fetchGateSchema().then(function(gateSchema) {
+                if (CONFIG_MAPPING_ID && gateSchema.mapping_id && Number(gateSchema.mapping_id) !== Number(CONFIG_MAPPING_ID)) {
+                    console.warn('RTG: Configured mappingId', CONFIG_MAPPING_ID, 'does not match mapped ID', gateSchema.mapping_id, 'for asset', ASSET_SLUG);
+                }
+                if (CONFIG_MAPPING_ID) gateSchema.mapping_id = Number(CONFIG_MAPPING_ID);
+                return gateSchema;
+            }).catch(function() {
+                throw new Error('No form mapping found for asset "' + ASSET_SLUG + '"');
+            });
+        }
+        return Promise.all([fetchGateSchema(), fetchFormSchemaById(CONFIG_FORM_ID)])
+            .then(function(results) {
+                var gateSchema = results[0] || {}, formSchema = results[1] || {};
+                if (gateSchema.form_id && Number(gateSchema.form_id) !== Number(CONFIG_FORM_ID)) {
+                    console.warn('RTG: Configured formId', CONFIG_FORM_ID, 'does not match mapped form', gateSchema.form_id, 'for asset', ASSET_SLUG);
+                }
+                if (CONFIG_MAPPING_ID && gateSchema.mapping_id && Number(gateSchema.mapping_id) !== Number(CONFIG_MAPPING_ID)) {
+                    console.warn('RTG: Configured mappingId', CONFIG_MAPPING_ID, 'does not match mapped ID', gateSchema.mapping_id, 'for asset', ASSET_SLUG);
+                }
+                formSchema.mapping_id = CONFIG_MAPPING_ID ? Number(CONFIG_MAPPING_ID) : (gateSchema.mapping_id || null);
+                formSchema.form_id = formSchema.form_id || CONFIG_FORM_ID;
+                return formSchema;
+            })
+            .catch(function(err) {
+                if (CONFIG_MAPPING_ID) {
+                    return fetchFormSchemaById(CONFIG_FORM_ID).then(function(formSchema) {
+                        formSchema.mapping_id = Number(CONFIG_MAPPING_ID);
+                        formSchema.form_id = formSchema.form_id || CONFIG_FORM_ID;
+                        return formSchema;
+                    });
+                }
+                throw new Error((err && err.message) || 'Unable to load gate/form schema.');
+            });
+    }
+    function submitForm(fields) { var payload = { form_id: FORM_ID, fields: fields, consent: true, honeypot: '' }; if (MAPPING_ID) { payload.mapping_id = MAPPING_ID; } return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(parseJsonOrThrow); }
+    function validateToken(token, slug) { return fetch(API_BASE + '/validate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug }) }).then(parseJsonOrThrow); }
+    function sendEvent(token, slug, type, meta) { return fetch(API_BASE + '/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug, event_type: type, meta: meta || {} }) }).then(parseJsonOrThrow).catch(function(e) { console.warn('RTG event failed (' + type + '):', e); }); }
+
+    /* ---- Render form from schema ---- */
+    function renderForm(schema) {
+        var fields = schema.fields || [];
+        var consentText = schema.consent_text || '';
+        var html = '<form id="rtGvForm" novalidate>';
+        fields.forEach(function(field) {
+            var req = field.required ? ' required' : '';
+            var mark = field.required ? ' <span style="color:#e53e3e;">*</span>' : '';
+            var ph = field.placeholder ? ' placeholder="' + escAttr(field.placeholder) + '"' : '';
+            var ac = ' autocomplete="' + fieldAutocomplete(field) + '"';
+            html += '<div class="rtg-field-group"><label for="rtg_' + escAttr(field.key) + '">' + escHtml(field.label) + mark + '</label>';
+            if (field.type === 'textarea') { html += '<textarea id="rtg_' + escAttr(field.key) + '" name="' + escAttr(field.key) + '"' + ph + ac + req + '></textarea>'; }
+            else if (field.type === 'select' && field.options) { html += '<select id="rtg_' + escAttr(field.key) + '" name="' + escAttr(field.key) + '"' + ac + req + '><option value="">Select...</option>'; field.options.forEach(function(o) { html += '<option value="' + escAttr(o) + '">' + escHtml(o) + '</option>'; }); html += '</select>'; }
+            else if ((field.type === 'radio' || field.type === 'checkbox') && field.options) { html += '<div class="rtg-option-group">'; field.options.forEach(function(o, i) { var it = field.type === 'radio' ? 'radio' : 'checkbox'; var nm = field.type === 'radio' ? field.key : field.key + '[]'; html += '<label><input type="' + it + '" name="' + escAttr(nm) + '" value="' + escAttr(o) + '"' + (i === 0 && field.required ? req : '') + '> ' + escHtml(o) + '</label>'; }); html += '</div>'; }
+            else { html += '<input type="' + fieldTypeToInputType(field.type) + '" id="rtg_' + escAttr(field.key) + '" name="' + escAttr(field.key) + '"' + ph + ac + req + '>'; }
+            html += '</div>';
+        });
+        if (consentText) { html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGvConsent" required> <span>' + escHtml(consentText) + '</span></label></div>'; }
+        html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
+        html += '<div class="rtg-submit-wrap"><button type="submit" class="rtg-submit-btn">Watch Now</button><span class="rtg-spinner"></span></div>';
+        html += '<div class="rtg-response" id="rtGvResponse" aria-live="polite" role="status"></div></form>';
+        formContainer.innerHTML = html;
+        attachFormHandler(fields);
+    }
+
+    /* ---- Form submit handler ---- */
+    function attachFormHandler(fieldDefs) {
+        var form = document.getElementById('rtGvForm');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var hp = form.querySelector('[name="_rtg_hp"]'); if (hp && hp.value) return;
+            var valid = true; form.querySelectorAll('.rtg-invalid').forEach(function(el) { el.classList.remove('rtg-invalid'); });
+            var collected = {};
+            fieldDefs.forEach(function(field) {
+                if (field.type === 'checkbox' && field.options) { var checked = []; form.querySelectorAll('[name="' + field.key + '[]"]:checked').forEach(function(cb) { checked.push(cb.value); }); if (field.required && checked.length === 0) { valid = false; var g = form.querySelector('[name="' + field.key + '[]"]'); if (g) g.classList.add('rtg-invalid'); } collected[field.key] = checked.join(', '); }
+                else if (field.type === 'radio') { var sel = form.querySelector('[name="' + field.key + '"]:checked'); var v = sel ? sel.value : ''; if (field.required && !v) { valid = false; var f = form.querySelector('[name="' + field.key + '"]'); if (f) f.classList.add('rtg-invalid'); } collected[field.key] = v; }
+                else { var input = form.querySelector('[name="' + field.key + '"]'); if (!input) return; var v = input.value.trim(); if (field.required && !v) { input.classList.add('rtg-invalid'); valid = false; } if (field.type === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { input.classList.add('rtg-invalid'); valid = false; } collected[field.key] = v; }
+            });
+            var consent = document.getElementById('rtGvConsent'); if (consent && !consent.checked) { valid = false; consent.classList.add('rtg-invalid'); }
+            if (!valid) return;
+            var btn = form.querySelector('.rtg-submit-btn'), wrap = form.querySelector('.rtg-submit-wrap'), resp = document.getElementById('rtGvResponse');
+            if (btn) btn.disabled = true; if (wrap) wrap.classList.add('rtg-submitting'); if (resp) { resp.style.display = 'none'; resp.className = 'rtg-response'; }
+            submitForm(collected)
+                .then(function(data) { if (!data.assets || data.assets.length === 0) throw new Error('No assets returned. Check the form-to-asset mapping in WP Admin.'); var target = null; for (var i = 0; i < data.assets.length; i++) { if (data.assets[i].slug === ASSET_SLUG) { target = data.assets[i]; break; } } if (!target) target = data.assets[0]; return validateToken(target.token, target.slug).then(function(v) { return { asset: target, validation: v }; }); })
+                .then(function(r) {
+                    if (!r.validation.valid) throw new Error('Token validation failed.');
+                    var cfg = r.validation.asset || {}, url = '';
+                    if (cfg.type === 'video' && cfg.config) url = cfg.config.embed_url || '';
+                    else if (cfg.type === 'link' && cfg.config) url = cfg.config.target_url || '';
+                    if (!url) throw new Error('No video URL found in asset configuration.');
+                    storeAccess({ token: r.asset.token, asset_slug: r.asset.slug, video_url: url, expires_at: r.asset.expires_at, stored_at: new Date().toISOString() });
+                    showVideo(url, true);
+                    sendEvent(r.asset.token, r.asset.slug, 'page_view', { source: ASSET_SLUG });
+                    initVideoTracking(r.asset.token, r.asset.slug);
+                })
+                .catch(function(err) { console.error('RTG submission error:', err); if (resp) { resp.textContent = err.message || 'Something went wrong.'; resp.className = 'rtg-response rtg-error'; } if (btn) btn.disabled = false; if (wrap) wrap.classList.remove('rtg-submitting'); });
+        });
+    }
+
+    /* ---- Video event tracking ---- */
+    function initVideoTracking(token, slug) {
+        if (!videoEl) return;
+        var playTracked = false, ms = { 25:false, 50:false, 75:false, 90:false, 100:false };
+        videoEl.addEventListener('play', function() { if (!playTracked) { playTracked = true; sendEvent(token, slug, 'video_play', { source: ASSET_SLUG }); } });
+        videoEl.addEventListener('timeupdate', function() { if (!videoEl.duration) return; var pct = (videoEl.currentTime / videoEl.duration) * 100; [25,50,75,90,100].forEach(function(m) { if (pct >= m && !ms[m]) { ms[m] = true; sendEvent(token, slug, 'video_progress', { progress: m }); } }); });
+        videoEl.addEventListener('ended', function() { if (!ms[100]) { ms[100] = true; sendEvent(token, slug, 'video_progress', { progress: 100 }); } });
+    }
+
+    /* ---- Init ---- */
+    document.addEventListener('DOMContentLoaded', function() {
+        var stored = getStoredAccess();
+        if (stored && stored.token && stored.asset_slug) {
+            validateToken(stored.token, stored.asset_slug)
+                .then(function(v) {
+                    if (v.valid) { var url = stored.video_url || ''; if (!url && v.asset && v.asset.config) url = v.asset.config.embed_url || v.asset.config.target_url || ''; if (url) { showVideo(url, false); initVideoTracking(stored.token, stored.asset_slug); return; } }
+                    clearAccess(); loadForm();
+                })
+                .catch(function() { clearAccess(); loadForm(); });
+        } else { loadForm(); }
+    });
+
+    function loadForm() {
+        fetchFormSchema()
+            .then(function(schema) { FORM_ID = schema.form_id; MAPPING_ID = schema.mapping_id || null; renderForm(schema); })
+            .catch(function(err) {
+                var source = CONFIG_FORM_ID ? 'form ID ' + CONFIG_FORM_ID : 'asset "' + ASSET_SLUG + '"';
+                console.error('RTG: Failed to load form for ' + source + ':', err.message || err);
+                formContainer.innerHTML = '<div class="rtg-response rtg-error" style="display:block;">'
+                    + 'Unable to load the form. Please refresh the page or contact support.'
+                    + '</div>';
+            });
+    }
+})();
+</script>

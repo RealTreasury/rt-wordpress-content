@@ -6,17 +6,17 @@
 <script>
 window.RTG_CONFIG = {
     assetSlug:    'library-tms-rfp-trap-clarity', // RT Gate asset slug — resolves the form via Mappings
-    // mappingId: 4,                        // Optional: set when you want to force a specific mapping ID
-    storageKey:   'rtg_library_tms_rfp_trap_clarity_access',
+    mappingId:    4,                          // Active RT Gate mapping ID for this asset
+    storageKey:   'rtg_webinar_tms_rfp_trap_access_v1',
     badgeText:    'Gated Library Video',
-    heroTitle:    'Unlock The TMS RFP Trap Recording',
+    heroTitle:    'The TMS RFP Trap: All Yes and No, Real Clarity.',
     heroSubtitle: 'Complete the short form below to get instant access to The TMS RFP Trap: All Yes and No, Real Clarity.',
-    formHeading:  'Watch The TMS RFP Trap',
+    formHeading:  'Watch The TMS RFP Trap: All Yes and No, Real Clarity.',
     formSubtext:  'Fill out the form below for instant access.',
     ctaHeading:   'Ready to take the next step?',
     ctaUrl:       'https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled',
     ctaLabel:     'Book a Call',
-    videoTitle:   'The TMS RFP Trap: All Yes and No, Real Clarity',
+    videoTitle:   'The TMS RFP Trap: All Yes and No, Real Clarity.',
     wpSiteUrl:    'https://realtreasury.com'
 };
 </script>
@@ -320,7 +320,16 @@ window.RTG_CONFIG = {
     }
 
     /* ---- API ---- */
-    function fetchGateSchema() { return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow); }
+    function getGateEndpoint() { return API_BASE + '/gate/' + ASSET_SLUG; }
+    function logGateDiagnostics(prefix, err) {
+        console.error(prefix, {
+            assetSlug: ASSET_SLUG,
+            mappingId: CONFIG_MAPPING_ID,
+            endpoint: getGateEndpoint(),
+            error: err && err.message ? err.message : err || null
+        });
+    }
+    function fetchGateSchema() { return fetch(getGateEndpoint()).then(parseJsonOrThrow); }
     function fetchFormSchemaById(formId) { return fetch(API_BASE + '/form/' + formId).then(parseJsonOrThrow); }
     function fetchFormSchema() {
         if (CONFIG_FORM_ID && CONFIG_MAPPING_ID) {
@@ -337,8 +346,9 @@ window.RTG_CONFIG = {
                 }
                 if (CONFIG_MAPPING_ID) gateSchema.mapping_id = Number(CONFIG_MAPPING_ID);
                 return gateSchema;
-            }).catch(function() {
-                throw new Error('No form mapping found for asset "' + ASSET_SLUG + '"');
+            }).catch(function(err) {
+                logGateDiagnostics('RTG: /gate lookup failed while loading schema.', err);
+                throw new Error('We could not load the form because the asset-to-form mapping is missing or mismatched. Please contact support and mention asset slug "' + ASSET_SLUG + '".');
             });
         }
         return Promise.all([fetchGateSchema(), fetchFormSchemaById(CONFIG_FORM_ID)])
@@ -368,6 +378,20 @@ window.RTG_CONFIG = {
     function submitForm(fields) { var payload = { form_id: FORM_ID, fields: fields, consent: true, honeypot: '' }; if (MAPPING_ID) { payload.mapping_id = MAPPING_ID; } return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(parseJsonOrThrow); }
     function validateToken(token, slug) { return fetch(API_BASE + '/validate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug }) }).then(parseJsonOrThrow); }
     function sendEvent(token, slug, type, meta) { return fetch(API_BASE + '/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug, event_type: type, meta: meta || {} }) }).then(parseJsonOrThrow).catch(function(e) { console.warn('RTG event failed (' + type + '):', e); }); }
+    function resolveVideoUrl(asset) {
+        var cfg = asset || {}, url = '';
+        if (cfg.type === 'video' && cfg.config) url = cfg.config.embed_url || '';
+        else if (cfg.type === 'link' && cfg.config) url = cfg.config.target_url || '';
+        if (!url) {
+            console.error('RTG: Video URL missing from mapped asset configuration.', {
+                assetSlug: ASSET_SLUG,
+                mappingId: MAPPING_ID || CONFIG_MAPPING_ID || null,
+                asset: cfg
+            });
+            throw new Error('We found your access token, but this asset is missing a video URL. Please contact support.');
+        }
+        return url;
+    }
 
     /* ---- Render form from schema ---- */
     function renderForm(schema) {
@@ -416,10 +440,7 @@ window.RTG_CONFIG = {
                 .then(function(data) { if (!data.assets || data.assets.length === 0) throw new Error('No assets returned. Check the form-to-asset mapping in WP Admin.'); var target = null; for (var i = 0; i < data.assets.length; i++) { if (data.assets[i].slug === ASSET_SLUG) { target = data.assets[i]; break; } } if (!target) target = data.assets[0]; return validateToken(target.token, target.slug).then(function(v) { return { asset: target, validation: v }; }); })
                 .then(function(r) {
                     if (!r.validation.valid) throw new Error('Token validation failed.');
-                    var cfg = r.validation.asset || {}, url = '';
-                    if (cfg.type === 'video' && cfg.config) url = cfg.config.embed_url || '';
-                    else if (cfg.type === 'link' && cfg.config) url = cfg.config.target_url || '';
-                    if (!url) throw new Error('No video URL found in asset configuration.');
+                    var url = resolveVideoUrl(r.validation.asset || {});
                     storeAccess({ token: r.asset.token, asset_slug: r.asset.slug, video_url: url, expires_at: r.asset.expires_at, stored_at: new Date().toISOString() });
                     showVideo(url, true);
                     sendEvent(r.asset.token, r.asset.slug, 'page_view', { source: ASSET_SLUG });
@@ -444,7 +465,20 @@ window.RTG_CONFIG = {
         if (stored && stored.token && stored.asset_slug) {
             validateToken(stored.token, stored.asset_slug)
                 .then(function(v) {
-                    if (v.valid) { var url = stored.video_url || ''; if (!url && v.asset && v.asset.config) url = v.asset.config.embed_url || v.asset.config.target_url || ''; if (url) { showVideo(url, false); initVideoTracking(stored.token, stored.asset_slug); return; } }
+                    if (v.valid) {
+                        try {
+                            var url = stored.video_url || resolveVideoUrl(v.asset || {});
+                            showVideo(url, false);
+                            initVideoTracking(stored.token, stored.asset_slug);
+                            return;
+                        } catch (err) {
+                            console.error('RTG: Stored token is valid but video could not be resolved.', err);
+                            formContainer.innerHTML = '<div class="rtg-response rtg-error" style="display:block;">'
+                                + 'Access granted, but this video is not configured correctly yet. Please contact support.'
+                                + '</div>';
+                            return;
+                        }
+                    }
                     clearAccess(); loadForm();
                 })
                 .catch(function() { clearAccess(); loadForm(); });
@@ -457,8 +491,9 @@ window.RTG_CONFIG = {
             .catch(function(err) {
                 var source = CONFIG_FORM_ID ? 'form ID ' + CONFIG_FORM_ID : 'asset "' + ASSET_SLUG + '"';
                 console.error('RTG: Failed to load form for ' + source + ':', err.message || err);
+                var message = (err && err.message) ? err.message : 'Unable to load the form. Please refresh the page or contact support.';
                 formContainer.innerHTML = '<div class="rtg-response rtg-error" style="display:block;">'
-                    + 'Unable to load the form. Please refresh the page or contact support.'
+                    + escHtml(message)
                     + '</div>';
             });
     }

@@ -584,6 +584,33 @@
             margin-bottom: 8px;
         }
 
+        .workshop-button-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .workshop-simple-button {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            border-radius: 999px;
+            padding: 16px 30px;
+            box-shadow: 0 10px 28px rgba(114, 22, 244, 0.28);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .workshop-simple-button:hover,
+        .workshop-simple-button:focus {
+            color: var(--white);
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(114, 22, 244, 0.36);
+        }
+
         /* Team Section */
         .team {
             background: var(--white);
@@ -1219,16 +1246,11 @@
                 </a>
 
                 <!-- On-Demand Workshop -->
-                <a href="https://realtreasury.com/on-demand-workshop/" class="feature-card" tabindex="0" target="_parent">
-                    <div class="feature-icon">
-                        <svg class="icon-workshop" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                        </svg>
-                    </div>
-                    <div class="feature-subtitle">On-Demand</div>
-                    <h3>On-Demand Workshop</h3>
-                    <p>Watch our expert-led workshop recording to align your team, cut through the vendor noise, and shortlist solutions—on your schedule.</p>
-                </a>
+                <div class="workshop-button-wrap">
+                    <a href="https://realtreasury.com/on-demand-workshop/" class="workshop-simple-button" tabindex="0" target="_parent">
+                        Watch On-Demand Workshop
+                    </a>
+                </div>
 
                 <!-- 15-Minute Strategy Call -->
                 <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="feature-card" tabindex="0">

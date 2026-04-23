@@ -197,6 +197,12 @@ function add_my_custom_header_html() {
                         </div>
                     </div>
                 </div>
+                <!-- On-Demand Video -->
+                <div class="rt-nav-item">
+                    <a href="https://realtreasury.com/on-demand-workshop/" class="rt-nav-link">
+                        ON-DEMAND VIDEO
+                    </a>
+                </div>
                 <!-- About -->
                 <div class="rt-nav-item">
                     <a href="#" class="rt-nav-link has-dropdown">

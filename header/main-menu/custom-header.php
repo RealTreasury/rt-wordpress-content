@@ -120,9 +120,9 @@ function add_my_custom_header_html() {
                                             <div class="rt-step-number">1</div>
                                             <div class="rt-step-text">Explore tech portal</div>
                                         </a>
-                                        <a href="https://events.teams.microsoft.com/event/9936fa3a-9c2b-4907-b759-b8b9795acf1c@cdc422ca-d271-4ba3-856d-77081c6a7f04" class="rt-journey-step" target="_blank" rel="noopener noreferrer">
+                                        <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" class="rt-journey-step" target="_blank" rel="noopener noreferrer">
                                             <div class="rt-step-number">2</div>
-                                            <div class="rt-step-text">Register for live webinar</div>
+                                            <div class="rt-step-text">Register: From Prompt to Product webinar</div>
                                         </a>
                                         <a href="https://realtreasury.com/on-demand-workshop/" class="rt-journey-step">
                                             <div class="rt-step-number">3</div>
@@ -156,12 +156,12 @@ function add_my_custom_header_html() {
                                             <span class="rt-service-cta">Request Access →</span>
                                         </a>
 
-                                        <a href="https://events.teams.microsoft.com/event/9936fa3a-9c2b-4907-b759-b8b9795acf1c@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="rt-service-item">
+                                        <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="rt-service-item">
                                             <div class="rt-service-header">
                                                 <div class="rt-service-icon">▶️</div>
-                                                <div class="rt-service-title">Live Webinar + On-Demand</div>
+                                                <div class="rt-service-title">From Prompt to Product + On-Demand</div>
                                             </div>
-                                            <div class="rt-service-desc">Register for the upcoming live session, then watch the workshop recording on your schedule.</div>
+                                            <div class="rt-service-desc">Explore whether treasury should build its own tools or buy: tradeoffs in speed, cost, control, scalability, support, and risk.</div>
                                             <span class="rt-service-cta">Register Now →</span>
                                         </a>
 

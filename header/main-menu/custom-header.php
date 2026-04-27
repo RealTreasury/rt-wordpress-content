@@ -156,14 +156,17 @@ function add_my_custom_header_html() {
                                             <span class="rt-service-cta">Request Access →</span>
                                         </a>
 
-                                        <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="rt-service-item">
+                                        <div class="rt-service-item">
                                             <div class="rt-service-header">
                                                 <div class="rt-service-icon">▶️</div>
-                                                <div class="rt-service-title">From Prompt to Product + On-Demand</div>
+                                                <div class="rt-service-title">From Prompt to Product: Build or Buy?</div>
                                             </div>
-                                            <div class="rt-service-desc">Explore whether treasury should build its own tools or buy: tradeoffs in speed, cost, control, scalability, support, and risk.</div>
-                                            <span class="rt-service-cta">Register Now →</span>
-                                        </a>
+                                            <div class="rt-service-desc">Should treasury build its own tools? Compare speed, cost, control, scalability, support, and risk in this live webinar.</div>
+                                            <div class="rt-service-cta-group">
+                                                <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="rt-service-cta">Register Live →</a>
+                                                <a href="https://realtreasury.com/on-demand-workshop/" class="rt-service-cta">Watch Recording →</a>
+                                            </div>
+                                        </div>
 
                                         <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="rt-service-item">
                                             <div class="rt-service-header">

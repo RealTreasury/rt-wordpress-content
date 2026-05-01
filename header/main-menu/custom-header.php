@@ -67,6 +67,7 @@ function add_my_custom_header_html() {
                                         <a href="https://realtreasury.com/errnot/" class="rt-main-menu-link">ERR NOT Method</a>
                                         <a href="https://realtreasury.com/treasury-tech-market/" class="rt-main-menu-link">Treasury Tech Market</a>
                                         <a href="https://realtreasury.com/posts/" class="rt-main-menu-link">All Insights</a>
+                                        <a href="https://realtreasury.com/webinars/" class="rt-main-menu-link">Webinars</a>
                                     </div>
                                 </div>
                                 <div class="rt-main-menu-column">

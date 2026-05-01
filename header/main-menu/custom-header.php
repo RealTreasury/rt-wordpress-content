@@ -163,8 +163,7 @@ function add_my_custom_header_html() {
                                             </div>
                                             <div class="rt-service-desc">Should treasury build its own tools? Compare speed, cost, control, scalability, support, and risk in this live webinar.</div>
                                             <div class="rt-service-cta-group">
-                                                <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="rt-service-cta">Register Live →</a>
-                                                <a href="https://realtreasury.com/on-demand-workshop/" class="rt-service-cta">Watch Recording →</a>
+                                                <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="rt-service-cta">Register for Upcoming Webinar →</a>
                                             </div>
                                         </div>
 

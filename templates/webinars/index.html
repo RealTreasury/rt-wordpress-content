@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & AI Optimized Meta Tags -->
+    <title>Treasury Webinars & Recordings Library | RealTreasury</title>
+    <meta name="description" content="Watch on-demand treasury webinars, product walkthroughs and expert sessions from RealTreasury. Find recordings by topic, category and region.">
+    <link rel="canonical" href="https://realtreasury.com/webinars/">
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-purple: #7216f4;
+            --secondary-purple: #8f47f6;
+            --dark-text: #281345;
+            --gray-text: #7e7e7e;
+        }
+
+        body {
+            font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: var(--dark-text);
+            background-color: #f8f9fa;
+        }
+        
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .hero-section {
+            padding: 8rem 1.5rem 8rem;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--dark-text);
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            color: var(--gray-text);
+            max-width: 650px;
+            margin: 1.5rem auto 0;
+        }
+
+        .insights-container {
+            max-width: 960px;
+            margin: -4rem auto 0;
+            padding: 0 1.5rem 4rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cta-banner {
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.6);
+            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(114, 22, 244, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .cta-banner h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            line-height: 1.3;
+        }
+        
+        .cta-banner p {
+            color: var(--gray-text);
+            max-width: 500px;
+        }
+
+        .cta-banner .cta-button {
+            background: var(--primary-purple);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .cta-banner .cta-button:hover {
+            background: var(--secondary-purple);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.3);
+        }
+
+        .filters-and-search {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 0 auto 2.5rem;
+            max-width: 900px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .filter-buttons button {
+            background: transparent;
+            border: 1px solid rgba(114, 22, 244, 0.3);
+            color: var(--dark-text);
+            padding: 0.6rem 1.1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-buttons button:hover, .filter-buttons button.active {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .search-bar {
+            position: relative;
+            min-width: 280px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1.25rem;
+            padding-right: 3rem;
+            border-radius: 10px;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            background: white;
+            font-size: 1rem;
+        }
+
+        .search-bar svg {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-text);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);  /* Exactly 3 columns */
+            gap: 2rem;
+            min-height: 300px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        @media (max-width: 1024px) {
+            .insights-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .insights-grid { grid-template-columns: 1fr; }
+        }
+        
+        .loader {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.2rem;
+            color: var(--dark-text);
+            grid-column: 1 / -1;
+        }
+
+        .insight-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .insight-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(114, 22, 244, 0.2);
+        }
+
+        .insight-card .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #e0e0e0;
+        }
+
+        .insight-card .card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .insight-card .card-category {
+            color: var(--primary-purple);
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-card .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark-text);
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+        }
+        
+        .insight-card .card-excerpt {
+            color: var(--gray-text);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+        
+        .insight-card .card-read-more {
+            color: var(--secondary-purple);
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 5, 20, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 248, 248, 0.98));
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 520px;
+            width: calc(100% - 40px);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transform: scale(0.95);
+            transition: all 0.4s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 16px; right: 16px;
+            width: 32px; height: 32px;
+            background: rgba(0,0,0,0.05);
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            line-height: 32px;
+            text-align: center;
+            cursor: pointer;
+            color: var(--gray-text);
+        }
+        
+        .modal-content h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-content p {
+            text-align: center;
+            color: var(--gray-text);
+            margin-bottom: 2rem;
+        }
+        
+        .form-row { margin-bottom: 1rem; }
+        .form-row label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: var(--primary-purple);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+             background: var(--secondary-purple);
+        }
+
+        .show-more-btn {
+            display: none;
+            margin: 2rem auto 0;
+            background: var(--primary-purple);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .show-more-btn:hover {
+            background: var(--secondary-purple);
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 { font-size: 2.5rem; }
+            .cta-banner { flex-direction: column; text-align: center; }
+            .filters-and-search {
+                flex-direction: column;
+                align-items: stretch;
+                max-width: none;
+            }
+            .insights-grid { grid-template-columns: 1fr; }
+        }
+
+    </style>
+    
+    <!-- Static Schema for the Page and Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "RealTreasury",
+          "url": "https://realtreasury.com",
+
+          "logo": "https://realtreasury.com/wp-content/uploads/2025/06/White-logo-no-background.png",
+
+          "sameAs": [
+            "https://twitter.com/RealTreasury",
+            "https://www.linkedin.com/company/realtreasury/"
+          ]
+        },
+        {
+          "@type": "WebPage",
+          "url": "https://realtreasury.com/webinars/",
+          "name": "Treasury Webinars and On-Demand Recordings",
+          "description": "Browse on-demand webinar recordings, treasury walkthroughs, and expert-led sessions from RealTreasury.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "RealTreasury"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://realtreasury.com"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Webinars",
+
+            "item": "https://realtreasury.com/webinars/"
+          }]
+        }
+      ]
+    }
+    </script>
+
+</head>
+<body>
+
+    <header class="hero-section">
+        <div class="container mx-auto">
+            <h1>RealTreasury Webinars &amp; Recordings</h1>
+            <p>Watch treasury-focused webinar recordings, product demos and strategy sessions from our team and partners.</p>
+        </div>
+    </header>
+
+    <main class="insights-container">
+
+        <nav class="filters-and-search" aria-label="Webinars Filters and Search">
+            <div id="filterButtons" class="filter-buttons">
+                <button class="active" data-category="all">All</button>
+            </div>
+            <div class="search-bar" role="search">
+                <input type="search" id="searchInput" class="search-input" placeholder="Search webinars...">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+        </nav>
+
+        <section id="insightsGrid" class="insights-grid">
+            <div class="loader">Loading webinar library...</div>
+        </section>
+        <button id="showMoreBtn" class="show-more-btn">Show More</button>
+    </main>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const insightsGrid = document.getElementById('insightsGrid');
+            const searchInput = document.getElementById('searchInput');
+            const filterButtonsContainer = document.getElementById('filterButtons');
+            const showMoreBtn = document.getElementById('showMoreBtn');
+
+            function normalizeOrigin(origin) {
+                return origin ? origin.replace(/\/$/, '') : origin;
+            }
+
+            function determineWordPressOrigin() {
+                const fallbackOrigin = 'https://realtreasury.com';
+
+                if (window.WORDPRESS_ORIGIN) {
+                    return normalizeOrigin(String(window.WORDPRESS_ORIGIN));
+                }
+
+                const bodyDataOrigin = document.body?.dataset?.wordpressOrigin;
+                if (bodyDataOrigin) {
+                    return normalizeOrigin(bodyDataOrigin);
+                }
+
+                const metaOrigin = document.querySelector('meta[name="wordpress-origin"]')?.content?.trim();
+                if (metaOrigin) {
+                    return normalizeOrigin(metaOrigin);
+                }
+
+                try {
+                    if (window.location && window.location.origin && window.location.origin !== 'null') {
+                        const locationUrl = new URL(window.location.href);
+                        const host = locationUrl.hostname;
+                        if (
+                            host === 'localhost' ||
+                            host === '127.0.0.1' ||
+                            host.endsWith('.local') ||
+                            host.endsWith('realtreasury.com')
+                        ) {
+                            return normalizeOrigin(locationUrl.origin);
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Unable to determine WordPress origin from window.location', error);
+                }
+
+                if (document.referrer) {
+                    try {
+                        const referrerUrl = new URL(document.referrer);
+                        return normalizeOrigin(referrerUrl.origin);
+                    } catch (error) {
+                        console.warn('Unable to parse document.referrer for WordPress origin', error);
+                    }
+                }
+
+                return normalizeOrigin(fallbackOrigin);
+            }
+
+            const wordpressOrigin = determineWordPressOrigin();
+            const webinarApiUrl = `${wordpressOrigin}/wp-json/wp/v2/posts?_embed&per_page=100&include_no_featured=1`;
+            const pagesApiUrl = `${wordpressOrigin}/wp-json/wp/v2/pages?_embed&slug=gated-video,tms-rfp-trap,gated-video-emea`;
+            const webinarKeywords = ['webinar','recording','on-demand'];
+
+            let allPosts = [];
+            let currentPosts = [];
+            const POSTS_PER_PAGE = 6;
+
+            const staticWebinarFallback = [
+                { title: "Gated Video Webinar", excerpt: "Watch this on-demand treasury webinar recording.", image: "https://realtreasury.com/images/treasury-tech-real-estate-og.jpg", category: "On-Demand", meta: "Recorded Webinar", link: "https://realtreasury.com/webinar/gated-video/", cta: "Watch Recording" },
+                { title: "TMS RFP Trap", excerpt: "Learn how to avoid common mistakes during treasury platform selection.", image: "https://realtreasury.com/images/treasury-tech-real-estate-og.jpg", category: "Treasury Strategy", meta: "Recorded Webinar", link: "https://realtreasury.com/webinar/tms-rfp-trap/", cta: "View Webinar" },
+                { title: "Gated Video Webinar (EMEA)", excerpt: "Regional webinar recording for EMEA treasury leaders.", image: "https://realtreasury.com/images/treasury-tech-real-estate-og.jpg", category: "EMEA", meta: "On-Demand", link: "https://realtreasury.com/webinar/gated-video-emea/", cta: "Watch Recording" }
+            ];
+            let displayedCount = POSTS_PER_PAGE;
+
+            function sanitizeExcerpt(rawText, maxLength = 160) {
+                if (!rawText) return '';
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = rawText;
+                const text = (tempDiv.textContent || tempDiv.innerText || '')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                if (!text) return '';
+                if (text.length <= maxLength) return text;
+
+                return `${text.slice(0, maxLength).trimEnd()}...`;
+            }
+
+            function buildExcerpt(post) {
+                const yoastDescription = post?.yoast_head_json?.description;
+                const yoastExcerpt = sanitizeExcerpt(yoastDescription);
+                if (yoastExcerpt) {
+                    return yoastExcerpt;
+                }
+
+                const contentHtml = post?.content?.rendered || '';
+                if (contentHtml) {
+                    try {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(contentHtml, 'text/html');
+                        const selectors = ['p', 'li'];
+                        for (const selector of selectors) {
+                            const element = doc.querySelector(selector);
+                            if (element) {
+                                const sanitized = sanitizeExcerpt(element.innerHTML || element.textContent);
+                                if (sanitized) {
+                                    return sanitized;
+                                }
+                            }
+                        }
+                    } catch (parseError) {
+                        console.warn('Unable to parse post content for excerpt generation', parseError);
+                    }
+                }
+
+                return sanitizeExcerpt(post?.excerpt?.rendered || '');
+            }
+
+            // Function to create and append schema
+            const appendSchema = (() => {
+                const clearExistingSchemas = () => {
+                    document.head.querySelectorAll('script[data-dynamic-schema]').forEach(script => script.remove());
+                };
+
+                let hasClearedThisCycle = false;
+
+                const fn = (schema, identifier) => {
+                    if (!hasClearedThisCycle) {
+                        clearExistingSchemas();
+                        hasClearedThisCycle = true;
+                    } else if (identifier) {
+                        const existing = document.head.querySelector(`script[data-dynamic-schema="${identifier}"]`);
+                        if (existing) {
+                            existing.remove();
+                        }
+                    }
+
+                    const attributeValue = identifier || `schema-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+                    const script = document.createElement('script');
+                    script.type = 'application/ld+json';
+                    script.dataset.dynamicSchema = attributeValue;
+                    script.textContent = JSON.stringify(schema);
+                    document.head.appendChild(script);
+                };
+
+                fn.reset = () => {
+                    clearExistingSchemas();
+                    hasClearedThisCycle = false;
+                };
+
+                return fn;
+            })();
+
+            async function fetchPosts() {
+                try {
+                    const [webinarResponse, pagesResponse] = await Promise.all([
+                        fetch(webinarApiUrl),
+                        fetch(pagesApiUrl)
+                    ]);
+
+                    if (!webinarResponse.ok || !pagesResponse.ok) throw new Error('Unable to load webinar data source');
+
+                    const posts = await webinarResponse.json();
+                    const pages = await pagesResponse.json();
+
+                    const mappedPosts = posts
+                        .filter(post => {
+                            const haystack = `${post.title?.rendered || ''} ${post.excerpt?.rendered || ''}`.toLowerCase();
+                            return webinarKeywords.some(keyword => haystack.includes(keyword));
+                        })
+                        .map(post => ({
+                            id: post.id,
+                            title: post.title.rendered,
+                            excerpt: buildExcerpt(post),
+                            image: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'https://realtreasury.com/images/treasury-tech-real-estate-og.jpg',
+                            category: post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Webinar',
+                            meta: new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                            link: post.link,
+                            cta: /recording|on-demand/i.test(`${post.title} ${post.excerpt.rendered}`) ? 'Watch Recording' : 'View Webinar'
+                        }));
+
+                    const mappedPages = pages.map(page => ({
+                        id: page.id,
+                        title: page.title.rendered,
+                        excerpt: buildExcerpt(page),
+                        image: page._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'https://realtreasury.com/images/treasury-tech-real-estate-og.jpg',
+                        category: 'Featured Webinar',
+                        meta: 'On-Demand',
+                        link: page.link,
+                        cta: 'Watch Recording'
+                    }));
+
+                    allPosts = [...mappedPages, ...mappedPosts, ...staticWebinarFallback].filter((item, idx, arr) => idx === arr.findIndex(x => x.link === item.link));
+                    currentPosts = allPosts;
+                    displayedCount = POSTS_PER_PAGE;
+                    displayPosts(currentPosts.slice(0, displayedCount));
+                    populateFilters(allPosts);
+                } catch (error) {
+                    insightsGrid.innerHTML = `<p class="text-center text-red-500 col-span-full">Could not load webinar listings. Please try again later.</p>`;
+                    console.error('Error fetching webinar feed:', error);
+                }
+            }
+
+            function displayPosts(posts) {
+                appendSchema.reset();
+                insightsGrid.innerHTML = '';
+                if (posts.length === 0) {
+                    insightsGrid.innerHTML = `<p class="text-center col-span-full">No webinars found.</p>`;
+                    showMoreBtn.style.display = 'none';
+                    return;
+                }
+                
+                const articleListSchema = {
+                    "@context": "https://schema.org",
+                    "@type": "ItemList",
+                    "itemListElement": []
+                };
+
+                posts.forEach((post, index) => {
+                    const imageUrl = post.image;
+                    const srcset = '';
+                    const width = 600;
+                    const height = 400;
+                    const category = post.category || '';
+                    const excerpt = post.excerpt || '';
+
+                    const card = document.createElement('article');
+                    card.className = 'insight-card';
+                    card.style.animationDelay = `${index * 100}ms`;
+                    const categorySpan = category ? `<span class="card-category">${category}</span>` : '';
+                    card.innerHTML = `
+                        <img loading="lazy" src="${imageUrl}" ${srcset ? `srcset="${srcset}" sizes="(max-width: 768px) 100vw, 600px"` : ''} width="${width}" height="${height}" alt="${post.title}" class="card-image">
+                        <div class="card-content">
+                            ${categorySpan}
+                            <h2 class="card-title">${post.title}</h2>
+                            <p class="card-excerpt">${excerpt}</p>
+                            <a href="${post.link}" target="_blank" class="card-read-more">${post.cta} &rarr;</a>
+                        </div>
+                    `;
+                    card.addEventListener('click', (e) => {
+                        if (!e.target.closest('a')) {
+                            window.open(post.link, '_blank');
+                        }
+                    });
+                    insightsGrid.appendChild(card);
+
+                    // DYNAMICALLY ADD SCHEMA FOR EACH ARTICLE
+                    const articleSchema = {
+                        "@context": "https://schema.org",
+                        "@type": "VideoObject",
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": post.link
+                        },
+                        "name": post.title,
+                        "image": imageUrl,
+                        "uploadDate": post.meta,
+                        "author": {
+                            "@type": "Organization",
+                            "name": "RealTreasury"
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "RealTreasury",
+                            "logo": {
+                                "@type": "ImageObject",
+
+                                "url": "https://realtreasury.com/wp-content/uploads/2025/06/White-logo-no-background.png"
+                            }
+                        },
+                        "description": excerpt
+                    };
+                    appendSchema(articleSchema, `article-${post.id}`);
+                    
+                    // Add to ItemList for main page schema
+                    articleListSchema.itemListElement.push({
+                        "@type": "ListItem",
+                        "position": index + 1,
+                        "url": post.link
+                    });
+                });
+                
+                // Add the complete ItemList schema
+                appendSchema(articleListSchema, 'list');
+                showMoreBtn.style.display = displayedCount < currentPosts.length ? 'block' : 'none';
+            }
+
+            function populateFilters(posts) {
+                const categories = new Set();
+                posts.forEach(post => {
+                    if (post.category) { categories.add(post.category); }
+                });
+                filterButtonsContainer.innerHTML = '<button class="active" data-category="all">All</button>';
+                categories.forEach(category => {
+                    const button = document.createElement('button');
+                    button.textContent = category;
+                    button.dataset.category = category;
+                    filterButtonsContainer.appendChild(button);
+                });
+            }
+            
+            filterButtonsContainer.addEventListener('click', function(e) {
+                if(e.target.tagName === 'BUTTON') {
+                    document.querySelector('.filter-buttons button.active').classList.remove('active');
+                    e.target.classList.add('active');
+                    
+                    const category = e.target.dataset.category;
+                    if (category === 'all') {
+                        currentPosts = allPosts;
+                    } else {
+                        currentPosts = allPosts.filter(post => post.category === category);
+                    }
+                    displayedCount = POSTS_PER_PAGE;
+                    displayPosts(currentPosts.slice(0, displayedCount));
+                }
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                currentPosts = allPosts.filter(post =>
+                    post.title.toLowerCase().includes(searchTerm) ||
+                    post.excerpt.toLowerCase().includes(searchTerm)
+                );
+                displayedCount = POSTS_PER_PAGE;
+                displayPosts(currentPosts.slice(0, displayedCount));
+            });
+            
+
+            showMoreBtn.addEventListener('click', () => {
+                displayedCount += POSTS_PER_PAGE;
+                displayPosts(currentPosts.slice(0, displayedCount));
+            });
+
+            fetchPosts();
+        });
+    </script>
+
+
+</body>
+</html>

@@ -455,11 +455,7 @@ body.banner-minimized .rt-nav-container {
 
         <div class="banner-actions">
             <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="banner-cta" onclick="registerLive(event)">
-                Register Live
-                <span>→</span>
-            </a>
-            <a href="https://realtreasury.com/on-demand-workshop/" class="banner-cta" onclick="watchRecording(event)">
-                Watch Recording
+                Register for Upcoming Webinar
                 <span>→</span>
             </a>
         </div>
@@ -469,7 +465,6 @@ body.banner-minimized .rt-nav-container {
 
 <script>
 const LIVE_WEBINAR_REGISTRATION_URL = 'https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04';
-const ON_DEMAND_WORKSHOP_URL = 'https://realtreasury.com/on-demand-workshop/';
 
 // Add banner state management
 function updateBannerState() {
@@ -531,13 +526,6 @@ function registerLive(event) {
     event.stopPropagation();
     // Open live webinar registration in a new tab
     window.open(LIVE_WEBINAR_REGISTRATION_URL, "_blank", "noopener,noreferrer");
-}
-
-function watchRecording(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    // Navigate in the current tab to on-demand workshop
-    window.location.href = ON_DEMAND_WORKSHOP_URL;
 }
 
 function isMobileDevice() {

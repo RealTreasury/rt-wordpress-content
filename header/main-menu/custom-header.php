@@ -200,10 +200,10 @@ function add_my_custom_header_html() {
                         </div>
                     </div>
                 </div>
-                <!-- On-Demand Video -->
+                <!-- Webinars -->
                 <div class="rt-nav-item">
-                    <a href="https://realtreasury.com/on-demand-workshop/" class="rt-nav-link">
-                        ON-DEMAND VIDEO
+                    <a href="https://realtreasury.com/webinars/" class="rt-nav-link">
+                        WEBINARS
                     </a>
                 </div>
                 <!-- About -->

@@ -605,6 +605,28 @@
 
                     const posts = await webinarResponse.json();
 
+                    const resolvePostLink = (post) => {
+                        const acf = post?.acf || {};
+                        const candidates = [
+                            acf.webinar_post_url,
+                            acf.post_url,
+                            acf.webinar_url,
+                            acf.recording_url,
+                            acf.external_url,
+                            post?.meta?.webinar_post_url,
+                            post?.meta?.post_url,
+                            post?.meta?.webinar_url,
+                            post?.meta?.recording_url,
+                            post?.meta?.external_url,
+                            post?.link,
+                            post?.yoast_head_json?.og_url
+                        ];
+
+                        return candidates
+                            .map(value => typeof value === 'string' ? value.trim() : '')
+                            .find(value => value.length > 0 && !/\/webinars\/?$/i.test(new URL(value, window.location.origin).pathname)) || '';
+                    };
+
                     const mapPost = (post) => ({
                         id: post.id,
                         title: post.title?.rendered || 'Untitled',
@@ -612,11 +634,11 @@
                         image: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'https://realtreasury.com/images/treasury-tech-real-estate-og.jpg',
                         category: post._embedded?.['wp:term']?.[0]?.find(term => (term?.slug || '').toLowerCase() === REQUIRED_WEBINAR_CATEGORY)?.name || 'Webinars',
                         meta: new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-                        link: (post.link || '').trim(),
+                        link: resolvePostLink(post),
                         cta: /recording|on-demand|workshop/i.test(`${post.title?.rendered || ''} ${post.excerpt?.rendered || ''}`) ? 'Watch Recording' : 'View Webinar'
                     });
 
-                    const validPosts = posts.filter(post => (post.link || '').trim().length > 0);
+                    const validPosts = posts.filter(post => resolvePostLink(post).length > 0);
                     const matchedPosts = validPosts.filter(post => {
                         const termGroups = post._embedded?.['wp:term'] || [];
                         const categoryTerms = termGroups[0] || [];

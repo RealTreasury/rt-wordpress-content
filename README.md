@@ -73,3 +73,8 @@ The repository also includes the **Clean Media URLs** plugin (`plugins/clean-med
 ### Troubleshooting
 
 Some browsers or ad-blocking extensions may block requests to `*.wp.com`, resulting in `ERR_BLOCKED_BY_CLIENT` messages in the developer console. These errors are harmless and the portal will continue to function normally. If the messages are distracting, whitelist the site in your browser or ad-blocker to remove them.
+
+
+## Webinar publishing
+
+Webinar content is maintained in this repo and published as WordPress Posts. See `docs/webinar-publishing.md` for the taxonomy contract and pre-publish QA checklist.

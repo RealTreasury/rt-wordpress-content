@@ -507,8 +507,9 @@
             }
 
             const wordpressOrigin = determineWordPressOrigin();
-            const webinarApiUrl = `${wordpressOrigin}/wp-json/wp/v2/posts?_embed&per_page=100&include_no_featured=1`;
-            const webinarKeywords = ['webinar', 'webinars', 'recording', 'recordings', 'on-demand', 'ondemand', 'workshop', 'workshops'];
+            const webinarApiUrl = `${wordpressOrigin}/wp-json/wp/v2/posts?_embed=wp:term,wp:featuredmedia&per_page=100&status=publish`;
+            const REQUIRED_WEBINAR_CATEGORY = 'webinars';
+            const REGION_TAGS = ['emea', 'apac', 'noram', 'latam'];
 
             let allPosts = [];
             let currentPosts = [];
@@ -609,7 +610,7 @@
                         title: post.title?.rendered || 'Untitled',
                         excerpt: buildExcerpt(post),
                         image: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'https://realtreasury.com/images/treasury-tech-real-estate-og.jpg',
-                        category: post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Webinar',
+                        category: post._embedded?.['wp:term']?.[0]?.find(term => (term?.slug || '').toLowerCase() === REQUIRED_WEBINAR_CATEGORY)?.name || 'Webinars',
                         meta: new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
                         link: (post.link || '').trim(),
                         cta: /recording|on-demand|workshop/i.test(`${post.title?.rendered || ''} ${post.excerpt?.rendered || ''}`) ? 'Watch Recording' : 'View Webinar'
@@ -617,20 +618,24 @@
 
                     const validPosts = posts.filter(post => (post.link || '').trim().length > 0);
                     const matchedPosts = validPosts.filter(post => {
-                        const termNames = (post._embedded?.['wp:term'] || [])
-                            .flat()
-                            .map(term => term?.name || '')
-                            .join(' ');
-                        const haystack = `${post.title?.rendered || ''} ${post.excerpt?.rendered || ''} ${post.slug || ''} ${termNames}`.toLowerCase();
-                        return webinarKeywords.some(keyword => haystack.includes(keyword));
+                        const termGroups = post._embedded?.['wp:term'] || [];
+                        const categoryTerms = termGroups[0] || [];
+                        const tagTerms = termGroups[1] || [];
+
+                        const hasWebinarCategory = categoryTerms
+                            .some(term => (term?.slug || '').toLowerCase() === REQUIRED_WEBINAR_CATEGORY);
+
+                        if (!hasWebinarCategory) return false;
+
+                        // Optional region tagging support for future filtering and QA visibility.
+                        post._rtRegionTags = tagTerms
+                            .map(term => (term?.slug || '').toLowerCase())
+                            .filter(slug => REGION_TAGS.includes(slug));
+
+                        return true;
                     });
 
-                    let mappedPosts = matchedPosts.map(mapPost);
-                    if (mappedPosts.length === 0) {
-                        const fallbackCount = Math.min(12, Math.max(6, POSTS_PER_PAGE));
-                        console.warn(`No webinar/workshop keyword matches found in feed; falling back to latest ${fallbackCount} posts. Please review taxonomy/terms.`);
-                        mappedPosts = validPosts.slice(0, fallbackCount).map(mapPost);
-                    }
+                    const mappedPosts = matchedPosts.map(mapPost);
 
                     allPosts = mappedPosts.filter((item, idx, arr) => item.link && idx === arr.findIndex(x => x.link === item.link));
                     currentPosts = allPosts;

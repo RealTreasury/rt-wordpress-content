@@ -1,10 +1,33 @@
+<!-- ============================================================
+     GATED VIDEO — Config for this page
+     Form + Asset resolved via RT Gate mapping (or direct formId).
+     See templates/partials/gated-video.html for full docs.
+     ============================================================ -->
+<script>
+window.RTG_CONFIG = {
+    assetSlug:    'on-demand-webinar-noram', // RT Gate asset slug — resolves the form via Mappings
+    mappingId:    1,                       // RT Gate Mapping ID for NORAM asset+form pairing
+    storageKey:   'rtg_gv_access',
+    badgeText:    'Free On-Demand Workshop',
+    heroTitle:    '3 Segments, 1 smart choice',
+    heroSubtitle: 'Complete the short form below to get instant access to our exclusive on-demand workshop \u2014 packed with actionable insights for treasury teams.',
+    formHeading:  'Watch the Recording',
+    formSubtext:  'Fill out the form below for instant access.',
+    ctaHeading:   'Ready to take the next step?',
+    ctaUrl:       'https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled',
+    ctaLabel:     'Book a Call',
+    videoTitle:   '3 Segments, 1 smart choice',
+    wpSiteUrl:    'https://realtreasury.com'
+};
+</script>
+
 <!--
   ============================================================
   GATED VIDEO TEMPLATE (rt-gate powered)
   ============================================================
 
   HOW TO CREATE A NEW GATED PAGE:
-  1. Copy this template into a new file (e.g. webinars/my-new-video/index.html)
+  1. Copy this template into a new file (e.g. webinar/my-new-video/index.html)
   2. Add a <script> block BEFORE this template that sets window.RTG_CONFIG:
 
      <script>
@@ -179,7 +202,10 @@
     <section class="rt-gv-form-section" aria-labelledby="rt-gv-form-heading">
         <div class="rt-gv-container">
             <div id="rtGvContentRow" class="rt-gv-content-row">
-            <!-- Chart goes here on pages that use one (see webinars/3-segments-1-smart-choice/ for example) -->
+            <div class="rt-gv-chart">
+                <p class="rt-gv-chart-label">TMS Market Landscape — North America</p>
+                <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/02/tms-market-NORAM-01-2026-clean-2.png" alt="TMS Market Landscape - North America, January 2026" loading="lazy">
+            </div>
             <div id="rtGvFormCard" class="rt-gv-form-card" role="region" aria-labelledby="rt-gv-form-heading">
                 <h3 id="rt-gv-form-heading" class="rt-gv-form-heading"></h3>
                 <p class="rt-gv-form-subtext" id="rtGvFormSubtext"></p>

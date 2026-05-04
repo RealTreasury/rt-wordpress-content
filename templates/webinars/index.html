@@ -508,18 +508,12 @@
 
             const wordpressOrigin = determineWordPressOrigin();
             const webinarApiUrl = `${wordpressOrigin}/wp-json/wp/v2/posts?_embed&per_page=100&include_no_featured=1`;
-            const pagesApiUrl = `${wordpressOrigin}/wp-json/wp/v2/pages?_embed&slug=gated-video,tms-rfp-trap,gated-video-emea`;
             const webinarKeywords = ['webinar','recording','on-demand'];
 
             let allPosts = [];
             let currentPosts = [];
             const POSTS_PER_PAGE = 6;
 
-            const staticWebinarFallback = [
-                { title: "Gated Video Webinar", excerpt: "Watch this on-demand treasury webinar recording.", image: "https://realtreasury.com/images/treasury-tech-real-estate-og.jpg", category: "On-Demand", meta: "Recorded Webinar", link: "https://realtreasury.com/webinar/gated-video/", cta: "Watch Recording" },
-                { title: "TMS RFP Trap", excerpt: "Learn how to avoid common mistakes during treasury platform selection.", image: "https://realtreasury.com/images/treasury-tech-real-estate-og.jpg", category: "Treasury Strategy", meta: "Recorded Webinar", link: "https://realtreasury.com/webinar/tms-rfp-trap/", cta: "View Webinar" },
-                { title: "Gated Video Webinar (EMEA)", excerpt: "Regional webinar recording for EMEA treasury leaders.", image: "https://realtreasury.com/images/treasury-tech-real-estate-og.jpg", category: "EMEA", meta: "On-Demand", link: "https://realtreasury.com/webinar/gated-video-emea/", cta: "Watch Recording" }
-            ];
             let displayedCount = POSTS_PER_PAGE;
 
             function sanitizeExcerpt(rawText, maxLength = 160) {
@@ -604,15 +598,11 @@
 
             async function fetchPosts() {
                 try {
-                    const [webinarResponse, pagesResponse] = await Promise.all([
-                        fetch(webinarApiUrl),
-                        fetch(pagesApiUrl)
-                    ]);
+                    const webinarResponse = await fetch(webinarApiUrl);
 
-                    if (!webinarResponse.ok || !pagesResponse.ok) throw new Error('Unable to load webinar data source');
+                    if (!webinarResponse.ok) throw new Error('Unable to load webinar data source');
 
                     const posts = await webinarResponse.json();
-                    const pages = await pagesResponse.json();
 
                     const mappedPosts = posts
                         .filter(post => {
@@ -630,18 +620,7 @@
                             cta: /recording|on-demand/i.test(`${post.title} ${post.excerpt.rendered}`) ? 'Watch Recording' : 'View Webinar'
                         }));
 
-                    const mappedPages = pages.map(page => ({
-                        id: page.id,
-                        title: page.title.rendered,
-                        excerpt: buildExcerpt(page),
-                        image: page._embedded?.['wp:featuredmedia']?.[0]?.source_url || 'https://realtreasury.com/images/treasury-tech-real-estate-og.jpg',
-                        category: 'Featured Webinar',
-                        meta: 'On-Demand',
-                        link: page.link,
-                        cta: 'Watch Recording'
-                    }));
-
-                    allPosts = [...mappedPages, ...mappedPosts, ...staticWebinarFallback].filter((item, idx, arr) => idx === arr.findIndex(x => x.link === item.link));
+                    allPosts = mappedPosts.filter((item, idx, arr) => idx === arr.findIndex(x => x.link === item.link));
                     currentPosts = allPosts;
                     displayedCount = POSTS_PER_PAGE;
                     displayPosts(currentPosts.slice(0, displayedCount));

@@ -7,42 +7,58 @@
   <meta name="description" content="Thank you for joining the waitlist for the 2026 Real Treasury Tech Selection Guide." />
   <style>
     :root {
-      --bg: #0f172a;
-      --bg-soft: #111f37;
-      --panel: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --brand: #22c55e;
-      --brand-dark: #16a34a;
-      --brand-ink: #052e16;
-      --border: #1f2937;
-      --link: #93c5fd;
+      --midnight: #05070f;
+      --slate: #0e152b;
+      --panel: rgba(10, 16, 35, 0.82);
+      --text: #f8f9ff;
+      --muted: #b6bfd9;
+      --border: rgba(199, 125, 255, 0.24);
+      --purple: #7216f4;
+      --purple-2: #8f47f6;
+      --pink: #c77dff;
+      --glow: rgba(114, 22, 244, 0.45);
+      --success: #22c55e;
     }
 
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
+    html, body { min-height: 100%; }
 
     body {
       margin: 0;
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background:
-        radial-gradient(900px 500px at 95% -20%, #1f3258 0%, transparent 60%),
-        radial-gradient(700px 400px at -10% 110%, #14334f 0%, transparent 55%),
-        linear-gradient(180deg, var(--bg-soft), var(--bg));
       color: var(--text);
-      min-height: 100vh;
+      background:
+        radial-gradient(900px 520px at 90% -12%, rgba(143, 71, 246, 0.28), transparent 60%),
+        radial-gradient(700px 400px at 8% 110%, rgba(199, 125, 255, 0.22), transparent 64%),
+        linear-gradient(180deg, #0d1632 0%, var(--slate) 45%, var(--midnight) 100%);
       display: grid;
       place-items: center;
-      padding: 1.25rem;
+      padding: clamp(1rem, 2vw, 1.5rem);
     }
 
     .card {
-      width: min(760px, 100%);
-      background: color-mix(in srgb, var(--panel) 92%, #000);
+      width: min(840px, 100%);
+      border-radius: 24px;
+      padding: clamp(1.2rem, 2.2vw, 2.1rem);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: clamp(1.2rem, 2.4vw, 2rem);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, .35);
+      background: linear-gradient(165deg, rgba(16,24,48,0.88) 0%, var(--panel) 100%);
+      box-shadow:
+        0 14px 50px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 0 0 1px rgba(114, 22, 244, 0.06);
+      backdrop-filter: blur(4px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--purple), var(--purple-2), var(--pink));
     }
 
     .pill {
@@ -52,89 +68,109 @@
       font-size: .77rem;
       letter-spacing: .08em;
       text-transform: uppercase;
-      border: 1px solid #334155;
+      border: 1px solid rgba(255,255,255,0.22);
       border-radius: 999px;
-      padding: .35rem .7rem;
+      padding: .38rem .78rem;
       margin-bottom: .95rem;
-      color: #cbd5e1;
-      background: rgba(30, 41, 59, .35);
+      color: #ede9fe;
+      background: rgba(114, 22, 244, 0.23);
+      box-shadow: 0 0 18px rgba(114, 22, 244, 0.18);
+      font-weight: 600;
     }
 
     h1 {
-      margin: 0 0 .7rem;
-      font-size: clamp(1.35rem, 2.8vw, 2.2rem);
+      margin: 0 0 .65rem;
+      font-size: clamp(1.35rem, 2.8vw, 2.35rem);
       line-height: 1.22;
       text-wrap: balance;
     }
 
     p {
-      margin: .55rem 0;
+      margin: .6rem 0;
       color: var(--muted);
-      line-height: 1.65;
+      line-height: 1.62;
       max-width: 64ch;
     }
 
-    .guide-title { color: #ecfdf5; }
+    .guide-title {
+      background: linear-gradient(90deg, #f8f9ff 0%, #dfc8ff 65%, #b89dff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
 
     .next-steps {
       margin: 1.1rem 0 1.4rem;
-      padding-left: 1.05rem;
+      padding-left: 1.1rem;
     }
 
     .next-steps li {
-      margin-bottom: .45rem;
+      margin-bottom: .5rem;
       color: var(--muted);
     }
+
+    .next-steps li::marker { color: #c8a7ff; }
 
     .actions {
       display: flex;
       flex-wrap: wrap;
-      gap: .7rem;
-      margin-top: .6rem;
+      gap: .72rem;
+      margin-top: .45rem;
     }
 
     .btn {
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      border-radius: 10px;
-      padding: .8rem 1.05rem;
+      border-radius: 12px;
+      padding: .85rem 1.2rem;
       font-weight: 700;
       text-decoration: none;
       border: 1px solid transparent;
-      transition: all .15s ease;
+      transition: all .2s ease;
+      font-size: .95rem;
+      letter-spacing: .02em;
     }
 
     .btn-primary {
-      background: var(--brand);
-      color: var(--brand-ink);
+      background: linear-gradient(135deg, rgba(114,22,244,0.92) 0%, rgba(143,71,246,0.96) 100%);
+      color: #fff;
+      box-shadow: 0 8px 26px var(--glow);
+      border-color: rgba(199,125,255,0.42);
     }
 
     .btn-primary:hover {
-      background: var(--brand-dark);
-      color: #ecfdf5;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(114,22,244,0.56);
+      background: linear-gradient(135deg, #7c2df4 0%, #9a58f8 100%);
     }
 
     .btn-secondary {
-      border-color: #334155;
-      color: #cbd5e1;
-      background: rgba(15, 23, 42, .45);
+      border-color: rgba(255,255,255,0.25);
+      color: #e9ebff;
+      background: rgba(7, 13, 29, 0.54);
     }
 
     .btn-secondary:hover {
-      border-color: #475569;
-      color: #f8fafc;
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.08);
     }
 
     .footnote {
-      margin-top: .85rem;
-      font-size: .84rem;
-      color: #94a3b8;
+      margin-top: .95rem;
+      font-size: .85rem;
+      color: #aeb9d6;
     }
 
     .footnote a {
-      color: var(--link);
+      color: #d5b8ff;
       text-underline-offset: 2px;
+    }
+
+    @media (max-width: 560px) {
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
     }
   </style>
 </head>

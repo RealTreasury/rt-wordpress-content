@@ -613,10 +613,17 @@ final class Treasury_Portal_Access {
     }
     
     public function portal_button_shortcode($atts) {
-        $atts = shortcode_atts(['text' => 'Access Portal', 'class' => '', 'asset' => ''], $atts, 'portal_button');
+        $atts = shortcode_atts(['text' => 'Access Portal', 'class' => '', 'asset' => '', 'mapping_id' => ''], $atts, 'portal_button');
 
         $classes = 'tpa-btn tpa-btn-primary open-portal-modal ' . esc_attr($atts['class']);
-        return '<button class="' . trim($classes) . '">' . esc_html($atts['text']) . '</button>';
+        $data = '';
+        if (!empty($atts['asset'])) {
+            $data .= ' data-asset="' . esc_attr($atts['asset']) . '"';
+        }
+        if (!empty($atts['mapping_id'])) {
+            $data .= ' data-mapping-id="' . esc_attr($atts['mapping_id']) . '"';
+        }
+        return '<button class="' . trim($classes) . '"' . $data . '>' . esc_html($atts['text']) . '</button>';
     }
     
     /**

@@ -1,3 +1,11 @@
+<!-- RT Gate config: scopes form submissions to mapping 5 (Treasury Tech Selection Guide Waitlist) -->
+<script>
+window.RTG_CONFIG = {
+    assetSlug:  'treasury-tech-selection-guide-waitlist',
+    mappingId:  5
+};
+</script>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -110,7 +118,7 @@
 
       <!--
         WordPress-rendered usage (recommended):
-        [portal_button text="Join the Waitlist" asset="2026-selection-guide-waitlist"]
+        [portal_button text="Join the Waitlist" asset="treasury-tech-selection-guide-waitlist" mapping_id="5"]
 
         Keep this trigger for static previews. In WordPress with the plugin active,
         clicking this opens the rt-gate modal and submits via the configured CF7 form.
@@ -118,7 +126,7 @@
         Recommended rt-gate / CF7 redirect URL:
         /treasury-tech-selection/waitlist/?guide=Real%20Treasury%20Tech%20Selection%20Guide&year=2026
       -->
-      <a href="#openPortalModal" class="tpa-btn open-portal-modal" data-portal-trigger data-asset="2026-selection-guide-waitlist">
+      <a href="#openPortalModal" class="tpa-btn open-portal-modal" data-portal-trigger data-asset="treasury-tech-selection-guide-waitlist" data-mapping-id="5">
         <button type="button">Join the Waitlist</button>
       </a>
 

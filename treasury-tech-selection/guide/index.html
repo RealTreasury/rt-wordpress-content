@@ -8,67 +8,161 @@
   <style>
     :root {
       --bg: #0f172a;
+      --bg-soft: #111f37;
       --panel: #111827;
       --text: #e5e7eb;
       --muted: #9ca3af;
       --brand: #22c55e;
+      --brand-dark: #16a34a;
+      --brand-ink: #052e16;
       --border: #1f2937;
+      --link: #93c5fd;
     }
+
     * { box-sizing: border-box; }
     html, body { height: 100%; }
+
     body {
       margin: 0;
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at top right, #1e293b, var(--bg));
+      background:
+        radial-gradient(900px 500px at 95% -20%, #1f3258 0%, transparent 60%),
+        radial-gradient(700px 400px at -10% 110%, #14334f 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg-soft), var(--bg));
       color: var(--text);
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 1rem;
+      padding: 1.25rem;
     }
+
     .card {
-      width: 100%;
-      max-width: 760px;
+      width: min(760px, 100%);
       background: color-mix(in srgb, var(--panel) 92%, #000);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 8px 30px rgba(0,0,0,.35);
+      border-radius: 18px;
+      padding: clamp(1.2rem, 2.4vw, 2rem);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, .35);
     }
+
     .pill {
-      display: inline-block;
-      font-size: .78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      font-size: .77rem;
       letter-spacing: .08em;
       text-transform: uppercase;
       border: 1px solid #334155;
       border-radius: 999px;
-      padding: .35rem .65rem;
-      margin-bottom: .9rem;
+      padding: .35rem .7rem;
+      margin-bottom: .95rem;
       color: #cbd5e1;
+      background: rgba(30, 41, 59, .35);
     }
-    h1 { margin: 0 0 .6rem; font-size: clamp(1.4rem, 2.8vw, 2.3rem); line-height: 1.2; }
-    p { margin: 0.6rem 0; color: var(--muted); line-height: 1.6; }
+
+    h1 {
+      margin: 0 0 .7rem;
+      font-size: clamp(1.35rem, 2.8vw, 2.2rem);
+      line-height: 1.22;
+      text-wrap: balance;
+    }
+
+    p {
+      margin: .55rem 0;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 64ch;
+    }
+
     .guide-title { color: #ecfdf5; }
-    .next-steps { margin-top: 1rem; }
-    .next-steps li { margin-bottom: .45rem; color: var(--muted); }
+
+    .next-steps {
+      margin: 1.1rem 0 1.4rem;
+      padding-left: 1.05rem;
+    }
+
+    .next-steps li {
+      margin-bottom: .45rem;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      margin-top: .6rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      padding: .8rem 1.05rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all .15s ease;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: var(--brand-ink);
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-dark);
+      color: #ecfdf5;
+    }
+
+    .btn-secondary {
+      border-color: #334155;
+      color: #cbd5e1;
+      background: rgba(15, 23, 42, .45);
+    }
+
+    .btn-secondary:hover {
+      border-color: #475569;
+      color: #f8fafc;
+    }
+
+    .footnote {
+      margin-top: .85rem;
+      font-size: .84rem;
+      color: #94a3b8;
+    }
+
+    .footnote a {
+      color: var(--link);
+      text-underline-offset: 2px;
+    }
   </style>
 </head>
 <body>
   <main class="card" aria-live="polite">
-    <span id="campaign-pill" class="pill">Waitlist Confirmed</span>
+    <span id="campaign-pill" class="pill">✅ Waitlist Confirmed</span>
     <h1>You're on the waitlist for the <span id="guide-title" class="guide-title">Real Treasury Tech Selection Guide</span>.</h1>
-    <p>Thanks for signing up. We'll notify you as soon as this guide is released.</p>
+
+    <p>Thanks for signing up. We’ll send you a launch email as soon as the guide is live.</p>
+
     <ul class="next-steps">
-      <li>Watch your email for launch details.</li>
-      <li>Add Real Treasury to your safe sender list so updates do not get filtered.</li>
+      <li>Watch your inbox for release details and access instructions.</li>
+      <li>Add Real Treasury to your safe sender list to avoid missing updates.</li>
     </ul>
+
+    <div class="actions" aria-label="Next actions">
+      <a class="btn btn-primary" href="/insights/">Explore insights</a>
+      <a class="btn btn-secondary" href="/">Return to homepage</a>
+    </div>
+
+    <p class="footnote">Questions? Reach out via <a href="mailto:hello@realtreasury.com">hello@realtreasury.com</a>.</p>
   </main>
 
   <script>
     (function () {
       var params = new URLSearchParams(window.location.search || '');
       var rawGuide = params.get('guide');
-      var rawYear  = params.get('year');
+      var rawYear = params.get('year');
 
       var defaultGuide = 'Real Treasury Tech Selection Guide';
       var safeGuide = (rawGuide || defaultGuide).trim().slice(0, 120);
@@ -81,7 +175,7 @@
       var yearMatch = year.match(/^\d{4}$/);
       var pillEl = document.getElementById('campaign-pill');
       if (pillEl && yearMatch) {
-        pillEl.textContent = yearMatch[0] + ' Campaign · Waitlist Confirmed';
+        pillEl.textContent = '✅ ' + yearMatch[0] + ' Campaign · Waitlist Confirmed';
       }
     })();
   </script>

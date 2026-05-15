@@ -39,7 +39,7 @@ function add_my_custom_header_html() {
                                                     <p>North America</p>
                                                 </div>
                                                 <img class="rt-explore-image"
-                                                    src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-NORAM-01-2026-clean-2.png"
+                                                    src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-NORAM-05-2026-clean.png"
                                                      alt="Treasury Tech Market - North America">
                                             </a>
                                         </div>

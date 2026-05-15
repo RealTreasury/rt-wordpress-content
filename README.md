@@ -41,30 +41,9 @@ manually copy the file contents into WordPress:
 
 Repeat these steps whenever `shared.css` changes in Git.
 
-## Portal Access Gate
+## Portal Access Gate (Deprecated)
 
-The repository includes the **Treasury Portal Access** plugin (`plugins/treasury-portal-access`) used to protect the Treasury Tech Portal page.
-
-### Setup
-
-1. Install and activate **Contact Form 7** and **Treasury Portal Access** in WordPress.
-2. Go to **Portal Access → Settings** and choose the Contact Form 7 form that will grant portal access (this stores the form ID used by the plugin).
-3. Place the `[portal_button]` shortcode on the portal page (and wrap protected sections in `[protected_content]...[/protected_content]`). Alternatively link directly to the modal with `<a href="#openPortalModal">Access Portal</a>` (case sensitive; a lowercase alias `#openportalmodal` also works).
-4. If you rely on the fallback gate instead of the plugin, edit `assets/php/functions.php` and replace `YOUR_FORM_ID_HERE` with your form ID.
-5. Run `npm run format` before committing to apply Prettier formatting.
-
-### Testing
-
-1. Visit the portal page in a private or incognito window.
-2. Submit the access form and verify you are redirected to your portal page.
-3. Refresh the page to confirm protected content remains visible while the cookie is active.
-4. Click the original portal button again and ensure it now navigates directly to the portal instead of reopening the form.
-
-### Abandoned Attempt Tracking
-
-As of plugin version 1.0.7 the portal records when a visitor opens the access modal but leaves without submitting the form. These entries appear on the Portal Access admin screen so you can gauge interest in the portal.
-
-Version 1.0.9 adds weekly metrics showing the abandonment rate for both the current and previous week.
+> **This plugin is no longer in active use.** The `plugins/treasury-portal-access` directory is kept for historical reference only. Do not modify it or add new features to it. Gated pages now use the **RT Gate** system — see the `window.RTG_CONFIG` pattern used in `webinars/` pages and the RT Gate Mappings admin UI.
 
 ## Clean Media URLs Plugin
 

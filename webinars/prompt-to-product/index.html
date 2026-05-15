@@ -203,8 +203,8 @@ window.RTG_CONFIG = {
         <div class="rt-gv-container">
             <div id="rtGvContentRow" class="rt-gv-content-row">
             <div class="rt-gv-chart">
-                <p class="rt-gv-chart-label">From Prompt to Product Webinar</p>
-                <img src="https://realtreasury.com/wp-content/uploads/2026/05/prompt-to-product-webinar-cover.png" alt="From Prompt to Product webinar cover" loading="lazy">
+                <p class="rt-gv-chart-label" id="rtGvChartLabel">From Prompt to Product Webinar</p>
+                <img id="rtGvFeaturedImage" src="https://realtreasury.com/wp-content/uploads/2026/05/prompt-to-product-webinar-cover.png" alt="From Prompt to Product webinar cover" loading="lazy">
             </div>
             <div id="rtGvFormCard" class="rt-gv-form-card" role="region" aria-labelledby="rt-gv-form-heading">
                 <h3 id="rt-gv-form-heading" class="rt-gv-form-heading"></h3>
@@ -258,6 +258,33 @@ window.RTG_CONFIG = {
     setText('rtGvBadge',       C.badgeText    || 'Free On-Demand Workshop');
     setText('rtGvSubtitle',    C.heroSubtitle || 'Complete the short form below to get instant access.');
     setText('rtGvFormSubtext', C.formSubtext  || 'Fill out the form below for instant access.');
+
+    function setFeaturedImageFromPage() {
+        var featuredImageEl = document.getElementById('rtGvFeaturedImage');
+        if (!featuredImageEl) return;
+
+        var sourceEl = document.querySelector('.wp-post-image, .post-thumbnail img, .entry-content img, .wp-block-post-featured-image img');
+        if (!sourceEl) sourceEl = document.querySelector('meta[property="og:image"], meta[name="twitter:image"]');
+
+        var imageSrc = '';
+        var imageAlt = '';
+
+        if (sourceEl) {
+            if (sourceEl.tagName === 'META') {
+                imageSrc = sourceEl.getAttribute('content') || '';
+            } else {
+                imageSrc = sourceEl.getAttribute('src') || sourceEl.getAttribute('data-src') || '';
+                imageAlt = sourceEl.getAttribute('alt') || '';
+            }
+        }
+
+        if (imageSrc) {
+            featuredImageEl.src = imageSrc;
+            featuredImageEl.alt = imageAlt || (document.title ? document.title + ' featured image' : featuredImageEl.alt);
+        }
+    }
+
+    setFeaturedImageFromPage();
     setText('rtGvCtaHeading',  C.ctaHeading   || 'Ready to take the next step?');
 
     var heroTitle = document.getElementById('rt-gv-hero-heading');

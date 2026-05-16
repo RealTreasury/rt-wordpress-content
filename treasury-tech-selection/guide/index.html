@@ -100,10 +100,8 @@
     }
 
     .guide-title {
-      background: linear-gradient(90deg, #f8f9ff 0%, #dfc8ff 65%, #b89dff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+      color: #5b0acd;
+      font-weight: 700;
     }
 
     .next-steps {
@@ -117,52 +115,6 @@
     }
 
     .next-steps li::marker { color: #c8a7ff; }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .72rem;
-      margin-top: .55rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 12px;
-      padding: .85rem 1.2rem;
-      font-weight: 700;
-      text-decoration: none;
-      border: 1px solid transparent;
-      transition: all .2s ease;
-      font-size: .95rem;
-      letter-spacing: .02em;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, rgba(114,22,244,0.92) 0%, rgba(143,71,246,0.96) 100%);
-      color: #fff;
-      box-shadow: 0 8px 26px var(--glow);
-      border-color: rgba(199,125,255,0.42);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(114,22,244,0.56);
-      background: linear-gradient(135deg, #7c2df4 0%, #9a58f8 100%);
-    }
-
-    .btn-secondary {
-      border-color: rgba(114,22,244,0.24);
-      color: #4d3d72;
-      background: rgba(114, 22, 244, 0.06);
-    }
-
-    .btn-secondary:hover {
-      transform: translateY(-2px);
-      border-color: rgba(114,22,244,0.34);
-      background: rgba(114,22,244,0.1);
-    }
 
     .footnote {
       margin-top: 1.15rem;
@@ -184,10 +136,6 @@
       }
     }
 
-    @media (max-width: 560px) {
-      .actions { flex-direction: column; }
-      .btn { width: 100%; }
-    }
   </style>
 </head>
 <body>
@@ -202,12 +150,7 @@
       <li>Add Real Treasury to your safe sender list to avoid missing updates.</li>
     </ul>
 
-    <div class="actions" aria-label="Next actions">
-      <a class="btn btn-primary" href="/insights/">Explore insights</a>
-      <a class="btn btn-secondary" href="/">Return to homepage</a>
-    </div>
-
-    <p class="footnote">Questions? Reach out via <a href="mailto:hello@realtreasury.com">hello@realtreasury.com</a>.</p>
+    <p class="footnote">If you have questions, reply to the confirmation email you received and our team will help.</p>
   </main>
 
   <script>

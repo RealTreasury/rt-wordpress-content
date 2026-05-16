@@ -13,9 +13,10 @@
 -->
 <script>
 window.RTG_CONFIG = {
-    assetSlug:  'treasury-tech-selection-guide-waitlist', // RT Gate asset slug
-    mappingId:  5                                         // Mapping #5: General Form -> Treasury Tech Selection Guide Waitlist
-    // formId:  123,                                       // Optional: pin a specific form ID
+    assetSlug:   'treasury-tech-selection-guide-waitlist', // RT Gate asset slug
+    mappingId:   5,                                        // Mapping #5: General Form -> Treasury Tech Selection Guide Waitlist
+    redirectUrl: 'https://realtreasury.com/treasury-tech-selection-guide/'
+    // formId:   123,                                      // Optional: pin a specific form ID
 };
 </script>
 
@@ -209,7 +210,7 @@ window.RTG_CONFIG = {
   var ASSET_SLUG = C.assetSlug;
   var CONFIG_FORM_ID = C.formId || null;
   var CONFIG_MAPPING_ID = C.mappingId ? Number(C.mappingId) : null;
-  var REDIRECT_URL = C.redirectUrl || '/treasury-tech-selection/guide/';
+  var REDIRECT_URL = C.redirectUrl || 'https://realtreasury.com/treasury-tech-selection-guide/';
   var container = document.getElementById('rtWlFormContainer');
   if (!container || !ASSET_SLUG) return;
 

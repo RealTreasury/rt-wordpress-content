@@ -271,7 +271,34 @@
         }
         
 
-        
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.85rem 1.5rem;
+            min-height: 48px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.2;
+            box-shadow: 0 8px 20px rgba(114, 22, 244, 0.22);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px rgba(114, 22, 244, 0.28);
+            text-decoration: none;
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
         /* Sections */
         .section {
             padding: 80px 0;
@@ -416,21 +443,95 @@
         }
         
         /* Mobile Responsiveness */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .insight-hero h1 {
-                font-size: 2.5rem;
+                font-size: 2.9rem;
             }
-            
+
             .grid-2 {
                 grid-template-columns: 1fr;
             }
-            
-            .section {
-                padding: 60px 0;
+        }
+
+        @media (max-width: 768px) {
+            .insight-hero {
+                padding: 44px 0;
             }
-            
+
+            .insight-hero h1 {
+                font-size: 2.2rem;
+                line-height: 1.15;
+            }
+
+            .insight-hero .subtitle {
+                font-size: 1.05rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .insight-hero .article-meta {
+                gap: 0.75rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .insight-hero .article-meta span {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .section {
+                padding: 56px 0;
+            }
+
             .container {
-                padding: 0 15px;
+                padding: 0 16px;
+            }
+
+            .share-buttons {
+                gap: 10px;
+            }
+
+            .share-btn {
+                flex: 1 1 140px;
+                min-width: 0;
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+
+            .lead-form {
+                padding: 2rem 1.25rem;
+            }
+
+            .cta-button {
+                width: min(100%, 320px);
+                font-size: 0.95rem;
+                padding: 0.75rem 1.15rem;
+                min-height: 44px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .insight-hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .content-section h2 {
+                font-size: 1.9rem;
+            }
+
+            .content-section p {
+                font-size: 1rem;
+            }
+
+            .stat-number {
+                font-size: 2.3rem;
+            }
+
+            .share-btn {
+                flex-basis: 100%;
+            }
+
+            .cta-button {
+                width: 100%;
             }
         }
     </style>
@@ -559,7 +660,7 @@
                 <p style="text-align: center; margin-bottom: 2rem; color: var(--gray-text);">Discover how the right TMS can transform your treasury operations and deliver measurable ROI within 6 months.</p>
                 
                 <div style="text-align:center;">
-                    <a href="/contact" class="cta-button" style="width: 100%; margin-top: 1rem; display:inline-block;">Schedule My Free Strategy Call</a>
+                    <a href="/contact" class="cta-button" style="margin-top: 1rem;">Schedule My Free Strategy Call</a>
                 </div>
             </div>
         </div>

@@ -1,8 +1,21 @@
-<!-- RT Gate config: scopes form submissions to mapping 5 (Treasury Tech Selection Guide Waitlist) -->
+<!--
+  RT Gate config for the 2026 Tech Selection Guide waitlist.
+
+  Resolution order in the renderer below:
+    1. If `formId` is set, the form schema is fetched directly via /form/{id}
+       (use this to pin a specific RT Gate form regardless of the mapping).
+    2. Otherwise, /gate/{assetSlug} resolves the form via the WP Admin
+       "Mappings" table (Form -> Asset).
+
+  `mappingId` is always sent on submit so token issuance is scoped to the
+  correct mapping. If the gate's mapping_id disagrees with this value, a
+  warning is logged to the console.
+-->
 <script>
 window.RTG_CONFIG = {
-    assetSlug:  'treasury-tech-selection-guide-waitlist',
-    mappingId:  5
+    assetSlug:  'treasury-tech-selection-guide-waitlist', // RT Gate asset slug
+    mappingId:  5                                         // Mapping #5: General Form -> Treasury Tech Selection Guide Waitlist
+    // formId:  123,                                       // Optional: pin a specific form ID
 };
 </script>
 
@@ -52,9 +65,9 @@ window.RTG_CONFIG = {
 
     /* ---- Image / Preview Card ---- */
     .rt-wl-preview { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 24px 20px 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); position: relative; overflow: visible; }
-    .rt-wl-preview-label { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(199,125,255,0.3); color: var(--dark-text); border-radius: 14px; padding: 10px 18px; box-shadow: 0 8px 20px rgba(91, 10, 205, 0.12); text-align: center; line-height: 1.35; min-width: 260px; max-width: calc(100% - 36px); margin: 0; }
-    .rt-wl-preview-label strong { display: block; font-size: 1rem; font-weight: 700; }
-    .rt-wl-preview-label span { display: block; font-size: 0.83rem; color: var(--primary-purple); font-weight: 600; }
+    .rt-wl-preview-label { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(199,125,255,0.3); color: var(--dark-text); border-radius: 16px; padding: 12px 20px; box-shadow: 0 8px 20px rgba(91, 10, 205, 0.12); text-align: center; line-height: 1.3; min-width: 320px; max-width: calc(100% - 36px); margin: 0; transition: all 0.3s ease; }
+    .rt-wl-preview-label strong { display: block; font-size: 1rem; font-weight: 700; margin: 0 0 4px 0; white-space: nowrap; }
+    .rt-wl-preview-label span { display: block; font-size: 1.1rem; color: var(--lavender-pink); font-weight: 600; opacity: 0.95; margin: 0; }
     .rt-wl-preview img { width: 100%; height: auto; border-radius: 10px; display: block; margin-top: 18px; }
     .rt-wl-features { list-style: none; padding: 0; margin: 20px 0 0; }
     .rt-wl-features li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-top: 1px solid rgba(199,125,255,0.15); font-size: 0.95rem; color: var(--dark-text); }
@@ -73,9 +86,20 @@ window.RTG_CONFIG = {
     
     .rt-wl-form-wrap .rtg-field-group { margin-bottom: 14px; }
     .rt-wl-form-wrap label { display:block; font-size:0.9rem; font-weight:600; color: var(--dark-text); margin-bottom: 6px; }
-    .rt-wl-form-wrap input, .rt-wl-form-wrap select, .rt-wl-form-wrap textarea { width:100%; padding:12px 14px; border:1px solid #d8c9f7; border-radius:10px; font: inherit; }
+    .rt-wl-form-wrap input, .rt-wl-form-wrap select, .rt-wl-form-wrap textarea { width:100%; padding:12px 14px; border:1px solid #d8c9f7; border-radius:10px; font: inherit; background: #fff; color: var(--dark-text); }
+    .rt-wl-form-wrap select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--primary-purple) 50%), linear-gradient(135deg, var(--primary-purple) 50%, transparent 50%); background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
+    .rt-wl-form-wrap .rtg-option-group { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+    .rt-wl-form-wrap .rtg-option-group label { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; margin: 0; }
+    .rt-wl-form-wrap .rtg-option-group input { width: auto; padding: 0; }
+    .rt-wl-form-wrap .rtg-consent-group { margin: 14px 0 8px; font-size: 0.85rem; color: var(--gray-text); }
+    .rt-wl-form-wrap .rtg-consent-group label { display: flex; gap: 8px; align-items: flex-start; font-weight: 500; }
+    .rt-wl-form-wrap .rtg-consent-group input { width: auto; margin-top: 3px; }
+    .rt-wl-form-wrap .rtg-invalid { border-color: #e53e3e !important; outline-color: rgba(229,62,62,0.4) !important; }
     .rt-wl-form-wrap .rtg-submit-btn { width:100%; padding:14px 20px; border:0; border-radius:12px; color:#fff; font-weight:700; background: linear-gradient(135deg, rgba(114,22,244,0.95), rgba(143,71,246,0.95)); cursor:pointer; }
+    .rt-wl-form-wrap .rtg-submit-btn[disabled] { opacity: 0.7; cursor: not-allowed; }
      .rt-wl-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
+    .rt-wl-form-wrap .rtg-response.rtg-error { color: #b91c1c; }
+    .rt-wl-form-wrap .rtg-response.rtg-success { color: #047857; }
     .rt-wl-form-wrap input:focus, .rt-wl-form-wrap select:focus, .rt-wl-form-wrap textarea:focus { outline: 2px solid rgba(114,22,244,0.5); outline-offset: 1px; border-color: rgba(114,22,244,0.55); }
     .rt-wl-form-wrap .rtg-submit-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
     .rt-wl-form-wrap .rtg-submit-btn:active { transform: translateY(0); }
@@ -96,6 +120,9 @@ window.RTG_CONFIG = {
         .rt-wl-content-row { flex-direction: column; }
         .rt-wl-form-card { padding: 32px 24px; }
         .rt-wl-proof { gap: 12px; }
+        .rt-wl-preview-label { padding: 8px 14px; min-width: 260px; }
+        .rt-wl-preview-label strong { font-size: 0.85rem; }
+        .rt-wl-preview-label span { font-size: 0.85rem; }
     }
     @media (max-width: 480px) {
         .rt-wl-title { font-size: 1.85rem; }
@@ -178,48 +205,127 @@ window.RTG_CONFIG = {
 <script>
 (function(){
   var C = window.RTG_CONFIG || {};
-  var apiBase = 'https://realtreasury.com/wp-json/rtg/v1';
-  var assetSlug = C.assetSlug;
-  var mappingId = C.mappingId || null;
+  var API_BASE = (C.wpSiteUrl || 'https://realtreasury.com') + '/wp-json/rtg/v1';
+  var ASSET_SLUG = C.assetSlug;
+  var CONFIG_FORM_ID = C.formId || null;
+  var CONFIG_MAPPING_ID = C.mappingId ? Number(C.mappingId) : null;
+  var REDIRECT_URL = C.redirectUrl || '/treasury-tech-selection/guide/';
   var container = document.getElementById('rtWlFormContainer');
-  if (!container || !assetSlug) return;
+  if (!container || !ASSET_SLUG) return;
 
-  function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
-  function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON');} if(!res.ok) throw new Error(j.message||'Request failed'); return j;}); }
+  function escHtml(s){ var d=document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+  function escAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON ('+res.status+')');} if(!res.ok) throw new Error(j.message||'Request failed ('+res.status+')'); return j;}); }
   function fieldTypeToInputType(t){ return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
+  function fieldAutocomplete(f){ if (f.autocomplete === false) return 'off'; if (f.key === 'full_name') return 'name'; if (f.key === 'first_name') return 'given-name'; if (f.key === 'last_name') return 'family-name'; return ({ email:'email', tel:'tel', company:'organization', url:'url' })[f.type] || 'on'; }
 
-  function renderForm(schema){
-    var fields=schema.fields||[];
-    var html='<form id="rtWlForm" novalidate>';
-    fields.forEach(function(f){
-      var req=f.required?' required':'';
-      html += '<div class="rtg-field-group"><label for="rtg_'+esc(f.key)+'">'+esc(f.label)+(f.required?' *':'')+'</label>'
-      if(f.type==='textarea') html += '<textarea id="rtg_'+esc(f.key)+'" name="'+esc(f.key)+'"'+req+'></textarea>'
-      else html += '<input type="'+fieldTypeToInputType(f.type)+'" id="rtg_'+esc(f.key)+'" name="'+esc(f.key)+'"'+req+'>';
-      html += '</div>';
-    });
-    html += '<button type="submit" class="rtg-submit-btn">Join the Waitlist</button><div class="rtg-response" id="rtWlResponse" aria-live="polite"></div></form>';
-    container.innerHTML=html;
+  function fetchGateSchema(){ return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow); }
+  function fetchFormSchemaById(id){ return fetch(API_BASE + '/form/' + id).then(parseJsonOrThrow); }
 
-    document.getElementById('rtWlForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      var fd=new FormData(e.target);
-      var payload={ form_id: schema.form_id, fields: {}, consent: true, honeypot: '' };
-      fd.forEach(function(v,k){ payload.fields[k]=v; });
-      if(mappingId) payload.mapping_id = mappingId;
-      fetch(apiBase + '/submit', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-        .then(parseJsonOrThrow)
-        .then(function(){ document.getElementById('rtWlResponse').textContent='Success! Redirecting...'; window.location.href='/treasury-tech-selection/guide/'; })
-        .catch(function(err){ document.getElementById('rtWlResponse').textContent = err.message || 'Submission failed.'; });
+  function fetchFormSchema(){
+    if (CONFIG_FORM_ID) {
+      return fetchFormSchemaById(CONFIG_FORM_ID).then(function(s){
+        s.form_id = s.form_id || CONFIG_FORM_ID;
+        if (CONFIG_MAPPING_ID) s.mapping_id = CONFIG_MAPPING_ID;
+        return s;
+      });
+    }
+    return fetchGateSchema().then(function(s){
+      if (CONFIG_MAPPING_ID && s.mapping_id && Number(s.mapping_id) !== CONFIG_MAPPING_ID) {
+        console.warn('RTG: Configured mappingId', CONFIG_MAPPING_ID, 'does not match mapped ID', s.mapping_id, 'for asset', ASSET_SLUG);
+      }
+      if (CONFIG_MAPPING_ID) s.mapping_id = CONFIG_MAPPING_ID;
+      return s;
     });
   }
 
-  fetch(apiBase + '/gate/' + assetSlug).then(parseJsonOrThrow).then(function(schema){
-    if(mappingId) schema.mapping_id = mappingId;
-    renderForm(schema);
-  }).catch(function(err){
-    container.innerHTML = '<p style="color:#b91c1c;">Unable to load form. ' + esc(err.message) + '</p>';
-  });
+  function renderForm(schema){
+    var fields = schema.fields || [];
+    var consentText = schema.consent_text || '';
+    var html = '<form id="rtWlForm" novalidate>';
+    fields.forEach(function(f){
+      var req = f.required ? ' required' : '';
+      var mark = f.required ? ' *' : '';
+      var ph = f.placeholder ? ' placeholder="' + escAttr(f.placeholder) + '"' : '';
+      var ac = ' autocomplete="' + fieldAutocomplete(f) + '"';
+      html += '<div class="rtg-field-group"><label for="rtg_' + escAttr(f.key) + '">' + escHtml(f.label) + mark + '</label>';
+      if (f.type === 'textarea') {
+        html += '<textarea id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ph + ac + req + '></textarea>';
+      } else if (f.type === 'select' && f.options) {
+        html += '<select id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ac + req + '><option value="">Select...</option>';
+        f.options.forEach(function(o){ html += '<option value="' + escAttr(o) + '">' + escHtml(o) + '</option>'; });
+        html += '</select>';
+      } else if ((f.type === 'radio' || f.type === 'checkbox') && f.options) {
+        html += '<div class="rtg-option-group">';
+        f.options.forEach(function(o, i){
+          var it = f.type === 'radio' ? 'radio' : 'checkbox';
+          var nm = f.type === 'radio' ? f.key : f.key + '[]';
+          html += '<label><input type="' + it + '" name="' + escAttr(nm) + '" value="' + escAttr(o) + '"' + (i === 0 && f.required ? req : '') + '> ' + escHtml(o) + '</label>';
+        });
+        html += '</div>';
+      } else {
+        html += '<input type="' + fieldTypeToInputType(f.type) + '" id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ph + ac + req + '>';
+      }
+      html += '</div>';
+    });
+    if (consentText) {
+      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtWlConsent" required> <span>' + escHtml(consentText) + '</span></label></div>';
+    }
+    html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
+    html += '<button type="submit" class="rtg-submit-btn">Join the Waitlist</button>';
+    html += '<div class="rtg-response" id="rtWlResponse" aria-live="polite" role="status"></div></form>';
+    container.innerHTML = html;
+    attachFormHandler(schema, fields);
+  }
+
+  function attachFormHandler(schema, fieldDefs){
+    var form = document.getElementById('rtWlForm');
+    if (!form) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var hp = form.querySelector('[name="_rtg_hp"]'); if (hp && hp.value) return;
+      form.querySelectorAll('.rtg-invalid').forEach(function(el){ el.classList.remove('rtg-invalid'); });
+      var valid = true;
+      var collected = {};
+      fieldDefs.forEach(function(f){
+        if (f.type === 'checkbox' && f.options) {
+          var checked = [];
+          form.querySelectorAll('[name="' + f.key + '[]"]:checked').forEach(function(cb){ checked.push(cb.value); });
+          if (f.required && checked.length === 0) { valid = false; var g = form.querySelector('[name="' + f.key + '[]"]'); if (g) g.classList.add('rtg-invalid'); }
+          collected[f.key] = checked.join(', ');
+        } else if (f.type === 'radio') {
+          var sel = form.querySelector('[name="' + f.key + '"]:checked');
+          var v = sel ? sel.value : '';
+          if (f.required && !v) { valid = false; var fi = form.querySelector('[name="' + f.key + '"]'); if (fi) fi.classList.add('rtg-invalid'); }
+          collected[f.key] = v;
+        } else {
+          var input = form.querySelector('[name="' + f.key + '"]');
+          if (!input) return;
+          var v2 = input.value.trim();
+          if (f.required && !v2) { input.classList.add('rtg-invalid'); valid = false; }
+          if (f.type === 'email' && v2 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v2)) { input.classList.add('rtg-invalid'); valid = false; }
+          collected[f.key] = v2;
+        }
+      });
+      var consent = document.getElementById('rtWlConsent');
+      if (consent && !consent.checked) { valid = false; consent.classList.add('rtg-invalid'); }
+      var resp = document.getElementById('rtWlResponse');
+      var btn = form.querySelector('.rtg-submit-btn');
+      if (!valid) { if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = 'Please fill in the highlighted fields.'; } return; }
+      if (btn) btn.disabled = true;
+      if (resp) { resp.className = 'rtg-response'; resp.textContent = ''; }
+      var payload = { form_id: schema.form_id, fields: collected, consent: true, honeypot: '' };
+      if (schema.mapping_id) payload.mapping_id = Number(schema.mapping_id);
+      fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        .then(parseJsonOrThrow)
+        .then(function(){ if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = 'Success! Redirecting...'; } window.location.href = REDIRECT_URL; })
+        .catch(function(err){ if (btn) btn.disabled = false; if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = (err && err.message) || 'Submission failed.'; } });
+    });
+  }
+
+  fetchFormSchema()
+    .then(renderForm)
+    .catch(function(err){ container.innerHTML = '<p style="color:#b91c1c;">Unable to load form. ' + escHtml((err && err.message) || 'Unknown error') + '</p>'; });
 })();
 </script>
 </body>

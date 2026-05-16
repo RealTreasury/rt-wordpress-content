@@ -41,9 +41,17 @@ manually copy the file contents into WordPress:
 
 Repeat these steps whenever `shared.css` changes in Git.
 
-## Portal Access Gate (Deprecated)
+## Gated content — RT Gate
 
-> **This plugin is no longer in active use.** The `plugins/treasury-portal-access` directory is kept for historical reference only. Do not modify it or add new features to it. Gated pages now use the **RT Gate** system — see the `window.RTG_CONFIG` pattern used in `webinars/` pages and the RT Gate Mappings admin UI.
+All new gated forms (waitlists, video unlocks, downloads) use the **RT Gate**
+WordPress plugin and the `window.RTG_CONFIG` pattern. See
+[`docs/rt-gate.md`](docs/rt-gate.md) for the integration guide and
+[`templates/partials/gated-video.html`](templates/partials/gated-video.html)
+for the reference client implementation.
+
+### Portal Access Gate (Deprecated)
+
+> **This plugin is no longer in active use.** The `plugins/treasury-portal-access` directory is kept for historical reference only. Do not modify it or add new features to it. New gated pages must use RT Gate (see above).
 
 ## Clean Media URLs Plugin
 

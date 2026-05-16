@@ -37,7 +37,6 @@ window.RTG_CONFIG = {
           radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
           radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
           linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
-        background-attachment: fixed;
         min-height: 100vh;
     }
 
@@ -73,7 +72,7 @@ window.RTG_CONFIG = {
     .rt-wl-subtitle { font-size: 1.15rem; color: #4f4c63; line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
 
     /* ---- Side-by-side row ---- */
-    .rt-wl-content-section { padding: 48px 0; }
+    .rt-wl-content-section { padding: 48px 0 72px; }
     .rt-wl-content-row { display: flex; gap: 32px; align-items: stretch; }
 
     /* ---- Image / Preview Card ---- */
@@ -131,6 +130,7 @@ window.RTG_CONFIG = {
         .rt-wl-title { font-size: 2.25rem; }
         .rt-wl-subtitle { font-size: 1.05rem; }
         .rt-wl-content-row { flex-direction: column; }
+        .rt-wl-content-section { padding: 24px 0 52px; }
         .rt-wl-form-card { padding: 32px 24px; }
         .rt-wl-proof { gap: 12px; }
         .rt-wl-preview-label { padding: 8px 14px; min-width: 260px; }
@@ -139,8 +139,10 @@ window.RTG_CONFIG = {
     }
     @media (max-width: 480px) {
         .rt-wl-title { font-size: 1.85rem; }
+        .rt-wl-container { padding: 0 16px; }
         .rt-wl-badge { font-size: 0.8rem; padding: 6px 14px; }
         .rt-wl-form-card { padding: 24px 18px; border-radius: 16px; }
+        .rt-wl-content-section { padding-bottom: 44px; }
     }
   </style>
 </head>
@@ -350,28 +352,5 @@ window.RTG_CONFIG = {
 })();
 </script>
 
-<script>
-/* iFrame auto-resize — posts content height to the parent so the embed
-   can't clip the form. Pairs with assets/js/iframe-resizer.js on the
-   WordPress side. No-op when this page is opened standalone. */
-(function () {
-  var id = (document.body && document.body.dataset && document.body.dataset.iframeId) || window.location.pathname;
-  if (window.parent === window) return;
-  function postHeight() {
-    var h = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0;
-    if (window.parent && typeof window.parent.postMessage === 'function') {
-      window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*');
-    }
-  }
-  var frameId;
-  function schedule() { if (frameId) cancelAnimationFrame(frameId); frameId = requestAnimationFrame(postHeight); }
-  window.addEventListener('load', schedule, { passive: true });
-  window.addEventListener('resize', schedule, { passive: true });
-  if (typeof MutationObserver !== 'undefined' && document.body) {
-    new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
-  }
-  schedule();
-})();
-</script>
 </body>
 </html>

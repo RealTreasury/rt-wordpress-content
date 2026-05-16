@@ -216,29 +216,6 @@
   </main>
 
   <script>
-  /* iFrame auto-resize — posts content height to the parent. Pairs with
-     assets/js/iframe-resizer.js on the WordPress side. No-op standalone. */
-  (function () {
-    var id = (document.body && document.body.dataset && document.body.dataset.iframeId) || window.location.pathname;
-    if (window.parent === window) return;
-    function postHeight() {
-      var h = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0;
-      if (window.parent && typeof window.parent.postMessage === 'function') {
-        window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*');
-      }
-    }
-    var frameId;
-    function schedule() { if (frameId) cancelAnimationFrame(frameId); frameId = requestAnimationFrame(postHeight); }
-    window.addEventListener('load', schedule, { passive: true });
-    window.addEventListener('resize', schedule, { passive: true });
-    if (typeof MutationObserver !== 'undefined' && document.body) {
-      new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
-    }
-    schedule();
-  })();
-  </script>
-
-  <script>
     (function () {
       var params = new URLSearchParams(window.location.search || '');
       var rawGuide = params.get('guide');

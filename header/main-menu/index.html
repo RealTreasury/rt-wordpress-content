@@ -441,21 +441,21 @@ body.banner-minimized .rt-nav-container {
         <button class="close-btn" onclick="closeBanner(event)" aria-label="Close banner">&times;</button>
         
         <div class="banner-content">
-            <div class="banner-icon">▶️</div>
+            <div class="banner-icon">📘</div>
 
             <div class="banner-text">
                 <div class="banner-title">
-                    <span class="banner-highlight">From Prompt to Product: Build or Buy?</span>
+                    <span class="banner-highlight">2026 Real Treasury Tech Selection Guide</span>
                 </div>
                 <div class="banner-subtitle">
-                    Should treasury build its own tools? Compare speed, cost, control, scalability, support, and risk in this live webinar.
+                    The practitioner-led guide to evaluating and selecting treasury technology — join the waitlist for early access.
                 </div>
             </div>
         </div>
 
         <div class="banner-actions">
-            <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="banner-cta" onclick="registerLive(event)">
-                Register for Upcoming Webinar
+            <a href="/treasury-tech-selection/waitlist/" class="banner-cta" onclick="registerLive(event)">
+                Join the Waitlist
                 <span>→</span>
             </a>
         </div>
@@ -464,7 +464,7 @@ body.banner-minimized .rt-nav-container {
     <div class="site-content"></div>
 
 <script>
-const LIVE_WEBINAR_REGISTRATION_URL = 'https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04';
+const LIVE_WEBINAR_REGISTRATION_URL = '/treasury-tech-selection/waitlist/';
 
 // Add banner state management
 function updateBannerState() {
@@ -517,15 +517,13 @@ function expandBanner(event) {
         return;
     }
 
-    // Open live webinar registration by default when expanding the banner
-    window.open(LIVE_WEBINAR_REGISTRATION_URL, "_blank", "noopener,noreferrer");
+    window.location.href = LIVE_WEBINAR_REGISTRATION_URL;
 }
 
 function registerLive(event) {
     event.preventDefault();
     event.stopPropagation();
-    // Open live webinar registration in a new tab
-    window.open(LIVE_WEBINAR_REGISTRATION_URL, "_blank", "noopener,noreferrer");
+    window.location.href = LIVE_WEBINAR_REGISTRATION_URL;
 }
 
 function isMobileDevice() {

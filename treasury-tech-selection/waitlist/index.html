@@ -11,110 +11,168 @@ window.RTG_CONFIG = {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Real Treasury Tech Selection Guide | Waitlist</title>
+  <title>2026 Real Treasury Tech Selection Guide | Join the Waitlist</title>
   <meta name="description" content="Join the waitlist for the 2026 Real Treasury Tech Selection Guide and get notified as soon as it launches." />
   <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --brand: #22c55e;
-      --brand-dark: #16a34a;
-      --border: #1f2937;
+    .rt-waitlist {
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --deep-purple: #5b0acd;
+        --lavender-pink: #c77dff;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        --white: #ffffff;
+        --off-white: #f8f8f8;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        --gradient-light: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: radial-gradient(circle at top right, #1e293b, var(--bg));
-      color: var(--text);
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 1.5rem;
-    }
-    .wrap {
-      width: 100%;
-      max-width: 860px;
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 1rem;
-    }
-    .card {
-      background: color-mix(in srgb, var(--panel) 92%, #000);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 8px 30px rgba(0,0,0,.35);
-    }
-    h1 { margin: 0 0 .75rem; font-size: clamp(1.6rem, 2.5vw, 2.5rem); line-height: 1.15; }
-    p { color: var(--muted); line-height: 1.6; }
-    .pill {
-      display: inline-block;
-      font-size: .8rem;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      border: 1px solid #334155;
-      border-radius: 999px;
-      padding: .35rem .65rem;
-      margin-bottom: .75rem;
-      color: #cbd5e1;
-    }
-    ul { padding-left: 1.1rem; color: var(--muted); }
-    li { margin-bottom: .5rem; }
-    button {
-      border: 0;
-      border-radius: 10px;
-      background: var(--brand);
-      color: #052e16;
-      padding: .85rem 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-    }
-    button:hover { background: var(--brand-dark); color: #ecfdf5; }
-    .small { font-size: .8rem; color: #94a3b8; margin-top: .2rem; }
+    .rt-waitlist *, .rt-waitlist *::before, .rt-waitlist *::after { box-sizing: border-box; }
+    .rt-waitlist img { max-width: 100%; height: auto; }
+    .rt-waitlist a { color: inherit; text-decoration: none; }
 
-    @media (max-width: 860px) {
-      .wrap { grid-template-columns: 1fr; }
+    /* ---- Layout ---- */
+    .rt-wl-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---- Hero ---- */
+    .rt-wl-hero { background: var(--gradient-light); padding: 60px 0 48px; text-align: center; position: relative; overflow: hidden; }
+    .rt-wl-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 20%, rgba(114,22,244,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(143,71,246,0.06) 0%, transparent 50%); pointer-events: none; }
+    .rt-wl-hero .rt-wl-container { position: relative; z-index: 2; }
+    .rt-wl-badge { display: inline-block; background: rgba(199,125,255,0.1); border: 1px solid rgba(199,125,255,0.25); border-radius: 20px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; color: var(--primary-purple); margin-bottom: 24px; }
+    .rt-wl-title { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .rt-wl-subtitle { font-size: 1.15rem; color: var(--gray-text); line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
+
+    /* ---- Side-by-side row ---- */
+    .rt-wl-content-section { padding: 48px 0; }
+    .rt-wl-content-row { display: flex; gap: 32px; align-items: flex-start; }
+
+    /* ---- Image / Preview Card ---- */
+    .rt-wl-preview { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); }
+    .rt-wl-preview-label { font-size: 0.9rem; font-weight: 600; color: var(--dark-text); text-align: center; margin-bottom: 12px; }
+    .rt-wl-preview img { width: 100%; height: auto; border-radius: 8px; display: block; }
+    .rt-wl-features { list-style: none; padding: 0; margin: 20px 0 0; }
+    .rt-wl-features li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-top: 1px solid rgba(199,125,255,0.15); font-size: 0.95rem; color: var(--dark-text); }
+    .rt-wl-features li:first-child { border-top: none; }
+    .rt-wl-features li::before { content: ''; display: inline-block; width: 18px; height: 18px; min-width: 18px; background: var(--gradient-primary); border-radius: 50%; margin-top: 2px; }
+
+    /* ---- Form Card ---- */
+    .rt-wl-form-card { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 20px; padding: 48px 40px; box-shadow: 0 8px 32px rgba(114,22,244,0.1); position: relative; overflow: hidden; }
+    .rt-wl-form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-primary); }
+    .rt-wl-form-heading { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin: 0 0 8px; text-align: center; }
+    .rt-wl-form-subtext { font-size: 0.95rem; color: var(--gray-text); text-align: center; margin-bottom: 32px; }
+
+    /* ---- Portal Button ---- */
+    .rt-wl-portal-wrap { margin-top: 8px; }
+    .rt-wl-portal-wrap .tpa-btn,
+    .rt-wl-portal-wrap button { display: block; width: 100%; padding: 16px 36px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1rem; color: var(--white); background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%); border: 1px solid rgba(199,125,255,0.4); border-radius: 12px; cursor: pointer; letter-spacing: 0.3px; text-transform: uppercase; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 8px 32px rgba(114,22,244,0.3), inset 0 1px 0 rgba(255,255,255,0.25); text-align: center; text-decoration: none; }
+    .rt-wl-portal-wrap .tpa-btn:hover,
+    .rt-wl-portal-wrap button:hover { transform: translateY(-2px); background: linear-gradient(135deg, rgba(143,71,246,0.95) 0%, rgba(157,78,221,0.95) 100%); box-shadow: 0 12px 40px rgba(114,22,244,0.4), inset 0 1px 0 rgba(255,255,255,0.3); }
+    .rt-wl-portal-wrap .tpa-btn:focus-visible,
+    .rt-wl-portal-wrap button:focus-visible { outline: 3px solid var(--lavender-pink); outline-offset: 2px; }
+
+    .rt-wl-disclaimer { font-size: 0.8rem; color: #9ca3af; text-align: center; margin-top: 16px; line-height: 1.5; }
+
+    /* ---- Social proof strip ---- */
+    .rt-wl-proof { display: flex; gap: 24px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(199,125,255,0.15); }
+    .rt-wl-proof-item { flex: 1; text-align: center; }
+    .rt-wl-proof-number { font-size: 1.5rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+    .rt-wl-proof-label { font-size: 0.8rem; color: var(--gray-text); }
+
+    @media (max-width: 768px) {
+        .rt-wl-hero { padding: 40px 0 32px; }
+        .rt-wl-title { font-size: 2.25rem; }
+        .rt-wl-subtitle { font-size: 1.05rem; }
+        .rt-wl-content-row { flex-direction: column; }
+        .rt-wl-form-card { padding: 32px 24px; }
+        .rt-wl-proof { gap: 12px; }
+    }
+    @media (max-width: 480px) {
+        .rt-wl-title { font-size: 1.85rem; }
+        .rt-wl-badge { font-size: 0.8rem; padding: 6px 14px; }
+        .rt-wl-form-card { padding: 24px 18px; border-radius: 16px; }
     }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <section class="card">
-      <span class="pill">Coming in 2026</span>
-      <h1>Join the Waitlist for the 2026 Real Treasury Tech Selection Guide</h1>
-      <p>
-        Be the first to access our upcoming 2026 guide with practical selection criteria,
-        vendor evaluation framework, and implementation insights.
-      </p>
-      <ul>
-        <li>Early release notification</li>
-        <li>Actionable selection scorecards</li>
-        <li>Independent, practitioner-led guidance</li>
-      </ul>
-    </section>
+<div class="rt-waitlist">
 
-    <section class="card" aria-labelledby="waitlist-form-title">
-      <h2 id="waitlist-form-title" style="margin-top:0">Reserve Your Spot</h2>
+  <section class="rt-wl-hero" aria-labelledby="rt-wl-hero-heading">
+    <div class="rt-wl-container">
+      <span class="rt-wl-badge">Coming in 2026</span>
+      <h1 id="rt-wl-hero-heading" class="rt-wl-title">2026 Real Treasury Tech Selection Guide</h1>
+      <p class="rt-wl-subtitle">The practitioner-led guide to evaluating and selecting treasury technology — join the waitlist to get early access the moment it launches.</p>
+    </div>
+  </section>
 
-      <!--
-        WordPress-rendered usage (recommended):
-        [portal_button text="Join the Waitlist" asset="treasury-tech-selection-guide-waitlist" mapping_id="5"]
+  <section class="rt-wl-content-section" aria-label="Waitlist sign-up">
+    <div class="rt-wl-container">
+      <div class="rt-wl-content-row">
 
-        Recommended rt-gate redirect URL (after form submission):
-        /treasury-tech-selection/guide/?guide=Real%20Treasury%20Tech%20Selection%20Guide&year=2026
-      -->
-      <a href="#openPortalModal" class="tpa-btn open-portal-modal" data-portal-trigger data-asset="treasury-tech-selection-guide-waitlist" data-mapping-id="5">
-        <button type="button">Join the Waitlist</button>
-      </a>
+        <!-- Left: Guide preview image + feature highlights -->
+        <div class="rt-wl-preview">
+          <p class="rt-wl-preview-label">Treasury Tech Market Map — North America</p>
+          <img
+            src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-NORAM-05-2026-clean.png"
+            alt="Treasury Tech Market Map — North America, preview of the 2026 Real Treasury Tech Selection Guide"
+            loading="lazy"
+          >
+          <ul class="rt-wl-features">
+            <li>Early-access notification the day it goes live</li>
+            <li>Actionable vendor evaluation scorecards</li>
+            <li>Independent, practitioner-led selection criteria</li>
+            <li>Implementation insights from real deployments</li>
+          </ul>
+        </div>
 
-      <p class="small">
-        After submitting you will be redirected to a confirmation page at /treasury-tech-selection/guide/.
-      </p>
-    </section>
-  </main>
+        <!-- Right: Waitlist sign-up form card -->
+        <div class="rt-wl-form-card" role="region" aria-labelledby="rt-wl-form-heading">
+          <h2 id="rt-wl-form-heading" class="rt-wl-form-heading">Reserve Your Spot</h2>
+          <p class="rt-wl-form-subtext">Fill out the short form below and we'll notify you as soon as the 2026 guide is available.</p>
+
+          <!--
+            WordPress shortcode equivalent:
+            [portal_button text="Join the Waitlist" asset="treasury-tech-selection-guide-waitlist" mapping_id="5"]
+          -->
+          <div class="rt-wl-portal-wrap">
+            <a
+              href="#openPortalModal"
+              class="tpa-btn open-portal-modal"
+              data-portal-trigger
+              data-asset="treasury-tech-selection-guide-waitlist"
+              data-mapping-id="5"
+              role="button"
+            >Join the Waitlist</a>
+          </div>
+
+          <p class="rt-wl-disclaimer">
+            After submitting you will be redirected to a confirmation page.<br>
+            No spam — unsubscribe any time.
+          </p>
+
+          <div class="rt-wl-proof">
+            <div class="rt-wl-proof-item">
+              <span class="rt-wl-proof-number">2026</span>
+              <span class="rt-wl-proof-label">Edition</span>
+            </div>
+            <div class="rt-wl-proof-item">
+              <span class="rt-wl-proof-number">Free</span>
+              <span class="rt-wl-proof-label">Early Access</span>
+            </div>
+            <div class="rt-wl-proof-item">
+              <span class="rt-wl-proof-number">100%</span>
+              <span class="rt-wl-proof-label">Independent</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
 </body>
 </html>

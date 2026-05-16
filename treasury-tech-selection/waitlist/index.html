@@ -48,12 +48,14 @@ window.RTG_CONFIG = {
 
     /* ---- Side-by-side row ---- */
     .rt-wl-content-section { padding: 48px 0; }
-    .rt-wl-content-row { display: flex; gap: 32px; align-items: flex-start; }
+    .rt-wl-content-row { display: flex; gap: 32px; align-items: stretch; }
 
     /* ---- Image / Preview Card ---- */
-    .rt-wl-preview { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); }
-    .rt-wl-preview-label { font-size: 0.9rem; font-weight: 600; color: var(--dark-text); text-align: center; margin-bottom: 12px; }
-    .rt-wl-preview img { width: 100%; height: auto; border-radius: 8px; display: block; }
+    .rt-wl-preview { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 24px 20px 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); position: relative; overflow: visible; }
+    .rt-wl-preview-label { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(199,125,255,0.3); color: var(--dark-text); border-radius: 14px; padding: 10px 18px; box-shadow: 0 8px 20px rgba(91, 10, 205, 0.12); text-align: center; line-height: 1.35; min-width: 260px; max-width: calc(100% - 36px); margin: 0; }
+    .rt-wl-preview-label strong { display: block; font-size: 1rem; font-weight: 700; }
+    .rt-wl-preview-label span { display: block; font-size: 0.83rem; color: var(--primary-purple); font-weight: 600; }
+    .rt-wl-preview img { width: 100%; height: auto; border-radius: 10px; display: block; margin-top: 18px; }
     .rt-wl-features { list-style: none; padding: 0; margin: 20px 0 0; }
     .rt-wl-features li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-top: 1px solid rgba(199,125,255,0.15); font-size: 0.95rem; color: var(--dark-text); }
     .rt-wl-features li:first-child { border-top: none; }
@@ -73,13 +75,17 @@ window.RTG_CONFIG = {
     .rt-wl-form-wrap label { display:block; font-size:0.9rem; font-weight:600; color: var(--dark-text); margin-bottom: 6px; }
     .rt-wl-form-wrap input, .rt-wl-form-wrap select, .rt-wl-form-wrap textarea { width:100%; padding:12px 14px; border:1px solid #d8c9f7; border-radius:10px; font: inherit; }
     .rt-wl-form-wrap .rtg-submit-btn { width:100%; padding:14px 20px; border:0; border-radius:12px; color:#fff; font-weight:700; background: linear-gradient(135deg, rgba(114,22,244,0.95), rgba(143,71,246,0.95)); cursor:pointer; }
-    .rt-wl-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
+     .rt-wl-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
+    .rt-wl-form-wrap input:focus, .rt-wl-form-wrap select:focus, .rt-wl-form-wrap textarea:focus { outline: 2px solid rgba(114,22,244,0.5); outline-offset: 1px; border-color: rgba(114,22,244,0.55); }
+    .rt-wl-form-wrap .rtg-submit-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .rt-wl-form-wrap .rtg-submit-btn:active { transform: translateY(0); }
+
 
     .rt-wl-disclaimer { font-size: 0.8rem; color: #9ca3af; text-align: center; margin-top: 16px; line-height: 1.5; }
 
     /* ---- Social proof strip ---- */
-    .rt-wl-proof { display: flex; gap: 24px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(199,125,255,0.15); }
-    .rt-wl-proof-item { flex: 1; text-align: center; }
+    .rt-wl-proof { display: flex; gap: 24px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(199,125,255,0.15); flex-wrap: wrap; }
+    .rt-wl-proof-item { flex: 1 1 120px; text-align: center; }
     .rt-wl-proof-number { font-size: 1.5rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
     .rt-wl-proof-label { font-size: 0.8rem; color: var(--gray-text); }
 
@@ -115,7 +121,7 @@ window.RTG_CONFIG = {
 
         <!-- Left: Guide preview image + feature highlights -->
         <div class="rt-wl-preview">
-          <p class="rt-wl-preview-label">Treasury Tech Market Map — North America</p>
+          <p class="rt-wl-preview-label"><strong>Treasury Systems</strong><span>North American Vendors</span></p>
           <img
             src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-NORAM-05-2026-clean.png"
             alt="Treasury Tech Market Map — North America, preview of the 2026 Real Treasury Tech Selection Guide"

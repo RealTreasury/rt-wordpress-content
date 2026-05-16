@@ -16,6 +16,9 @@ window.RTG_CONFIG = {
     assetSlug:  'treasury-tech-selection-guide-waitlist', // RT Gate asset slug
     mappingId:  5                                         // Mapping #5: General Form -> Treasury Tech Selection Guide Waitlist
     // formId:  123,                                       // Optional: pin a specific form ID
+    // redirectUrl is intentionally omitted — the post-submit redirect
+    // comes from the rt-gate plugin (primary_redirect_url in the /submit response),
+    // which is built from the mapped asset's gate URL configured in WP Admin.
 };
 </script>
 
@@ -209,7 +212,7 @@ window.RTG_CONFIG = {
   var ASSET_SLUG = C.assetSlug;
   var CONFIG_FORM_ID = C.formId || null;
   var CONFIG_MAPPING_ID = C.mappingId ? Number(C.mappingId) : null;
-  var REDIRECT_URL = C.redirectUrl || '/treasury-tech-selection/guide/';
+  var CONFIG_REDIRECT_URL = C.redirectUrl || '';
   var container = document.getElementById('rtWlFormContainer');
   if (!container || !ASSET_SLUG) return;
 
@@ -318,7 +321,15 @@ window.RTG_CONFIG = {
       if (schema.mapping_id) payload.mapping_id = Number(schema.mapping_id);
       fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
         .then(parseJsonOrThrow)
-        .then(function(){ if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = 'Success! Redirecting...'; } window.location.href = REDIRECT_URL; })
+        .then(function(data){
+          var target = (data && data.primary_redirect_url) || CONFIG_REDIRECT_URL;
+          if (!target) {
+            if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = "You're on the list! We'll be in touch."; }
+            return;
+          }
+          if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = 'Success! Redirecting...'; }
+          window.location.href = target;
+        })
         .catch(function(err){ if (btn) btn.disabled = false; if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = (err && err.message) || 'Submission failed.'; } });
     });
   }

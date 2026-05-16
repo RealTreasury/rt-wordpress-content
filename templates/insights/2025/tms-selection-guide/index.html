@@ -182,6 +182,7 @@
             font-size: 0.9rem;
             min-width: 120px;
             justify-content: center;
+            white-space: nowrap;
             position: relative;
             overflow: hidden;
         }
@@ -431,6 +432,23 @@
             
             .container {
                 padding: 0 15px;
+            }
+
+            .share-buttons {
+                gap: 10px;
+            }
+
+            .share-btn {
+                flex: 1 1 calc(50% - 10px);
+                min-width: 0;
+                padding: 12px 14px;
+                font-size: 0.82rem;
+                gap: 6px;
+            }
+
+            .share-btn .copy-text {
+                display: inline-block;
+                overflow-wrap: anywhere;
             }
         }
     </style>

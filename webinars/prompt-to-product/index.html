@@ -224,6 +224,7 @@ window.RTG_CONFIG = {
                     <video id="rtGvVideo" controls controlsList="nodownload" playsinline preload="metadata" oncontextmenu="return false;">
                         Your browser does not support the video tag.
                     </video>
+                    <iframe id="rtGvYouTube" title="YouTube video player" style="display:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>
                 <div class="rt-gv-video-cta">
                     <p class="rt-gv-cta-heading" id="rtGvCtaHeading"></p>
@@ -323,6 +324,7 @@ window.RTG_CONFIG = {
     var contentRow    = document.getElementById('rtGvContentRow');
     var videoCard     = document.getElementById('rtGvVideoCard');
     var formContainer = document.getElementById('rtGvFormContainer');
+    var youtubeEl    = document.getElementById('rtGvYouTube');
 
     function parseJsonOrThrow(response) { return response.text().then(function(text) { var json = {}; try { json = text ? JSON.parse(text) : {}; } catch (e) { throw new Error('Invalid JSON (' + response.status + ')'); } if (!response.ok) { throw new Error(json.message || 'Request failed (' + response.status + ')'); } return json; }); }
     function getStoredAccess() { try { var raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
@@ -333,11 +335,42 @@ window.RTG_CONFIG = {
     function escHtml(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s)); return d.innerHTML; }
     function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+    function getYouTubeEmbedUrl(url) {
+        if (!url) return '';
+        try {
+            var parsed = new URL(url, window.location.href);
+            var host = (parsed.hostname || '').toLowerCase();
+            var id = '';
+            if (host.indexOf('youtu.be') !== -1) id = (parsed.pathname || '').replace(/^\//, '').split('/')[0];
+            else if (host.indexOf('youtube.com') !== -1 || host.indexOf('youtube-nocookie.com') !== -1) {
+                id = parsed.searchParams.get('v') || '';
+                if (!id && parsed.pathname.indexOf('/embed/') === 0) id = parsed.pathname.split('/')[2] || '';
+                if (!id && parsed.pathname.indexOf('/shorts/') === 0) id = parsed.pathname.split('/')[2] || '';
+            }
+            id = (id || '').trim();
+            return id ? ('https://www.youtube-nocookie.com/embed/' + encodeURIComponent(id) + '?rel=0') : '';
+        } catch (e) { return ''; }
+    }
+
     /* ---- Video swap ---- */
     function showVideo(videoUrl, animate) {
         var hideTarget = contentRow || formCard;
         if (!hideTarget || !videoCard || !videoEl) return;
-        if (videoUrl) videoEl.src = videoUrl;
+
+        var ytEmbed = getYouTubeEmbedUrl(videoUrl);
+        if (ytEmbed && youtubeEl) {
+            videoEl.pause();
+            videoEl.removeAttribute('src');
+            videoEl.load();
+            videoEl.style.display = 'none';
+            youtubeEl.src = ytEmbed;
+            youtubeEl.style.display = 'block';
+        } else {
+            if (youtubeEl) { youtubeEl.removeAttribute('src'); youtubeEl.style.display = 'none'; }
+            videoEl.style.display = 'block';
+            if (videoUrl) videoEl.src = videoUrl;
+        }
+
         if (animate) {
             hideTarget.style.opacity = '0'; hideTarget.style.transform = 'translateY(-20px)';
             setTimeout(function() { hideTarget.style.display = 'none'; videoCard.style.display = 'block'; void videoCard.offsetHeight; videoCard.style.opacity = '1'; videoCard.style.transform = 'translateY(0)'; videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500);

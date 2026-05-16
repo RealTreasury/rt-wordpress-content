@@ -4,6 +4,26 @@ Static HTML content for the Real Treasury website. Most pages are pasted into
 WordPress posts/pages directly; a few (`webinars/`, `treasury-tech-selection/waitlist/`, etc.)
 are standalone HTML files served via WordPress.
 
+## Keeping this file current
+
+**AGENTS.md is the entry point for every AI coding session in this repo.**
+If you change anything that affects how future contributors should work in
+this codebase, update this file in the same commit. Specifically, if a
+change to `README.md`, `docs/*.md`, plugin READMEs, or any other
+authoritative reference does one of the following, AGENTS.md must reflect
+or link to it:
+
+- Introduces or renames a canonical path / directory convention.
+- Deprecates a plugin, helper, template, or directory.
+- Adds a new build / lint / test / publish command.
+- Establishes a new architectural rule (e.g. "all X must use Y").
+- Adds a new docs file that codifies a workflow.
+
+Detailed reference content belongs in `docs/`; AGENTS.md should be a short,
+high-signal index that names the rule and points at the deeper doc. If
+you find a rule that exists in `docs/` or `README.md` but is not surfaced
+here, treat that as a bug and fix it.
+
 ## Build commands
 
 1. Install dependencies:

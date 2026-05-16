@@ -122,9 +122,40 @@
       color: #6b5f8f;
     }
 
-    .footnote a {
-      color: #7216f4;
-      text-underline-offset: 2px;
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-top: 1.1rem;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: .78rem 1.15rem;
+      border-radius: 12px;
+      border: 1px solid rgba(114, 22, 244, 0.28);
+      color: #ffffff;
+      background: linear-gradient(120deg, #7216f4 0%, #8f47f6 100%);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: .92rem;
+      transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+      box-shadow: 0 12px 26px rgba(114, 22, 244, 0.24);
+    }
+
+    .cta-button:hover,
+    .cta-button:focus-visible {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow: 0 14px 30px rgba(114, 22, 244, 0.30);
+      outline: none;
+    }
+
+    .cta-button.secondary {
+      color: #5b0acd;
+      background: rgba(114, 22, 244, 0.08);
     }
 
     @media (max-width: 760px) {
@@ -150,9 +181,11 @@
       <li>Add Real Treasury to your safe sender list to avoid missing updates.</li>
     </ul>
 
-    <p class="footnote">If you have any questions, email <a href="mailto:contact@realtreasury.com">contact@realtreasury.com</a> and our team will help.</p>
-
-    <p class="footnote">Want to talk sooner? <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" rel="noopener noreferrer">Book a strategy meeting</a>.</p>
+    <p class="footnote">Want to connect before launch? Reach out directly or schedule time with our team.</p>
+    <div class="cta-group" role="group" aria-label="Contact options">
+      <a class="cta-button" href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" rel="noopener noreferrer">Book a strategy meeting</a>
+      <a class="cta-button secondary" href="mailto:contact@realtreasury.com">Email contact@realtreasury.com</a>
+    </div>
   </main>
 
   <script>

@@ -121,9 +121,9 @@ function add_my_custom_header_html() {
                                             <div class="rt-step-number">1</div>
                                             <div class="rt-step-text">Explore tech portal</div>
                                         </a>
-                                        <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" class="rt-journey-step" target="_blank" rel="noopener noreferrer">
+                                        <a href="https://realtreasury.com/2026-treasury-tech-guide-waitlist/" class="rt-journey-step">
                                             <div class="rt-step-number">2</div>
-                                            <div class="rt-step-text">Register: From Prompt to Product webinar</div>
+                                            <div class="rt-step-text">Join: 2026 Selection Guide waitlist</div>
                                         </a>
                                         <a href="https://realtreasury.com/on-demand-workshop/" class="rt-journey-step">
                                             <div class="rt-step-number">3</div>
@@ -157,16 +157,14 @@ function add_my_custom_header_html() {
                                             <span class="rt-service-cta">Request Access →</span>
                                         </a>
 
-                                        <div class="rt-service-item">
+                                        <a href="https://realtreasury.com/2026-treasury-tech-guide-waitlist/" class="rt-service-item">
                                             <div class="rt-service-header">
-                                                <div class="rt-service-icon">▶️</div>
-                                                <div class="rt-service-title">From Prompt to Product: Build or Buy?</div>
+                                                <div class="rt-service-icon">📘</div>
+                                                <div class="rt-service-title">2026 Real Treasury Tech Selection Guide</div>
                                             </div>
-                                            <div class="rt-service-desc">Should treasury build its own tools? Compare speed, cost, control, scalability, support, and risk in this live webinar.</div>
-                                            <div class="rt-service-cta-group">
-                                                <a href="https://events.teams.microsoft.com/event/b9f9620f-fdcf-4888-804c-bb08220b34e0@cdc422ca-d271-4ba3-856d-77081c6a7f04" target="_blank" rel="noopener noreferrer" class="rt-service-cta">Register for Upcoming Webinar →</a>
-                                            </div>
-                                        </div>
+                                            <div class="rt-service-desc">The practitioner-led guide to evaluating and selecting treasury technology — join the waitlist for early access.</div>
+                                            <span class="rt-service-cta">Join the Waitlist →</span>
+                                        </a>
 
                                         <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="rt-service-item">
                                             <div class="rt-service-header">

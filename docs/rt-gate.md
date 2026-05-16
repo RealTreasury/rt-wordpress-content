@@ -96,13 +96,18 @@ success instead of swapping in a video), keep these rules:
 
 ## Existing pages using RT Gate
 
+All gated webinar pages live under **`webinars/`** (plural) — this is the
+canonical webinar path per `docs/webinar-publishing.md`. The legacy
+`webinar/` (singular) directory contains only redirect stubs pointing
+here; never add new content there.
+
 - `webinars/prompt-to-product/index.html` — video gate (mapping #6)
 - `webinars/tms-rfp-trap/index.html` — video gate (mapping #4)
-- `webinar/gated-video/index.html` — NORAM video (mapping #1)
-- `webinar/gated-video-emea/index.html` — EMEA video (mapping #3)
-- `bankreports/.../index.html` — download gate (mapping #2 — portal, #1 — bank report)
+- `webinars/3-segments-1-smart-choice/index.html` — NORAM video gate (mapping #1)
+- `webinars/3-segments-1-smart-choice-emea/index.html` — EMEA video gate (mapping #3)
 - `treasury-tech-selection/waitlist/index.html` — waitlist signup (mapping #5)
 
 When adding a new gated page, create the Form / Asset / Mapping in WP Admin
 first, then mirror one of the pages above whose pattern matches yours
-(video unlock vs. waitlist redirect vs. download).
+(video unlock vs. waitlist redirect). New gated webinars go in
+`webinars/<slug>/index.html` — never in `webinar/`.

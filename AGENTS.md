@@ -20,6 +20,19 @@ are standalone HTML files served via WordPress.
    npm run test:ejs
    ```
 
+## Directory conventions (read before adding new pages)
+
+- **`webinars/`** (plural) — canonical home for every webinar page.
+  New webinars go in `webinars/<slug>/index.html`.
+- **`webinar/`** (singular) — DEPRECATED. Contains only redirect stubs
+  pointing at `webinars/`. Do not add files here or reference these paths
+  in new code.
+- **`plugins/treasury-portal-access/`** — DEPRECATED gating plugin
+  (Contact Form 7 + cookie). Kept for historical reference only. See
+  the next section.
+
+See also `docs/webinar-publishing.md` for the webinar publishing contract.
+
 ## Gated content — use RT Gate, not `treasury-portal-access`
 
 All new gated content (forms that unlock a video, download, link, or
@@ -31,6 +44,9 @@ REST API at `/wp-json/rtg/v1/` and is configured via the WP Admin
   this is the reference implementation. New gated pages should mirror its
   `window.RTG_CONFIG` block and its form-rendering / submission script.
 - **Full integration guide:** `docs/rt-gate.md`.
+- **Existing RT Gate pages** all live under `webinars/` (plural) and
+  `treasury-tech-selection/waitlist/`. There are no RT Gate pages under
+  `webinar/` (singular) — that directory is deprecated redirect stubs.
 
 ### Deprecated — do NOT build on this
 

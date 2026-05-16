@@ -340,6 +340,15 @@ window.RTG_CONFIG = {
             return;
           }
           if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = 'Success! Redirecting...'; }
+          // When embedded in an iframe, navigate the top window so the
+          // user actually leaves the waitlist page instead of loading
+          // the destination inside the form embed.
+          try {
+            if (window.top && window.top !== window.self) {
+              window.top.location.href = target;
+              return;
+            }
+          } catch (e) { /* cross-origin parent; fall through */ }
           window.location.href = target;
         })
         .catch(function(err){ if (btn) btn.disabled = false; if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = (err && err.message) || 'Submission failed.'; } });
@@ -352,5 +361,29 @@ window.RTG_CONFIG = {
 })();
 </script>
 
+<script>
+/* iFrame auto-resize — posts content height to the parent so the embed
+   can't clip the form below the submit button. Pairs with
+   assets/js/iframe-resizer.js on the WordPress side. No-op when this
+   page is opened standalone. */
+(function () {
+  if (window.parent === window) return;
+  var id = (document.body && document.body.dataset && document.body.dataset.iframeId) || window.location.pathname;
+  function postHeight() {
+    var h = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0;
+    if (window.parent && typeof window.parent.postMessage === 'function') {
+      window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*');
+    }
+  }
+  var frameId;
+  function schedule() { if (frameId) cancelAnimationFrame(frameId); frameId = requestAnimationFrame(postHeight); }
+  window.addEventListener('load', schedule, { passive: true });
+  window.addEventListener('resize', schedule, { passive: true });
+  if (typeof MutationObserver !== 'undefined' && document.body) {
+    new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  schedule();
+})();
+</script>
 </body>
 </html>

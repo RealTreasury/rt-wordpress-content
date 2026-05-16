@@ -30,6 +30,18 @@ window.RTG_CONFIG = {
   <title>2026 Real Treasury Tech Selection Guide | Join the Waitlist</title>
   <meta name="description" content="Join the waitlist for the 2026 Real Treasury Tech Selection Guide and get notified as soon as it launches." />
   <style>
+    /* Full-bleed dark gradient so the embed looks edge-to-edge whether
+       opened standalone or hosted inside an auto-sizing iframe. */
+    html, body { margin: 0; padding: 0; }
+    body {
+        background:
+          radial-gradient(900px 520px at 90% -12%, rgba(143, 71, 246, 0.28), transparent 60%),
+          radial-gradient(700px 400px at 8% 110%, rgba(199, 125, 255, 0.22), transparent 64%),
+          linear-gradient(180deg, #0d1632 0%, #0e152b 45%, #05070f 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+    }
+
     .rt-waitlist {
         --primary-purple: #7216f4;
         --secondary-purple: #8f47f6;
@@ -54,13 +66,12 @@ window.RTG_CONFIG = {
     /* ---- Layout ---- */
     .rt-wl-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-    /* ---- Hero ---- */
-    .rt-wl-hero { background: var(--gradient-light); padding: 60px 0 48px; text-align: center; position: relative; overflow: hidden; }
-    .rt-wl-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 20%, rgba(114,22,244,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(143,71,246,0.06) 0%, transparent 50%); pointer-events: none; }
+    /* ---- Hero (transparent over dark body gradient) ---- */
+    .rt-wl-hero { background: transparent; padding: 60px 0 48px; text-align: center; position: relative; overflow: hidden; }
     .rt-wl-hero .rt-wl-container { position: relative; z-index: 2; }
-    .rt-wl-badge { display: inline-block; background: rgba(199,125,255,0.1); border: 1px solid rgba(199,125,255,0.25); border-radius: 20px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; color: var(--primary-purple); margin-bottom: 24px; }
-    .rt-wl-title { font-size: 3rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; padding-bottom: 0.08em; }
-    .rt-wl-subtitle { font-size: 1.15rem; color: var(--gray-text); line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
+    .rt-wl-badge { display: inline-block; background: rgba(199,125,255,0.18); border: 1px solid rgba(199,125,255,0.4); border-radius: 20px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; color: #ede9fe; margin-bottom: 24px; }
+    .rt-wl-title { font-size: 3rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; background: linear-gradient(90deg, #f8f9ff 0%, #dfc8ff 65%, #b89dff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; padding-bottom: 0.08em; }
+    .rt-wl-subtitle { font-size: 1.15rem; color: #b6bfd9; line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
 
     /* ---- Side-by-side row ---- */
     .rt-wl-content-section { padding: 48px 0; }
@@ -337,6 +348,30 @@ window.RTG_CONFIG = {
   fetchFormSchema()
     .then(renderForm)
     .catch(function(err){ container.innerHTML = '<p style="color:#b91c1c;">Unable to load form. ' + escHtml((err && err.message) || 'Unknown error') + '</p>'; });
+})();
+</script>
+
+<script>
+/* iFrame auto-resize — posts content height to the parent so the embed
+   can't clip the form. Pairs with assets/js/iframe-resizer.js on the
+   WordPress side. No-op when this page is opened standalone. */
+(function () {
+  var id = (document.body && document.body.dataset && document.body.dataset.iframeId) || window.location.pathname;
+  if (window.parent === window) return;
+  function postHeight() {
+    var h = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0;
+    if (window.parent && typeof window.parent.postMessage === 'function') {
+      window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*');
+    }
+  }
+  var frameId;
+  function schedule() { if (frameId) cancelAnimationFrame(frameId); frameId = requestAnimationFrame(postHeight); }
+  window.addEventListener('load', schedule, { passive: true });
+  window.addEventListener('resize', schedule, { passive: true });
+  if (typeof MutationObserver !== 'undefined' && document.body) {
+    new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  schedule();
 })();
 </script>
 </body>

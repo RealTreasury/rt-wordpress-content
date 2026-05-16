@@ -43,7 +43,7 @@ window.RTG_CONFIG = {
     .rt-wl-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 20%, rgba(114,22,244,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(143,71,246,0.06) 0%, transparent 50%); pointer-events: none; }
     .rt-wl-hero .rt-wl-container { position: relative; z-index: 2; }
     .rt-wl-badge { display: inline-block; background: rgba(199,125,255,0.1); border: 1px solid rgba(199,125,255,0.25); border-radius: 20px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; color: var(--primary-purple); margin-bottom: 24px; }
-    .rt-wl-title { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .rt-wl-title { font-size: 3rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; padding-bottom: 0.08em; }
     .rt-wl-subtitle { font-size: 1.15rem; color: var(--gray-text); line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
 
     /* ---- Side-by-side row ---- */
@@ -65,14 +65,15 @@ window.RTG_CONFIG = {
     .rt-wl-form-heading { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin: 0 0 8px; text-align: center; }
     .rt-wl-form-subtext { font-size: 0.95rem; color: var(--gray-text); text-align: center; margin-bottom: 32px; }
 
-    /* ---- Portal Button ---- */
-    .rt-wl-portal-wrap { margin-top: 8px; }
-    .rt-wl-portal-wrap .tpa-btn,
-    .rt-wl-portal-wrap button { display: block; width: 100%; padding: 16px 36px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1rem; color: var(--white); background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%); border: 1px solid rgba(199,125,255,0.4); border-radius: 12px; cursor: pointer; letter-spacing: 0.3px; text-transform: uppercase; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 8px 32px rgba(114,22,244,0.3), inset 0 1px 0 rgba(255,255,255,0.25); text-align: center; text-decoration: none; }
-    .rt-wl-portal-wrap .tpa-btn:hover,
-    .rt-wl-portal-wrap button:hover { transform: translateY(-2px); background: linear-gradient(135deg, rgba(143,71,246,0.95) 0%, rgba(157,78,221,0.95) 100%); box-shadow: 0 12px 40px rgba(114,22,244,0.4), inset 0 1px 0 rgba(255,255,255,0.3); }
-    .rt-wl-portal-wrap .tpa-btn:focus-visible,
-    .rt-wl-portal-wrap button:focus-visible { outline: 3px solid var(--lavender-pink); outline-offset: 2px; }
+    /* ---- Embedded Form ---- */
+    .rt-wl-form-wrap { margin-top: 8px; }
+
+    
+    .rt-wl-form-wrap .rtg-field-group { margin-bottom: 14px; }
+    .rt-wl-form-wrap label { display:block; font-size:0.9rem; font-weight:600; color: var(--dark-text); margin-bottom: 6px; }
+    .rt-wl-form-wrap input, .rt-wl-form-wrap select, .rt-wl-form-wrap textarea { width:100%; padding:12px 14px; border:1px solid #d8c9f7; border-radius:10px; font: inherit; }
+    .rt-wl-form-wrap .rtg-submit-btn { width:100%; padding:14px 20px; border:0; border-radius:12px; color:#fff; font-weight:700; background: linear-gradient(135deg, rgba(114,22,244,0.95), rgba(143,71,246,0.95)); cursor:pointer; }
+    .rt-wl-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
 
     .rt-wl-disclaimer { font-size: 0.8rem; color: #9ca3af; text-align: center; margin-top: 16px; line-height: 1.5; }
 
@@ -135,17 +136,10 @@ window.RTG_CONFIG = {
 
           <!--
             WordPress shortcode equivalent:
-            [portal_button text="Join the Waitlist" asset="treasury-tech-selection-guide-waitlist" mapping_id="5"]
+            <div id="rtWlFormContainer"><p>Loading form...</p></div>
           -->
-          <div class="rt-wl-portal-wrap">
-            <a
-              href="#openPortalModal"
-              class="tpa-btn open-portal-modal"
-              data-portal-trigger
-              data-asset="treasury-tech-selection-guide-waitlist"
-              data-mapping-id="5"
-              role="button"
-            >Join the Waitlist</a>
+          <div class="rt-wl-form-wrap">
+            <div id="rtWlFormContainer"><p>Loading form...</p></div>
           </div>
 
           <p class="rt-wl-disclaimer">
@@ -174,5 +168,53 @@ window.RTG_CONFIG = {
   </section>
 
 </div>
+
+<script>
+(function(){
+  var C = window.RTG_CONFIG || {};
+  var apiBase = 'https://realtreasury.com/wp-json/rtg/v1';
+  var assetSlug = C.assetSlug;
+  var mappingId = C.mappingId || null;
+  var container = document.getElementById('rtWlFormContainer');
+  if (!container || !assetSlug) return;
+
+  function esc(s){ var d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+  function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON');} if(!res.ok) throw new Error(j.message||'Request failed'); return j;}); }
+  function fieldTypeToInputType(t){ return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
+
+  function renderForm(schema){
+    var fields=schema.fields||[];
+    var html='<form id="rtWlForm" novalidate>';
+    fields.forEach(function(f){
+      var req=f.required?' required':'';
+      html += '<div class="rtg-field-group"><label for="rtg_'+esc(f.key)+'">'+esc(f.label)+(f.required?' *':'')+'</label>'
+      if(f.type==='textarea') html += '<textarea id="rtg_'+esc(f.key)+'" name="'+esc(f.key)+'"'+req+'></textarea>'
+      else html += '<input type="'+fieldTypeToInputType(f.type)+'" id="rtg_'+esc(f.key)+'" name="'+esc(f.key)+'"'+req+'>';
+      html += '</div>';
+    });
+    html += '<button type="submit" class="rtg-submit-btn">Join the Waitlist</button><div class="rtg-response" id="rtWlResponse" aria-live="polite"></div></form>';
+    container.innerHTML=html;
+
+    document.getElementById('rtWlForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd=new FormData(e.target);
+      var payload={ form_id: schema.form_id, fields: {}, consent: true, honeypot: '' };
+      fd.forEach(function(v,k){ payload.fields[k]=v; });
+      if(mappingId) payload.mapping_id = mappingId;
+      fetch(apiBase + '/submit', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+        .then(parseJsonOrThrow)
+        .then(function(){ document.getElementById('rtWlResponse').textContent='Success! Redirecting...'; window.location.href='/treasury-tech-selection/guide/'; })
+        .catch(function(err){ document.getElementById('rtWlResponse').textContent = err.message || 'Submission failed.'; });
+    });
+  }
+
+  fetch(apiBase + '/gate/' + assetSlug).then(parseJsonOrThrow).then(function(schema){
+    if(mappingId) schema.mapping_id = mappingId;
+    renderForm(schema);
+  }).catch(function(err){
+    container.innerHTML = '<p style="color:#b91c1c;">Unable to load form. ' + esc(err.message) + '</p>';
+  });
+})();
+</script>
 </body>
 </html>

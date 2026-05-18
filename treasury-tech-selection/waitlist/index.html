@@ -83,8 +83,8 @@ window.RTG_CONFIG = {
     .rt-wl-preview img { width: 100%; height: auto; border-radius: 10px; display: block; margin-top: 18px; }
 
     /* ---- Form Card ---- */
-    .rt-wl-form-card { flex: 1 1 0; min-width: 0; background: #ffffff; border: 2px solid rgba(114,22,244,0.16); border-radius: 20px; padding: 48px 40px; box-shadow: 0 14px 36px rgba(91,10,205,0.08); position: relative; overflow: hidden; }
-    .rt-wl-form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-primary); }
+    .rt-wl-form-card { flex: 1 1 0; min-width: 0; background: #ffffff; border: 2px solid rgba(114,22,244,0.16); border-radius: 20px; padding: 48px 40px; box-shadow: 0 14px 36px rgba(91,10,205,0.08); position: relative; }
+    .rt-wl-form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-primary); border-radius: 18px 18px 0 0; }
     .rt-wl-form-heading { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin: 0 0 8px; text-align: center; }
     .rt-wl-form-subtext { font-size: 0.95rem; color: var(--gray-text); text-align: center; margin-bottom: 32px; }
 
@@ -129,7 +129,7 @@ window.RTG_CONFIG = {
            preview image (and out of the embedding iframe's visible area). */
         .rt-wl-content-row { flex-direction: column-reverse; gap: 28px; }
         .rt-wl-content-section { padding: 20px 0 44px; }
-        .rt-wl-form-card { padding: 28px 22px; }
+        .rt-wl-form-card { padding: 28px 22px; width: 100%; }
         .rt-wl-proof { gap: 12px; margin-top: 24px; padding-top: 20px; }
         .rt-wl-preview { padding: 20px 16px 16px; }
         .rt-wl-preview-label { padding: 8px 14px; min-width: 260px; }
@@ -140,7 +140,8 @@ window.RTG_CONFIG = {
         .rt-wl-title { font-size: 1.85rem; }
         .rt-wl-container { padding: 0 16px; }
         .rt-wl-badge { font-size: 0.8rem; padding: 6px 14px; }
-        .rt-wl-form-card { padding: 22px 16px; border-radius: 16px; }
+        .rt-wl-form-card { padding: 22px 16px; border-radius: 16px; width: 100%; }
+        .rt-wl-form-card::before { border-radius: 14px 14px 0 0; }
         .rt-wl-form-heading { font-size: 1.35rem; }
         .rt-wl-form-subtext { margin-bottom: 20px; }
         .rt-wl-content-section { padding-bottom: 36px; }

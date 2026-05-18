@@ -50,7 +50,7 @@ function add_my_custom_header_html() {
                                                     <p>EMEA Vendors</p>
                                                 </div>
                                                 <img class="rt-explore-image"
-                                                    src="https://realtreasury.com/wp-content/uploads/2026/02/tms-market-clean-EMEA-01-2026-1.png"
+                                                    src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-clean-EMEA-05-2026.png"
                                                      alt="Treasury Tech Market - EMEA">
                                             </a>
                                         </div>

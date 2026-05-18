@@ -122,13 +122,16 @@ window.RTG_CONFIG = {
     .rt-wl-proof-label { font-size: 0.8rem; color: var(--gray-text); }
 
     @media (max-width: 768px) {
-        .rt-wl-hero { padding: 40px 0 32px; }
+        .rt-wl-hero { padding: 32px 0 20px; }
         .rt-wl-title { font-size: 2.25rem; }
         .rt-wl-subtitle { font-size: 1.05rem; }
-        .rt-wl-content-row { flex-direction: column; }
-        .rt-wl-content-section { padding: 24px 0 52px; }
-        .rt-wl-form-card { padding: 32px 24px; }
-        .rt-wl-proof { gap: 12px; }
+        /* On mobile, surface the form first so it isn't pushed below the
+           preview image (and out of the embedding iframe's visible area). */
+        .rt-wl-content-row { flex-direction: column-reverse; gap: 28px; }
+        .rt-wl-content-section { padding: 20px 0 44px; }
+        .rt-wl-form-card { padding: 28px 22px; }
+        .rt-wl-proof { gap: 12px; margin-top: 24px; padding-top: 20px; }
+        .rt-wl-preview { padding: 20px 16px 16px; }
         .rt-wl-preview-label { padding: 8px 14px; min-width: 260px; }
         .rt-wl-preview-label strong { font-size: 0.85rem; }
         .rt-wl-preview-label span { font-size: 0.85rem; }
@@ -137,8 +140,10 @@ window.RTG_CONFIG = {
         .rt-wl-title { font-size: 1.85rem; }
         .rt-wl-container { padding: 0 16px; }
         .rt-wl-badge { font-size: 0.8rem; padding: 6px 14px; }
-        .rt-wl-form-card { padding: 24px 18px; border-radius: 16px; }
-        .rt-wl-content-section { padding-bottom: 44px; }
+        .rt-wl-form-card { padding: 22px 16px; border-radius: 16px; }
+        .rt-wl-form-heading { font-size: 1.35rem; }
+        .rt-wl-form-subtext { margin-bottom: 20px; }
+        .rt-wl-content-section { padding-bottom: 36px; }
     }
   </style>
 </head>
@@ -358,15 +363,19 @@ window.RTG_CONFIG = {
    page is opened standalone. */
 (function () {
   if (window.parent === window) return;
-  var id = (document.body && document.body.dataset && document.body.dataset.iframeId) || window.location.pathname;
+  var parentFrameId = null;
+  try { parentFrameId = window.frameElement && window.frameElement.id; } catch (e) { parentFrameId = null; }
+  var id = parentFrameId
+    || (document.body && document.body.dataset && document.body.dataset.iframeId)
+    || 'iframe-default';
   function postHeight() {
     var h = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0;
     if (window.parent && typeof window.parent.postMessage === 'function') {
       window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*');
     }
   }
-  var frameId;
-  function schedule() { if (frameId) cancelAnimationFrame(frameId); frameId = requestAnimationFrame(postHeight); }
+  var rafId;
+  function schedule() { if (rafId) cancelAnimationFrame(rafId); rafId = requestAnimationFrame(postHeight); }
   window.addEventListener('load', schedule, { passive: true });
   window.addEventListener('resize', schedule, { passive: true });
   if (typeof MutationObserver !== 'undefined' && document.body) {

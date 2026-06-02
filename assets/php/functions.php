@@ -7,28 +7,33 @@
  * @package Astra
  * @since 1.0.0
  */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
+
 /**
  * Define Constants
  */
-define( 'ASTRA_THEME_VERSION', '4.11.3' );
+define( 'ASTRA_THEME_VERSION', '4.13.4' );
 define( 'ASTRA_THEME_SETTINGS', 'astra-settings' );
 define( 'ASTRA_THEME_DIR', trailingslashit( get_template_directory() ) );
 define( 'ASTRA_THEME_URI', trailingslashit( esc_url( get_template_directory_uri() ) ) );
 define( 'ASTRA_THEME_ORG_VERSION', file_exists( ASTRA_THEME_DIR . 'inc/w-org-version.php' ) );
+
 /**
  * Minimum Version requirement of the Astra Pro addon.
  * This constant will be used to display the notice asking user to update the Astra addon to the version defined below.
  */
-define( 'ASTRA_EXT_MIN_VER', '4.11.1' );
+define( 'ASTRA_EXT_MIN_VER', '4.12.0' );
+
 /**
  * Load in-house compatibility.
  */
 if ( ASTRA_THEME_ORG_VERSION ) {
 	require_once ASTRA_THEME_DIR . 'inc/w-org-version.php';
 }
+
 /**
  * Setup helper functions of Astra.
  */
@@ -36,17 +41,15 @@ require_once ASTRA_THEME_DIR . 'inc/core/class-astra-theme-options.php';
 require_once ASTRA_THEME_DIR . 'inc/core/class-theme-strings.php';
 require_once ASTRA_THEME_DIR . 'inc/core/common-functions.php';
 require_once ASTRA_THEME_DIR . 'inc/core/class-astra-icons.php';
+
 define( 'ASTRA_WEBSITE_BASE_URL', 'https://wpastra.com' );
-/**
- * ToDo: Deprecate constants in future versions as they are no longer used in the codebase.
- */
-define( 'ASTRA_PRO_UPGRADE_URL', ASTRA_THEME_ORG_VERSION ? astra_get_pro_url( '/pricing/', 'free-theme', 'dashboard', 'upgrade' ) : 'https://woocommerce.com/products/astra-pro/' );
-define( 'ASTRA_PRO_CUSTOMIZER_UPGRADE_URL', ASTRA_THEME_ORG_VERSION ? astra_get_pro_url( '/pricing/', 'free-theme', 'customizer', 'upgrade' ) : 'https://woocommerce.com/products/astra-pro/' );
+
 /**
  * Update theme
  */
 require_once ASTRA_THEME_DIR . 'inc/theme-update/astra-update-functions.php';
 require_once ASTRA_THEME_DIR . 'inc/theme-update/class-astra-theme-background-updater.php';
+
 /**
  * Fonts Files
  */
@@ -54,9 +57,11 @@ require_once ASTRA_THEME_DIR . 'inc/customizer/class-astra-font-families.php';
 if ( is_admin() ) {
 	require_once ASTRA_THEME_DIR . 'inc/customizer/class-astra-fonts-data.php';
 }
+
 require_once ASTRA_THEME_DIR . 'inc/lib/webfont/class-astra-webfont-loader.php';
 require_once ASTRA_THEME_DIR . 'inc/lib/docs/class-astra-docs-loader.php';
 require_once ASTRA_THEME_DIR . 'inc/customizer/class-astra-fonts.php';
+
 require_once ASTRA_THEME_DIR . 'inc/dynamic-css/custom-menu-old-header.php';
 require_once ASTRA_THEME_DIR . 'inc/dynamic-css/container-layouts.php';
 require_once ASTRA_THEME_DIR . 'inc/dynamic-css/astra-icons.php';
@@ -64,27 +69,33 @@ require_once ASTRA_THEME_DIR . 'inc/core/class-astra-walker-page.php';
 require_once ASTRA_THEME_DIR . 'inc/core/class-astra-enqueue-scripts.php';
 require_once ASTRA_THEME_DIR . 'inc/core/class-gutenberg-editor-css.php';
 require_once ASTRA_THEME_DIR . 'inc/core/class-astra-wp-editor-css.php';
+require_once ASTRA_THEME_DIR . 'inc/core/class-astra-command-palette.php';
 require_once ASTRA_THEME_DIR . 'inc/dynamic-css/block-editor-compatibility.php';
 require_once ASTRA_THEME_DIR . 'inc/dynamic-css/inline-on-mobile.php';
 require_once ASTRA_THEME_DIR . 'inc/dynamic-css/content-background.php';
 require_once ASTRA_THEME_DIR . 'inc/dynamic-css/dark-mode.php';
 require_once ASTRA_THEME_DIR . 'inc/class-astra-dynamic-css.php';
 require_once ASTRA_THEME_DIR . 'inc/class-astra-global-palette.php';
+
 // Enable NPS Survey only if the starter templates version is < 4.3.7 or > 4.4.4 to prevent fatal error.
 if ( ! defined( 'ASTRA_SITES_VER' ) || version_compare( ASTRA_SITES_VER, '4.3.7', '<' ) || version_compare( ASTRA_SITES_VER, '4.4.4', '>' ) ) {
 	// NPS Survey Integration
 	require_once ASTRA_THEME_DIR . 'inc/lib/class-astra-nps-notice.php';
 	require_once ASTRA_THEME_DIR . 'inc/lib/class-astra-nps-survey.php';
 }
+
 /**
  * Custom template tags for this theme.
  */
 require_once ASTRA_THEME_DIR . 'inc/core/class-astra-attr.php';
 require_once ASTRA_THEME_DIR . 'inc/template-tags.php';
+
 require_once ASTRA_THEME_DIR . 'inc/widgets.php';
 require_once ASTRA_THEME_DIR . 'inc/core/theme-hooks.php';
 require_once ASTRA_THEME_DIR . 'inc/admin-functions.php';
+require_once ASTRA_THEME_DIR . 'inc/class-astra-memory-limit-notice.php';
 require_once ASTRA_THEME_DIR . 'inc/core/sidebar-manager.php';
+
 /**
  * Markup Functions
  */
@@ -93,44 +104,60 @@ require_once ASTRA_THEME_DIR . 'inc/extras.php';
 require_once ASTRA_THEME_DIR . 'inc/blog/blog-config.php';
 require_once ASTRA_THEME_DIR . 'inc/blog/blog.php';
 require_once ASTRA_THEME_DIR . 'inc/blog/single-blog.php';
+
 /**
  * Markup Files
  */
 require_once ASTRA_THEME_DIR . 'inc/template-parts.php';
 require_once ASTRA_THEME_DIR . 'inc/class-astra-loop.php';
 require_once ASTRA_THEME_DIR . 'inc/class-astra-mobile-header.php';
+
 /**
  * Functions and definitions.
  */
 require_once ASTRA_THEME_DIR . 'inc/class-astra-after-setup-theme.php';
+
 // Required files.
 require_once ASTRA_THEME_DIR . 'inc/core/class-astra-admin-helper.php';
+
 require_once ASTRA_THEME_DIR . 'inc/schema/class-astra-schema.php';
+
 /* Setup API */
+require_once ASTRA_THEME_DIR . 'admin/includes/class-astra-learn.php';
 require_once ASTRA_THEME_DIR . 'admin/includes/class-astra-api-init.php';
+
 if ( is_admin() ) {
 	/**
 	 * Admin Menu Settings
 	 */
 	require_once ASTRA_THEME_DIR . 'inc/core/class-astra-admin-settings.php';
 	require_once ASTRA_THEME_DIR . 'admin/class-astra-admin-loader.php';
-	require_once ASTRA_THEME_DIR . 'inc/lib/astra-notices/class-astra-notices.php';
+	require_once ASTRA_THEME_DIR . 'inc/lib/astra-notices/class-bsf-admin-notices.php';
 }
+
+/**
+ * BSF Analytics.
+ */
+require_once ASTRA_THEME_DIR . 'admin/class-astra-bsf-analytics.php';
+
 /**
  * Metabox additions.
  */
 require_once ASTRA_THEME_DIR . 'inc/metabox/class-astra-meta-boxes.php';
 require_once ASTRA_THEME_DIR . 'inc/metabox/class-astra-meta-box-operations.php';
 require_once ASTRA_THEME_DIR . 'inc/metabox/class-astra-elementor-editor-settings.php';
+
 /**
  * Customizer additions.
  */
 require_once ASTRA_THEME_DIR . 'inc/customizer/class-astra-customizer.php';
+
 /**
  * Astra Modules.
  */
 require_once ASTRA_THEME_DIR . 'inc/modules/posts-structures/class-astra-post-structures.php';
 require_once ASTRA_THEME_DIR . 'inc/modules/related-posts/class-astra-related-posts.php';
+
 /**
  * Compatibility
  */
@@ -153,28 +180,46 @@ require_once ASTRA_THEME_DIR . 'inc/compatibility/class-astra-amp.php';
 require_once ASTRA_THEME_DIR . 'inc/compatibility/class-astra-yoast-seo.php';
 require_once ASTRA_THEME_DIR . 'inc/compatibility/surecart/class-astra-surecart.php';
 require_once ASTRA_THEME_DIR . 'inc/compatibility/class-astra-starter-content.php';
+require_once ASTRA_THEME_DIR . 'inc/compatibility/class-astra-buddypress.php';
 require_once ASTRA_THEME_DIR . 'inc/addons/transparent-header/class-astra-ext-transparent-header.php';
 require_once ASTRA_THEME_DIR . 'inc/addons/breadcrumbs/class-astra-breadcrumbs.php';
 require_once ASTRA_THEME_DIR . 'inc/addons/scroll-to-top/class-astra-scroll-to-top.php';
 require_once ASTRA_THEME_DIR . 'inc/addons/heading-colors/class-astra-heading-colors.php';
 require_once ASTRA_THEME_DIR . 'inc/builder/class-astra-builder-loader.php';
+
 // Elementor Compatibility requires PHP 5.4 for namespaces.
 if ( version_compare( PHP_VERSION, '5.4', '>=' ) ) {
 	require_once ASTRA_THEME_DIR . 'inc/compatibility/class-astra-elementor.php';
 	require_once ASTRA_THEME_DIR . 'inc/compatibility/class-astra-elementor-pro.php';
 	require_once ASTRA_THEME_DIR . 'inc/compatibility/class-astra-web-stories.php';
 }
+
 // Beaver Themer compatibility requires PHP 5.3 for anonymous functions.
 if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 	require_once ASTRA_THEME_DIR . 'inc/compatibility/class-astra-beaver-themer.php';
 }
+
 require_once ASTRA_THEME_DIR . 'inc/core/markup/class-astra-markup.php';
+
+/**
+ * Abilities API integration.
+ */
+require_once ASTRA_THEME_DIR . 'inc/abilities/bootstrap.php';
+
 /**
  * Load deprecated functions
  */
 require_once ASTRA_THEME_DIR . 'inc/core/deprecated/deprecated-filters.php';
 require_once ASTRA_THEME_DIR . 'inc/core/deprecated/deprecated-hooks.php';
 require_once ASTRA_THEME_DIR . 'inc/core/deprecated/deprecated-functions.php';
+
+/**
+ * ===============================================================
+ * REAL TREASURY CUSTOM FUNCTIONS
+ * ===============================================================
+ * The functions below are custom additions for the Real Treasury
+ * site and are preserved across Astra theme updates.
+ */
 
 // Site-Wide Cookie Management System
 add_action('wp_footer', 'add_sitewide_cookie_banner');
@@ -367,7 +412,7 @@ function add_bank_report_javascript() {
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const quarter = urlParams.get('quarter');
-        
+
         const quarterData = {
             'q4-2024': {
                 title: 'Q4 2024 Bank Report Access',
@@ -378,7 +423,7 @@ function add_bank_report_javascript() {
                 subtitle: 'Access key banking trends and insights from Q3 2024'
             },
             'q2-2024': {
-                title: 'Q2 2024 Bank Report Access', 
+                title: 'Q2 2024 Bank Report Access',
                 subtitle: 'Download detailed banking analysis and strategic insights from Q2 2024'
             },
             'q1-2024': {
@@ -386,12 +431,12 @@ function add_bank_report_javascript() {
                 subtitle: 'Access comprehensive banking insights and strategies from Q1 2024'
             }
         };
-        
+
         if (quarter && quarterData[quarter]) {
             // Update form title and subtitle dynamically
             const titleElement = document.querySelector('.gated-download-form h3');
             const subtitleElement = document.querySelector('.gated-download-form .subtitle');
-            
+
             if (titleElement) titleElement.textContent = quarterData[quarter].title;
             if (subtitleElement) subtitleElement.textContent = quarterData[quarter].subtitle;
         }
@@ -401,14 +446,14 @@ function add_bank_report_javascript() {
     document.addEventListener('wpcf7mailsent', function(event) {
         const formData = new FormData(event.target);
         const quarter = formData.get('quarter-report');
-        
+
         const downloadUrls = {
             'q4-2024': 'https://dropbox.com/s/your-q4-link/q4-2024-bank-report.pdf?dl=1',
             'q3-2024': 'https://dropbox.com/s/your-q3-link/q3-2024-bank-report.pdf?dl=1',
             'q2-2024': 'https://dropbox.com/s/your-q2-link/q2-2024-bank-report.pdf?dl=1',
             'q1-2024': 'https://dropbox.com/s/your-q1-link/q1-2024-bank-report.pdf?dl=1'
         };
-        
+
         if (quarter && downloadUrls[quarter]) {
             // Open download in new tab
             window.open(downloadUrls[quarter], '_blank');
@@ -423,10 +468,10 @@ function remove_astra_default_footer() {
     if (is_single()) {
         // Remove post meta
         remove_action('astra_entry_after', 'astra_single_post_navigation_markup');
-        
+
         // Remove author box if enabled
         remove_action('astra_entry_after', 'astra_author_box_markup');
-        
+
         // Remove related posts if Pro version
         remove_action('astra_entry_after', 'astra_single_post_related_posts_markup');
     }
@@ -438,13 +483,13 @@ function remove_astra_post_footer_elements() {
     if (is_single()) {
         // Remove the post navigation (Previous/Next post links)
         remove_action('astra_entry_after', 'astra_single_post_navigation_markup', 15);
-        
+
         // Remove author box if it exists
         remove_action('astra_entry_after', 'astra_author_box_markup', 10);
-        
+
         // Remove any existing related posts (if Astra Pro)
         remove_action('astra_entry_after', 'astra_single_post_related_posts_markup', 20);
-        
+
         // Remove post meta from bottom if it exists
         remove_action('astra_entry_bottom', 'astra_entry_meta', 10);
     }
@@ -1125,113 +1170,6 @@ add_action('rest_api_init', function() {
     ));
 });
 
-
-/**
- * Ensure theme integration doesn't conflict with plugin functionality
- */
-add_action('init', 'tpa_theme_compatibility_check', 5);
-function tpa_theme_compatibility_check() {
-    
-    // Only run compatibility checks if plugin is active
-    if (!class_exists('Treasury_Portal_Access')) {
-        return;
-    }
-    
-    // Clean up any old theme-based cookie systems that might conflict
-    $conflicting_cookies = ['rt_portal_access', 'rt_portal_access_token', 'old_portal_token'];
-    foreach ($conflicting_cookies as $cookie) {
-        if (isset($_COOKIE[$cookie])) {
-            setcookie($cookie, '', time() - 3600, '/', '', is_ssl(), true);
-            unset($_COOKIE[$cookie]);
-        }
-    }
-    
-    // Ensure the theme works with plugin's cache settings
-    if (strpos($_SERVER['REQUEST_URI'], 'treasury-tech-portal') !== false) {
-        // Let plugin handle its own caching, but add theme-level cache prevention
-        if (!defined('DONOTCACHEPAGE')) {
-            define('DONOTCACHEPAGE', true);
-        }
-    }
-}
-
-/**
- * Admin integration notice - shows compatibility status
- */
-add_action('admin_notices', 'tpa_theme_integration_notice');
-function tpa_theme_integration_notice() {
-    if (!current_user_can('manage_options')) {
-        return;
-    }
-    
-    // Only show on relevant admin pages
-    $screen = get_current_screen();
-    if (!$screen || (!in_array($screen->id, ['treasury-portal-access', 'treasury-portal-access-settings']) && $screen->post_type !== 'page')) {
-        return;
-    }
-    
-    $portal_page = get_page_by_path('treasury-tech-portal');
-    $plugin_active = class_exists('Treasury_Portal_Access');
-    $form_id = get_option('tpa_form_id');
-    $redirect_url = get_option('tpa_redirect_url');
-    
-    // Check for proper plugin-theme integration
-    $integration_ok = ($portal_page && $plugin_active && $form_id && $redirect_url);
-    $status_color = $integration_ok ? 'notice-success' : 'notice-error';
-    
-    echo '<div class="notice ' . $status_color . '"><p>';
-    echo '<strong>🔐 Portal Access Integration Status:</strong><br>';
-    echo '📄 Portal Page: ' . ($portal_page ? '✅ Found (ID: ' . $portal_page->ID . ')' : '❌ Missing') . '<br>';
-    echo '🔌 Plugin Active: ' . ($plugin_active ? '✅ Treasury Portal Access plugin active' : '❌ Plugin not active') . '<br>';
-    echo '📝 Form Configured: ' . ($form_id ? '✅ Form ID ' . $form_id . ' set' : '❌ No Contact Form 7 selected') . '<br>';
-    echo '🔄 Redirect URL: ' . ($redirect_url ? '✅ Set to ' . $redirect_url : '❌ Not configured') . '<br>';
-    
-    if ($integration_ok) {
-        echo '<br><strong>✅ Theme-Plugin integration is working!</strong><br>';
-        echo 'Test the gate: <a href="' . get_permalink($portal_page) . '" target="_blank">Access portal page</a> (should redirect to modal)<br>';
-        echo 'Plugin admin: <a href="' . admin_url('admin.php?page=treasury-portal-access') . '">View portal users</a>';
-    } else {
-        echo '<br><strong>❌ Integration issues detected:</strong><br>';
-        if (!$plugin_active) echo '• Activate Treasury Portal Access plugin<br>';
-        if (!$portal_page) echo '• Create page with slug "treasury-tech-portal"<br>';
-        if (!$form_id) echo '• Configure Contact Form 7 in plugin settings<br>';
-        if (!$redirect_url) echo '• Set redirect URL in plugin settings<br>';
-    }
-    echo '</p></div>';
-}
-
-/**
- * Add debugging capability for theme-plugin integration
- */
-if (isset($_GET['tpa_debug']) && current_user_can('manage_options')) {
-    add_action('wp_footer', 'tpa_theme_debug_output');
-    function tpa_theme_debug_output() {
-        $portal_page = get_page_by_path('treasury-tech-portal');
-        $plugin_active = class_exists('Treasury_Portal_Access');
-        $has_access = false;
-        
-        if ($plugin_active) {
-            $tpa_instance = Treasury_Portal_Access::get_instance();
-            $has_access = $tpa_instance->has_portal_access();
-        }
-        
-        ?>
-        <div style="position: fixed; bottom: 10px; left: 10px; background: #000; color: #fff; padding: 15px; border-radius: 8px; font-size: 12px; z-index: 99999; max-width: 400px; font-family: monospace;">
-            <strong>🔍 TPA Theme-Plugin Debug:</strong><br>
-            Current URL: <?php echo esc_html($_SERVER['REQUEST_URI']); ?><br>
-            Portal Page: <?php echo $portal_page ? 'Found (ID: ' . $portal_page->ID . ')' : 'Not found'; ?><br>
-            is_page(): <?php echo is_page('treasury-tech-portal') ? 'true' : 'false'; ?><br>
-            Plugin Active: <?php echo $plugin_active ? 'true' : 'false'; ?><br>
-            Has Access: <?php echo $has_access ? 'true' : 'false'; ?><br>
-            Cookie Set: <?php echo isset($_COOKIE['portal_access_token']) ? 'true' : 'false'; ?><br>
-            Form ID: <?php echo get_option('tpa_form_id', 'Not set'); ?><br>
-            Redirect URL: <?php echo get_option('tpa_redirect_url', 'Not set'); ?><br>
-            Theme Gate: <?php echo function_exists('tpa_enhanced_portal_gate') ? 'Loaded' : 'Missing'; ?>
-        </div>
-        <?php
-    }
-}
-
 add_action('wp_enqueue_scripts', 'rt_enqueue_iframe_resizer_script', 20);
 function rt_enqueue_iframe_resizer_script() {
     $script_path = get_stylesheet_directory() . '/assets/js/iframe-resizer.js';
@@ -1278,70 +1216,6 @@ function rt_enqueue_shared_styles() {
 }
 
 /**
- * TREASURY PORTAL ACCESS - JQUERY FIXES
- * Fix jQuery loading issues for Treasury Portal Access
- */
-add_action('wp_enqueue_scripts', 'tpa_ensure_jquery_loaded', 5);
-function tpa_ensure_jquery_loaded() {
-    // Ensure jQuery is loaded on all pages
-    if (!wp_script_is('jquery', 'enqueued')) {
-        wp_enqueue_script('jquery');
-    }
-    
-    // Fix jQuery noConflict issues
-    wp_add_inline_script('jquery', '
-        // Ensure jQuery is available globally
-        if (typeof window.jQuery === "undefined" && typeof $ !== "undefined") {
-            window.jQuery = $;
-        }
-        
-        // Fix common jQuery conflicts
-        if (typeof window.jQuery !== "undefined") {
-            window.$ = window.jQuery;
-        }
-    ');
-}
-
-/**
- * Ensure scripts load in correct order for TPA
- */
-add_action('wp_enqueue_scripts', 'tpa_fix_script_dependencies', 10);
-function tpa_fix_script_dependencies() {
-    // Remove any conflicting jQuery versions
-    wp_deregister_script('jquery-slim');
-    
-    // Ensure jQuery loads in footer with proper dependencies
-    wp_script_add_data('jquery-core', 'group', 1);
-    wp_script_add_data('jquery-migrate', 'group', 1);
-}
-
-/**
- * Enhanced debug script loading - Add ?debug_jquery=1 to any URL to see debug info
- * Remove this function after confirming jQuery is working
- */
-add_action('wp_footer', 'tpa_debug_jquery_loading', 999);
-function tpa_debug_jquery_loading() {
-    if (current_user_can('manage_options') && isset($_GET['debug_jquery'])) {
-        ?>
-        <script>
-        console.log('=== TPA jQuery Debug Info ===');
-        console.log('jQuery loaded:', typeof jQuery !== 'undefined');
-        console.log('$ available:', typeof $ !== 'undefined');
-        console.log('jQuery version:', typeof jQuery !== 'undefined' ? jQuery.fn.jquery : 'Not loaded');
-        console.log('TPA available:', typeof window.TPA !== 'undefined');
-        console.log('TPA Modal exists:', document.getElementById('portalModal') ? 'YES' : 'NO');
-        
-        if (typeof jQuery === 'undefined') {
-            console.error('❌ jQuery is not loaded properly!');
-        } else {
-            console.log('✅ jQuery is working');
-        }
-        </script>
-        <?php
-    }
-}
-
-/**
  * ===============================================================
  * SECURITY AUDIT FIX: RATE LIMITING & PERMISSIONS (FIX C-01)
  * ===============================================================
@@ -1374,4 +1248,3 @@ function rt_rest_permission_check() {
     // Passed rate limiting
     return true;
 }
-?>

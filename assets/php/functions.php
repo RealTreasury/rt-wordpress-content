@@ -402,67 +402,6 @@ function add_sitewide_cookie_banner() {
 }
 
 
-// Add the JavaScript for bank report forms
-add_action('wp_footer', 'add_bank_report_javascript');
-
-function add_bank_report_javascript() {
-    ?>
-    <script>
-    // Dynamic title and subtitle based on URL parameter
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const quarter = urlParams.get('quarter');
-
-        const quarterData = {
-            'q4-2024': {
-                title: 'Q4 2024 Bank Report Access',
-                subtitle: 'Get comprehensive banking insights and analysis for Q4 2024'
-            },
-            'q3-2024': {
-                title: 'Q3 2024 Bank Report Access',
-                subtitle: 'Access key banking trends and insights from Q3 2024'
-            },
-            'q2-2024': {
-                title: 'Q2 2024 Bank Report Access',
-                subtitle: 'Download detailed banking analysis and strategic insights from Q2 2024'
-            },
-            'q1-2024': {
-                title: 'Q1 2024 Bank Report Access',
-                subtitle: 'Access comprehensive banking insights and strategies from Q1 2024'
-            }
-        };
-
-        if (quarter && quarterData[quarter]) {
-            // Update form title and subtitle dynamically
-            const titleElement = document.querySelector('.gated-download-form h3');
-            const subtitleElement = document.querySelector('.gated-download-form .subtitle');
-
-            if (titleElement) titleElement.textContent = quarterData[quarter].title;
-            if (subtitleElement) subtitleElement.textContent = quarterData[quarter].subtitle;
-        }
-    });
-
-    // Handle download for AJAX forms
-    document.addEventListener('wpcf7mailsent', function(event) {
-        const formData = new FormData(event.target);
-        const quarter = formData.get('quarter-report');
-
-        const downloadUrls = {
-            'q4-2024': 'https://dropbox.com/s/your-q4-link/q4-2024-bank-report.pdf?dl=1',
-            'q3-2024': 'https://dropbox.com/s/your-q3-link/q3-2024-bank-report.pdf?dl=1',
-            'q2-2024': 'https://dropbox.com/s/your-q2-link/q2-2024-bank-report.pdf?dl=1',
-            'q1-2024': 'https://dropbox.com/s/your-q1-link/q1-2024-bank-report.pdf?dl=1'
-        };
-
-        if (quarter && downloadUrls[quarter]) {
-            // Open download in new tab
-            window.open(downloadUrls[quarter], '_blank');
-        }
-    }, false);
-    </script>
-    <?php
-}
-
 // Remove default Astra post footer elements
 function remove_astra_default_footer() {
     if (is_single()) {

@@ -1,0 +1,479 @@
+<!-- ============================================================
+     ERR NOT™ Demo Script — Real Treasury x AFP
+     Custom RT Gate variant: reveals a live YouTube iframe (not a
+     rehosted <video> file) after form submit. See docs/rt-gate.md
+     "If you build a custom variant" section for the rules this follows.
+     Asset: err-not-demo-script (type: link, target_url = YouTube watch URL)
+     Mapping: #7
+     ============================================================ -->
+
+<style>
+    /* ---- Framework intro section (scoped, brand vars match rt-gated-video) ---- */
+    .rt-en-page {
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+    }
+    .rt-en-page *, .rt-en-page *::before, .rt-en-page *::after { box-sizing: border-box; }
+    .rt-en-container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    .rt-en-hero { text-align: center; padding: 56px 0 24px; }
+    .rt-en-eyebrow { display: inline-block; background: rgba(199,125,255,0.1); border: 1px solid rgba(199,125,255,0.25); border-radius: 20px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; color: var(--primary-purple); margin-bottom: 20px; }
+    .rt-en-title { font-size: 2.75rem; font-weight: 800; line-height: 1.15; margin: 0 0 20px; }
+    .rt-en-subtitle { font-size: 1.1rem; color: var(--gray-text); max-width: 760px; margin: 0 auto; }
+
+    .rt-en-framework { padding: 40px 0 56px; }
+    .rt-en-framework h2 { text-align: center; font-size: 2rem; font-weight: 800; margin: 0 0 12px; }
+    .rt-en-framework > .rt-en-container > p { text-align: center; color: var(--gray-text); max-width: 700px; margin: 0 auto 40px; }
+    .rt-en-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .rt-en-card { background: #fff; border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); }
+    .rt-en-letter { background: var(--primary-purple); color: #fff; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.15rem; margin-bottom: 16px; }
+    .rt-en-card h3 { font-size: 1.1rem; font-weight: 700; margin: 0 0 8px; }
+    .rt-en-card p { font-size: 0.95rem; color: var(--gray-text); margin: 0; }
+
+    @media (max-width: 768px) {
+        .rt-en-title { font-size: 2.1rem; }
+        .rt-en-framework h2 { font-size: 1.6rem; }
+    }
+</style>
+
+<div class="rt-en-page">
+    <section class="rt-en-hero">
+        <div class="rt-en-container">
+            <span class="rt-en-eyebrow">Real Treasury × AFP</span>
+            <h1 class="rt-en-title">How to Build a Demo Script That Actually Lands</h1>
+            <p class="rt-en-subtitle">Real Treasury partnered with AFP (the Association for Financial Professionals) to break down the ERR NOT&trade; framework for building treasury demo scripts that focus on the prospect's problem &mdash; not a feature tour.</p>
+        </div>
+    </section>
+
+    <section class="rt-en-framework">
+        <div class="rt-en-container">
+            <h2>The ERR NOT&trade; Framework</h2>
+            <p>ERR NOT&trade; is Real Treasury's proven, six-step method for selecting treasury technology without vendor bias. The fourth step &mdash; the uNique Demo Script &mdash; is what the workshop below is about: a custom script built from your own prioritized requirements, so every vendor demo shows what actually matters instead of a generic tour.</p>
+            <div class="rt-en-grid">
+                <div class="rt-en-card">
+                    <div class="rt-en-letter">E</div>
+                    <h3>Education</h3>
+                    <p>Get a comprehensive, unbiased view of the vendors and products actually available in the market before you write a single requirement.</p>
+                </div>
+                <div class="rt-en-card">
+                    <div class="rt-en-letter">R</div>
+                    <h3>Requirements</h3>
+                    <p>Document your current-state operations, then determine and prioritize your actual must-have requirements &mdash; based on business needs, not wish lists.</p>
+                </div>
+                <div class="rt-en-card">
+                    <div class="rt-en-letter">R</div>
+                    <h3>RFI</h3>
+                    <p>Build a brief RFI focused on non-functional items &mdash; vendor stability, market presence, support &mdash; to create a shortlist based on fit, not price.</p>
+                </div>
+                <div class="rt-en-card">
+                    <div class="rt-en-letter">N</div>
+                    <h3>uNique Demo Script</h3>
+                    <p>Create one custom demo script and deliver it to every shortlisted vendor, keeping your prioritized requirements front and center.</p>
+                </div>
+                <div class="rt-en-card">
+                    <div class="rt-en-letter">O</div>
+                    <h3>Obvious Winner</h3>
+                    <p>Score every vendor against the same script using a consistent process. Let the data make the winning solution obvious.</p>
+                </div>
+                <div class="rt-en-card">
+                    <div class="rt-en-letter">T</div>
+                    <h3>Transformation</h3>
+                    <p>Move to the new system with best practices in place, managing real risks and tracking success with ROI, time saved, and adoption.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ============================================================
+     GATED VIDEO — Config for this page
+     Form + Asset resolved via RT Gate mapping.
+     ============================================================ -->
+<script>
+window.RTG_CONFIG = {
+    assetSlug:    'err-not-demo-script',
+    mappingId:    7,
+    storageKey:   'rtg_err_not_demo_script_access',
+    badgeText:    'Free Resource',
+    heroTitle:    'Watch: Building Your ERR NOT™ Demo Script',
+    heroSubtitle: 'Complete the short form below to get instant access to the full AFP session on writing a vendor-agnostic demo script.',
+    formHeading:  'Watch the Session',
+    formSubtext:  'Fill out the form below for instant access.',
+    ctaHeading:   'Ready to build your own script?',
+    ctaUrl:       'https://share.hsforms.com/1_0WDcFXiRT2TGUjXtRubAA4a09b',
+    ctaLabel:     'Download the ERR NOT Worksheet',
+    videoTitle:   'How to Build a Demo Script That Actually Lands',
+    wpSiteUrl:    'https://realtreasury.com'
+};
+</script>
+
+<style>
+    /* ---- Scoped Variables (matches templates/partials/gated-video.html) ---- */
+    .rt-gated-video {
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --deep-purple: #5b0acd;
+        --lavender-pink: #c77dff;
+        --soft-purple: #9d4edd;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        --white: #ffffff;
+        --off-white: #f8f8f8;
+        --black: #131313;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        --gradient-light: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .rt-gated-video *, .rt-gated-video *::before, .rt-gated-video *::after { box-sizing: border-box; }
+    .rt-gated-video img { max-width: 100%; height: auto; }
+    .rt-gated-video a { color: inherit; text-decoration: none; }
+
+    .rt-gv-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    .rt-gv-hero { background: var(--gradient-light); padding: 60px 0 48px; text-align: center; position: relative; overflow: hidden; }
+    .rt-gv-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 20%, rgba(114,22,244,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(143,71,246,0.06) 0%, transparent 50%); pointer-events: none; }
+    .rt-gv-hero .rt-gv-container { position: relative; z-index: 2; }
+    .rt-gv-badge { display: inline-block; background: rgba(199,125,255,0.1); border: 1px solid rgba(199,125,255,0.25); border-radius: 20px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; color: var(--primary-purple); margin-bottom: 24px; }
+    .rt-gv-title { font-size: 3rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, var(--dark-text) 0%, var(--primary-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .rt-gv-subtitle { font-size: 1.15rem; color: var(--gray-text); line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
+
+    .rt-gv-content-row { display: flex; gap: 32px; align-items: flex-start; transition: opacity 0.5s ease, transform 0.5s ease; }
+
+    .rt-gv-form-section { padding: 48px 0; }
+    .rt-gv-form-card { flex: 1 1 0; min-width: 0; max-width: 640px; margin: 0 auto; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 20px; padding: 48px 40px; box-shadow: 0 8px 32px rgba(114,22,244,0.1); position: relative; overflow: hidden; }
+    .rt-gv-form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-primary); }
+    .rt-gv-form-heading { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin-bottom: 8px; text-align: center; }
+    .rt-gv-form-subtext { font-size: 0.95rem; color: var(--gray-text); text-align: center; margin-bottom: 32px; }
+
+    .rt-gv-form-card .rtg-field-group { margin-bottom: 16px; }
+    .rt-gv-form-card .rtg-field-group label { display: block; font-size: 0.875rem; font-weight: 600; color: var(--dark-text); margin-bottom: 6px; }
+    .rt-gv-form-card .rtg-field-group input[type="text"],
+    .rt-gv-form-card .rtg-field-group input[type="email"],
+    .rt-gv-form-card .rtg-field-group input[type="tel"],
+    .rt-gv-form-card .rtg-field-group input[type="url"],
+    .rt-gv-form-card .rtg-field-group input[type="number"],
+    .rt-gv-form-card .rtg-field-group input[type="date"],
+    .rt-gv-form-card .rtg-field-group textarea,
+    .rt-gv-form-card .rtg-field-group select { width: 100%; padding: 14px 16px; border: 2px solid rgba(199,125,255,0.2); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--dark-text); background: var(--white); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+    .rt-gv-form-card .rtg-field-group input:focus,
+    .rt-gv-form-card .rtg-field-group textarea:focus,
+    .rt-gv-form-card .rtg-field-group select:focus { outline: none; border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(114,22,244,0.12); }
+    .rt-gv-form-card .rtg-field-group input.rtg-invalid,
+    .rt-gv-form-card .rtg-field-group textarea.rtg-invalid,
+    .rt-gv-form-card .rtg-field-group select.rtg-invalid { border-color: #e53e3e; box-shadow: 0 0 0 3px rgba(229,62,62,0.12); }
+    .rt-gv-form-card .rtg-field-group textarea { min-height: 80px; resize: vertical; }
+    .rt-gv-form-card .rtg-field-group select { appearance: auto; }
+    .rt-gv-form-card .rtg-option-group { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .rt-gv-form-card .rtg-option-group label { display: flex; align-items: center; gap: 8px; font-weight: 400; font-size: 0.95rem; cursor: pointer; }
+    .rt-gv-form-card .rtg-option-group input[type="radio"],
+    .rt-gv-form-card .rtg-option-group input[type="checkbox"] { accent-color: var(--primary-purple); width: 18px; height: 18px; }
+    .rt-gv-form-card .rtg-consent-group { margin: 20px 0 8px; }
+    .rt-gv-form-card .rtg-consent-group label { display: flex; align-items: flex-start; gap: 10px; font-weight: 400; font-size: 0.85rem; color: var(--gray-text); cursor: pointer; }
+    .rt-gv-form-card .rtg-consent-group input[type="checkbox"] { accent-color: var(--primary-purple); width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0; }
+    .rt-gv-form-card .rtg-consent-group a { color: var(--primary-purple); text-decoration: underline; }
+    .rt-gv-form-card .rtg-submit-btn { display: block; width: 100%; padding: 16px 36px; margin-top: 8px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1rem; color: var(--white); background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%); border: 1px solid rgba(199,125,255,0.4); border-radius: 12px; cursor: pointer; letter-spacing: 0.3px; text-transform: uppercase; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 8px 32px rgba(114,22,244,0.3), inset 0 1px 0 rgba(255,255,255,0.25); }
+    .rt-gv-form-card .rtg-submit-btn:hover { transform: translateY(-2px); background: linear-gradient(135deg, rgba(143,71,246,0.95) 0%, rgba(157,78,221,0.95) 100%); box-shadow: 0 12px 40px rgba(114,22,244,0.4), inset 0 1px 0 rgba(255,255,255,0.3); }
+    .rt-gv-form-card .rtg-submit-btn:focus-visible { outline: 3px solid var(--lavender-pink); outline-offset: 2px; }
+    .rt-gv-form-card .rtg-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .rt-gv-form-card .rtg-spinner { display: none; width: 24px; height: 24px; border: 3px solid rgba(114,22,244,0.2); border-top-color: var(--primary-purple); border-radius: 50%; animation: rt-gv-spin 0.7s linear infinite; vertical-align: middle; margin-left: 8px; }
+    .rt-gv-form-card .rtg-submitting .rtg-spinner { display: inline-block; }
+    @keyframes rt-gv-spin { to { transform: rotate(360deg); } }
+    .rt-gv-form-card .rtg-response { display: none; border-radius: 8px; padding: 12px 16px; font-size: 0.875rem; margin-top: 16px; }
+    .rt-gv-form-card .rtg-response.rtg-error { display: block; border: 2px solid #e53e3e; color: #9b2c2c; background: #fff5f5; }
+    .rt-gv-form-card .rtg-loading { text-align: center; padding: 24px 0; color: var(--gray-text); font-size: 0.95rem; }
+    .rt-gv-form-card .rtg-loading-bar { height: 12px; background: rgba(199,125,255,0.15); border-radius: 6px; margin-bottom: 16px; animation: rtg-pulse 1.4s ease-in-out infinite; }
+    .rt-gv-form-card .rtg-loading-bar:nth-child(2) { width: 85%; }
+    .rt-gv-form-card .rtg-loading-bar:nth-child(3) { width: 70%; }
+    @keyframes rtg-pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    .rt-gv-video-card { display: none; opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; max-width: 900px; margin: 0 auto; text-align: center; }
+    .rt-gv-video-welcome { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin-bottom: 24px; }
+    .rt-gv-video-player { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(114,22,244,0.15); border: 2px solid rgba(199,125,255,0.2); background: var(--black); }
+    .rt-gv-video-player video, .rt-gv-video-player iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    .rt-gv-video-cta { margin-top: 40px; }
+    .rt-gv-cta-heading { font-size: 1.25rem; font-weight: 700; color: var(--dark-text); margin-bottom: 16px; }
+    .rt-gv-btn-primary { display: inline-block; padding: 18px 36px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1rem; color: var(--white); background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%); border: 1px solid rgba(199,125,255,0.4); border-radius: 16px; text-decoration: none; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 8px 32px rgba(114,22,244,0.3), inset 0 1px 0 rgba(255,255,255,0.25); }
+    .rt-gv-btn-primary:hover { transform: translateY(-3px) scale(1.02); background: linear-gradient(135deg, rgba(143,71,246,0.95) 0%, rgba(157,78,221,0.95) 100%); box-shadow: 0 12px 40px rgba(114,22,244,0.4), inset 0 1px 0 rgba(255,255,255,0.3); }
+    .rt-gv-btn-primary:focus-visible { outline: 3px solid var(--lavender-pink); outline-offset: 2px; }
+
+    @media (max-width: 768px) {
+        .rt-gv-hero { padding: 40px 0 32px; }
+        .rt-gv-title { font-size: 2.25rem; }
+        .rt-gv-subtitle { font-size: 1.05rem; }
+        .rt-gv-content-row { flex-direction: column; }
+        .rt-gv-form-card { padding: 32px 24px; }
+        .rt-gv-cta-heading { font-size: 1.1rem; }
+        .rt-gv-btn-primary { padding: 16px 28px; font-size: 0.9rem; }
+    }
+    @media (max-width: 480px) {
+        .rt-gv-title { font-size: 1.85rem; }
+        .rt-gv-badge { font-size: 0.8rem; padding: 6px 14px; }
+        .rt-gv-form-card { padding: 24px 18px; border-radius: 16px; }
+    }
+</style>
+
+<div class="rt-gated-video">
+    <section class="rt-gv-hero" aria-labelledby="rt-gv-hero-heading">
+        <div class="rt-gv-container">
+            <span class="rt-gv-badge" id="rtGvBadge"></span>
+            <h2 id="rt-gv-hero-heading" class="rt-gv-title"></h2>
+            <p class="rt-gv-subtitle" id="rtGvSubtitle"></p>
+        </div>
+    </section>
+    <section class="rt-gv-form-section" aria-labelledby="rt-gv-form-heading">
+        <div class="rt-gv-container">
+            <div id="rtGvContentRow" class="rt-gv-content-row">
+            <div id="rtGvFormCard" class="rt-gv-form-card" role="region" aria-labelledby="rt-gv-form-heading">
+                <h3 id="rt-gv-form-heading" class="rt-gv-form-heading"></h3>
+                <p class="rt-gv-form-subtext" id="rtGvFormSubtext"></p>
+                <div id="rtGvFormContainer">
+                    <div class="rtg-loading">
+                        <div class="rtg-loading-bar" style="width:100%"></div>
+                        <div class="rtg-loading-bar"></div>
+                        <div class="rtg-loading-bar"></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div id="rtGvVideoCard" class="rt-gv-video-card" role="region" aria-labelledby="rt-gv-video-heading">
+                <p id="rt-gv-video-heading" class="rt-gv-video-welcome">You're in &mdash; enjoy the session</p>
+                <div class="rt-gv-video-player">
+                    <iframe id="rtGvVideo" src="" title="How to Build a Demo Script That Actually Lands — Real Treasury" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+                <div class="rt-gv-video-cta">
+                    <p class="rt-gv-cta-heading" id="rtGvCtaHeading"></p>
+                    <a id="rtGvCtaLink" class="rt-gv-btn-primary" target="_blank" rel="noopener noreferrer"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    /* ---- Read config ---- */
+    var C = window.RTG_CONFIG;
+    if (!C || !C.assetSlug) {
+        console.error('RTG: window.RTG_CONFIG.assetSlug is required');
+        return;
+    }
+
+    var API_BASE    = (C.wpSiteUrl || 'https://realtreasury.com') + '/wp-json/rtg/v1';
+    var ASSET_SLUG  = C.assetSlug;
+    var CONFIG_FORM_ID = C.formId || null;
+    var CONFIG_MAPPING_ID = C.mappingId || null;
+    var STORAGE_KEY = C.storageKey || ('rtg_' + ASSET_SLUG.replace(/-/g, '_') + '_access');
+    var FORM_ID     = null;
+    var MAPPING_ID  = CONFIG_MAPPING_ID ? Number(CONFIG_MAPPING_ID) : null;
+
+    /* ---- Populate page text from config ---- */
+    function setText(id, text) { var el = document.getElementById(id); if (el && text) el.textContent = text; }
+    setText('rtGvBadge',       C.badgeText    || 'Free Resource');
+    setText('rtGvSubtitle',    C.heroSubtitle || 'Complete the short form below to get instant access.');
+    setText('rtGvFormSubtext', C.formSubtext  || 'Fill out the form below for instant access.');
+    setText('rtGvCtaHeading',  C.ctaHeading   || 'Ready to take the next step?');
+
+    var heroTitle = document.getElementById('rt-gv-hero-heading');
+    if (heroTitle) heroTitle.textContent = C.heroTitle || 'Unlock This Resource';
+    var formHeading = document.getElementById('rt-gv-form-heading');
+    if (formHeading) formHeading.textContent = C.formHeading || 'Watch the Recording';
+    var ctaLink = document.getElementById('rtGvCtaLink');
+    if (ctaLink) { ctaLink.href = C.ctaUrl || '#'; ctaLink.textContent = C.ctaLabel || 'Book a Call'; }
+    var videoEl = document.getElementById('rtGvVideo');
+    if (videoEl && C.videoTitle) videoEl.title = C.videoTitle + ' — Real Treasury';
+
+    /* ---- YouTube URL -> embed URL (never rehosted, just linked as an iframe) ---- */
+    function toYouTubeEmbedUrl(url) {
+        if (!url) return url;
+        var m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{6,})/);
+        if (!m) return url;
+        return 'https://www.youtube.com/embed/' + m[1] + '?rel=0';
+    }
+
+    /* ---- iFrame auto-resize (for the WordPress wrapper iframe embedding this whole page) ---- */
+    (function() {
+        var id = (document.body && document.body.dataset && document.body.dataset.iframeId) || window.location.pathname;
+        function postHeight() { var h = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0; if (window.parent && typeof window.parent.postMessage === 'function') { window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*'); } }
+        var frameId;
+        function schedule() { if (frameId) cancelAnimationFrame(frameId); frameId = requestAnimationFrame(postHeight); }
+        window.addEventListener('load', schedule, { passive: true });
+        window.addEventListener('resize', schedule, { passive: true });
+        if (typeof MutationObserver !== 'undefined' && document.body) { new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true }); }
+        schedule();
+    })();
+
+    /* ---- Helpers ---- */
+    var formCard      = document.getElementById('rtGvFormCard');
+    var contentRow    = document.getElementById('rtGvContentRow');
+    var videoCard     = document.getElementById('rtGvVideoCard');
+    var formContainer = document.getElementById('rtGvFormContainer');
+
+    function parseJsonOrThrow(response) { return response.text().then(function(text) { var json = {}; try { json = text ? JSON.parse(text) : {}; } catch (e) { throw new Error('Invalid JSON (' + response.status + ')'); } if (!response.ok) { throw new Error(json.message || 'Request failed (' + response.status + ')'); } return json; }); }
+    function getStoredAccess() { try { var raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
+    function storeAccess(data) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { /* noop */ } }
+    function clearAccess() { try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* noop */ } }
+    function fieldTypeToInputType(t) { return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
+    function fieldAutocomplete(f) { if (f.autocomplete === false) return 'off'; if (f.key === 'full_name') return 'name'; if (f.key === 'first_name') return 'given-name'; if (f.key === 'last_name') return 'family-name'; return ({ email:'email', tel:'tel', company:'organization', url:'url' })[f.type] || 'on'; }
+    function escHtml(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s)); return d.innerHTML; }
+    function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    /* ---- Video (iframe) swap ---- */
+    function showVideo(videoUrl, animate) {
+        var hideTarget = contentRow || formCard;
+        if (!hideTarget || !videoCard || !videoEl) return;
+        if (videoUrl) videoEl.src = toYouTubeEmbedUrl(videoUrl);
+        if (animate) {
+            hideTarget.style.opacity = '0'; hideTarget.style.transform = 'translateY(-20px)';
+            setTimeout(function() { hideTarget.style.display = 'none'; videoCard.style.display = 'block'; void videoCard.offsetHeight; videoCard.style.opacity = '1'; videoCard.style.transform = 'translateY(0)'; videoCard.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 500);
+        } else {
+            hideTarget.style.display = 'none'; videoCard.style.display = 'block'; videoCard.style.opacity = '1'; videoCard.style.transform = 'translateY(0)';
+        }
+    }
+
+    /* ---- API ---- */
+    function fetchGateSchema() { return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow); }
+    function fetchFormSchemaById(formId) { return fetch(API_BASE + '/form/' + formId).then(parseJsonOrThrow); }
+    function fetchFormSchema() {
+        if (CONFIG_FORM_ID && CONFIG_MAPPING_ID) {
+            return fetchFormSchemaById(CONFIG_FORM_ID).then(function(formSchema) {
+                formSchema.mapping_id = Number(CONFIG_MAPPING_ID);
+                formSchema.form_id = formSchema.form_id || CONFIG_FORM_ID;
+                return formSchema;
+            });
+        }
+        if (!CONFIG_FORM_ID) {
+            return fetchGateSchema().then(function(gateSchema) {
+                if (CONFIG_MAPPING_ID && gateSchema.mapping_id && Number(gateSchema.mapping_id) !== Number(CONFIG_MAPPING_ID)) {
+                    console.warn('RTG: Configured mappingId', CONFIG_MAPPING_ID, 'does not match mapped ID', gateSchema.mapping_id, 'for asset', ASSET_SLUG);
+                }
+                if (CONFIG_MAPPING_ID) gateSchema.mapping_id = Number(CONFIG_MAPPING_ID);
+                return gateSchema;
+            }).catch(function() {
+                throw new Error('No form mapping found for asset "' + ASSET_SLUG + '"');
+            });
+        }
+        return Promise.all([fetchGateSchema(), fetchFormSchemaById(CONFIG_FORM_ID)])
+            .then(function(results) {
+                var gateSchema = results[0] || {}, formSchema = results[1] || {};
+                if (gateSchema.form_id && Number(gateSchema.form_id) !== Number(CONFIG_FORM_ID)) {
+                    console.warn('RTG: Configured formId', CONFIG_FORM_ID, 'does not match mapped form', gateSchema.form_id, 'for asset', ASSET_SLUG);
+                }
+                if (CONFIG_MAPPING_ID && gateSchema.mapping_id && Number(gateSchema.mapping_id) !== Number(CONFIG_MAPPING_ID)) {
+                    console.warn('RTG: Configured mappingId', CONFIG_MAPPING_ID, 'does not match mapped ID', gateSchema.mapping_id, 'for asset', ASSET_SLUG);
+                }
+                formSchema.mapping_id = CONFIG_MAPPING_ID ? Number(CONFIG_MAPPING_ID) : (gateSchema.mapping_id || null);
+                formSchema.form_id = formSchema.form_id || CONFIG_FORM_ID;
+                return formSchema;
+            })
+            .catch(function(err) {
+                if (CONFIG_MAPPING_ID) {
+                    return fetchFormSchemaById(CONFIG_FORM_ID).then(function(formSchema) {
+                        formSchema.mapping_id = Number(CONFIG_MAPPING_ID);
+                        formSchema.form_id = formSchema.form_id || CONFIG_FORM_ID;
+                        return formSchema;
+                    });
+                }
+                throw new Error((err && err.message) || 'Unable to load gate/form schema.');
+            });
+    }
+    function submitForm(fields) { var payload = { form_id: FORM_ID, fields: fields, consent: true, honeypot: '' }; if (MAPPING_ID) { payload.mapping_id = MAPPING_ID; } return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(parseJsonOrThrow); }
+    function validateToken(token, slug) { return fetch(API_BASE + '/validate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug }) }).then(parseJsonOrThrow); }
+    function sendEvent(token, slug, type, meta) { return fetch(API_BASE + '/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug, event_type: type, meta: meta || {} }) }).then(parseJsonOrThrow).catch(function(e) { console.warn('RTG event failed (' + type + '):', e); }); }
+
+    /* ---- Render form from schema ---- */
+    function renderForm(schema) {
+        var fields = schema.fields || [];
+        var consentText = schema.consent_text || '';
+        var html = '<form id="rtGvForm" novalidate>';
+        fields.forEach(function(field) {
+            var req = field.required ? ' required' : '';
+            var mark = field.required ? ' <span style="color:#e53e3e;">*</span>' : '';
+            var ph = field.placeholder ? ' placeholder="' + escAttr(field.placeholder) + '"' : '';
+            var ac = ' autocomplete="' + fieldAutocomplete(field) + '"';
+            html += '<div class="rtg-field-group"><label for="rtg_' + escAttr(field.key) + '">' + escHtml(field.label) + mark + '</label>';
+            if (field.type === 'textarea') { html += '<textarea id="rtg_' + escAttr(field.key) + '" name="' + escAttr(field.key) + '"' + ph + ac + req + '></textarea>'; }
+            else if (field.type === 'select' && field.options) { html += '<select id="rtg_' + escAttr(field.key) + '" name="' + escAttr(field.key) + '"' + ac + req + '><option value="">Select...</option>'; field.options.forEach(function(o) { html += '<option value="' + escAttr(o) + '">' + escHtml(o) + '</option>'; }); html += '</select>'; }
+            else if ((field.type === 'radio' || field.type === 'checkbox') && field.options) { html += '<div class="rtg-option-group">'; field.options.forEach(function(o, i) { var it = field.type === 'radio' ? 'radio' : 'checkbox'; var nm = field.type === 'radio' ? field.key : field.key + '[]'; html += '<label><input type="' + it + '" name="' + escAttr(nm) + '" value="' + escAttr(o) + '"' + (i === 0 && field.required ? req : '') + '> ' + escHtml(o) + '</label>'; }); html += '</div>'; }
+            else { html += '<input type="' + fieldTypeToInputType(field.type) + '" id="rtg_' + escAttr(field.key) + '" name="' + escAttr(field.key) + '"' + ph + ac + req + '>'; }
+            html += '</div>';
+        });
+        if (consentText) { html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGvConsent" required> <span>' + escHtml(consentText) + '</span></label></div>'; }
+        html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
+        html += '<div class="rtg-submit-wrap"><button type="submit" class="rtg-submit-btn">Watch Now</button><span class="rtg-spinner"></span></div>';
+        html += '<div class="rtg-response" id="rtGvResponse" aria-live="polite" role="status"></div></form>';
+        formContainer.innerHTML = html;
+        attachFormHandler(fields);
+    }
+
+    /* ---- Form submit handler ---- */
+    function attachFormHandler(fieldDefs) {
+        var form = document.getElementById('rtGvForm');
+        if (!form) return;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var hp = form.querySelector('[name="_rtg_hp"]'); if (hp && hp.value) return;
+            var valid = true; form.querySelectorAll('.rtg-invalid').forEach(function(el) { el.classList.remove('rtg-invalid'); });
+            var collected = {};
+            fieldDefs.forEach(function(field) {
+                if (field.type === 'checkbox' && field.options) { var checked = []; form.querySelectorAll('[name="' + field.key + '[]"]:checked').forEach(function(cb) { checked.push(cb.value); }); if (field.required && checked.length === 0) { valid = false; var g = form.querySelector('[name="' + field.key + '[]"]'); if (g) g.classList.add('rtg-invalid'); } collected[field.key] = checked.join(', '); }
+                else if (field.type === 'radio') { var sel = form.querySelector('[name="' + field.key + '"]:checked'); var v = sel ? sel.value : ''; if (field.required && !v) { valid = false; var f = form.querySelector('[name="' + field.key + '"]'); if (f) f.classList.add('rtg-invalid'); } collected[field.key] = v; }
+                else { var input = form.querySelector('[name="' + field.key + '"]'); if (!input) return; var v = input.value.trim(); if (field.required && !v) { input.classList.add('rtg-invalid'); valid = false; } if (field.type === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { input.classList.add('rtg-invalid'); valid = false; } collected[field.key] = v; }
+            });
+            var consent = document.getElementById('rtGvConsent'); if (consent && !consent.checked) { valid = false; consent.classList.add('rtg-invalid'); }
+            if (!valid) return;
+            var btn = form.querySelector('.rtg-submit-btn'), wrap = form.querySelector('.rtg-submit-wrap'), resp = document.getElementById('rtGvResponse');
+            if (btn) btn.disabled = true; if (wrap) wrap.classList.add('rtg-submitting'); if (resp) { resp.style.display = 'none'; resp.className = 'rtg-response'; }
+            submitForm(collected)
+                .then(function(data) { if (!data.assets || data.assets.length === 0) throw new Error('No assets returned. Check the form-to-asset mapping in WP Admin.'); var target = null; for (var i = 0; i < data.assets.length; i++) { if (data.assets[i].slug === ASSET_SLUG) { target = data.assets[i]; break; } } if (!target) target = data.assets[0]; return validateToken(target.token, target.slug).then(function(v) { return { asset: target, validation: v }; }); })
+                .then(function(r) {
+                    if (!r.validation.valid) throw new Error('Token validation failed.');
+                    var cfg = r.validation.asset || {}, url = '';
+                    if (cfg.type === 'video' && cfg.config) url = cfg.config.embed_url || '';
+                    else if (cfg.type === 'link' && cfg.config) url = cfg.config.target_url || '';
+                    if (!url) throw new Error('No video URL found in asset configuration.');
+                    storeAccess({ token: r.asset.token, asset_slug: r.asset.slug, video_url: url, expires_at: r.asset.expires_at, stored_at: new Date().toISOString() });
+                    showVideo(url, true);
+                    sendEvent(r.asset.token, r.asset.slug, 'page_view', { source: ASSET_SLUG });
+                    sendEvent(r.asset.token, r.asset.slug, 'video_play', { source: ASSET_SLUG });
+                })
+                .catch(function(err) { console.error('RTG submission error:', err); if (resp) { resp.textContent = err.message || 'Something went wrong.'; resp.className = 'rtg-response rtg-error'; } if (btn) btn.disabled = false; if (wrap) wrap.classList.remove('rtg-submitting'); });
+        });
+    }
+
+    /* ---- Init ---- */
+    document.addEventListener('DOMContentLoaded', function() {
+        var stored = getStoredAccess();
+        if (stored && stored.token && stored.asset_slug) {
+            validateToken(stored.token, stored.asset_slug)
+                .then(function(v) {
+                    if (v.valid) { var url = stored.video_url || ''; if (!url && v.asset && v.asset.config) url = v.asset.config.embed_url || v.asset.config.target_url || ''; if (url) { showVideo(url, false); return; } }
+                    clearAccess(); loadForm();
+                })
+                .catch(function() { clearAccess(); loadForm(); });
+        } else { loadForm(); }
+    });
+
+    function loadForm() {
+        fetchFormSchema()
+            .then(function(schema) { FORM_ID = schema.form_id; MAPPING_ID = schema.mapping_id || null; renderForm(schema); })
+            .catch(function(err) {
+                var source = CONFIG_FORM_ID ? 'form ID ' + CONFIG_FORM_ID : 'asset "' + ASSET_SLUG + '"';
+                console.error('RTG: Failed to load form for ' + source + ':', err.message || err);
+                formContainer.innerHTML = '<div class="rtg-response rtg-error" style="display:block;">'
+                    + 'Unable to load the form. Please refresh the page or contact support.'
+                    + '</div>';
+            });
+    }
+})();
+</script>

@@ -5,6 +5,13 @@
      "If you build a custom variant" section for the rules this follows.
      Asset: err-not-demo-script (type: link, target_url = YouTube watch URL)
      Mapping: #7
+
+     ONE FORM, TWO DELIVERABLES: the single RT Gate submit reveals the video
+     AND the worksheet download link (RTG_CONFIG.ctaUrl). The worksheet is a
+     direct file on realtreasury.com — deliberately NOT a second gate. Keep
+     mappingId scoped to #7: form 2 ("General Form") is shared by mappings
+     1/3/4/5/6/7, so an unscoped submit would hand back every gated asset on
+     the site.
      ============================================================ -->
 
 <style>
@@ -34,6 +41,7 @@
     .rt-en-letter { background: var(--primary-purple); color: #fff; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.15rem; margin-bottom: 16px; }
     .rt-en-card h3 { font-size: 1.1rem; font-weight: 700; margin: 0 0 8px; }
     .rt-en-card p { font-size: 0.95rem; color: var(--gray-text); margin: 0; }
+    .rt-en-credit { text-align: center; font-size: 0.9rem; color: var(--gray-text); margin: 36px auto 0; font-style: italic; }
 
     @media (max-width: 768px) {
         .rt-en-title { font-size: 2.1rem; }
@@ -86,6 +94,7 @@
                     <p>Move to the new system with best practices in place, managing real risks and tracking success with ROI, time saved, and adoption.</p>
                 </div>
             </div>
+            <p class="rt-en-credit">Built in partnership with the Association for Financial Professionals (AFP).</p>
         </div>
     </section>
 </div>
@@ -105,7 +114,11 @@ window.RTG_CONFIG = {
     formHeading:  'Watch the Session',
     formSubtext:  'Fill out the form below for instant access.',
     ctaHeading:   'Ready to build your own script?',
-    ctaUrl:       'https://share.hsforms.com/1_0WDcFXiRT2TGUjXtRubAA4a09b',
+    // Single-form rule: this page asks for contact details ONCE. The RT Gate
+    // form below unlocks BOTH the video and the worksheet — the worksheet is a
+    // direct file link revealed after submit, never a second form. Do not point
+    // ctaUrl at a HubSpot/other form.
+    ctaUrl:       'https://realtreasury.com/wp-content/uploads/2026/07/AFP-Real-Treasury-Demo-Script-Worksheet.docx',
     ctaLabel:     'Download the ERR NOT Worksheet',
     videoTitle:   'How to Build a Demo Script That Actually Lands',
     wpSiteUrl:    'https://realtreasury.com'
@@ -290,6 +303,21 @@ window.RTG_CONFIG = {
     if (formHeading) formHeading.textContent = C.formHeading || 'Watch the Recording';
     var ctaLink = document.getElementById('rtGvCtaLink');
     if (ctaLink) { ctaLink.href = C.ctaUrl || '#'; ctaLink.textContent = C.ctaLabel || 'Book a Call'; }
+
+    /* ---- Worksheet download attribution ----
+       The worksheet is delivered by a direct link rather than a second form,
+       so the click is the only signal that a lead took the download. Log it
+       against the same token the video was unlocked with. Held in module
+       scope because it is set on both the fresh-submit and the
+       restored-from-localStorage paths. */
+    var CURRENT_TOKEN = null;
+    if (ctaLink) {
+        ctaLink.addEventListener('click', function() {
+            if (CURRENT_TOKEN) {
+                sendEvent(CURRENT_TOKEN, ASSET_SLUG, 'download_click', { source: ASSET_SLUG, deliverable: 'worksheet' });
+            }
+        });
+    }
     var videoEl = document.getElementById('rtGvVideo');
     if (videoEl && C.videoTitle) videoEl.title = C.videoTitle + ' — Real Treasury';
 
@@ -443,6 +471,7 @@ window.RTG_CONFIG = {
                     else if (cfg.type === 'link' && cfg.config) url = cfg.config.target_url || '';
                     if (!url) throw new Error('No video URL found in asset configuration.');
                     storeAccess({ token: r.asset.token, asset_slug: r.asset.slug, video_url: url, expires_at: r.asset.expires_at, stored_at: new Date().toISOString() });
+                    CURRENT_TOKEN = r.asset.token;
                     showVideo(url, true);
                     sendEvent(r.asset.token, r.asset.slug, 'page_view', { source: ASSET_SLUG });
                     sendEvent(r.asset.token, r.asset.slug, 'video_play', { source: ASSET_SLUG });
@@ -457,7 +486,7 @@ window.RTG_CONFIG = {
         if (stored && stored.token && stored.asset_slug) {
             validateToken(stored.token, stored.asset_slug)
                 .then(function(v) {
-                    if (v.valid) { var url = stored.video_url || ''; if (!url && v.asset && v.asset.config) url = v.asset.config.embed_url || v.asset.config.target_url || ''; if (url) { showVideo(url, false); return; } }
+                    if (v.valid) { var url = stored.video_url || ''; if (!url && v.asset && v.asset.config) url = v.asset.config.embed_url || v.asset.config.target_url || ''; if (url) { CURRENT_TOKEN = stored.token; showVideo(url, false); return; } }
                     clearAccess(); loadForm();
                 })
                 .catch(function() { clearAccess(); loadForm(); });

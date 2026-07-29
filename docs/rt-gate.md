@@ -105,7 +105,36 @@ here; never add new content there.
 - `webinars/tms-rfp-trap/index.html` — video gate (mapping #4)
 - `webinars/3-segments-1-smart-choice/index.html` — NORAM video gate (mapping #1)
 - `webinars/3-segments-1-smart-choice-emea/index.html` — EMEA video gate (mapping #3)
+- `webinars/err-not-demo-script/index.html` — Real Treasury × AFP; YouTube iframe
+  gate (mapping #7). Custom variant: reveals a live YouTube embed rather than a
+  rehosted `<video>`, and unlocks the worksheet download in the same submit.
 - `treasury-tech-selection/waitlist/index.html` — waitlist signup (mapping #5)
+
+## One form per page
+
+A gated page asks for contact details **once**. If a page delivers more than one
+thing (e.g. a recording *and* a worksheet), the single RT Gate submit must reveal
+all of them — never chain a second form (HubSpot or otherwise) behind the first.
+A second form splits the lead record, loses the RT Gate attribution, and reliably
+costs you the majority of the second conversion.
+
+Two ways to deliver a second item:
+
+1. **Direct link (simplest).** Reveal it as a post-unlock link — put the file URL
+   in `RTG_CONFIG.ctaUrl`. Log the click yourself with a `download_click` event
+   against the unlock token, or the download is invisible in reporting.
+   `webinars/err-not-demo-script/index.html` does this.
+2. **Second mapped asset.** Map both assets to the **same form**, then omit
+   `mapping_id` on `/submit` so it returns every asset for that form.
+
+> ⚠️ Option 2 is only safe with a **dedicated** form. `/submit` scopes token
+> issuance to `mapping_id` when present, and falls back to *all assets mapped to
+> `form_id`* when absent. Form 2 ("General Form") is shared by mappings
+> 1/3/4/5/6/7, so dropping `mapping_id` on a General Form page hands the visitor
+> every gated asset on the site. Clone the form first.
+
+Valid `event_type` values for `POST /event` are `page_view`, `download_click`,
+`video_play`, and `video_progress` — anything else is rejected by the endpoint.
 
 When adding a new gated page, create the Form / Asset / Mapping in WP Admin
 first, then mirror one of the pages above whose pattern matches yours

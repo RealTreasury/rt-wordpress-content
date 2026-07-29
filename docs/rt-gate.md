@@ -118,6 +118,14 @@ all of them — never chain a second form (HubSpot or otherwise) behind the firs
 A second form splits the lead record, loses the RT Gate attribution, and reliably
 costs you the majority of the second conversion.
 
+**Exception — partner-owned assets.** If a partner owns the asset and requires
+it stay on their property, their form stays. That is not a second gate of ours
+to remove. `webinars/err-not-demo-script/index.html` is the live example: AFP
+asked that the worksheet remain on AFP's pages, so the page unlocks the video
+via RT Gate and hands off to AFP's HubSpot form for the worksheet. **Check the
+partner agreement before "simplifying" a flow like this** — the redundant-looking
+second form may be contractual.
+
 Two ways to deliver a second item:
 
 1. **Direct link (simplest).** Reveal it as a post-unlock link — put the file URL

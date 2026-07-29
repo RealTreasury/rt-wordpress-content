@@ -6,12 +6,22 @@
      Asset: err-not-demo-script (type: link, target_url = YouTube watch URL)
      Mapping: #7
 
-     ONE FORM, TWO DELIVERABLES: the single RT Gate submit reveals the video
-     AND the worksheet download link (RTG_CONFIG.ctaUrl). The worksheet is a
-     direct file on realtreasury.com — deliberately NOT a second gate. Keep
-     mappingId scoped to #7: form 2 ("General Form") is shared by mappings
-     1/3/4/5/6/7, so an unscoped submit would hand back every gated asset on
-     the site.
+     ⚠️ AFP PARTNER TERMS — DO NOT SELF-HOST THE WORKSHEET.
+     Joanne Oh (AFP), 2026-07-21: "We request that the video and worksheet
+     themselves remain on AFP's pages. You are welcome to embed or link to
+     the YouTube video and share the worksheet download form on your site
+     and social media."
+     So: the YouTube embed below is permitted, but the worksheet must stay
+     behind AFP's own HubSpot form (RTG_CONFIG.ctaUrl) — the same link AFP
+     uses in the video description. Never point ctaUrl at a copy hosted on
+     realtreasury.com, and never mirror the .docx into the Media Library.
+     The "second form" here is AFP's and is required by the partnership; it
+     is the one documented exception to the one-form-per-page rule in
+     docs/rt-gate.md.
+
+     Keep mappingId scoped to #7: form 2 ("General Form") is shared by
+     mappings 1/3/4/5/6/7, so an unscoped submit would hand back every gated
+     asset on the site.
      ============================================================ -->
 
 <style>
@@ -54,7 +64,7 @@
         <div class="rt-en-container">
             <span class="rt-en-eyebrow">Real Treasury × AFP</span>
             <h1 class="rt-en-title">How to Build a Demo Script That Actually Lands</h1>
-            <p class="rt-en-subtitle">Real Treasury partnered with AFP (the Association for Financial Professionals) to break down the ERR NOT&trade; framework for building treasury demo scripts that focus on the prospect's problem &mdash; not a feature tour.</p>
+            <p class="rt-en-subtitle">Real Treasury partnered with AFP (the Association for Financial Professionals) to break down how to write a demo script around the work your team actually does &mdash; so vendors show you your own daily cash position, not their best-looking feature.</p>
         </div>
     </section>
 
@@ -113,13 +123,13 @@ window.RTG_CONFIG = {
     heroSubtitle: 'Complete the short form below to get instant access to the full AFP session on writing a vendor-agnostic demo script.',
     formHeading:  'Watch the Session',
     formSubtext:  'Fill out the form below for instant access.',
-    ctaHeading:   'Ready to build your own script?',
-    // Single-form rule: this page asks for contact details ONCE. The RT Gate
-    // form below unlocks BOTH the video and the worksheet — the worksheet is a
-    // direct file link revealed after submit, never a second form. Do not point
-    // ctaUrl at a HubSpot/other form.
-    ctaUrl:       'https://realtreasury.com/wp-content/uploads/2026/07/AFP_Real_Treasury_Demo_Script_Worksheet.docx',
-    ctaLabel:     'Download the ERR NOT Worksheet',
+    ctaHeading:   'Ready to build your own script? Get the companion worksheet from AFP.',
+    // AFP's own HubSpot download form (portal 7185359) — the same link AFP uses
+    // in the YouTube description and on financialprofessionals.org. Per AFP's
+    // 2026-07-21 terms the worksheet must stay on AFP's pages, so this MUST
+    // remain an AFP-hosted link. Do not swap in a self-hosted file.
+    ctaUrl:       'https://share.hsforms.com/1_0WDcFXiRT2TGUjXtRubAA4a09b',
+    ctaLabel:     'Get the Worksheet from AFP',
     videoTitle:   'How to Build a Demo Script That Actually Lands',
     wpSiteUrl:    'https://realtreasury.com'
 };
@@ -304,12 +314,12 @@ window.RTG_CONFIG = {
     var ctaLink = document.getElementById('rtGvCtaLink');
     if (ctaLink) { ctaLink.href = C.ctaUrl || '#'; ctaLink.textContent = C.ctaLabel || 'Book a Call'; }
 
-    /* ---- Worksheet download attribution ----
-       The worksheet is delivered by a direct link rather than a second form,
-       so the click is the only signal that a lead took the download. Log it
-       against the same token the video was unlocked with. Held in module
-       scope because it is set on both the fresh-submit and the
-       restored-from-localStorage paths. */
+    /* ---- Worksheet hand-off attribution ----
+       The worksheet lives behind AFP's form, so AFP — not RT Gate — captures
+       that lead. The outbound click is the only signal we get that a visitor
+       went for the worksheet at all. Log it against the token the video was
+       unlocked with. Held in module scope because it is set on both the
+       fresh-submit and the restored-from-localStorage paths. */
     var CURRENT_TOKEN = null;
     if (ctaLink) {
         ctaLink.addEventListener('click', function() {

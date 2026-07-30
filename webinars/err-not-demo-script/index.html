@@ -24,91 +24,6 @@
      asset on the site.
      ============================================================ -->
 
-<style>
-    /* ---- Framework intro section (scoped, brand vars match rt-gated-video) ---- */
-    .rt-en-page {
-        --primary-purple: #7216f4;
-        --secondary-purple: #8f47f6;
-        --dark-text: #281345;
-        --gray-text: #7e7e7e;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        color: var(--dark-text);
-        line-height: 1.6;
-    }
-    .rt-en-page *, .rt-en-page *::before, .rt-en-page *::after { box-sizing: border-box; }
-    .rt-en-container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-
-    .rt-en-hero { text-align: center; padding: 56px 0 24px; }
-    .rt-en-eyebrow { display: inline-block; background: rgba(199,125,255,0.1); border: 1px solid rgba(199,125,255,0.25); border-radius: 20px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; color: var(--primary-purple); margin-bottom: 20px; }
-    .rt-en-title { font-size: 2.75rem; font-weight: 800; line-height: 1.15; margin: 0 0 20px; }
-    .rt-en-subtitle { font-size: 1.1rem; color: var(--gray-text); max-width: 760px; margin: 0 auto; }
-
-    .rt-en-framework { padding: 40px 0 56px; }
-    .rt-en-framework h2 { text-align: center; font-size: 2rem; font-weight: 800; margin: 0 0 12px; }
-    .rt-en-framework > .rt-en-container > p { text-align: center; color: var(--gray-text); max-width: 700px; margin: 0 auto 40px; }
-    .rt-en-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
-    .rt-en-card { background: #fff; border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); }
-    .rt-en-letter { background: var(--primary-purple); color: #fff; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.15rem; margin-bottom: 16px; }
-    .rt-en-card h3 { font-size: 1.1rem; font-weight: 700; margin: 0 0 8px; }
-    .rt-en-card p { font-size: 0.95rem; color: var(--gray-text); margin: 0; }
-    .rt-en-credit { text-align: center; font-size: 0.9rem; color: var(--gray-text); margin: 36px auto 0; font-style: italic; }
-
-    @media (max-width: 768px) {
-        .rt-en-title { font-size: 2.1rem; }
-        .rt-en-framework h2 { font-size: 1.6rem; }
-    }
-</style>
-
-<div class="rt-en-page">
-    <section class="rt-en-hero">
-        <div class="rt-en-container">
-            <span class="rt-en-eyebrow">Real Treasury × AFP</span>
-            <h1 class="rt-en-title">How to Build a Demo Script That Actually Lands</h1>
-            <p class="rt-en-subtitle">Real Treasury partnered with AFP (the Association for Financial Professionals) to break down how to write a demo script around the work your team actually does &mdash; so vendors show you your own daily cash position, not their best-looking feature.</p>
-        </div>
-    </section>
-
-    <section class="rt-en-framework">
-        <div class="rt-en-container">
-            <h2>The ERR NOT&trade; Framework</h2>
-            <p>ERR NOT&trade; is Real Treasury's proven, six-step method for selecting treasury technology without vendor bias. The fourth step &mdash; the uNique Demo Script &mdash; is what the workshop below is about: a custom script built from your own prioritized requirements, so every vendor demo shows what actually matters instead of a generic tour.</p>
-            <div class="rt-en-grid">
-                <div class="rt-en-card">
-                    <div class="rt-en-letter">E</div>
-                    <h3>Education</h3>
-                    <p>Get a comprehensive, unbiased view of the vendors and products actually available in the market before you write a single requirement.</p>
-                </div>
-                <div class="rt-en-card">
-                    <div class="rt-en-letter">R</div>
-                    <h3>Requirements</h3>
-                    <p>Document your current-state operations, then determine and prioritize your actual must-have requirements &mdash; based on business needs, not wish lists.</p>
-                </div>
-                <div class="rt-en-card">
-                    <div class="rt-en-letter">R</div>
-                    <h3>RFI</h3>
-                    <p>Build a brief RFI focused on non-functional items &mdash; vendor stability, market presence, support &mdash; to create a shortlist based on fit, not price.</p>
-                </div>
-                <div class="rt-en-card">
-                    <div class="rt-en-letter">N</div>
-                    <h3>uNique Demo Script</h3>
-                    <p>Create one custom demo script and deliver it to every shortlisted vendor, keeping your prioritized requirements front and center.</p>
-                </div>
-                <div class="rt-en-card">
-                    <div class="rt-en-letter">O</div>
-                    <h3>Obvious Winner</h3>
-                    <p>Score every vendor against the same script using a consistent process. Let the data make the winning solution obvious.</p>
-                </div>
-                <div class="rt-en-card">
-                    <div class="rt-en-letter">T</div>
-                    <h3>Transformation</h3>
-                    <p>Move to the new system with best practices in place, managing real risks and tracking success with ROI, time saved, and adoption.</p>
-                </div>
-            </div>
-            <p class="rt-en-credit">Built in partnership with the Association for Financial Professionals (AFP).</p>
-        </div>
-    </section>
-</div>
-
 <!-- ============================================================
      GATED VIDEO — Config for this page
      Form + Asset resolved via RT Gate mapping.
@@ -120,7 +35,7 @@ window.RTG_CONFIG = {
     storageKey:   'rtg_err_not_demo_script_access',
     badgeText:    'Free Resource',
     heroTitle:    'Watch: Building Your ERR NOT™ Demo Script',
-    heroSubtitle: 'Complete the short form below to get instant access to the full AFP session on writing a vendor-agnostic demo script.',
+    heroSubtitle: 'Complete the short form below to get instant access to Real Treasury’s session — produced in collaboration with AFP — on writing a vendor-agnostic demo script.',
     formHeading:  'Watch the Session',
     formSubtext:  'Fill out the form below for instant access.',
     ctaHeading:   'Ready to build your own script? Get the companion worksheet from AFP.',

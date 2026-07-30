@@ -139,6 +139,11 @@ window.RTG_CONFIG = {
     .rt-gv-video-player video, .rt-gv-video-player iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
     .rt-gv-video-cta { margin-top: 40px; }
     .rt-gv-cta-heading { font-size: 1.25rem; font-weight: 700; color: var(--dark-text); margin-bottom: 16px; }
+    .rt-gv-further-reading { margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(199,125,255,0.2); text-align: left; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .rt-gv-further-reading-heading { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-text); margin-bottom: 12px; }
+    .rt-gv-further-reading-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+    .rt-gv-further-reading-list a { color: var(--primary-purple); font-weight: 600; font-size: 0.95rem; text-decoration: underline; text-underline-offset: 3px; }
+    .rt-gv-further-reading-list a:hover { color: var(--deep-purple); }
     .rt-gv-btn-primary { display: inline-block; padding: 18px 36px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1rem; color: var(--white); background: linear-gradient(135deg, rgba(114,22,244,0.9) 0%, rgba(143,71,246,0.9) 100%); border: 1px solid rgba(199,125,255,0.4); border-radius: 16px; text-decoration: none; letter-spacing: 0.5px; text-transform: uppercase; transition: all 0.4s cubic-bezier(0.4,0,0.2,1); box-shadow: 0 8px 32px rgba(114,22,244,0.3), inset 0 1px 0 rgba(255,255,255,0.25); }
     .rt-gv-btn-primary:hover { transform: translateY(-3px) scale(1.02); background: linear-gradient(135deg, rgba(143,71,246,0.95) 0%, rgba(157,78,221,0.95) 100%); box-shadow: 0 12px 40px rgba(114,22,244,0.4), inset 0 1px 0 rgba(255,255,255,0.3); }
     .rt-gv-btn-primary:focus-visible { outline: 3px solid var(--lavender-pink); outline-offset: 2px; }
@@ -190,6 +195,14 @@ window.RTG_CONFIG = {
                 <div class="rt-gv-video-cta">
                     <p class="rt-gv-cta-heading" id="rtGvCtaHeading"></p>
                     <a id="rtGvCtaLink" class="rt-gv-btn-primary" target="_blank" rel="noopener noreferrer"></a>
+                </div>
+                <div class="rt-gv-further-reading">
+                    <p class="rt-gv-further-reading-heading">Keep reading, from AFP</p>
+                    <ul class="rt-gv-further-reading-list">
+                        <li><a href="https://www.financialprofessionals.org/training-resources/resources/articles/Details/how-treasury-teams-are-rethinking-their-tms-strategy" target="_blank" rel="noopener noreferrer">How Treasury Teams Are Rethinking Their TMS Strategy</a></li>
+                        <li><a href="https://www.financialprofessionals.org/glossary/treasury-management-system" target="_blank" rel="noopener noreferrer">Treasury Management System (glossary)</a></li>
+                        <li><a href="https://www.financialprofessionals.org/glossary/technology-in-treasury" target="_blank" rel="noopener noreferrer">Technology in Treasury (glossary)</a></li>
+                    </ul>
                 </div>
             </div>
         </div>

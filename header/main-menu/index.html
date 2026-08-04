@@ -205,6 +205,15 @@ body.banner-closed { min-height: auto; }
     overflow: hidden;
 }
 
+.banner-speaker img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+    transform: scale(1.18);
+}
+
 .banner-icon:before {
     content: "";
     position: absolute;
@@ -483,7 +492,9 @@ body.banner-minimized .rt-nav-container {
         <button class="close-btn" onclick="closeBanner(event)" aria-label="Close banner">&times;</button>
         
         <div class="banner-content">
-            <div class="banner-icon">🎥</div>
+            <div class="banner-icon banner-speaker">
+                <img src="https://realtreasury.com/wp-content/uploads/2025/08/TraceyHeadshot-3.webp" alt="Tracey Knight, webinar presenter">
+            </div>
 
             <div class="banner-text">
                 <div class="banner-title">

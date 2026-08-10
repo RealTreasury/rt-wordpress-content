@@ -1,0 +1,24 @@
+# Real Treasury
+
+> Independent treasury technology selection guidance for CFOs, treasurers, and finance teams.
+
+Real Treasury helps teams evaluate, compare, and select treasury technology without vendor bias. This file identifies the site’s primary public resources; the XML sitemap contains the complete index.
+
+## Core resources
+
+- [Home](https://realtreasury.com/): Overview of Real Treasury’s independent treasury-technology selection support.
+- [About Real Treasury](https://realtreasury.com/about/): Background, approach, and team.
+- [Treasury Tech Portal](https://realtreasury.com/treasury-tech-portal/): Interactive tool for comparing treasury software platforms, demos, features, and vendor details.
+- [Treasury Tech Market](https://realtreasury.com/treasury-tech-market/): Independent view of treasury technology market segments and vendor landscape.
+- [Tech Selection Workshop](https://realtreasury.com/tech-selection-workshop/): Expert-led workshop for teams evaluating treasury technology.
+- [Contact](https://realtreasury.com/contact/): Ways to connect with Real Treasury.
+
+## Guides and updates
+
+- [Treasury Tech Selection Guide](https://realtreasury.com/treasury-tech-selection-guide/): Information about the Real Treasury Tech Selection Guide.
+- [Webinars](https://realtreasury.com/webinars/): Treasury technology education and on-demand sessions.
+- [Insights](https://realtreasury.com/posts/): Articles and updates from Real Treasury.
+
+## Site index
+
+- [XML sitemap](https://realtreasury.com/sitemap_index.xml): Complete public URL index.

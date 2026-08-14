@@ -1,39 +1,464 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy - Real Treasury</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Privacy Policy</title>
     <style>
-        body { font-family: 'Inter', sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6; color: #281345; }
-        h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem; }
-        h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; }
-        p { margin: 1rem 0; }
-        a { color: #7216f4; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #281345;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .privacy-policy-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .privacy-policy-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.15);
+            margin-bottom: 40px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            color: #281345;
+            transition: all 0.3s ease;
+        }
+
+        .privacy-policy-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 33%, #5b0acd 66%, #9d4edd 100%);
+        }
+
+        .privacy-policy-content:hover {
+            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .privacy-policy-content h1 {
+            color: #281345;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            border-bottom: 3px solid #c77dff;
+            padding-bottom: 10px;
+            font-weight: 600;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .privacy-policy-content h2 {
+            color: #281345;
+            margin: 30px 0 15px 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .privacy-policy-content h3 {
+            color: #281345;
+            margin: 25px 0 10px 0;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .privacy-policy-content p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        .privacy-policy-content ul {
+            margin: 15px 0 15px 25px;
+            color: #444;
+        }
+
+        .privacy-policy-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .privacy-highlight {
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.1) 0%, rgba(199, 125, 255, 0.1) 100%);
+            padding: 20px;
+            border-left: 4px solid #7216f4;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.1);
+            color: #281345;
+            font-weight: 500;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.05) 0%, rgba(199, 125, 255, 0.05) 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .effective-date {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(199, 125, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .privacy-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.1);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .privacy-table th,
+        .privacy-table td {
+            border: 1px solid rgba(199, 125, 255, 0.2);
+            padding: 15px;
+            text-align: left;
+        }
+
+        .privacy-table th {
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .privacy-table tr:nth-child(even) {
+            background: rgba(199, 125, 255, 0.05);
+        }
+
+        .privacy-table tr:hover {
+            background: rgba(199, 125, 255, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .privacy-policy-container {
+                padding: 20px 15px;
+            }
+            
+            .privacy-policy-content {
+                padding: 25px;
+                border-radius: 14px;
+            }
+            
+            .privacy-policy-content h1 {
+                font-size: 2rem;
+            }
+
+            .privacy-policy-content h2 {
+                font-size: 1.3em;
+            }
+            
+            .privacy-table {
+                font-size: 14px;
+            }
+            
+            .privacy-table th,
+            .privacy-table td {
+                padding: 12px 8px;
+            }
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.4);
+        }
     </style>
-</head>
-<body>
-<h1>Privacy Policy</h1>
-<p>Effective Date: June 1, 2025</p>
-<p>This Privacy Policy explains how Real Treasury, LLC ("we", "us") collects and uses information when you visit our website. By using the site you agree to the collection and use of information in accordance with this policy.</p>
-<h2>Information Collection</h2>
-<p>We collect information you provide directly, such as your name and email address when you submit a form. We may also collect limited usage data through cookies to improve the website.</p>
-<h2>Use of Information</h2>
-<p>Information is used to respond to inquiries, provide requested services and improve our content. We do not sell your personal data.</p>
-<h2>Contact Us</h2>
-<p>If you have any questions about this policy, please contact us at <a href="mailto:info@realtreasury.com">info@realtreasury.com</a>.</p>
-<script>
-  if (window.self !== window.top) {
-    function sendHeight() {
-      const height = document.documentElement.scrollHeight;
-      window.parent.postMessage({ type: "setHeight", height: height }, "*");
-    }
-    window.addEventListener("DOMContentLoaded", sendHeight);
-    window.addEventListener("resize", sendHeight);
-    window.addEventListener("orientationchange", sendHeight);
-    setTimeout(sendHeight, 500);
-  }
-</script>
-</body>
-</html>
+
+
+    <div class="privacy-policy-container">
+        <div class="privacy-policy-content">
+            <h1>Privacy Policy</h1>
+            
+            <div class="effective-date">
+                <strong>Effective Date:</strong> June 21, 2025<br>
+                <strong>Last Updated:</strong> June 21, 2025
+            </div>
+
+            <div class="privacy-highlight">
+                <strong>Your Privacy Matters:</strong> We are committed to protecting your personal information and being transparent about how we collect, use, and share your data. This Privacy Policy explains our practices in clear, understandable terms.
+            </div>
+
+            <h2>1. Information We Collect</h2>
+            
+            <h3>Personal Information You Provide</h3>
+            <p>We collect information you voluntarily provide to us, including:</p>
+            <ul>
+                <li><strong>Contact Information:</strong> Name, email address, phone number, mailing address</li>
+                <li><strong>Account Information:</strong> Username, password, profile information</li>
+                <li><strong>Communication Data:</strong> Messages you send us, feedback, survey responses</li>
+                <li><strong>Video Access Requests:</strong> Information submitted through our video access forms</li>
+                <li><strong>Payment Information:</strong> Billing details for any paid services (processed securely through third-party payment processors)</li>
+            </ul>
+
+            <h3>Automatically Collected Information</h3>
+            <p>When you visit our website, we may automatically collect:</p>
+            <ul>
+                <li><strong>Technical Data:</strong> IP address, browser type, device information, operating system</li>
+                <li><strong>Usage Data:</strong> Pages visited, time spent, click patterns, referral sources</li>
+                <li><strong>Cookies and Tracking:</strong> See our Cookie Policy for detailed information</li>
+            </ul>
+
+            <h2>2. How We Use Your Information</h2>
+            
+            <p>We use your personal information for the following purposes:</p>
+            
+            <table class="privacy-table">
+                <thead>
+                    <tr>
+                        <th>Purpose</th>
+                        <th>Legal Basis</th>
+                        <th>Data Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Provide our services</td>
+                        <td>Contract performance</td>
+                        <td>Contact info, account data</td>
+                    </tr>
+                    <tr>
+                        <td>Process video access requests</td>
+                        <td>Legitimate interest</td>
+                        <td>Form submissions, contact details</td>
+                    </tr>
+                    <tr>
+                        <td>Customer support</td>
+                        <td>Contract performance</td>
+                        <td>Contact info, communication data</td>
+                    </tr>
+                    <tr>
+                        <td>Website improvement</td>
+                        <td>Legitimate interest</td>
+                        <td>Usage data, technical data</td>
+                    </tr>
+                    <tr>
+                        <td>Marketing communications</td>
+                        <td>Consent</td>
+                        <td>Contact info, preferences</td>
+                    </tr>
+                    <tr>
+                        <td>Legal compliance</td>
+                        <td>Legal obligation</td>
+                        <td>All relevant data</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>3. Information Sharing and Disclosure</h2>
+            
+            <p>We do not sell your personal information. We may share your information in the following circumstances:</p>
+
+            <h3>Service Providers</h3>
+            <p>We work with trusted third-party service providers who help us operate our website and provide services to you, including:</p>
+            <ul>
+                <li>Web hosting and content delivery</li>
+                <li>Email communication services</li>
+                <li>Analytics and website optimization</li>
+                <li>Payment processing</li>
+                <li>Customer support tools</li>
+            </ul>
+
+            <h3>Legal Requirements</h3>
+            <p>We may disclose your information when required by law, court order, or to:</p>
+            <ul>
+                <li>Comply with legal processes</li>
+                <li>Protect our rights and property</li>
+                <li>Ensure user safety</li>
+                <li>Investigate potential violations of our terms</li>
+            </ul>
+
+            <h2>4. Data Security</h2>
+            
+            <div class="privacy-highlight">
+                We implement robust security measures to protect your personal information, including encryption, secure servers, and regular security audits. However, no internet transmission is 100% secure, and we cannot guarantee absolute security.
+            </div>
+
+            <p>Our security measures include:</p>
+            <ul>
+                <li>SSL/TLS encryption for data transmission</li>
+                <li>Secure data storage with access controls</li>
+                <li>Regular security assessments and updates</li>
+                <li>Employee training on data protection</li>
+                <li>Incident response procedures</li>
+            </ul>
+
+            <h2>5. Your Rights and Choices</h2>
+            
+            <p>Depending on your location, you may have the following rights regarding your personal information:</p>
+
+            <h3>Access and Portability</h3>
+            <ul>
+                <li>Request access to your personal data</li>
+                <li>Receive a copy of your data in a portable format</li>
+            </ul>
+
+            <h3>Correction and Updates</h3>
+            <ul>
+                <li>Correct inaccurate personal information</li>
+                <li>Update your account and profile information</li>
+            </ul>
+
+            <h3>Deletion</h3>
+            <ul>
+                <li>Request deletion of your personal data</li>
+                <li>Close your account and remove associated data</li>
+            </ul>
+
+            <h3>Marketing Communications</h3>
+            <ul>
+                <li>Opt-out of marketing emails</li>
+                <li>Manage communication preferences</li>
+                <li>Unsubscribe from newsletters</li>
+            </ul>
+
+            <h2>6. Cookies and Tracking Technologies</h2>
+            
+            <p>We use cookies and similar technologies to enhance your experience on our website. For detailed information about our cookie practices, including how to manage your preferences, please see our <strong>Cookie Policy</strong>.</p>
+
+            <h2>7. Data Retention</h2>
+            
+            <p>We retain your personal information for as long as necessary to provide our services and fulfill the purposes outlined in this Privacy Policy. Specific retention periods include:</p>
+            
+            <ul>
+                <li><strong>Account Data:</strong> Retained while your account is active and for 3 years after closure</li>
+                <li><strong>Communication Records:</strong> Retained for 5 years for customer service purposes</li>
+                <li><strong>Usage Data:</strong> Typically retained for 2 years for analytics purposes</li>
+                <li><strong>Legal Requirements:</strong> Retained as required by applicable laws</li>
+            </ul>
+
+            <h2>8. International Data Transfers</h2>
+            
+            <p>If you are located outside the country where our servers are located, your information may be transferred internationally. We ensure adequate protection through:</p>
+            <ul>
+                <li>Standard contractual clauses</li>
+                <li>Adequacy decisions by relevant authorities</li>
+                <li>Other appropriate safeguards</li>
+            </ul>
+
+            <h2>9. Children's Privacy</h2>
+            
+            <div class="privacy-highlight">
+                Our website is not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child under 13, please contact us immediately.
+            </div>
+
+            <h2>10. Third-Party Links</h2>
+            
+            <p>Our website may contain links to third-party websites. This Privacy Policy does not apply to those sites. We encourage you to review the privacy policies of any third-party websites you visit.</p>
+
+            <h2>11. Changes to This Privacy Policy</h2>
+            
+            <p>We may update this Privacy Policy from time to time. When we make changes, we will:</p>
+            <ul>
+                <li>Update the "Last Updated" date</li>
+                <li>Notify you of significant changes</li>
+                <li>Post the updated policy on our website</li>
+                <li>Obtain consent for material changes where required</li>
+            </ul>
+
+            <h2>12. Contact Information</h2>
+            
+            <div class="contact-info">
+                <h3>Questions About This Privacy Policy?</h3>
+                <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
+                <p><strong>Email:</strong> privacy@realtreasury.com</p>
+                <p><em>Mailing address available upon request for legal compliance purposes</em></p>
+                <p><strong>Response Time:</strong> We will respond to your inquiry within 30 days</p>
+            </div>
+
+            <div class="privacy-highlight">
+                <strong>EU Residents:</strong> If you are in the EU and have concerns about our data practices that we cannot resolve, you have the right to contact your local data protection authority.
+            </div>
+
+            <p style="text-align: center; margin-top: 40px; font-style: italic; color: #666;">
+                Thank you for trusting us with your personal information. We are committed to protecting your privacy and maintaining your trust.
+            </p>
+        </div>
+    </div>
+
+    <button class="back-to-top" onclick="scrollToTop()" title="Back to top">↑</button>
+
+    <script>
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Show/hide back to top button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+
+        // Initially hide the button
+        document.querySelector('.back-to-top').style.display = 'none';
+    </script>

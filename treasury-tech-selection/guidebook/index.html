@@ -1,45 +1,25 @@
 <!--
   RT Gate config for the 2026 TMS Guidebook download.
 
-  ============================================================
-  DRAFT — WP Admin setup required before this page goes live
-  ============================================================
-  This page is wired for RT Gate but the Form / Asset / Mapping do not
-  exist yet. Before publishing, create in WP Admin -> Real Treasury Gate:
+  WP Admin -> Real Treasury Gate setup (done):
+    - Asset:   treasury-tech-selection-guidebook, type "link".
+               Config target_url currently points at a sample WordPress
+               file for testing — swap to the real guidebook PDF/doc
+               URL before this page is promoted out of draft.
+    - Form:    General Form (or a clone), with email_settings ->
+               lead_email_mode: confirmation_and_links, so RT Gate
+               emails the same download link via the built-in
+               RTG_Email behavior (includes/class-email.php) — no
+               custom email code needed on this page.
+    - Mapping: #8 (General Form -> treasury-tech-selection-guidebook).
 
-    1. Asset
-       - Name:   2026 TMS Guidebook
-       - Slug:   treasury-tech-selection-guidebook   (must match assetSlug below)
-       - Type:   link
-       - Config: target_url = <final guidebook PDF/doc URL on WordPress>
-                 For testing only, this can point at any file already
-                 hosted on WordPress, e.g. an existing bankreports PDF:
-                 https://realtreasury.com/wp-content/uploads/2026/01/Top-100-Bank-by-Total-Assets-CRE-Exposure-20250930.pdf
-                 (Type "link" + target_url is the simplest path — it makes
-                 /submit return the file URL directly as redirect_url, no
-                 gate_url/iframe indirection needed. See docs/rt-gate.md
-                 "Two ways to deliver a second item" / option 1.)
+  Still a content draft: the preview image, copy, and target_url are
+  placeholders until the real 2026 guide asset is ready.
 
-    2. Form
-       - Clone the existing "General Form" (name, email, company, role)
-         or reuse it if a shared form is acceptable for this asset.
-       - Email settings (this is what sends the "here is your link" email):
-           lead_email_mode: confirmation_and_links
-         This is the built-in RTG_Email behavior (includes/class-email.php) —
-         no custom email code needed on this page. The confirmation email
-         RT Gate sends already lists every mapped asset's redirect_url.
-       - Optionally enable internal_notify so Tim/Tracey get a lead alert.
-
-    3. Mapping
-       - Form -> Asset (treasury-tech-selection-guidebook)
-       - Note the Mapping ID and set mappingId below (recommended — scopes
-         /submit to just this asset instead of the shared General Form's
-         other mappings).
-
-  Once the above exists, replace the placeholder assetSlug/mappingId
-  below with the real values from WP Admin. Until then this page will
-  show "Unable to load form" because /gate/{assetSlug} 404s — that is
-  expected for a draft.
+  Next year: create a new asset (e.g. slug suffixed -2027) and a new
+  mapping, then swap assetSlug/mappingId below. The page URL itself
+  stays evergreen — see chat history for the reasoning on why the
+  year lives in the asset, not the URL.
 
   On-page behavior: after a successful submit we show a "Your download
   is ready" state with a direct button using the redirect_url from the
@@ -51,8 +31,8 @@
 -->
 <script>
 window.RTG_CONFIG = {
-    assetSlug:  'treasury-tech-selection-guidebook', // TODO: confirm slug in WP Admin -> RT Gate -> Assets
-    mappingId:  null                                 // TODO: set to the Form -> Asset mapping ID once created
+    assetSlug:  'treasury-tech-selection-guidebook', // RT Gate -> Assets
+    mappingId:  8                                    // RT Gate -> Mappings: General Form -> 2026 TMS Guidebook
     // formId:  123,                                  // Optional: pin a specific form ID
 };
 </script>

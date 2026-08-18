@@ -109,6 +109,13 @@ here; never add new content there.
   gate (mapping #7). Custom variant: reveals a live YouTube embed rather than a
   rehosted `<video>`, and unlocks the worksheet download in the same submit.
 - `treasury-tech-selection/waitlist/index.html` — waitlist signup (mapping #5)
+- `treasury-tech-selection/guidebook/index.html` — 2026 TMS Guidebook download
+  request (mapping #8, pending swap to a dedicated form — see the page's
+  header comment). `link`-type asset; redirects to
+  `treasury-tech-selection/guidebook/thank-you/` on submit rather than
+  revealing the document inline — the download link is delivered only via
+  the RT Gate confirmation email (`lead_email_mode: confirmation_and_links`).
+  Draft: content and the asset's `target_url` are placeholders.
 
 ## One form per page
 

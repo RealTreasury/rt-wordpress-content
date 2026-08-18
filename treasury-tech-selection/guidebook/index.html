@@ -1,17 +1,23 @@
 <!--
   RT Gate config for the 2026 TMS Guidebook download.
 
-  WP Admin -> Real Treasury Gate setup (done):
+  WP Admin -> Real Treasury Gate setup:
     - Asset:   treasury-tech-selection-guidebook, type "link".
                Config target_url currently points at a sample WordPress
                file for testing — swap to the real guidebook PDF/doc
                URL before this page is promoted out of draft.
-    - Form:    General Form (or a clone), with email_settings ->
+    - Form:    TODO — clone a dedicated form for this asset (do not
+               reuse "General Form"). Set email_settings ->
                lead_email_mode: confirmation_and_links, so RT Gate
-               emails the same download link via the built-in
-               RTG_Email behavior (includes/class-email.php) — no
-               custom email code needed on this page.
-    - Mapping: #8 (General Form -> treasury-tech-selection-guidebook).
+               emails the download link via the built-in RTG_Email
+               behavior (includes/class-email.php) — no custom email
+               code needed on this page.
+    - Mapping: TODO — create a new mapping (dedicated form ->
+               treasury-tech-selection-guidebook) and put its ID
+               below. Mapping #8 was the old General Form mapping;
+               replace it once the dedicated form/mapping exist so
+               /submit doesn't fall back to every asset General Form
+               is mapped to (see docs/rt-gate.md "One form per page").
 
   Still a content draft: the preview image, copy, and target_url are
   placeholders until the real 2026 guide asset is ready.
@@ -21,19 +27,21 @@
   stays evergreen — see chat history for the reasoning on why the
   year lives in the asset, not the URL.
 
-  On-page behavior: after a successful submit we show a "Your download
-  is ready" state with a direct button using the redirect_url from the
-  /submit response (so the visitor doesn't have to wait on email), while
-  RT Gate independently emails the same link per the Form's email
-  settings above. This mirrors the "waitlist" page's success path
-  (treasury-tech-selection/waitlist/index.html) but reveals a download
-  button in place of a redirect.
+  On-page behavior: after a successful submit, the browser is
+  redirected to redirectUrl below (a thank-you/landing page) —
+  navigating window.top so it works when this page is iframe-embedded
+  in WordPress. The actual document link is delivered only by the
+  RT Gate confirmation email (lead_email_mode above); it is
+  intentionally never shown on-page. This mirrors the waitlist page's
+  redirect pattern (treasury-tech-selection/waitlist/index.html) but
+  points at a dedicated thank-you page instead of the asset itself.
 -->
 <script>
 window.RTG_CONFIG = {
-    assetSlug:  'treasury-tech-selection-guidebook', // RT Gate -> Assets
-    mappingId:  8                                    // RT Gate -> Mappings: General Form -> 2026 TMS Guidebook
-    // formId:  123,                                  // Optional: pin a specific form ID
+    assetSlug:   'treasury-tech-selection-guidebook', // RT Gate -> Assets
+    mappingId:   8,                                   // TODO: replace with the dedicated form's mapping ID
+    // formId:   123,                                  // Optional: pin a specific form ID
+    redirectUrl: 'https://realtreasury.com/treasury-tech-selection/guidebook/thank-you/'
 };
 </script>
 
@@ -122,19 +130,12 @@ window.RTG_CONFIG = {
     .rt-gb-form-wrap .rtg-submit-btn[disabled] { opacity: 0.7; cursor: not-allowed; }
     .rt-gb-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
     .rt-gb-form-wrap .rtg-response.rtg-error { color: #b91c1c; }
+    .rt-gb-form-wrap .rtg-response.rtg-success { color: #047857; }
     .rt-gb-form-wrap input:focus, .rt-gb-form-wrap select:focus, .rt-gb-form-wrap textarea:focus { outline: 2px solid rgba(114,22,244,0.5); outline-offset: 1px; border-color: rgba(114,22,244,0.55); }
     .rt-gb-form-wrap .rtg-submit-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
     .rt-gb-form-wrap .rtg-submit-btn:active { transform: translateY(0); }
 
     .rt-gb-disclaimer { font-size: 0.8rem; color: #6b7280; text-align: center; margin-top: 16px; line-height: 1.5; }
-
-    /* ---- Success / download state ---- */
-    .rt-gb-success { display: none; text-align: center; }
-    .rt-gb-success-icon { width: 56px; height: 56px; margin: 0 auto 20px; border-radius: 50%; background: rgba(114,22,244,0.1); display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--primary-purple); }
-    .rt-gb-success-heading { font-size: 1.35rem; font-weight: 700; color: var(--dark-text); margin: 0 0 10px; }
-    .rt-gb-success-text { font-size: 0.95rem; color: var(--gray-text); margin: 0 0 24px; }
-    .rt-gb-download-btn { display: inline-block; padding: 16px 32px; font-weight: 700; color: #fff; background: linear-gradient(135deg, rgba(114,22,244,0.95), rgba(143,71,246,0.95)); border-radius: 12px; text-decoration: none; box-shadow: 0 8px 24px rgba(114,22,244,0.3); }
-    .rt-gb-download-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
 
     /* ---- Social proof strip ---- */
     .rt-gb-proof { display: flex; gap: 24px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(199,125,255,0.15); flex-wrap: wrap; }
@@ -176,7 +177,7 @@ window.RTG_CONFIG = {
     <div class="rt-gb-container">
       <span class="rt-gb-badge">2026 Edition</span>
       <h1 id="rt-gb-hero-heading" class="rt-gb-title">The Real Treasury Tech Selection Guide</h1>
-      <p class="rt-gb-subtitle">The practitioner-led guide to evaluating and selecting treasury technology — enter your details below and we'll send the download link straight to your inbox.</p>
+      <p class="rt-gb-subtitle">The practitioner-led guide to evaluating and selecting treasury technology — enter your details below and we'll email you the download link.</p>
     </div>
   </section>
 
@@ -202,7 +203,7 @@ window.RTG_CONFIG = {
         <!-- Right: Download request form card -->
         <div id="rtGbFormCard" class="rt-gb-form-card" role="region" aria-labelledby="rt-gb-form-heading">
           <h2 id="rt-gb-form-heading" class="rt-gb-form-heading">Get the Guide</h2>
-          <p class="rt-gb-form-subtext" id="rtGbFormSubtext">Fill out the short form below — we'll email you the download link and unlock it here instantly.</p>
+          <p class="rt-gb-form-subtext" id="rtGbFormSubtext">Fill out the short form below and we'll email you the download link.</p>
 
           <div class="rt-gb-form-wrap">
             <div id="rtGbFormContainer"><p>Loading form...</p></div>
@@ -226,13 +227,6 @@ window.RTG_CONFIG = {
               <span class="rt-gb-proof-label">Independent</span>
             </div>
           </div>
-
-          <div id="rtGbSuccess" class="rt-gb-success">
-            <div class="rt-gb-success-icon">&#9993;</div>
-            <p class="rt-gb-success-heading">You're all set</p>
-            <p class="rt-gb-success-text">We've emailed the download link to your inbox. You can also grab it right now:</p>
-            <a id="rtGbDownloadLink" class="rt-gb-download-btn" href="#" target="_blank" rel="noopener noreferrer">Download the Guide</a>
-          </div>
         </div>
 
       </div>
@@ -248,10 +242,8 @@ window.RTG_CONFIG = {
   var ASSET_SLUG = C.assetSlug;
   var CONFIG_FORM_ID = C.formId || null;
   var CONFIG_MAPPING_ID = C.mappingId ? Number(C.mappingId) : null;
+  var CONFIG_REDIRECT_URL = C.redirectUrl || '';
   var container = document.getElementById('rtGbFormContainer');
-  var formCard = document.getElementById('rtGbFormCard');
-  var successEl = document.getElementById('rtGbSuccess');
-  var downloadLink = document.getElementById('rtGbDownloadLink');
   if (!container || !ASSET_SLUG) return;
 
   function escHtml(s){ var d=document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
@@ -359,24 +351,22 @@ window.RTG_CONFIG = {
       if (schema.mapping_id) payload.mapping_id = Number(schema.mapping_id);
       fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
         .then(parseJsonOrThrow)
-        .then(function(data){
-          var target = null;
-          var assets = data && data.assets ? data.assets : [];
-          for (var i = 0; i < assets.length; i++) {
-            if (assets[i].slug === ASSET_SLUG) { target = assets[i]; break; }
+        .then(function(){
+          // The document link itself is delivered only via the RT Gate
+          // confirmation email (Form -> email_settings.lead_email_mode).
+          // On-page we just move the visitor to the thank-you page.
+          if (!CONFIG_REDIRECT_URL) {
+            if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = "You're all set — check your email for the download link."; }
+            return;
           }
-          if (!target) target = assets[0];
-          var url = (target && target.redirect_url) || (data && data.primary_redirect_url) || '';
-          if (!url) throw new Error('No download link found. Check the asset/mapping configuration in WP Admin.');
-          if (downloadLink) downloadLink.href = url;
-          if (formCard) {
-            form.style.display = 'none';
-            var proof = formCard.querySelector('.rt-gb-proof');
-            if (proof) proof.style.display = 'none';
-            var disclaimer = formCard.querySelector('.rt-gb-disclaimer');
-            if (disclaimer) disclaimer.style.display = 'none';
-          }
-          if (successEl) successEl.style.display = 'block';
+          if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = 'Success! Redirecting...'; }
+          try {
+            if (window.top && window.top !== window.self) {
+              window.top.location.href = CONFIG_REDIRECT_URL;
+              return;
+            }
+          } catch (e) { /* cross-origin parent; fall through */ }
+          window.location.href = CONFIG_REDIRECT_URL;
         })
         .catch(function(err){ if (btn) btn.disabled = false; if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = (err && err.message) || 'Submission failed.'; } });
     });

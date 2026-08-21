@@ -11,6 +11,10 @@
     box-sizing: border-box;
 }
 
+:root {
+    --forum-logo: url("https://realtreasury.com/wp-content/uploads/2026/08/TreasuryTech-Virtual-Forum-Main-Logo-White.jpg");
+}
+
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background: linear-gradient(135deg, #f8f8f8, #fff);
@@ -123,6 +127,14 @@ body.banner-closed { min-height: auto; }
     color: #ffffff !important;
 }
 
+.workshop-banner.minimized .banner-logo {
+    width: 52px !important;
+    background-color: #ffffff !important;
+    background-image: var(--forum-logo) !important;
+    background-size: 100% !important;
+    background-position: center 46% !important;
+}
+
 .workshop-banner.minimized .banner-text {
     display: flex !important;
     align-items: center;
@@ -212,6 +224,28 @@ body.banner-closed { min-height: auto; }
     object-position: center 20%;
     display: block;
     transform: scale(1.18);
+}
+
+/* Treasury Tech Virtual Forum mark. The source art is a square lockup on a
+   white field: "TREASURY TECH" sits above the monogram and "VIRTUAL FORUM"
+   below it. Both lines are illegible at this size and just repeat the title,
+   so the tile crops to the monogram alone. The file is a JPEG, so there is no
+   transparency to key out — the tile keeps the artwork's own white ground and
+   is sized to the monogram's aspect instead of squeezing it into a square. */
+.banner-logo {
+    width: 62px;
+    background-color: #ffffff;
+    background-image: var(--forum-logo);
+    background-repeat: no-repeat;
+    /* Measured off the artwork (697x721): the monogram occupies x48-646,
+       y95-600, with the two text bands at y20-70 and y640-691. At this zoom
+       the tile's window lands on source rows 74-632 — inside both gaps, so
+       neither word bleeds in. The offset accounts for the background painting
+       under the 1px border, which reaches ~12 source rows past the padding
+       box on each edge. */
+    background-size: 100%;
+    background-position: center 46%;
+    border-color: rgba(114, 22, 244, 0.2);
 }
 
 .banner-icon:before {
@@ -516,6 +550,10 @@ body.banner-minimized .rt-nav-container {
         height: 40px;
         font-size: 18px;
     }
+
+    .banner-logo {
+        width: 52px;
+    }
     
     .banner-cta {
         padding: 10px 16px;
@@ -530,7 +568,7 @@ body.banner-minimized .rt-nav-container {
         <button class="close-btn" onclick="closeBanner(event)" aria-label="Close banner">&times;</button>
         
         <div class="banner-content">
-            <div class="banner-icon">🖥️</div>
+            <div class="banner-icon banner-logo" role="img" aria-label="Treasury Tech Virtual Forum"></div>
 
             <div class="banner-text">
                 <div class="banner-title">

@@ -427,6 +427,10 @@ body.banner-minimized .rt-nav-container {
         min-width: 108px;
     }
 
+    .banner-text {
+        min-width: 0;
+    }
+
     .workshop-banner.minimized {
         min-height: 60px !important;
         padding: 10px 14px !important;
@@ -448,6 +452,40 @@ body.banner-minimized .rt-nav-container {
     body.banner-closed .rt-nav-container,
     body:not(.banner-present) .rt-nav-container {
         top: 0 !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .banner-icon {
+        display: none;
+    }
+}
+
+/* Narrowest screens: stack the CTA under the copy so the title gets the
+   full width instead of wrapping a word per line beside it. */
+@media (max-width: 480px) {
+    .workshop-banner {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 10px;
+    }
+
+    .banner-actions {
+        align-self: stretch;
+    }
+
+    .banner-cta {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .workshop-banner.minimized .banner-actions {
+        display: none;
+    }
+
+    /* Stacked banner is taller than the 768px breakpoint assumes. */
+    body.banner-present .rt-nav-container {
+        top: 134px !important;
     }
 }
 
@@ -496,10 +534,10 @@ body.banner-minimized .rt-nav-container {
 
             <div class="banner-text">
                 <div class="banner-title">
-                    <span class="banner-highlight">Treasury Tech Virtual Forum: Product Demos Plus a Full Treasury Market Review</span>
+                    <span class="banner-highlight">Treasury Tech Virtual Forum</span>
                 </div>
                 <div class="banner-subtitle">
-                    September 22–24, 2026, from 9:00 AM ET — Register now to reserve your place.
+                    September 22–24, 2026 — product demos plus a full treasury market review.
                 </div>
             </div>
         </div>

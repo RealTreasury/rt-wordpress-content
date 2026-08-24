@@ -1,0 +1,861 @@
+<!--
+  Walk the Map — Real Treasury guided vendor tours, AFP 2026 (Las Vegas).
+
+  ONE config block controls this page. To release the next session, change its
+  `state` from 'teased' to 'open' — everything else is already wired
+  (form 3; mappings: s1=9 s2=10 s3=11 s4=12 private=13). To force a
+  waitlist, set state: 'waitlist'.
+
+  RT Gate wiring (WP Admin -> Real Treasury Gate):
+    - One form ("AFP 2026 Walk the Map") shared by all sessions; its ID goes
+      in RTG_CONFIG.formId below.
+    - One 'link' asset + mapping PER SESSION plus one for private-tour
+      requests, so registrations count per session. The open session's asset
+      config must contain "public_stats": true for the live spots display;
+      the endpoint is GET /wp-json/rtg/v1/stats/registrations.
+    - The live counter fails soft: if the stats endpoint or flag is missing,
+      the page shows "Limited to 10 practitioners" instead of a number.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script>
+window.RTG_CONFIG = {
+    formId:    3,                        /* AFP 2026 Walk the Map Tour Registration */
+    wpSiteUrl: 'https://realtreasury.com'
+};
+
+window.RT_TOUR = {
+    lowSpotsThreshold: 5,   /* "Only X spots left" appears at or below this */
+    sessions: [
+        {
+            id: 's1',
+            focus: 'TMS Replacement',
+            audience: 'You have a TMS today and are weighing a change.',
+            when: 'Monday, November 9',
+            time: '10:15–11:30 AM',
+            state: 'open',
+            capacity: 10,
+            assetSlug: 'afp-2026-tour-session-1',
+            mappingId: 9
+        },
+        {
+            id: 's2',
+            focus: 'First-time TMS',
+            audience: 'You run treasury on spreadsheets and bank portals.',
+            when: 'Monday, November 9',
+            time: '1:30–2:45 PM',
+            state: 'teased',
+            capacity: 10,
+            assetSlug: 'afp-2026-tour-session-2',
+            mappingId: 10
+        },
+        {
+            id: 's3',
+            focus: 'First-time TMS',
+            audience: 'You run treasury on spreadsheets and bank portals.',
+            when: 'Tuesday, November 10',
+            time: '1:45–3:00 PM',
+            state: 'teased',
+            capacity: 10,
+            assetSlug: 'afp-2026-tour-session-3',
+            mappingId: 11
+        },
+        {
+            id: 's4',
+            focus: 'TMS Replacement',
+            audience: 'You have a TMS today and are weighing a change.',
+            when: 'Tuesday, November 10',
+            time: '3:15–4:30 PM',
+            state: 'teased',
+            capacity: 10,
+            assetSlug: 'afp-2026-tour-session-4',
+            mappingId: 12
+        }
+    ],
+    privateTour: {
+        assetSlug: 'afp-2026-tour-private',
+        mappingId: 13
+    }
+};
+</script>
+  <title>Walk the Map — Guided Vendor Tours at AFP 2026 | Real Treasury</title>
+  <meta name="description" content="Free small-group guided tours of the TMS vendors in the AFP 2026 exhibit hall in Las Vegas, November 9–10. Four booths, twelve minutes each, and a neutral debrief — led by Real Treasury." />
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body {
+        background:
+          radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
+          radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
+          linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
+        min-height: 100vh;
+    }
+
+    .rt-tour {
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --deep-purple: #5b0acd;
+        --lavender-pink: #c77dff;
+        --dark-text: #281345;
+        --gray-text: #615c73;
+        --white: #ffffff;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        --hero-gradient: linear-gradient(135deg, rgba(9, 24, 84, 0.94), rgba(114, 22, 244, 0.9));
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .rt-tour *, .rt-tour *::before, .rt-tour *::after { box-sizing: border-box; }
+    .rt-tour a { color: inherit; }
+
+    .rt-t-container { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---- Hero ---- */
+    .rt-t-hero {
+        background: var(--hero-gradient);
+        color: #ffffff;
+        border-radius: 28px;
+        padding: 52px 44px;
+        margin: 40px auto 36px;
+        box-shadow: 0 18px 38px rgba(14, 21, 58, 0.2);
+        overflow: hidden;
+    }
+    .rt-t-hero-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+    .rt-t-hero-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 9px 16px; border-radius: 999px;
+        background: rgba(255, 255, 255, 0.15); color: #ffffff;
+        font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em;
+    }
+    .rt-t-hero h2 {
+        font-size: 2.7rem; font-weight: 800; line-height: 1.15;
+        color: #ffffff; margin: 0 0 14px;
+    }
+    .rt-t-hero p {
+        font-size: 1.15rem; color: rgba(255, 255, 255, 0.88);
+        max-width: 720px; margin: 0 0 6px;
+    }
+    .rt-t-hero-stats { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; }
+    .rt-t-hero-stats span {
+        font-weight: 700; font-size: 1rem; color: #ffffff; white-space: nowrap;
+        padding-left: 14px; position: relative;
+    }
+    .rt-t-hero-stats span::before {
+        content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+        width: 6px; height: 6px; border-radius: 999px; background: var(--lavender-pink);
+    }
+    .rt-t-hero-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 26px; }
+    .rt-t-hero-actions a {
+        display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+        padding: 15px 26px; border-radius: 12px;
+        font-size: 1.1rem; font-weight: 700; text-decoration: none;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .rt-t-hero-actions a.rt-t-cta-primary {
+        background: #ffffff; color: var(--dark-text);
+        box-shadow: 0 16px 28px rgba(15, 18, 58, 0.25);
+    }
+    .rt-t-hero-actions a.rt-t-cta-primary:hover { transform: translateY(-3px); box-shadow: 0 22px 36px rgba(15, 18, 58, 0.32); }
+    .rt-t-hero-actions a.rt-t-cta-secondary {
+        background: rgba(255, 255, 255, 0.16); color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.32);
+    }
+    .rt-t-hero-actions a.rt-t-cta-secondary:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.24); }
+
+    /* ---- Cards ---- */
+    .rt-t-card {
+        background: #ffffff; border-radius: 22px;
+        padding: 40px 44px; margin-bottom: 30px;
+        box-shadow: 0 18px 40px rgba(114, 22, 244, 0.08);
+        border: 1px solid rgba(114, 22, 244, 0.1);
+    }
+    .rt-t-card h3 { font-size: 1.7rem; font-weight: 800; margin: 0 0 10px; color: var(--dark-text); }
+    .rt-t-card > p { font-size: 1.08rem; color: var(--gray-text); margin: 0 0 8px; }
+    .rt-t-section-note { font-size: 0.9rem; color: var(--gray-text); margin: 2px 0 20px; }
+
+    /* ---- How it works ---- */
+    .rt-t-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 28px; margin-top: 22px; }
+    .rt-t-step-num {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 34px; height: 34px; border-radius: 999px;
+        background: var(--gradient-primary); color: #fff;
+        font-weight: 800; font-size: 1rem; margin-bottom: 10px;
+    }
+    .rt-t-step h4 { font-size: 1.12rem; font-weight: 700; margin: 0 0 6px; color: var(--dark-text); }
+    .rt-t-step p { font-size: 1rem; color: var(--gray-text); margin: 0; }
+
+    .rt-t-neutrality {
+        margin-top: 30px; padding-top: 24px;
+        border-top: 1px solid rgba(199, 125, 255, 0.22);
+        display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: center;
+    }
+    .rt-t-neutrality span { font-weight: 700; color: var(--deep-purple); font-size: 1rem; }
+
+    /* ---- Sessions ---- */
+    .rt-t-sessions { display: grid; gap: 16px; margin-top: 20px; }
+    .rt-t-session {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px;
+        border: 1px solid rgba(114, 22, 244, 0.14); border-radius: 16px;
+        padding: 20px 24px; background: #fdfcff;
+    }
+    .rt-t-session.rt-t-session-open { border-color: rgba(114, 22, 244, 0.45); box-shadow: 0 8px 24px rgba(114, 22, 244, 0.1); }
+    .rt-t-session-when { min-width: 220px; }
+    .rt-t-session-when strong { display: block; font-size: 1.05rem; color: var(--dark-text); }
+    .rt-t-session-when span { font-size: 0.95rem; color: var(--gray-text); }
+    .rt-t-session-focus { flex: 1 1 220px; }
+    .rt-t-session-focus strong { display: block; font-size: 1.05rem; color: var(--deep-purple); }
+    .rt-t-session-focus span { font-size: 0.92rem; color: var(--gray-text); }
+    .rt-t-pill {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 8px 16px; border-radius: 999px;
+        font-weight: 700; font-size: 0.92rem; white-space: nowrap;
+    }
+    .rt-t-pill-open { background: rgba(114, 22, 244, 0.12); color: var(--deep-purple); }
+    .rt-t-pill-low { background: rgba(114, 22, 244, 0.92); color: #ffffff; }
+    .rt-t-pill-full { background: rgba(40, 19, 69, 0.9); color: #ffffff; }
+    .rt-t-pill-teased { background: rgba(97, 92, 115, 0.1); color: var(--gray-text); }
+
+    /* ---- Form card ---- */
+    .rt-t-form-card {
+        background: #ffffff; border: 2px solid rgba(114, 22, 244, 0.16);
+        border-radius: 20px; padding: 46px 42px; margin-bottom: 30px;
+        box-shadow: 0 14px 36px rgba(91, 10, 205, 0.08); position: relative;
+    }
+    .rt-t-form-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        background: var(--gradient-primary); border-radius: 18px 18px 0 0;
+    }
+    .rt-t-form-heading { font-size: 1.6rem; font-weight: 800; margin: 0 0 8px; text-align: center; color: var(--dark-text); }
+    .rt-t-form-subtext { font-size: 0.98rem; color: var(--gray-text); text-align: center; margin: 0 auto 30px; max-width: 560px; }
+
+    .rt-t-form-wrap .rtg-field-group { margin-bottom: 14px; }
+    .rt-t-form-wrap label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--dark-text); margin-bottom: 6px; }
+    .rt-t-form-wrap input, .rt-t-form-wrap select, .rt-t-form-wrap textarea {
+        width: 100%; padding: 12px 14px; border: 1px solid #d8c9f7; border-radius: 10px;
+        font: inherit; background: #fff; color: var(--dark-text);
+    }
+    .rt-t-form-wrap textarea { min-height: 84px; resize: vertical; }
+    .rt-t-form-wrap select {
+        appearance: none; -webkit-appearance: none;
+        background-image: linear-gradient(45deg, transparent 50%, var(--primary-purple) 50%), linear-gradient(135deg, var(--primary-purple) 50%, transparent 50%);
+        background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px;
+        background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 36px;
+    }
+    .rt-t-form-wrap .rtg-option-group { display: grid; gap: 10px; }
+    .rt-t-form-wrap .rtg-option-group label {
+        display: flex; align-items: flex-start; gap: 10px; font-weight: 500; margin: 0;
+        border: 1px solid #d8c9f7; border-radius: 10px; padding: 12px 14px; cursor: pointer;
+    }
+    .rt-t-form-wrap .rtg-option-group label:has(input:checked) { border-color: var(--primary-purple); background: rgba(114, 22, 244, 0.05); }
+    .rt-t-form-wrap .rtg-option-group label:focus-within { outline: 2px solid rgba(114, 22, 244, 0.5); outline-offset: 1px; }
+    .rt-t-form-wrap .rtg-option-group input { width: auto; padding: 0; margin-top: 4px; }
+    .rt-t-form-wrap .rtg-option-group .rt-t-opt-note { display: block; font-size: 0.85rem; color: var(--gray-text); font-weight: 400; }
+    .rt-t-form-wrap .rtg-consent-group { margin: 14px 0 8px; font-size: 0.85rem; color: var(--gray-text); }
+    .rt-t-form-wrap .rtg-consent-group label { display: flex; gap: 8px; align-items: flex-start; font-weight: 500; }
+    .rt-t-form-wrap .rtg-consent-group input { width: auto; margin-top: 3px; }
+    .rt-t-form-wrap .rtg-invalid { border-color: #e53e3e !important; outline-color: rgba(229, 62, 62, 0.4) !important; }
+    .rt-t-form-wrap .rtg-submit-btn {
+        width: 100%; padding: 15px 20px; border: 0; border-radius: 12px; color: #fff;
+        font-weight: 700; font-size: 1.05rem;
+        background: linear-gradient(135deg, rgba(114, 22, 244, 0.95), rgba(143, 71, 246, 0.95)); cursor: pointer;
+    }
+    .rt-t-form-wrap .rtg-submit-btn[disabled] { opacity: 0.7; cursor: not-allowed; }
+    .rt-t-form-wrap .rtg-submit-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .rt-t-form-wrap .rtg-submit-btn:active { transform: translateY(0); }
+    .rt-t-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
+    .rt-t-form-wrap .rtg-response.rtg-error { color: #b91c1c; }
+    .rt-t-form-wrap .rtg-response.rtg-success { color: #047857; }
+    .rt-t-form-wrap input:focus, .rt-t-form-wrap select:focus, .rt-t-form-wrap textarea:focus {
+        outline: 2px solid rgba(114, 22, 244, 0.5); outline-offset: 1px; border-color: rgba(114, 22, 244, 0.55);
+    }
+    .rt-t-email-note { font-size: 0.85rem; color: #92400e; margin: 6px 0 0; }
+    .rt-t-fineprint { font-size: 0.82rem; color: #6b7280; text-align: center; margin-top: 18px; line-height: 1.55; }
+
+    .rt-t-success { text-align: center; padding: 26px 8px 10px; }
+    .rt-t-success h4 { font-size: 1.45rem; font-weight: 800; color: var(--deep-purple); margin: 0 0 10px; }
+    .rt-t-success p { font-size: 1.02rem; color: var(--gray-text); margin: 0 auto; max-width: 480px; }
+
+    /* ---- FAQ ---- */
+    .rt-t-faq-item { padding: 18px 0; border-bottom: 1px solid rgba(199, 125, 255, 0.18); }
+    .rt-t-faq-item:last-child { border-bottom: 0; padding-bottom: 4px; }
+    .rt-t-faq-item h4 { font-size: 1.08rem; font-weight: 700; margin: 0 0 6px; color: var(--dark-text); }
+    .rt-t-faq-item p { font-size: 1rem; color: var(--gray-text); margin: 0; }
+
+    .rt-t-footer-note { text-align: center; font-size: 0.85rem; color: #6b7280; margin: 8px 0 48px; padding: 0 24px; line-height: 1.6; }
+
+    @media (max-width: 768px) {
+        .rt-t-hero { padding: 40px 26px; margin-top: 24px; }
+        .rt-t-hero h2 { font-size: 2.05rem; }
+        .rt-t-card, .rt-t-form-card { padding: 28px 22px; }
+        .rt-t-steps { grid-template-columns: 1fr; }
+        .rt-t-session { flex-direction: column; align-items: flex-start; }
+        .rt-t-session-when { min-width: 0; }
+    }
+    @media (max-width: 480px) {
+        .rt-t-hero h2 { font-size: 1.75rem; }
+        .rt-t-container { padding: 0 14px; }
+        .rt-t-card, .rt-t-form-card { padding: 22px 16px; border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="rt-tour">
+  <div class="rt-t-container">
+
+    <section class="rt-t-hero" aria-labelledby="rt-t-hero-heading">
+      <div class="rt-t-hero-badges">
+        <span class="rt-t-hero-badge">AFP 2026 &middot; Las Vegas</span>
+        <span class="rt-t-hero-badge">Exhibit Hall &middot; November 9&ndash;10</span>
+        <span class="rt-t-hero-badge">Free for practitioners</span>
+      </div>
+      <h2 id="rt-t-hero-heading">Don&rsquo;t walk the exhibit hall alone.</h2>
+      <p>Guided small-group tours of the TMS vendors at AFP 2026, led by Tim Schultz and Tracey Knight of Real Treasury.</p>
+      <div class="rt-t-hero-stats">
+        <span>4 booths per route</span>
+        <span>12 minutes each</span>
+        <span>10 practitioners max</span>
+        <span>Free &mdash; vendors don&rsquo;t pay either</span>
+      </div>
+      <div class="rt-t-hero-actions">
+        <a class="rt-t-cta-primary" href="#register">Reserve your spot</a>
+        <a class="rt-t-cta-secondary" href="#how">How it works</a>
+      </div>
+    </section>
+
+    <section class="rt-t-card" id="how" aria-labelledby="rt-t-how-heading">
+      <h3 id="rt-t-how-heading">How a tour works</h3>
+      <p>Seventy-five minutes, during session windows when the hall is quiet.</p>
+      <div class="rt-t-steps">
+        <div class="rt-t-step">
+          <span class="rt-t-step-num">1</span>
+          <h4>Register below</h4>
+          <p>Free, ten spots per tour. We confirm every spot personally.</p>
+        </div>
+        <div class="rt-t-step">
+          <span class="rt-t-step-num">2</span>
+          <h4>Walk a planned route</h4>
+          <p>Four TMS booths matched to your situation &mdash; replacing a system, or buying your first.</p>
+        </div>
+        <div class="rt-t-step">
+          <span class="rt-t-step-num">3</span>
+          <h4>Twelve minutes per booth</h4>
+          <p>A scenario we set in advance, shown live in the product. Hard stop.</p>
+        </div>
+        <div class="rt-t-step">
+          <span class="rt-t-step-num">4</span>
+          <h4>Debrief as a group</h4>
+          <p>Compare notes with your peers while it&rsquo;s fresh.</p>
+        </div>
+      </div>
+      <div class="rt-t-neutrality">
+        <span>Every TMS vendor on our market map with an AFP booth is invited.</span>
+        <span>No vendor pays us &mdash; for the tour, or for anything else.</span>
+      </div>
+    </section>
+
+    <section class="rt-t-card" id="schedule" aria-labelledby="rt-t-schedule-heading">
+      <h3 id="rt-t-schedule-heading">Tour schedule</h3>
+      <p class="rt-t-section-note">All times local (Las Vegas). Additional sessions are released as earlier tours fill.</p>
+      <div class="rt-t-sessions" id="rtTourSessions"></div>
+    </section>
+
+    <section class="rt-t-form-card" id="register" role="region" aria-labelledby="rt-t-form-heading">
+      <h3 class="rt-t-form-heading" id="rt-t-form-heading">Reserve your spot</h3>
+      <p class="rt-t-form-subtext">We follow up personally to confirm every spot. Corporate treasury practitioners only.</p>
+      <div class="rt-t-form-wrap">
+        <div id="rtTourFormContainer"><p>Loading form&hellip;</p></div>
+      </div>
+      <p class="rt-t-fineprint">
+        Bringing a group? Register once with your group size &mdash; bigger teams usually fit a private tour better.
+      </p>
+    </section>
+
+    <section class="rt-t-card" aria-labelledby="rt-t-faq-heading">
+      <h3 id="rt-t-faq-heading">Good to know</h3>
+      <div class="rt-t-faq-item">
+        <h4>Is it really free?</h4>
+        <p>Yes. Attendees don&rsquo;t pay, vendors don&rsquo;t pay.</p>
+      </div>
+      <div class="rt-t-faq-item">
+        <h4>Which vendors are on the route?</h4>
+        <p>Routes are grouped by focus, not published vendor by vendor. Every TMS vendor on our market map with an AFP booth is invited, and each appears on one route.</p>
+      </div>
+      <div class="rt-t-faq-item">
+        <h4>Will vendors know I&rsquo;m coming?</h4>
+        <p>Vendors get the attendee list shortly before the tour. Prefer to evaluate quietly? Request a private tour.</p>
+      </div>
+      <div class="rt-t-faq-item">
+        <h4>These times don&rsquo;t work for me.</h4>
+        <p>Request a private tour &mdash; we schedule those individually across both days.</p>
+      </div>
+      <div class="rt-t-faq-item">
+        <h4>Am I signing up to be sold something?</h4>
+        <p>No. Nothing is bought or decided on a tour, and the debrief is vendor-free by design.</p>
+      </div>
+    </section>
+
+    <p class="rt-t-footer-note">
+      Walk the Map is organized independently by Real Treasury and is not an official AFP program.<br>
+      Real Treasury is a vendor-independent treasury advisory firm. We accept no vendor fees.
+    </p>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var C = window.RTG_CONFIG || {};
+  var T = window.RT_TOUR || { sessions: [] };
+  var API_BASE = (C.wpSiteUrl || 'https://realtreasury.com') + '/wp-json/rtg/v1';
+  var FREE_EMAIL_DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'proton.me', 'protonmail.com'];
+  var HIDDEN_FIELD_KEYS = ['utm'];
+  var TOUR_FIELD_KEY = 'tour_preference';
+
+  var sessionCounts = null; /* slug -> registrations, from /stats/registrations */
+  var formLive = false;     /* true once a real (non-preview) form schema renders */
+
+  function escHtml(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+  function escAttr(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function parseJsonOrThrow(res) { return res.text().then(function (t) { var j = {}; try { j = t ? JSON.parse(t) : {}; } catch (e) { throw new Error('Invalid JSON (' + res.status + ')'); } if (!res.ok) throw new Error(j.message || 'Request failed (' + res.status + ')'); return j; }); }
+  function fieldTypeToInputType(t) { return ({ text: 'text', email: 'email', tel: 'tel', company: 'text', url: 'url', number: 'number', date: 'date' })[t] || 'text'; }
+  function fieldAutocomplete(f) { if (f.key === 'full_name') return 'name'; if (f.key === 'title') return 'organization-title'; return ({ email: 'email', tel: 'tel', company: 'organization', url: 'url' })[f.type] || 'on'; }
+
+  /* ------------------------------------------------------------------ */
+  /* Session state                                                       */
+  /* ------------------------------------------------------------------ */
+
+  function sessionLabel(s) { return s.when + ', ' + s.time + ' (' + s.focus + ')'; }
+
+  function remainingFor(s) {
+    if (s.state !== 'open' || !s.assetSlug || !s.capacity) return null;
+    if (!sessionCounts || typeof sessionCounts[s.assetSlug] !== 'number') return null;
+    return Math.max(0, s.capacity - sessionCounts[s.assetSlug]);
+  }
+
+  /* Effective state folds live counts into the configured state. */
+  function effectiveState(s) {
+    if (s.state === 'open') {
+      var rem = remainingFor(s);
+      if (rem === 0) return 'waitlist';
+      return 'open';
+    }
+    return s.state; /* 'teased' | 'waitlist' | 'full' */
+  }
+
+  /* What the schedule shows. Until the real form is live, an 'open' session
+     must not advertise registration it cannot take. */
+  function displayState(s) {
+    var state = effectiveState(s);
+    return (state === 'open' && !formLive) ? 'teased' : state;
+  }
+
+  function pillFor(s) {
+    var state = displayState(s);
+    if (state === 'teased') return '<span class="rt-t-pill rt-t-pill-teased">Opening soon</span>';
+    if (state === 'waitlist' || state === 'full') return '<span class="rt-t-pill rt-t-pill-full">Full &mdash; waitlist open</span>';
+    var rem = remainingFor(s);
+    if (rem === null) return '<span class="rt-t-pill rt-t-pill-open">Limited to ' + (s.capacity || 10) + ' practitioners</span>';
+    if (rem <= (T.lowSpotsThreshold || 5)) return '<span class="rt-t-pill rt-t-pill-low">Only ' + rem + ' spot' + (rem === 1 ? '' : 's') + ' left</span>';
+    return '<span class="rt-t-pill rt-t-pill-open">' + rem + ' of ' + s.capacity + ' spots open</span>';
+  }
+
+  function renderSessions() {
+    var wrap = document.getElementById('rtTourSessions');
+    if (!wrap) return;
+    var html = '';
+    (T.sessions || []).forEach(function (s) {
+      var open = displayState(s) === 'open' || displayState(s) === 'waitlist';
+      html += '<div class="rt-t-session' + (open ? ' rt-t-session-open' : '') + '">';
+      html += '<div class="rt-t-session-when"><strong>' + escHtml(s.when) + '</strong><span>' + escHtml(s.time) + '</span></div>';
+      html += '<div class="rt-t-session-focus"><strong>' + escHtml(s.focus) + '</strong><span>' + escHtml(s.audience || '') + '</span></div>';
+      html += pillFor(s);
+      html += '</div>';
+    });
+    wrap.innerHTML = html;
+  }
+
+  /* Tour-preference choices offered in the form. kind + sessionId identify a
+     choice; display strings are recomputed from live state at submit time so
+     a session that fills after render still records correctly. */
+  function tourChoices() {
+    var choices = [];
+    (T.sessions || []).forEach(function (s) {
+      var state = effectiveState(s);
+      if (state === 'open' || state === 'waitlist' || state === 'full') {
+        var full = state !== 'open';
+        choices.push({
+          kind: 'session',
+          sessionId: s.id,
+          session: s,
+          label: (full ? 'Waitlist: ' : 'Session: ') + sessionLabel(s),
+          note: full ? 'This tour is full — we’ll contact you if a spot opens or a new session is released.' : (s.audience || '')
+        });
+      }
+    });
+    choices.push({
+      kind: 'private',
+      sessionId: '',
+      session: null,
+      label: 'Private tour request',
+      note: 'For teams, larger groups, or quieter evaluations — scheduled individually across both days.'
+    });
+    return choices;
+  }
+
+  function findSession(id) {
+    return (T.sessions || []).filter(function (s) { return s.id === id; })[0] || null;
+  }
+
+  /* The submitted field value, computed from live state at submit time. */
+  function tourChoiceValue(chosen) {
+    if (chosen.kind === 'private') return 'Private tour request';
+    var st = effectiveState(chosen.session);
+    return ((st === 'waitlist' || st === 'full') ? 'Waitlist: ' : 'Session: ') + sessionLabel(chosen.session);
+  }
+
+  /* Resolve the mapping for a choice. A session choice must NEVER borrow the
+     private-tour mapping (or any other session's): if its configured
+     mappingId is missing, resolve live via /gate/{assetSlug}; if that also
+     fails, resolve null and the submit is refused rather than misattributed. */
+  function resolveMappingId(chosen) {
+    function viaGate(slug) {
+      return fetch(API_BASE + '/gate/' + slug).then(parseJsonOrThrow)
+        .then(function (j) { return j && j.mapping_id ? Number(j.mapping_id) : null; })
+        .catch(function () { return null; });
+    }
+    if (chosen.kind === 'session') {
+      var sess = chosen.session;
+      if (sess && sess.mappingId) return Promise.resolve(Number(sess.mappingId));
+      if (sess && sess.assetSlug) return viaGate(sess.assetSlug);
+      return Promise.resolve(null);
+    }
+    var p = T.privateTour || {};
+    if (p.mappingId) return Promise.resolve(Number(p.mappingId));
+    if (p.assetSlug) return viaGate(p.assetSlug);
+    return Promise.resolve(null);
+  }
+
+  function tourChoiceOptionsHtml(required) {
+    var html = '';
+    tourChoices().forEach(function (c, i) {
+      html += '<label><input type="radio" name="' + TOUR_FIELD_KEY + '" data-kind="' + escAttr(c.kind) + '" data-session-id="' + escAttr(c.sessionId) + '" value="' + escAttr(c.label) + '"' + (i === 0 && required ? ' required' : '') + '><span>' + escHtml(c.label) + (c.note ? '<span class="rt-t-opt-note">' + escHtml(c.note) + '</span>' : '') + '</span></label>';
+    });
+    return html;
+  }
+
+  /* Re-render the choice list in place when live counts change, keeping the
+     user's selection by kind + session. */
+  function refreshTourChoiceGroup() {
+    var grp = document.getElementById('rtTourChoiceGroup');
+    if (!grp) return;
+    var checked = grp.querySelector('input:checked');
+    var kind = checked ? checked.getAttribute('data-kind') : null;
+    var sid = checked ? checked.getAttribute('data-session-id') : null;
+    grp.innerHTML = tourChoiceOptionsHtml('1' === grp.getAttribute('data-required'));
+    if (kind !== null) {
+      var again = grp.querySelector('input[data-kind="' + kind + '"][data-session-id="' + (sid || '') + '"]');
+      if (again) again.checked = true;
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Live registration counts (fails soft in every direction)            */
+  /* ------------------------------------------------------------------ */
+
+  function fetchCounts() {
+    var slugs = (T.sessions || [])
+      .filter(function (s) { return s.state === 'open' && s.assetSlug; })
+      .map(function (s) { return s.assetSlug; });
+    if (!slugs.length) return Promise.resolve();
+    return fetch(API_BASE + '/stats/registrations?asset_slugs=' + encodeURIComponent(slugs.join(',')))
+      .then(parseJsonOrThrow)
+      .then(function (data) { if (data && data.counts) { sessionCounts = data.counts; } })
+      .catch(function () { /* keep the last known counts */ });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* UTM capture (present only when the parent page forwards its query)  */
+  /* ------------------------------------------------------------------ */
+
+  function collectUtm() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var parts = [];
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) {
+        var v = params.get(k);
+        if (v) parts.push(k + '=' + encodeURIComponent(v));
+      });
+      return parts.join('&');
+    } catch (e) { return ''; }
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Form                                                                */
+  /* ------------------------------------------------------------------ */
+
+  var container = document.getElementById('rtTourFormContainer');
+
+  /* Mirrors the live RT Gate form so the page previews fully before the
+     form/mappings exist in WP Admin. Once RTG_CONFIG.formId is set, the
+     live schema always wins and this copy is only a network-error fallback
+     (rendered with submission disabled either way). */
+  var PREVIEW_SCHEMA = {
+    form_id: null,
+    preview: true,
+    fields: [
+      { type: 'text',     label: 'Full name',  key: 'full_name', required: true,  placeholder: 'Jane Smith' },
+      { type: 'email',    label: 'Work email', key: 'email',     required: true,  placeholder: 'you@company.com' },
+      { type: 'company',  label: 'Company',    key: 'company',   required: true },
+      { type: 'text',     label: 'Title',      key: 'title',     required: false },
+      { type: 'select',   label: 'Group size', key: 'group_size', required: true, options: ['Just me', '2 people', '3 people', '4+ people'] },
+      { type: 'select',   label: 'Where are you in your evaluation?', key: 'tms_timeline', required: true, options: ['Actively selecting in 2026', 'Planning for 2027', 'Just researching'] },
+      { type: 'text',     label: 'Which tour?', key: 'tour_preference', required: true },
+      { type: 'textarea', label: 'Anything you want to be sure you see?', key: 'interests', required: false },
+      { type: 'text',     label: 'UTM', key: 'utm', required: false }
+    ],
+    consent_text: 'I agree to receive updates and accept the privacy policy.'
+  };
+
+  function fetchFormSchema() {
+    if (C.formId) {
+      return fetch(API_BASE + '/form/' + C.formId).then(parseJsonOrThrow)
+        .catch(function () { return PREVIEW_SCHEMA; });
+    }
+    /* Not wired up yet: resolve via the open session's gate mapping if it
+       exists, otherwise render the disabled preview. */
+    var openSession = (T.sessions || []).filter(function (s) { return s.state === 'open' && s.assetSlug; })[0];
+    if (openSession) {
+      return fetch(API_BASE + '/gate/' + openSession.assetSlug).then(parseJsonOrThrow)
+        .catch(function () { return PREVIEW_SCHEMA; });
+    }
+    return Promise.resolve(PREVIEW_SCHEMA);
+  }
+
+  function renderForm(schema) {
+    var fields = schema.fields || [];
+    var consentText = schema.consent_text || '';
+    var html = '<form id="rtTourForm" novalidate>';
+    fields.forEach(function (f) {
+      if (HIDDEN_FIELD_KEYS.indexOf(f.key) !== -1) {
+        html += '<input type="hidden" name="' + escAttr(f.key) + '" value="">';
+        return;
+      }
+      var req = f.required ? ' required' : '';
+      var mark = f.required ? ' *' : '';
+      var ph = f.placeholder ? ' placeholder="' + escAttr(f.placeholder) + '"' : '';
+      var ac = ' autocomplete="' + fieldAutocomplete(f) + '"';
+
+      if (f.key === TOUR_FIELD_KEY) {
+        /* Rendered from page config so releasing a session never requires a
+           WP Admin form edit — the schema field stays a free-text key. */
+        html += '<div class="rtg-field-group"><label id="rtTourChoiceLabel">' + escHtml(f.label || 'Which tour?') + mark + '</label><div class="rtg-option-group" id="rtTourChoiceGroup" role="radiogroup" aria-labelledby="rtTourChoiceLabel" data-required="' + (f.required ? '1' : '') + '">';
+        html += tourChoiceOptionsHtml(!!f.required);
+        html += '</div></div>';
+        return;
+      }
+
+      html += '<div class="rtg-field-group"><label for="rtg_' + escAttr(f.key) + '">' + escHtml(f.label) + mark + '</label>';
+      if (f.type === 'textarea') {
+        html += '<textarea id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ph + ac + req + '></textarea>';
+      } else if (f.type === 'select' && f.options) {
+        html += '<select id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ac + req + '><option value="">Select...</option>';
+        f.options.forEach(function (o) { html += '<option value="' + escAttr(o) + '">' + escHtml(o) + '</option>'; });
+        html += '</select>';
+      } else if ((f.type === 'radio' || f.type === 'checkbox') && f.options) {
+        html += '<div class="rtg-option-group">';
+        f.options.forEach(function (o, i) {
+          var it = f.type === 'radio' ? 'radio' : 'checkbox';
+          var nm = f.type === 'radio' ? f.key : f.key + '[]';
+          html += '<label><input type="' + it + '" name="' + escAttr(nm) + '" value="' + escAttr(o) + '"' + (i === 0 && f.required ? req : '') + '> ' + escHtml(o) + '</label>';
+        });
+        html += '</div>';
+      } else {
+        var describedBy = f.type === 'email' ? ' aria-describedby="rtTourEmailNote"' : '';
+        html += '<input type="' + fieldTypeToInputType(f.type) + '" id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ph + ac + req + describedBy + '>';
+        if (f.type === 'email') {
+          html += '<p class="rt-t-email-note" id="rtTourEmailNote" hidden>Tours are for corporate treasury practitioners &mdash; a work email helps us confirm your spot.</p>';
+        }
+      }
+      html += '</div>';
+    });
+    if (consentText) {
+      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtTourConsent" required> <span>' + escHtml(consentText) + '</span></label></div>';
+    }
+    html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
+    if (schema.preview) {
+      html += '<button type="submit" class="rtg-submit-btn" disabled>Registration opens shortly</button>';
+    } else {
+      html += '<button type="submit" class="rtg-submit-btn">Request my spot</button>';
+    }
+    html += '<div class="rtg-response" id="rtTourResponse" aria-live="polite" role="status"></div></form>';
+    container.innerHTML = html;
+    attachEmailNote();
+    if (!schema.preview) {
+      attachFormHandler(schema, fields);
+    }
+  }
+
+  function attachEmailNote() {
+    var email = container.querySelector('input[type="email"]');
+    var note = document.getElementById('rtTourEmailNote');
+    if (!email || !note) return;
+    email.addEventListener('blur', function () {
+      var domain = (email.value.split('@')[1] || '').toLowerCase().trim();
+      note.hidden = FREE_EMAIL_DOMAINS.indexOf(domain) === -1;
+    });
+  }
+
+  function attachFormHandler(schema, fieldDefs) {
+    var form = document.getElementById('rtTourForm');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var hp = form.querySelector('[name="_rtg_hp"]'); if (hp && hp.value) return;
+      form.querySelectorAll('.rtg-invalid').forEach(function (el) { el.classList.remove('rtg-invalid'); el.removeAttribute('aria-invalid'); });
+      function markInvalid(el) {
+        if (!el) return;
+        el.classList.add('rtg-invalid');
+        if (/^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) { el.setAttribute('aria-invalid', 'true'); }
+      }
+      var valid = true;
+      var collected = {};
+      var chosenTour = null;
+
+      fieldDefs.forEach(function (f) {
+        if (HIDDEN_FIELD_KEYS.indexOf(f.key) !== -1) {
+          collected[f.key] = f.key === 'utm' ? collectUtm() : '';
+          return;
+        }
+        if (f.key === TOUR_FIELD_KEY) {
+          var selTour = form.querySelector('[name="' + TOUR_FIELD_KEY + '"]:checked');
+          if (selTour) {
+            var choiceKind = selTour.getAttribute('data-kind');
+            chosenTour = choiceKind === 'private'
+              ? { kind: 'private', session: null }
+              : { kind: 'session', session: findSession(selTour.getAttribute('data-session-id')) };
+            if (chosenTour.kind === 'session' && !chosenTour.session) { chosenTour = null; }
+          }
+          if (f.required && !chosenTour) { valid = false; var grp = document.getElementById('rtTourChoiceGroup'); if (grp) grp.querySelectorAll('label').forEach(function (l) { l.classList.add('rtg-invalid'); }); }
+          collected[f.key] = chosenTour ? tourChoiceValue(chosenTour) : '';
+          return;
+        }
+        if (f.type === 'checkbox' && f.options) {
+          var checked = [];
+          form.querySelectorAll('[name="' + f.key + '[]"]:checked').forEach(function (cb) { checked.push(cb.value); });
+          if (f.required && checked.length === 0) { valid = false; markInvalid(form.querySelector('[name="' + f.key + '[]"]')); }
+          collected[f.key] = checked.join(', ');
+        } else if (f.type === 'radio') {
+          var sel = form.querySelector('[name="' + f.key + '"]:checked');
+          var v = sel ? sel.value : '';
+          if (f.required && !v) { valid = false; markInvalid(form.querySelector('[name="' + f.key + '"]')); }
+          collected[f.key] = v;
+        } else {
+          var input = form.querySelector('[name="' + f.key + '"]');
+          if (!input) return;
+          var v2 = input.value.trim();
+          if (f.required && !v2) { markInvalid(input); valid = false; }
+          if (f.type === 'email' && v2 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v2)) { markInvalid(input); valid = false; }
+          collected[f.key] = v2;
+        }
+      });
+
+      var consent = document.getElementById('rtTourConsent');
+      if (consent && !consent.checked) { valid = false; markInvalid(consent); }
+      var resp = document.getElementById('rtTourResponse');
+      var btn = form.querySelector('.rtg-submit-btn');
+      if (!valid) { if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = 'Please fill in the highlighted fields.'; } return; }
+      if (btn) btn.disabled = true;
+      if (resp) { resp.className = 'rtg-response'; resp.textContent = ''; }
+
+      var payload = { form_id: schema.form_id, fields: collected, consent: true, honeypot: '' };
+      var isPrivate = chosenTour.kind === 'private';
+      var isWaitlist = !isPrivate && collected[TOUR_FIELD_KEY].indexOf('Waitlist:') === 0;
+
+      resolveMappingId(chosenTour)
+        .then(function (mappingId) {
+          if (!mappingId) {
+            /* Refuse rather than submit under the wrong (or no) mapping —
+               misattributed registrations corrupt the per-session counts. */
+            console.error('RTG: no mapping resolvable for the selected tour choice', chosenTour);
+            throw new Error('Registration hit a snag on our side — please try again in a few minutes.');
+          }
+          payload.mapping_id = mappingId;
+          return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        })
+        .then(parseJsonOrThrow)
+        .then(function () {
+          /* Inline success on purpose — the mapped asset's target_url points
+             back at this page, so a redirect would just reload the form. */
+          var headline = isWaitlist ? 'You’re on the waitlist' : (isPrivate ? 'Private tour requested' : 'You’re on the list');
+          var detail = isPrivate
+            ? 'We’ll reach out to plan a time and route that fits your team across the two exhibit-hall days.'
+            : 'Watch your inbox — we follow up personally to confirm every spot and share the meeting point before the conference.';
+          container.innerHTML = '<div class="rt-t-success" role="status" aria-live="polite"><h4 id="rtTourSuccessHeading" tabindex="-1">' + headline + '</h4><p>' + detail + '</p></div>';
+          var successHeading = document.getElementById('rtTourSuccessHeading');
+          if (successHeading) { successHeading.focus(); }
+          fetchCounts().then(renderSessions);
+        })
+        .catch(function (err) {
+          if (btn) btn.disabled = false;
+          if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = (err && err.message) || 'Submission failed. Please try again.'; }
+        });
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Boot                                                                */
+  /* ------------------------------------------------------------------ */
+
+  renderSessions();
+  fetchCounts().then(function () { renderSessions(); refreshTourChoiceGroup(); });
+
+  if (container) {
+    fetchFormSchema()
+      .then(function (schema) {
+        formLive = !schema.preview;
+        renderForm(schema);
+        renderSessions();
+      })
+      .catch(function () {
+        container.innerHTML = '<p style="text-align:center;color:#615c73;">Registration opens shortly &mdash; check back soon.</p>';
+      });
+  }
+})();
+</script>
+
+<script>
+/* iFrame auto-resize — posts content height to the parent page. Sends both
+   message shapes used across the site (typed setHeight for
+   assets/js/iframe-resizer.js, bare {height} for the inline post handler).
+   MutationObserver matters here: the form and session pills render after
+   load, so a load-only listener would leave the embed clipped. */
+(function () {
+  if (window.parent === window) return;
+  var parentFrameId = null;
+  try { parentFrameId = window.frameElement && window.frameElement.id; } catch (e) { parentFrameId = null; }
+  var id = parentFrameId || 'iframe-default';
+  function postHeight() {
+    var h = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0;
+    if (window.parent && typeof window.parent.postMessage === 'function') {
+      window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*');
+      window.parent.postMessage({ height: h }, '*');
+    }
+  }
+  var rafId;
+  function schedule() { if (rafId) cancelAnimationFrame(rafId); rafId = requestAnimationFrame(postHeight); }
+  window.addEventListener('load', schedule, { passive: true });
+  window.addEventListener('resize', schedule, { passive: true });
+  if (typeof MutationObserver !== 'undefined' && document.body) {
+    new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+  }
+  schedule();
+})();
+</script>
+</body>
+</html>

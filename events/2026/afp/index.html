@@ -2,8 +2,9 @@
   Walk the Map — Real Treasury guided vendor tours, AFP 2026 (Las Vegas).
 
   ONE config block controls this page. To release the next session, change its
-  `state` from 'teased' to 'open' and add its assetSlug/mappingId (created in
-  WP Admin -> Real Treasury Gate). To force a waitlist, set state: 'waitlist'.
+  `state` from 'teased' to 'open' — everything else is already wired
+  (form 3; mappings: s1=9 s2=10 s3=11 s4=12 private=13). To force a
+  waitlist, set state: 'waitlist'.
 
   RT Gate wiring (WP Admin -> Real Treasury Gate):
     - One form ("AFP 2026 Walk the Map") shared by all sessions; its ID goes
@@ -22,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <script>
 window.RTG_CONFIG = {
-    formId:    null,                     /* TODO(rt-gate): AFP 2026 form ID */
+    formId:    3,                        /* AFP 2026 Walk the Map Tour Registration */
     wpSiteUrl: 'https://realtreasury.com'
 };
 
@@ -38,7 +39,7 @@ window.RT_TOUR = {
             state: 'open',
             capacity: 10,
             assetSlug: 'afp-2026-tour-session-1',
-            mappingId: null              /* TODO(rt-gate): session 1 mapping */
+            mappingId: 9
         },
         {
             id: 's2',
@@ -46,7 +47,10 @@ window.RT_TOUR = {
             audience: 'You run treasury on spreadsheets and bank portals.',
             when: 'Monday, November 9',
             time: '1:30–2:45 PM',
-            state: 'teased'
+            state: 'teased',
+            capacity: 10,
+            assetSlug: 'afp-2026-tour-session-2',
+            mappingId: 10
         },
         {
             id: 's3',
@@ -54,7 +58,10 @@ window.RT_TOUR = {
             audience: 'You run treasury on spreadsheets and bank portals.',
             when: 'Tuesday, November 10',
             time: '1:45–3:00 PM',
-            state: 'teased'
+            state: 'teased',
+            capacity: 10,
+            assetSlug: 'afp-2026-tour-session-3',
+            mappingId: 11
         },
         {
             id: 's4',
@@ -62,12 +69,15 @@ window.RT_TOUR = {
             audience: 'You have a TMS today and are weighing a change.',
             when: 'Tuesday, November 10',
             time: '3:15–4:30 PM',
-            state: 'teased'
+            state: 'teased',
+            capacity: 10,
+            assetSlug: 'afp-2026-tour-session-4',
+            mappingId: 12
         }
     ],
     privateTour: {
         assetSlug: 'afp-2026-tour-private',
-        mappingId: null                  /* TODO(rt-gate): private-tour mapping */
+        mappingId: 13
     }
 };
 </script>

@@ -369,7 +369,7 @@ window.RT_TOUR = {
       <div class="rt-t-form-wrap">
         <div id="rtTourFormContainer"><p>Loading form&hellip;</p></div>
       </div>
-      <p class="rt-t-fineprint">
+      <p class="rt-t-fineprint" id="rtTourGroupFineprint" hidden>
         Bringing a group? Register once with your group size &mdash; bigger teams usually fit a private tour better.
       </p>
     </section>
@@ -637,6 +637,25 @@ window.RT_TOUR = {
     return Promise.resolve(PREVIEW_SCHEMA);
   }
 
+  /* The page owns two field keys regardless of what the WP form schema says:
+     the session picker renders from page config (TOUR_FIELD_KEY) and `utm`
+     is filled from the ad link. A live schema missing them (e.g. the
+     plugin's stock email-only form) must not remove the session picker —
+     without it a submit cannot attribute a session and is refused. */
+  function ensurePageFields(schema) {
+    if (schema.preview) return schema;
+    var fields = (schema.fields || []).slice();
+    var keys = fields.map(function (f) { return f.key; });
+    if (keys.indexOf(TOUR_FIELD_KEY) === -1) {
+      fields.push({ type: 'text', label: 'Which tour?', key: TOUR_FIELD_KEY, required: true });
+    }
+    if (keys.indexOf('utm') === -1) {
+      fields.push({ type: 'text', label: 'UTM', key: 'utm', required: false });
+    }
+    schema.fields = fields;
+    return schema;
+  }
+
   function renderForm(schema) {
     var fields = schema.fields || [];
     var consentText = schema.consent_text || '';
@@ -695,6 +714,8 @@ window.RT_TOUR = {
     }
     html += '<div class="rtg-response" id="rtTourResponse" aria-live="polite" role="status"></div></form>';
     container.innerHTML = html;
+    var groupNote = document.getElementById('rtTourGroupFineprint');
+    if (groupNote) { groupNote.hidden = !fields.some(function (f) { return f.key === 'group_size'; }); }
     attachEmailNote();
     if (!schema.preview) {
       attachFormHandler(schema, fields);
@@ -770,14 +791,22 @@ window.RT_TOUR = {
       var resp = document.getElementById('rtTourResponse');
       var btn = form.querySelector('.rtg-submit-btn');
       if (!valid) { if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = 'Please fill in the highlighted fields.'; } return; }
+      if (!chosenTour) { if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = 'Please choose a tour.'; } return; }
       if (btn) btn.disabled = true;
       if (resp) { resp.className = 'rtg-response'; resp.textContent = ''; }
 
       var payload = { form_id: schema.form_id, fields: collected, consent: true, honeypot: '' };
       var isPrivate = chosenTour.kind === 'private';
-      var isWaitlist = !isPrivate && collected[TOUR_FIELD_KEY].indexOf('Waitlist:') === 0;
+      var isWaitlist = false;
 
-      resolveMappingId(chosenTour)
+      /* Refresh counts first: the boot-time snapshot can be stale by submit
+         time, and the session-vs-waitlist label must reflect live capacity. */
+      fetchCounts()
+        .then(function () {
+          collected[TOUR_FIELD_KEY] = tourChoiceValue(chosenTour);
+          isWaitlist = !isPrivate && collected[TOUR_FIELD_KEY].indexOf('Waitlist:') === 0;
+          return resolveMappingId(chosenTour);
+        })
         .then(function (mappingId) {
           if (!mappingId) {
             /* Refuse rather than submit under the wrong (or no) mapping —
@@ -819,7 +848,7 @@ window.RT_TOUR = {
     fetchFormSchema()
       .then(function (schema) {
         formLive = !schema.preview;
-        renderForm(schema);
+        renderForm(ensurePageFields(schema));
         renderSessions();
       })
       .catch(function () {

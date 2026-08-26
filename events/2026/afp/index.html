@@ -123,45 +123,55 @@ window.RT_TOUR = {
 
     .rt-t-container { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
 
-    /* ---- Hero ---- */
+    /* ---- Hero ----
+       Two tracks: the pitch on the left, the flat where/when/format facts on
+       the right, so a reader gets the whole shape of the thing without
+       reading a paragraph — and the wide band isn't half empty. */
     .rt-t-hero {
         background: var(--hero-gradient);
         color: #ffffff;
         border-radius: 28px;
-        padding: 52px 44px;
-        margin: 40px auto 36px;
+        padding: 44px 40px;
+        margin: 40px auto 30px;
         box-shadow: 0 18px 38px rgba(14, 21, 58, 0.2);
         overflow: hidden;
+        display: flex; flex-wrap: wrap; align-items: flex-start; gap: 28px 44px;
     }
-    .rt-t-hero-badges { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
-    .rt-t-hero-badge {
-        display: inline-flex; align-items: center; gap: 8px;
-        padding: 9px 16px; border-radius: 999px;
-        background: rgba(255, 255, 255, 0.15); color: #ffffff;
-        font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em;
+    .rt-t-hero-main { flex: 1 1 380px; min-width: 0; }
+    .rt-t-hero-eyebrow {
+        margin: 0 0 12px; font-size: 0.8rem; font-weight: 700;
+        letter-spacing: 0.13em; text-transform: uppercase;
+        color: var(--lavender-pink);
     }
     .rt-t-hero h2 {
-        font-size: 2.7rem; font-weight: 800; line-height: 1.15;
+        font-size: 2.15rem; font-weight: 800; line-height: 1.2;
         color: #ffffff; margin: 0 0 14px;
     }
-    .rt-t-hero p {
-        font-size: 1.15rem; color: rgba(255, 255, 255, 0.88);
-        max-width: 720px; margin: 0 0 6px;
+    .rt-t-hero-lede {
+        font-size: 1.05rem; line-height: 1.62; margin: 0;
+        color: rgba(255, 255, 255, 0.86);
     }
-    .rt-t-hero-stats { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; }
-    .rt-t-hero-stats span {
-        font-weight: 700; font-size: 1rem; color: #ffffff; white-space: nowrap;
-        padding-left: 14px; position: relative;
+    .rt-t-hero-facts {
+        flex: 0 1 316px; margin: 0; padding: 20px 22px;
+        border-radius: 18px; display: grid; gap: 13px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
     }
-    .rt-t-hero-stats span::before {
-        content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-        width: 6px; height: 6px; border-radius: 999px; background: var(--lavender-pink);
+    .rt-t-hero-facts dt {
+        font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+        text-transform: uppercase; color: rgba(255, 255, 255, 0.62);
+        margin: 0 0 3px;
     }
-    .rt-t-hero-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 26px; }
+    .rt-t-hero-facts dd {
+        margin: 0; font-size: 0.97rem; font-weight: 600;
+        line-height: 1.4; color: #ffffff;
+    }
+    .rt-t-hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
     .rt-t-hero-actions a {
         display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-        padding: 15px 26px; border-radius: 12px;
-        font-size: 1.1rem; font-weight: 700; text-decoration: none;
+        padding: 13px 23px; border-radius: 12px;
+        font-size: 1.02rem; font-weight: 700; text-decoration: none;
         transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
     .rt-t-hero-actions a.rt-t-cta-primary {
@@ -231,45 +241,61 @@ window.RT_TOUR = {
     /* ---- Form card ---- */
     .rt-t-form-card {
         background: #ffffff; border: 2px solid rgba(114, 22, 244, 0.16);
-        border-radius: 20px; padding: 46px 42px; margin-bottom: 30px;
+        border-radius: 20px; padding: 32px 34px; margin-bottom: 26px;
         box-shadow: 0 14px 36px rgba(91, 10, 205, 0.08); position: relative;
     }
     .rt-t-form-card::before {
         content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
         background: var(--gradient-primary); border-radius: 18px 18px 0 0;
     }
-    .rt-t-form-heading { font-size: 1.6rem; font-weight: 800; margin: 0 0 8px; text-align: center; color: var(--dark-text); }
-    .rt-t-form-subtext { font-size: 0.98rem; color: var(--gray-text); text-align: center; margin: 0 auto 30px; max-width: 560px; }
+    .rt-t-form-heading { font-size: 1.45rem; font-weight: 800; margin: 0 0 5px; color: var(--dark-text); }
+    .rt-t-form-subtext { font-size: 0.94rem; color: var(--gray-text); margin: 0 0 20px; max-width: 64ch; }
 
-    .rt-t-form-wrap .rtg-field-group { margin-bottom: 14px; }
+    /* Two columns for the short fields once the card itself is wide enough.
+       A container query, not a media query: in the WordPress post this form
+       sits in a ~460px column next to the market map, where two columns
+       would be cramped. Unsupported -> stays one column, as before. */
+    .rt-t-form-wrap { container-type: inline-size; }
+    @container (min-width: 600px) {
+        #rtTourForm { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
+        #rtTourForm > * { grid-column: 1 / -1; }
+        #rtTourForm > .rtg-field-group[data-type="text"],
+        #rtTourForm > .rtg-field-group[data-type="email"],
+        #rtTourForm > .rtg-field-group[data-type="company"],
+        #rtTourForm > .rtg-field-group[data-type="tel"],
+        #rtTourForm > .rtg-field-group[data-type="number"],
+        #rtTourForm > .rtg-field-group[data-type="select"] { grid-column: span 1; }
+    }
+    .rt-t-form-wrap .rtg-field-group { margin-bottom: 13px; }
     .rt-t-form-wrap label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--dark-text); margin-bottom: 6px; }
     .rt-t-form-wrap input, .rt-t-form-wrap select, .rt-t-form-wrap textarea {
-        width: 100%; padding: 12px 14px; border: 1px solid #d8c9f7; border-radius: 10px;
+        width: 100%; padding: 10px 13px; border: 1px solid #d8c9f7; border-radius: 10px;
         font: inherit; background: #fff; color: var(--dark-text);
     }
-    .rt-t-form-wrap textarea { min-height: 84px; resize: vertical; }
+    .rt-t-form-wrap textarea { min-height: 70px; resize: vertical; }
     .rt-t-form-wrap select {
         appearance: none; -webkit-appearance: none;
         background-image: linear-gradient(45deg, transparent 50%, var(--primary-purple) 50%), linear-gradient(135deg, var(--primary-purple) 50%, transparent 50%);
-        background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px;
+        background-position: calc(100% - 18px) 16px, calc(100% - 13px) 16px;
         background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 36px;
     }
-    .rt-t-form-wrap .rtg-option-group { display: grid; gap: 10px; }
+    .rt-t-form-wrap .rtg-option-group { display: grid; gap: 8px; }
     .rt-t-form-wrap .rtg-option-group label {
         display: flex; align-items: flex-start; gap: 10px; font-weight: 500; margin: 0;
-        border: 1px solid #d8c9f7; border-radius: 10px; padding: 12px 14px; cursor: pointer;
+        border: 1px solid #d8c9f7; border-radius: 10px; padding: 10px 13px; cursor: pointer;
+        line-height: 1.45;
     }
     .rt-t-form-wrap .rtg-option-group label:has(input:checked) { border-color: var(--primary-purple); background: rgba(114, 22, 244, 0.05); }
     .rt-t-form-wrap .rtg-option-group label:focus-within { outline: 2px solid rgba(114, 22, 244, 0.5); outline-offset: 1px; }
     .rt-t-form-wrap .rtg-option-group input { width: auto; padding: 0; margin-top: 4px; }
     .rt-t-form-wrap .rtg-option-group .rt-t-opt-note { display: block; font-size: 0.85rem; color: var(--gray-text); font-weight: 400; }
-    .rt-t-form-wrap .rtg-consent-group { margin: 14px 0 8px; font-size: 0.85rem; color: var(--gray-text); }
+    .rt-t-form-wrap .rtg-consent-group { margin: 10px 0 10px; font-size: 0.85rem; color: var(--gray-text); }
     .rt-t-form-wrap .rtg-consent-group label { display: flex; gap: 8px; align-items: flex-start; font-weight: 500; }
     .rt-t-form-wrap .rtg-consent-group input { width: auto; margin-top: 3px; }
     .rt-t-form-wrap .rtg-invalid { border-color: #e53e3e !important; outline-color: rgba(229, 62, 62, 0.4) !important; }
     .rt-t-form-wrap .rtg-submit-btn {
-        width: 100%; padding: 15px 20px; border: 0; border-radius: 12px; color: #fff;
-        font-weight: 700; font-size: 1.05rem;
+        width: 100%; padding: 13px 20px; border: 0; border-radius: 12px; color: #fff;
+        font-weight: 700; font-size: 1.02rem;
         background: linear-gradient(135deg, rgba(114, 22, 244, 0.95), rgba(143, 71, 246, 0.95)); cursor: pointer;
     }
     .rt-t-form-wrap .rtg-submit-btn[disabled] { opacity: 0.7; cursor: not-allowed; }
@@ -282,7 +308,7 @@ window.RT_TOUR = {
         outline: 2px solid rgba(114, 22, 244, 0.5); outline-offset: 1px; border-color: rgba(114, 22, 244, 0.55);
     }
     .rt-t-email-note { font-size: 0.85rem; color: #92400e; margin: 6px 0 0; }
-    .rt-t-fineprint { font-size: 0.82rem; color: #6b7280; text-align: center; margin-top: 18px; line-height: 1.55; }
+    .rt-t-fineprint { font-size: 0.82rem; color: #6b7280; margin-top: 14px; line-height: 1.55; }
 
     .rt-t-success { text-align: center; padding: 26px 8px 10px; }
     .rt-t-success h4 { font-size: 1.45rem; font-weight: 800; color: var(--deep-purple); margin: 0 0 10px; }
@@ -302,11 +328,10 @@ window.RT_TOUR = {
     html.rt-t-embed .rt-t-hero, html.rt-t-embed #how, html.rt-t-embed #faq,
     html.rt-t-embed .rt-t-footer-note, html.rt-t-embed .rt-t-form-heading,
     html.rt-t-embed .rt-t-form-subtext { display: none; }
-    html.rt-t-embed .rt-t-container { padding: 0; max-width: none; display: flex; flex-direction: column; }
-    /* In the post's form card the fields come first; the schedule reads as
-       supporting detail beneath the button. */
-    html.rt-t-embed #register { order: 1; }
-    html.rt-t-embed #schedule { order: 2; margin: 22px 0 0; padding-top: 18px; border-top: 1px solid #e4e4e8; }
+    html.rt-t-embed .rt-t-container { padding: 0; max-width: none; }
+    /* The fields come first in the document now, so the schedule only needs a
+       rule for reading as supporting detail beneath the button. */
+    html.rt-t-embed #schedule { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid #e4e4e8; }
     html.rt-t-embed .rt-t-card, html.rt-t-embed .rt-t-form-card {
         background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 0; margin: 0;
     }
@@ -339,16 +364,26 @@ window.RT_TOUR = {
         html.rt-t-embed .rt-t-pill { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 6px; }
     }
 
+    @media (max-width: 840px) {
+        .rt-t-hero { display: block; }
+        .rt-t-hero-facts { margin-top: 26px; }
+    }
     @media (max-width: 768px) {
-        .rt-t-hero { padding: 40px 26px; margin-top: 24px; }
-        .rt-t-hero h2 { font-size: 2.05rem; }
-        .rt-t-card, .rt-t-form-card { padding: 28px 22px; }
+        .rt-t-hero { padding: 34px 26px; margin-top: 24px; }
+        .rt-t-hero h2 { font-size: 1.85rem; }
+        .rt-t-card, .rt-t-form-card { padding: 26px 22px; }
         .rt-t-steps { grid-template-columns: 1fr; }
         .rt-t-session { flex-direction: column; align-items: flex-start; }
         .rt-t-session-when { min-width: 0; }
     }
     @media (max-width: 480px) {
-        .rt-t-hero h2 { font-size: 1.75rem; }
+        .rt-t-hero { padding: 28px 20px; border-radius: 22px; }
+        .rt-t-hero h2 { font-size: 1.55rem; }
+        .rt-t-hero-lede { font-size: 1rem; }
+        .rt-t-hero-facts { padding: 16px 18px; gap: 11px; }
+        /* Trimmed so both buttons still sit on one line at 390px of content. */
+        .rt-t-hero-actions { gap: 12px; }
+        .rt-t-hero-actions a { padding: 12px 18px; font-size: 0.95rem; }
         .rt-t-container { padding: 0 14px; }
         .rt-t-card, .rt-t-form-card { padding: 22px 16px; border-radius: 16px; }
     }
@@ -359,23 +394,22 @@ window.RT_TOUR = {
   <div class="rt-t-container">
 
     <section class="rt-t-hero" aria-labelledby="rt-t-hero-heading">
-      <div class="rt-t-hero-badges">
-        <span class="rt-t-hero-badge">AFP 2026 &middot; Las Vegas</span>
-        <span class="rt-t-hero-badge">Exhibit Hall &middot; November 9&ndash;10</span>
-        <span class="rt-t-hero-badge">Free for practitioners</span>
+      <div class="rt-t-hero-main">
+        <p class="rt-t-hero-eyebrow">Walk the Map &middot; AFP 2026</p>
+        <h2 id="rt-t-hero-heading">Guided TMS vendor tours of the AFP exhibit hall.</h2>
+        <p class="rt-t-hero-lede">A small group, a route planned around where you actually are, and the same scenario demoed at every booth &mdash; so for once the vendors are comparable. Led by Tim Schultz and Tracey Knight of Real Treasury.</p>
+        <div class="rt-t-hero-actions">
+          <a class="rt-t-cta-primary" href="#register">Reserve your spot</a>
+          <a class="rt-t-cta-secondary" href="#how">How it works</a>
+        </div>
       </div>
-      <h2 id="rt-t-hero-heading">Don&rsquo;t walk the exhibit hall alone.</h2>
-      <p>Guided small-group tours of the TMS vendors at AFP 2026, led by Tim Schultz and Tracey Knight of Real Treasury.</p>
-      <div class="rt-t-hero-stats">
-        <span>4 booths per route</span>
-        <span>12 minutes each</span>
-        <span>10 practitioners max</span>
-        <span>Free &mdash; vendors don&rsquo;t pay either</span>
-      </div>
-      <div class="rt-t-hero-actions">
-        <a class="rt-t-cta-primary" href="#register">Reserve your spot</a>
-        <a class="rt-t-cta-secondary" href="#how">How it works</a>
-      </div>
+      <dl class="rt-t-hero-facts">
+        <div><dt>Where</dt><dd>Mandalay Bay, Las Vegas</dd></div>
+        <div><dt>When</dt><dd>November 9&ndash;10, 2026</dd></div>
+        <div><dt>Format</dt><dd>Four booths, twelve minutes each</dd></div>
+        <div><dt>Group</dt><dd>Ten practitioners, 75 minutes</dd></div>
+        <div><dt>Cost</dt><dd>Free. No vendor pays us either.</dd></div>
+      </dl>
     </section>
 
     <section class="rt-t-card" id="how" aria-labelledby="rt-t-how-heading">
@@ -409,21 +443,21 @@ window.RT_TOUR = {
       </div>
     </section>
 
-    <section class="rt-t-card" id="schedule" aria-labelledby="rt-t-schedule-heading">
-      <h3 id="rt-t-schedule-heading">Tour schedule</h3>
-      <p class="rt-t-section-note">All times local (Las Vegas). Additional sessions are released as earlier tours fill.</p>
-      <div class="rt-t-sessions" id="rtTourSessions"></div>
-    </section>
-
     <section class="rt-t-form-card" id="register" role="region" aria-labelledby="rt-t-form-heading">
       <h3 class="rt-t-form-heading" id="rt-t-form-heading">Reserve your spot</h3>
-      <p class="rt-t-form-subtext">We follow up personally to confirm every spot. Corporate treasury practitioners only.</p>
+      <p class="rt-t-form-subtext">Free, and we confirm every spot personally. Corporate treasury practitioners only. The full schedule is right below &mdash; only tours currently open appear in the picker.</p>
       <div class="rt-t-form-wrap">
         <div id="rtTourFormContainer"><p>Loading form&hellip;</p></div>
       </div>
       <p class="rt-t-fineprint" id="rtTourGroupFineprint" hidden>
         Bringing a group? Register once with your group size &mdash; bigger teams usually fit a private tour better.
       </p>
+    </section>
+
+    <section class="rt-t-card" id="schedule" aria-labelledby="rt-t-schedule-heading">
+      <h3 id="rt-t-schedule-heading">Tour schedule</h3>
+      <p class="rt-t-section-note">All times local (Las Vegas). Additional sessions are released as earlier tours fill.</p>
+      <div class="rt-t-sessions" id="rtTourSessions"></div>
     </section>
 
     <section class="rt-t-card" id="faq" aria-labelledby="rt-t-faq-heading">
@@ -778,13 +812,13 @@ window.RT_TOUR = {
       if (f.key === TOUR_FIELD_KEY) {
         /* Rendered from page config so releasing a session never requires a
            WP Admin form edit — the schema field stays a free-text key. */
-        html += '<div class="rtg-field-group"><label id="rtTourChoiceLabel">' + escHtml(f.label || 'Which tour?') + mark + '</label><div class="rtg-option-group" id="rtTourChoiceGroup" role="radiogroup" aria-labelledby="rtTourChoiceLabel" data-required="' + (f.required ? '1' : '') + '">';
+        html += '<div class="rtg-field-group" data-field="' + escAttr(f.key) + '" data-type="tour"><label id="rtTourChoiceLabel">' + escHtml(f.label || 'Which tour?') + mark + '</label><div class="rtg-option-group" id="rtTourChoiceGroup" role="radiogroup" aria-labelledby="rtTourChoiceLabel" data-required="' + (f.required ? '1' : '') + '">';
         html += tourChoiceOptionsHtml(!!f.required);
         html += '</div></div>';
         return;
       }
 
-      html += '<div class="rtg-field-group"><label for="rtg_' + escAttr(f.key) + '">' + escHtml(f.label) + mark + '</label>';
+      html += '<div class="rtg-field-group" data-field="' + escAttr(f.key) + '" data-type="' + escAttr(f.type || 'text') + '"><label for="rtg_' + escAttr(f.key) + '">' + escHtml(f.label) + mark + '</label>';
       if (f.type === 'textarea') {
         html += '<textarea id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ph + ac + req + '></textarea>';
       } else if (f.type === 'select' && f.options) {

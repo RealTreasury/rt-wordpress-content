@@ -495,6 +495,9 @@ window.RT_TOUR = {
       return out;
     } catch (e) { return escHtml(str); }
   }
+  /* WordPress.com's edge caches anonymous REST GETs per URL (observed: a
+     two-day-old counter). A per-request token forces a fresh read. */
+  function bust(url) { return url + (url.indexOf('?') === -1 ? '?' : '&') + '_=' + Date.now(); }
   function fieldTypeToInputType(t) { return ({ text: 'text', email: 'email', tel: 'tel', company: 'text', url: 'url', number: 'number', date: 'date' })[t] || 'text'; }
   function fieldAutocomplete(f) { if (f.key === 'full_name') return 'name'; if (f.key === 'title') return 'organization-title'; return ({ email: 'email', tel: 'tel', company: 'organization', url: 'url' })[f.type] || 'on'; }
 
@@ -600,7 +603,7 @@ window.RT_TOUR = {
      fails, resolve null and the submit is refused rather than misattributed. */
   function resolveMappingId(chosen) {
     function viaGate(slug) {
-      return fetch(API_BASE + '/gate/' + slug).then(parseJsonOrThrow)
+      return fetch(bust(API_BASE + '/gate/' + slug)).then(parseJsonOrThrow)
         .then(function (j) { return j && j.mapping_id ? Number(j.mapping_id) : null; })
         .catch(function () { return null; });
     }
@@ -650,7 +653,7 @@ window.RT_TOUR = {
       .filter(function (s) { return s.assetSlug; })
       .map(function (s) { return s.assetSlug; });
     if (!slugs.length) return Promise.resolve();
-    return fetch(API_BASE + '/stats/registrations?asset_slugs=' + encodeURIComponent(slugs.join(',')))
+    return fetch(bust(API_BASE + '/stats/registrations?asset_slugs=' + encodeURIComponent(slugs.join(','))))
       .then(parseJsonOrThrow)
       .then(function (data) {
         if (data && data.counts) { sessionCounts = data.counts; }
@@ -704,14 +707,14 @@ window.RT_TOUR = {
 
   function fetchFormSchema() {
     if (C.formId) {
-      return fetch(API_BASE + '/form/' + C.formId).then(parseJsonOrThrow)
+      return fetch(bust(API_BASE + '/form/' + C.formId)).then(parseJsonOrThrow)
         .catch(function () { return PREVIEW_SCHEMA; });
     }
     /* Not wired up yet: resolve via the open session's gate mapping if it
        exists, otherwise render the disabled preview. */
     var openSession = (T.sessions || []).filter(function (s) { return cfgState(s) === 'open' && s.assetSlug; })[0];
     if (openSession) {
-      return fetch(API_BASE + '/gate/' + openSession.assetSlug).then(parseJsonOrThrow)
+      return fetch(bust(API_BASE + '/gate/' + openSession.assetSlug)).then(parseJsonOrThrow)
         .catch(function () { return PREVIEW_SCHEMA; });
     }
     return Promise.resolve(PREVIEW_SCHEMA);

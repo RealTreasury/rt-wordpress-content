@@ -302,12 +302,15 @@ window.RT_TOUR = {
     html.rt-t-embed .rt-t-hero, html.rt-t-embed #how, html.rt-t-embed #faq,
     html.rt-t-embed .rt-t-footer-note, html.rt-t-embed .rt-t-form-heading,
     html.rt-t-embed .rt-t-form-subtext { display: none; }
-    html.rt-t-embed .rt-t-container { padding: 0; max-width: none; }
+    html.rt-t-embed .rt-t-container { padding: 0; max-width: none; display: flex; flex-direction: column; }
+    /* In the post's form card the fields come first; the schedule reads as
+       supporting detail beneath the button. */
+    html.rt-t-embed #register { order: 1; }
+    html.rt-t-embed #schedule { order: 2; margin: 26px 0 0; padding-top: 22px; border-top: 1px solid #e4e4e8; }
     html.rt-t-embed .rt-t-card, html.rt-t-embed .rt-t-form-card {
         background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 0; margin: 0;
     }
     html.rt-t-embed .rt-t-form-card::before { display: none; }
-    html.rt-t-embed #schedule { margin-bottom: 22px; }
     html.rt-t-embed #schedule h3 {
         font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
         color: #7e7e7e; margin: 0 0 4px;

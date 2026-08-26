@@ -306,7 +306,7 @@ window.RT_TOUR = {
     /* In the post's form card the fields come first; the schedule reads as
        supporting detail beneath the button. */
     html.rt-t-embed #register { order: 1; }
-    html.rt-t-embed #schedule { order: 2; margin: 26px 0 0; padding-top: 22px; border-top: 1px solid #e4e4e8; }
+    html.rt-t-embed #schedule { order: 2; margin: 22px 0 0; padding-top: 18px; border-top: 1px solid #e4e4e8; }
     html.rt-t-embed .rt-t-card, html.rt-t-embed .rt-t-form-card {
         background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 0; margin: 0;
     }
@@ -315,17 +315,21 @@ window.RT_TOUR = {
         font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
         color: #7e7e7e; margin: 0 0 4px;
     }
-    html.rt-t-embed .rt-t-section-note { font-size: 0.8125rem; margin: 0 0 12px; }
-    html.rt-t-embed .rt-t-sessions { gap: 10px; margin-top: 0; }
+    html.rt-t-embed .rt-t-section-note { font-size: 0.8125rem; margin: 0 0 8px; }
+    /* Compact schedule: one line per session — date · time · focus · status.
+       The audience blurb already appears in the "Which tour?" picker. */
+    html.rt-t-embed .rt-t-sessions { gap: 6px; margin-top: 0; }
     html.rt-t-embed .rt-t-session {
-        display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center;
-        padding: 12px 14px; border-radius: 6px;
+        display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 12px; align-items: center;
+        padding: 9px 12px; border-radius: 6px;
     }
-    html.rt-t-embed .rt-t-session-when { min-width: 0; grid-column: 1; }
-    html.rt-t-embed .rt-t-session-focus { grid-column: 1; }
-    html.rt-t-embed .rt-t-pill { grid-column: 2; grid-row: 1 / span 2; padding: 5px 11px; font-size: 0.8rem; }
-    html.rt-t-embed .rt-t-session-when strong, html.rt-t-embed .rt-t-session-focus strong { font-size: 0.9375rem; }
-    html.rt-t-embed .rt-t-session-when span, html.rt-t-embed .rt-t-session-focus span { font-size: 0.875rem; }
+    html.rt-t-embed .rt-t-session-when, html.rt-t-embed .rt-t-session-focus { min-width: 0; grid-column: 1; }
+    html.rt-t-embed .rt-t-session-when strong, html.rt-t-embed .rt-t-session-when span,
+    html.rt-t-embed .rt-t-session-focus strong { display: inline; font-size: 0.875rem; }
+    html.rt-t-embed .rt-t-session-when strong::after { content: '\00b7'; color: var(--gray-text); font-weight: 400; padding: 0 6px 0 5px; }
+    html.rt-t-embed .rt-t-session-focus { margin-top: 1px; }
+    html.rt-t-embed .rt-t-session-focus span { display: none; }
+    html.rt-t-embed .rt-t-pill { grid-column: 2; grid-row: 1 / span 2; padding: 4px 10px; font-size: 0.75rem; }
     html.rt-t-embed .rt-t-fineprint { text-align: left; }
     html.rt-t-embed .rt-t-form-wrap input, html.rt-t-embed .rt-t-form-wrap select,
     html.rt-t-embed .rt-t-form-wrap textarea, html.rt-t-embed .rt-t-form-wrap .rtg-option-group label,

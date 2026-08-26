@@ -302,27 +302,34 @@ window.RT_TOUR = {
     html.rt-t-embed .rt-t-hero, html.rt-t-embed #how, html.rt-t-embed #faq,
     html.rt-t-embed .rt-t-footer-note, html.rt-t-embed .rt-t-form-heading,
     html.rt-t-embed .rt-t-form-subtext { display: none; }
-    html.rt-t-embed .rt-t-container { padding: 0; max-width: none; }
+    html.rt-t-embed .rt-t-container { padding: 0; max-width: none; display: flex; flex-direction: column; }
+    /* In the post's form card the fields come first; the schedule reads as
+       supporting detail beneath the button. */
+    html.rt-t-embed #register { order: 1; }
+    html.rt-t-embed #schedule { order: 2; margin: 22px 0 0; padding-top: 18px; border-top: 1px solid #e4e4e8; }
     html.rt-t-embed .rt-t-card, html.rt-t-embed .rt-t-form-card {
         background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 0; margin: 0;
     }
     html.rt-t-embed .rt-t-form-card::before { display: none; }
-    html.rt-t-embed #schedule { margin-bottom: 22px; }
     html.rt-t-embed #schedule h3 {
         font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
         color: #7e7e7e; margin: 0 0 4px;
     }
-    html.rt-t-embed .rt-t-section-note { font-size: 0.8125rem; margin: 0 0 12px; }
-    html.rt-t-embed .rt-t-sessions { gap: 10px; margin-top: 0; }
+    html.rt-t-embed .rt-t-section-note { font-size: 0.8125rem; margin: 0 0 8px; }
+    /* Compact schedule: one line per session — date · time · focus · status.
+       The audience blurb already appears in the "Which tour?" picker. */
+    html.rt-t-embed .rt-t-sessions { gap: 6px; margin-top: 0; }
     html.rt-t-embed .rt-t-session {
-        display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center;
-        padding: 12px 14px; border-radius: 6px;
+        display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 12px; align-items: center;
+        padding: 9px 12px; border-radius: 6px;
     }
-    html.rt-t-embed .rt-t-session-when { min-width: 0; grid-column: 1; }
-    html.rt-t-embed .rt-t-session-focus { grid-column: 1; }
-    html.rt-t-embed .rt-t-pill { grid-column: 2; grid-row: 1 / span 2; padding: 5px 11px; font-size: 0.8rem; }
-    html.rt-t-embed .rt-t-session-when strong, html.rt-t-embed .rt-t-session-focus strong { font-size: 0.9375rem; }
-    html.rt-t-embed .rt-t-session-when span, html.rt-t-embed .rt-t-session-focus span { font-size: 0.875rem; }
+    html.rt-t-embed .rt-t-session-when, html.rt-t-embed .rt-t-session-focus { min-width: 0; grid-column: 1; }
+    html.rt-t-embed .rt-t-session-when strong, html.rt-t-embed .rt-t-session-when span,
+    html.rt-t-embed .rt-t-session-focus strong { display: inline; font-size: 0.875rem; }
+    html.rt-t-embed .rt-t-session-when strong::after { content: '\00b7'; color: var(--gray-text); font-weight: 400; padding: 0 6px 0 5px; }
+    html.rt-t-embed .rt-t-session-focus { margin-top: 1px; }
+    html.rt-t-embed .rt-t-session-focus span { display: none; }
+    html.rt-t-embed .rt-t-pill { grid-column: 2; grid-row: 1 / span 2; padding: 4px 10px; font-size: 0.75rem; }
     html.rt-t-embed .rt-t-fineprint { text-align: left; }
     html.rt-t-embed .rt-t-form-wrap input, html.rt-t-embed .rt-t-form-wrap select,
     html.rt-t-embed .rt-t-form-wrap textarea, html.rt-t-embed .rt-t-form-wrap .rtg-option-group label,
@@ -495,6 +502,9 @@ window.RT_TOUR = {
       return out;
     } catch (e) { return escHtml(str); }
   }
+  /* WordPress.com's edge caches anonymous REST GETs per URL (observed: a
+     two-day-old counter). A per-request token forces a fresh read. */
+  function bust(url) { return url + (url.indexOf('?') === -1 ? '?' : '&') + '_=' + Date.now(); }
   function fieldTypeToInputType(t) { return ({ text: 'text', email: 'email', tel: 'tel', company: 'text', url: 'url', number: 'number', date: 'date' })[t] || 'text'; }
   function fieldAutocomplete(f) { if (f.key === 'full_name') return 'name'; if (f.key === 'title') return 'organization-title'; return ({ email: 'email', tel: 'tel', company: 'organization', url: 'url' })[f.type] || 'on'; }
 
@@ -600,7 +610,7 @@ window.RT_TOUR = {
      fails, resolve null and the submit is refused rather than misattributed. */
   function resolveMappingId(chosen) {
     function viaGate(slug) {
-      return fetch(API_BASE + '/gate/' + slug).then(parseJsonOrThrow)
+      return fetch(bust(API_BASE + '/gate/' + slug)).then(parseJsonOrThrow)
         .then(function (j) { return j && j.mapping_id ? Number(j.mapping_id) : null; })
         .catch(function () { return null; });
     }
@@ -650,7 +660,7 @@ window.RT_TOUR = {
       .filter(function (s) { return s.assetSlug; })
       .map(function (s) { return s.assetSlug; });
     if (!slugs.length) return Promise.resolve();
-    return fetch(API_BASE + '/stats/registrations?asset_slugs=' + encodeURIComponent(slugs.join(',')))
+    return fetch(bust(API_BASE + '/stats/registrations?asset_slugs=' + encodeURIComponent(slugs.join(','))))
       .then(parseJsonOrThrow)
       .then(function (data) {
         if (data && data.counts) { sessionCounts = data.counts; }
@@ -704,14 +714,14 @@ window.RT_TOUR = {
 
   function fetchFormSchema() {
     if (C.formId) {
-      return fetch(API_BASE + '/form/' + C.formId).then(parseJsonOrThrow)
+      return fetch(bust(API_BASE + '/form/' + C.formId)).then(parseJsonOrThrow)
         .catch(function () { return PREVIEW_SCHEMA; });
     }
     /* Not wired up yet: resolve via the open session's gate mapping if it
        exists, otherwise render the disabled preview. */
     var openSession = (T.sessions || []).filter(function (s) { return cfgState(s) === 'open' && s.assetSlug; })[0];
     if (openSession) {
-      return fetch(API_BASE + '/gate/' + openSession.assetSlug).then(parseJsonOrThrow)
+      return fetch(bust(API_BASE + '/gate/' + openSession.assetSlug)).then(parseJsonOrThrow)
         .catch(function () { return PREVIEW_SCHEMA; });
     }
     return Promise.resolve(PREVIEW_SCHEMA);

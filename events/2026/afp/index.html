@@ -252,11 +252,14 @@ window.RT_TOUR = {
     .rt-t-form-subtext { font-size: 0.94rem; color: var(--gray-text); margin: 0 0 20px; max-width: 64ch; }
 
     /* Two columns for the short fields once the card itself is wide enough.
-       A container query, not a media query: in the WordPress post this form
-       sits in a ~460px column next to the market map, where two columns
-       would be cramped. Unsupported -> stays one column, as before. */
+       A container query, not a media query, because the width that matters is
+       the card's, not the viewport's: in the WordPress post this form sits in
+       a ~545px column beside the market map. 520px is deliberately below that
+       so the fields pair up there too — stacked, the form runs ~1300px and
+       cannot fit one screen. A phone-width iframe (~360px) stays single
+       column, and so does anything without container-query support. */
     .rt-t-form-wrap { container-type: inline-size; }
-    @container (min-width: 600px) {
+    @container (min-width: 520px) {
         #rtTourForm { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
         #rtTourForm > * { grid-column: 1 / -1; }
         #rtTourForm > .rtg-field-group[data-type="text"],

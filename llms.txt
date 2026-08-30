@@ -1,0 +1,28 @@
+# Real Treasury
+
+> Independent treasury technology consulting and technology-selection guidance for finance teams.
+
+Real Treasury helps finance leaders evaluate and select treasury technology with an independent,
+vendor-neutral approach. The public site includes the following primary resources; the XML sitemap
+contains the complete public URL index.
+
+## Core resources
+
+- [Home](https://realtreasury.com/): Overview of Real Treasury's treasury technology consulting and selection support.
+- [About Real Treasury](https://realtreasury.com/about/): The firm's mission, independent approach, and background.
+- [Meet the Founders](https://realtreasury.com/team/): Public biographies for co-founders Tim Schultz and Tracey Knight.
+- [Treasury Tech Portal](https://realtreasury.com/treasury-tech-portal/): Interactive treasury technology portal with product and vendor information.
+- [Treasury Tech Market](https://realtreasury.com/treasury-tech-market/): Treasury technology market segments, vendor landscapes, requirements, and common add-ons.
+- [ERR NOT Method](https://realtreasury.com/errnot/): Real Treasury's treasury technology selection method.
+- [Contact](https://realtreasury.com/contact/): Contact and consultation information.
+
+## Guides and learning
+
+- [2026 Treasury Tech Selection Guide waitlist](https://realtreasury.com/2026-treasury-tech-guide-waitlist/): Waitlist for the 2026 Real Treasury Tech Selection Guide.
+- [On-Demand Workshop](https://realtreasury.com/on-demand-workshop/): On-demand treasury technology selection workshop.
+- [Insights](https://realtreasury.com/posts/): Articles, research, and expert perspectives from Real Treasury.
+- [Webinars](https://realtreasury.com/webinars/): Treasury technology webinar and recording library.
+
+## Site index
+
+- [XML sitemap](https://realtreasury.com/sitemap_index.xml): Complete public URL index.

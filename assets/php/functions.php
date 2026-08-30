@@ -1187,3 +1187,117 @@ function rt_rest_permission_check() {
     // Passed rate limiting
     return true;
 }
+
+/**
+ * ===============================================================
+ * JSON-LD structured data — ProfessionalService + founders
+ * ===============================================================
+ *
+ * DRAFT for owner review (rtai-etbi). Every fact below is sourced from a
+ * live realtreasury.com page (see the PR description for the fact/source
+ * table). Nothing here is inferred — no founding year, revenue, client
+ * names, or street address, since none of those are published on the site.
+ *
+ * Note: Yoast SEO already emits its own Organization node site-wide
+ * (@id "https://realtreasury.com/#organization", name/url/logo only).
+ * This block intentionally uses a *different* @id
+ * ("#realtreasury-professional-service") rather than trying to merge into
+ * Yoast's node, to avoid guessing at how this theme's JSON-LD parser
+ * would reconcile two script blocks describing the same @id. Flag for
+ * whoever approves this: confirm in Google's Rich Results / Search
+ * Console that this doesn't read as a duplicate/competing Organization
+ * before treating it as final.
+ */
+add_action( 'wp_head', 'rt_output_jsonld_structured_data', 5 );
+function rt_output_jsonld_structured_data() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$graph = array(
+		'@context' => 'https://schema.org',
+		'@graph'   => array(
+			array(
+				'@type'       => array( 'Organization', 'ProfessionalService' ),
+				'@id'         => 'https://realtreasury.com/#realtreasury-professional-service',
+				'name'        => 'Real Treasury',
+				'legalName'   => 'Real Treasury, LLC',
+				'url'         => 'https://realtreasury.com/',
+				'logo'        => 'https://realtreasury.com/wp-content/uploads/2025/06/Color-logo-black-text-no-background-450x88.png',
+				'description' => 'Confused by treasury tech options? Real Treasury gives you unbiased guidance to choose, compare, and implement the right system—no vendor pressure.',
+				'slogan'      => 'Independent. Unbiased. Built for Treasury Teams.',
+				'sameAs'      => array(
+					'https://www.linkedin.com/company/realtreasury/',
+				),
+				'address'     => array(
+					array(
+						'@type'          => 'PostalAddress',
+						'addressLocality' => 'Dallas',
+						'addressRegion'  => 'TX',
+						'addressCountry' => 'US',
+					),
+					array(
+						'@type'          => 'PostalAddress',
+						'addressLocality' => 'Tampa',
+						'addressRegion'  => 'FL',
+						'addressCountry' => 'US',
+					),
+				),
+				'founder'     => array(
+					array( '@id' => 'https://realtreasury.com/#tim-schultz' ),
+					array( '@id' => 'https://realtreasury.com/#tracey-knight' ),
+				),
+				'employee'    => array(
+					array( '@id' => 'https://realtreasury.com/#tim-schultz' ),
+					array( '@id' => 'https://realtreasury.com/#tracey-knight' ),
+				),
+			),
+			array(
+				'@type'         => 'Person',
+				'@id'           => 'https://realtreasury.com/#tim-schultz',
+				'name'          => 'Tim Schultz',
+				'jobTitle'      => 'Co-Founder & Principal Consultant',
+				'description'   => 'Former treasury lead with 15+ years optimizing cash management and risk operations. Tim founded Real Treasury to democratize access to treasury technology insights and help teams make confident, informed decisions without vendor bias.',
+				'image'         => 'https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/06/TS-Headshot.webp',
+				'url'           => 'https://realtreasury.com/team/',
+				'sameAs'        => array(
+					'https://www.linkedin.com/in/schultzctp/',
+				),
+				'workLocation'  => array(
+					'@type'          => 'Place',
+					'address'        => array(
+						'@type'          => 'PostalAddress',
+						'addressLocality' => 'Tampa',
+						'addressRegion'  => 'FL',
+						'addressCountry' => 'US',
+					),
+				),
+				'worksFor'      => array( '@id' => 'https://realtreasury.com/#realtreasury-professional-service' ),
+			),
+			array(
+				'@type'         => 'Person',
+				'@id'           => 'https://realtreasury.com/#tracey-knight',
+				'name'          => 'Tracey Knight',
+				'jobTitle'      => 'Co-Founder & Principal Consultant',
+				'description'   => 'With 30 years as a practitioner, vendor, and consultant, Tracey brings rare perspective—guiding treasury and finance teams through unbiased tech selection, hands-on workshops, and smarter decisions that drive adoption, insight, and lasting transformation.',
+				'image'         => 'https://i0.wp.com/realtreasury.com/wp-content/uploads/2025/08/TraceyHeadshot-3.webp',
+				'url'           => 'https://realtreasury.com/team/',
+				'sameAs'        => array(
+					'https://www.linkedin.com/in/traceyfergusonknight/',
+				),
+				'workLocation'  => array(
+					'@type'          => 'Place',
+					'address'        => array(
+						'@type'          => 'PostalAddress',
+						'addressLocality' => 'Dallas',
+						'addressRegion'  => 'TX',
+						'addressCountry' => 'US',
+					),
+				),
+				'worksFor'      => array( '@id' => 'https://realtreasury.com/#realtreasury-professional-service' ),
+			),
+		),
+	);
+
+	echo '<script type="application/ld+json" class="rt-jsonld-graph">' . wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+}

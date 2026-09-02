@@ -141,24 +141,19 @@ window.RT_TOUR = {
         overflow: hidden;
         text-align: center;
     }
-    /* Wide enough that the name breaks in two, not three, and the venue line
-       stays whole; `balance` keeps the two halves even. */
-    .rt-t-hero-main { max-width: 30em; margin: 0 auto; }
+    /* No measure cap: the name and the venue line each sit on one line, which
+       is what the header is for. They wrap on their own below ~700px. */
+    .rt-t-hero-main { margin: 0 auto; }
     .rt-t-hero h2 {
         font-size: 2.35rem; font-weight: 800; line-height: 1.16;
-        color: #ffffff; margin: 0 0 18px; letter-spacing: -0.015em;
+        color: #ffffff; margin: 0 0 16px; letter-spacing: -0.015em;
         text-wrap: balance;
     }
-    .rt-t-hero-meta { margin: 0; }
-    .rt-t-hero-meta .rt-t-hero-where {
-        display: block; font-size: 1.18rem; font-weight: 700;
-        line-height: 1.35; color: #ffffff;
+    .rt-t-hero-meta {
+        margin: 0; font-size: 1.05rem; font-weight: 600;
+        line-height: 1.45; color: rgba(255, 255, 255, 0.9);
     }
-    .rt-t-hero-meta .rt-t-hero-when {
-        display: block; margin-top: 5px;
-        font-size: 1rem; font-weight: 500; line-height: 1.4;
-        color: rgba(255, 255, 255, 0.82);
-    }
+    .rt-t-hero-meta span { color: rgba(255, 255, 255, 0.45); padding: 0 4px; }
     .rt-t-hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 28px; }
     .rt-t-hero-actions a {
         display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -373,7 +368,7 @@ window.RT_TOUR = {
     @media (max-width: 768px) {
         .rt-t-hero { padding: 36px 26px 32px; margin-top: 24px; }
         .rt-t-hero h2 { font-size: 1.85rem; }
-        .rt-t-hero-meta .rt-t-hero-where { font-size: 1.08rem; }
+        .rt-t-hero-meta { font-size: 1rem; }
         .rt-t-card, .rt-t-form-card { padding: 26px 22px; }
         .rt-t-prose p { font-size: 1rem; }
         .rt-t-session { flex-direction: column; align-items: flex-start; }
@@ -382,8 +377,7 @@ window.RT_TOUR = {
     @media (max-width: 480px) {
         .rt-t-hero { padding: 28px 20px 26px; border-radius: 22px; }
         .rt-t-hero h2 { font-size: 1.55rem; margin-bottom: 14px; }
-        .rt-t-hero-meta .rt-t-hero-where { font-size: 1rem; }
-        .rt-t-hero-meta .rt-t-hero-when { font-size: 0.9rem; }
+        .rt-t-hero-meta { font-size: 0.9rem; }
         /* Trimmed so both buttons still sit on one line at 390px of content. */
         .rt-t-hero-actions { gap: 10px; flex-wrap: nowrap; }
         .rt-t-hero-actions a { padding: 12px 14px; font-size: 0.9rem; white-space: nowrap; }
@@ -399,10 +393,7 @@ window.RT_TOUR = {
     <section class="rt-t-hero" aria-labelledby="rt-t-hero-heading">
       <div class="rt-t-hero-main">
         <h2 id="rt-t-hero-heading">The Real Treasury Guided Vendor Tours</h2>
-        <p class="rt-t-hero-meta">
-          <span class="rt-t-hero-where">AFP 2026 Las Vegas</span>
-          <span class="rt-t-hero-when">November 9 &ndash; 10 | Mandalay Bay Convention Center</span>
-        </p>
+        <p class="rt-t-hero-meta">AFP 2026 Las Vegas <span>|</span> November 9 &ndash; 10 <span>|</span> Mandalay Bay Convention Center</p>
         <div class="rt-t-hero-actions">
           <a class="rt-t-cta-primary" href="#register">Reserve your spot</a>
           <a class="rt-t-cta-secondary" href="#how">What you get</a>
@@ -410,13 +401,15 @@ window.RT_TOUR = {
       </div>
     </section>
 
-    <!-- Copy in this section is the owner's, verbatim. Do not re-edit it. -->
+    <!-- Owner's copy. Two typos corrected at his request on September 2, 2026
+         ("cover" -> "covers"; "; What mattered" -> ": what mattered").
+         Otherwise verbatim — do not re-edit it. -->
     <section class="rt-t-card" id="how" aria-labelledby="rt-t-how-heading">
       <h3 id="rt-t-how-heading">What You Get</h3>
       <div class="rt-t-prose">
         <p>A small, guided group &ndash; limited to 10 treasury professionals per tour &ndash; visits three vendor stops in 75 minutes.</p>
-        <p>During the stops at each booth, every vendor follows the same script, cover the same topic, in the same amount of time.</p>
-        <p>Between stops, we talk through what you just saw; What mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with an independent guide who has been on both sides of this process.</p>
+        <p>During the stops at each booth, every vendor follows the same script, covers the same topic, in the same amount of time.</p>
+        <p>Between stops, we talk through what you just saw: what mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with an independent guide who has been on both sides of this process.</p>
         <p class="rt-t-prose-neutral">We do not accept payment from any TMS vendor for any of these tours. Every vendor on each tour receives the same invitation.</p>
       </div>
     </section>

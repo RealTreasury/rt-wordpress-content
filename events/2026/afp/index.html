@@ -506,7 +506,17 @@ window.RT_TOUR = {
   /* Session state                                                       */
   /* ------------------------------------------------------------------ */
 
-  function sessionLabel(s) { return s.when + ', ' + s.time + ' (' + s.focus + ')'; }
+  /* The tour name leads, then the day and time: someone scanning the options
+     is picking a tour first and a slot second, and the old order buried the
+     tour in a trailing parenthesis. "Visibility Tour" already carries the
+     word, so the suffix is only appended when it is missing — otherwise the
+     option reads "Visibility Tour Tour". */
+  function tourName(s) { return /\bTour$/.test(s.focus) ? s.focus : s.focus + ' Tour'; }
+  function sessionLabel(s) { return tourName(s) + ': ' + s.when + ', ' + s.time; }
+
+  /* A full session is marked at the end rather than the front. The marker used
+     to be a "Waitlist: " prefix, which is where the tour name now goes. */
+  function sessionLabelFor(s, isFull) { return sessionLabel(s) + (isFull ? ' — waitlist' : ''); }
 
   function remainingFor(s) {
     if (cfgState(s) !== 'open' || !s.assetSlug) return null;
@@ -524,6 +534,8 @@ window.RT_TOUR = {
     }
     return st; /* 'teased' | 'waitlist' | 'full' | 'closed' */
   }
+
+  function isFullState(state) { return state === 'waitlist' || state === 'full'; }
 
   /* Spots remaining, shown on the tour option itself so the number sits on the
      thing you click rather than in a list further down the page. Fails soft: no
@@ -550,7 +562,7 @@ window.RT_TOUR = {
           kind: 'session',
           sessionId: s.id,
           session: s,
-          label: (full ? 'Waitlist: ' : 'Session: ') + sessionLabel(s),
+          label: sessionLabelFor(s, full),
           note: full ? 'This tour is full — we’ll contact you if a spot opens or a new session is released.' : (s.audience || ''),
           pill: pillFor(s)
         });
@@ -575,8 +587,7 @@ window.RT_TOUR = {
   /* The submitted field value, computed from live state at submit time. */
   function tourChoiceValue(chosen) {
     if (chosen.kind === 'private') return 'Private tour request';
-    var st = effectiveState(chosen.session);
-    return ((st === 'waitlist' || st === 'full') ? 'Waitlist: ' : 'Session: ') + sessionLabel(chosen.session);
+    return sessionLabelFor(chosen.session, isFullState(effectiveState(chosen.session)));
   }
 
   /* Resolve the mapping for a choice. A session choice must NEVER borrow the
@@ -928,7 +939,12 @@ window.RT_TOUR = {
       fetchCounts()
         .then(function () {
           collected[TOUR_FIELD_KEY] = tourChoiceValue(chosenTour);
-          isWaitlist = !isPrivate && collected[TOUR_FIELD_KEY].indexOf('Waitlist:') === 0;
+          /* Read from live state rather than sniffing the submitted string for
+             a "Waitlist: " prefix. The prefix moved when the tour name took
+             the front of the label, and a success headline that depends on
+             where a word sits in a display string breaks the next time that
+             string is reworded. */
+          isWaitlist = !isPrivate && isFullState(effectiveState(chosenTour.session));
           return resolveMappingId(chosenTour);
         })
         .then(function (mappingId) {
@@ -948,7 +964,7 @@ window.RT_TOUR = {
           var headline = isWaitlist ? 'You’re on the waitlist' : (isPrivate ? 'Private tour requested' : 'You’re on the list');
           var detail = isPrivate
             ? 'We’ll reach out to plan a time and route that fits your team across the two exhibit-hall days.'
-            : 'Watch your inbox — we follow up personally to confirm every spot and share the meeting point before the conference.';
+            : 'Watch your inbox, we will follow up to confirm your spot and share additional materials and information ahead of AFP 2026 Las Vegas.';
           container.innerHTML = '<div class="rt-t-success" role="status" aria-live="polite"><h4 id="rtTourSuccessHeading" tabindex="-1">' + headline + '</h4><p>' + detail + '</p></div>';
           var successHeading = document.getElementById('rtTourSuccessHeading');
           if (successHeading) { successHeading.focus(); }

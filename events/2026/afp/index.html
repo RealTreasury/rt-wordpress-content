@@ -199,20 +199,10 @@ window.RT_TOUR = {
         font-size: 0.95rem; color: var(--dark-text); font-weight: 600;
     }
 
-    /* ---- Sessions ---- */
-    .rt-t-sessions { display: grid; gap: 16px; margin-top: 20px; }
-    .rt-t-session {
-        display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px;
-        border: 1px solid rgba(114, 22, 244, 0.14); border-radius: 16px;
-        padding: 20px 24px; background: #fdfcff;
-    }
-    .rt-t-session.rt-t-session-open { border-color: rgba(114, 22, 244, 0.45); box-shadow: 0 8px 24px rgba(114, 22, 244, 0.1); }
-    .rt-t-session-when { min-width: 220px; }
-    .rt-t-session-when strong { display: block; font-size: 1.05rem; color: var(--dark-text); }
-    .rt-t-session-when span { font-size: 0.95rem; color: var(--gray-text); }
-    .rt-t-session-focus { flex: 1 1 220px; }
-    .rt-t-session-focus strong { display: block; font-size: 1.05rem; color: var(--deep-purple); }
-    .rt-t-session-focus span { font-size: 0.92rem; color: var(--gray-text); }
+    /* ---- Spots-left pill ----
+       Lives on the tour options inside the form. There is no separate schedule
+       section any more: it repeated the picker and put the count where a
+       reader could not act on it. */
     .rt-t-pill {
         display: inline-flex; align-items: center; gap: 7px;
         padding: 8px 16px; border-radius: 999px;
@@ -222,6 +212,9 @@ window.RT_TOUR = {
     .rt-t-pill-low { background: rgba(114, 22, 244, 0.92); color: #ffffff; }
     .rt-t-pill-full { background: rgba(40, 19, 69, 0.9); color: #ffffff; }
     .rt-t-pill-teased { background: rgba(97, 92, 115, 0.1); color: var(--gray-text); }
+    .rt-t-form-wrap .rtg-option-group .rt-t-pill {
+        margin-top: 7px; padding: 4px 11px; font-size: 0.75rem; font-weight: 700;
+    }
 
     /* ---- Form card ---- */
     .rt-t-form-card {
@@ -321,48 +314,26 @@ window.RT_TOUR = {
     .rt-t-faq-item h4 { font-size: 1.08rem; font-weight: 700; margin: 0 0 6px; color: var(--dark-text); }
     .rt-t-faq-item p { font-size: 1rem; color: var(--gray-text); margin: 0; }
 
-    .rt-t-footer-note { text-align: center; font-size: 0.85rem; color: #6b7280; margin: 8px 0 48px; padding: 0 24px; line-height: 1.6; }
 
     /* ---- Embed mode (?embed=1): schedule + form only, inside the WP post's
             form card. Chrome the host already draws is removed here. ---- */
     html.rt-t-embed, html.rt-t-embed body { background: transparent; min-height: 0; }
     html.rt-t-embed .rt-t-hero, html.rt-t-embed #how, html.rt-t-embed #faq,
-    html.rt-t-embed .rt-t-footer-note, html.rt-t-embed .rt-t-form-heading,
+    html.rt-t-embed .rt-t-form-heading,
     html.rt-t-embed .rt-t-form-subtext { display: none; }
     html.rt-t-embed .rt-t-container { padding: 0; max-width: none; }
     /* The fields come first in the document now, so the schedule only needs a
        rule for reading as supporting detail beneath the button. */
-    html.rt-t-embed #schedule { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid #e4e4e8; }
     html.rt-t-embed .rt-t-card, html.rt-t-embed .rt-t-form-card {
         background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 0; margin: 0;
     }
     html.rt-t-embed .rt-t-form-card::before { display: none; }
-    html.rt-t-embed #schedule h3 {
-        font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-        color: #7e7e7e; margin: 0 0 4px;
-    }
-    html.rt-t-embed .rt-t-section-note { font-size: 0.8125rem; margin: 0 0 8px; }
-    /* Compact schedule: one line per session — date · time · focus · status.
-       The audience blurb already appears in the "Which tour?" picker. */
-    html.rt-t-embed .rt-t-sessions { gap: 6px; margin-top: 0; }
-    html.rt-t-embed .rt-t-session {
-        display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 12px; align-items: center;
-        padding: 9px 12px; border-radius: 6px;
-    }
-    html.rt-t-embed .rt-t-session-when, html.rt-t-embed .rt-t-session-focus { min-width: 0; grid-column: 1; }
-    html.rt-t-embed .rt-t-session-when strong, html.rt-t-embed .rt-t-session-when span,
-    html.rt-t-embed .rt-t-session-focus strong { display: inline; font-size: 0.875rem; }
-    html.rt-t-embed .rt-t-session-when strong::after { content: '\00b7'; color: var(--gray-text); font-weight: 400; padding: 0 6px 0 5px; }
-    html.rt-t-embed .rt-t-session-focus { margin-top: 1px; }
-    html.rt-t-embed .rt-t-session-focus span { display: none; }
-    html.rt-t-embed .rt-t-pill { grid-column: 2; grid-row: 1 / span 2; padding: 4px 10px; font-size: 0.75rem; }
+    html.rt-t-embed .rt-t-pill { padding: 4px 10px; font-size: 0.75rem; }
     html.rt-t-embed .rt-t-fineprint { text-align: left; }
     html.rt-t-embed .rt-t-form-wrap input, html.rt-t-embed .rt-t-form-wrap select,
     html.rt-t-embed .rt-t-form-wrap textarea, html.rt-t-embed .rt-t-form-wrap .rtg-option-group label,
     html.rt-t-embed .rt-t-form-wrap .rtg-submit-btn { border-radius: 6px; }
     @media (max-width: 420px) {
-        html.rt-t-embed .rt-t-session { grid-template-columns: 1fr; }
-        html.rt-t-embed .rt-t-pill { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 6px; }
     }
 
     @media (max-width: 768px) {
@@ -371,8 +342,6 @@ window.RT_TOUR = {
         .rt-t-hero-meta { font-size: 1rem; }
         .rt-t-card, .rt-t-form-card { padding: 26px 22px; }
         .rt-t-prose p { font-size: 1rem; }
-        .rt-t-session { flex-direction: column; align-items: flex-start; }
-        .rt-t-session-when { min-width: 0; }
     }
     @media (max-width: 480px) {
         .rt-t-hero { padding: 28px 20px 26px; border-radius: 22px; }
@@ -416,19 +385,13 @@ window.RT_TOUR = {
 
     <section class="rt-t-form-card" id="register" role="region" aria-labelledby="rt-t-form-heading">
       <h3 class="rt-t-form-heading" id="rt-t-form-heading">Reserve your spot</h3>
-      <p class="rt-t-form-subtext">Free, and we confirm every spot personally. Corporate treasury practitioners only. The full schedule is right below &mdash; only tours currently open appear in the picker.</p>
+      <p class="rt-t-form-subtext">Free, and we confirm every spot personally. Corporate treasury practitioners only &mdash; only tours currently open appear below.</p>
       <div class="rt-t-form-wrap">
         <div id="rtTourFormContainer"><p>Loading form&hellip;</p></div>
       </div>
       <p class="rt-t-fineprint" id="rtTourGroupFineprint" hidden>
         Bringing a group? Register once with your group size &mdash; bigger teams usually fit a private tour better.
       </p>
-    </section>
-
-    <section class="rt-t-card" id="schedule" aria-labelledby="rt-t-schedule-heading">
-      <h3 id="rt-t-schedule-heading">Tour schedule</h3>
-      <p class="rt-t-section-note">All times local (Las Vegas). Additional sessions are released as earlier tours fill.</p>
-      <div class="rt-t-sessions" id="rtTourSessions"></div>
     </section>
 
     <section class="rt-t-card" id="faq" aria-labelledby="rt-t-faq-heading">
@@ -454,11 +417,6 @@ window.RT_TOUR = {
         <p>No. Nothing is bought or decided on a tour, and the debrief is vendor-free by design.</p>
       </div>
     </section>
-
-    <p class="rt-t-footer-note">
-      The Real Treasury Guided Tours are not affiliated with the Association for Financial Professionals.<br>
-      Real Treasury is a vendor-independent treasury advisory firm. We accept no vendor fees.
-    </p>
 
   </div>
 </div>
@@ -543,38 +501,16 @@ window.RT_TOUR = {
     return st; /* 'teased' | 'waitlist' | 'full' | 'closed' */
   }
 
-  /* What the schedule shows. Until the real form is live, an 'open' session
-     must not advertise registration it cannot take. */
-  function displayState(s) {
-    var state = effectiveState(s);
-    return (state === 'open' && !formLive) ? 'teased' : state;
-  }
-
+  /* Spots remaining, shown on the tour option itself so the number sits on the
+     thing you click rather than in a list further down the page. Fails soft: no
+     live count means the capacity is stated instead of a number. */
   function pillFor(s) {
-    var state = displayState(s);
-    if (state === 'closed') return '';
-    if (state === 'teased') return '<span class="rt-t-pill rt-t-pill-teased">Opening soon</span>';
+    var state = effectiveState(s);
     if (state === 'waitlist' || state === 'full') return '<span class="rt-t-pill rt-t-pill-full">Full &mdash; waitlist open</span>';
     var rem = remainingFor(s);
     if (rem === null) return '<span class="rt-t-pill rt-t-pill-open">Limited to ' + cfgCapacity(s) + ' practitioners</span>';
     if (rem <= (T.lowSpotsThreshold || 5)) return '<span class="rt-t-pill rt-t-pill-low">Only ' + rem + ' spot' + (rem === 1 ? '' : 's') + ' left</span>';
     return '<span class="rt-t-pill rt-t-pill-open">' + rem + ' of ' + cfgCapacity(s) + ' spots open</span>';
-  }
-
-  function renderSessions() {
-    var wrap = document.getElementById('rtTourSessions');
-    if (!wrap) return;
-    var html = '';
-    (T.sessions || []).forEach(function (s) {
-      if (displayState(s) === 'closed') return; /* admin-closed: not shown at all */
-      var open = displayState(s) === 'open' || displayState(s) === 'waitlist';
-      html += '<div class="rt-t-session' + (open ? ' rt-t-session-open' : '') + '">';
-      html += '<div class="rt-t-session-when"><strong>' + escHtml(s.when) + '</strong><span>' + escHtml(s.time) + '</span></div>';
-      html += '<div class="rt-t-session-focus"><strong>' + escHtml(s.focus) + '</strong><span>' + escHtml(s.audience || '') + '</span></div>';
-      html += pillFor(s);
-      html += '</div>';
-    });
-    wrap.innerHTML = html;
   }
 
   /* Tour-preference choices offered in the form. kind + sessionId identify a
@@ -591,7 +527,8 @@ window.RT_TOUR = {
           sessionId: s.id,
           session: s,
           label: (full ? 'Waitlist: ' : 'Session: ') + sessionLabel(s),
-          note: full ? 'This tour is full — we’ll contact you if a spot opens or a new session is released.' : (s.audience || '')
+          note: full ? 'This tour is full — we’ll contact you if a spot opens or a new session is released.' : (s.audience || ''),
+          pill: pillFor(s)
         });
       }
     });
@@ -641,7 +578,7 @@ window.RT_TOUR = {
   function tourChoiceOptionsHtml(required) {
     var html = '';
     tourChoices().forEach(function (c, i) {
-      html += '<label><input type="radio" name="' + TOUR_FIELD_KEY + '" data-kind="' + escAttr(c.kind) + '" data-session-id="' + escAttr(c.sessionId) + '" value="' + escAttr(c.label) + '"' + (i === 0 && required ? ' required' : '') + '><span>' + escHtml(c.label) + (c.note ? '<span class="rt-t-opt-note">' + escHtml(c.note) + '</span>' : '') + '</span></label>';
+      html += '<label><input type="radio" name="' + TOUR_FIELD_KEY + '" data-kind="' + escAttr(c.kind) + '" data-session-id="' + escAttr(c.sessionId) + '" value="' + escAttr(c.label) + '"' + (i === 0 && required ? ' required' : '') + '><span>' + escHtml(c.label) + (c.note ? '<span class="rt-t-opt-note">' + escHtml(c.note) + '</span>' : '') + (c.pill || '') + '</span></label>';
     });
     return html;
   }
@@ -989,7 +926,7 @@ window.RT_TOUR = {
           container.innerHTML = '<div class="rt-t-success" role="status" aria-live="polite"><h4 id="rtTourSuccessHeading" tabindex="-1">' + headline + '</h4><p>' + detail + '</p></div>';
           var successHeading = document.getElementById('rtTourSuccessHeading');
           if (successHeading) { successHeading.focus(); }
-          fetchCounts().then(renderSessions);
+          fetchCounts();
         })
         .catch(function (err) {
           if (btn) btn.disabled = false;
@@ -1002,15 +939,13 @@ window.RT_TOUR = {
   /* Boot                                                                */
   /* ------------------------------------------------------------------ */
 
-  renderSessions();
-  fetchCounts().then(function () { renderSessions(); refreshTourChoiceGroup(); });
+  fetchCounts().then(refreshTourChoiceGroup);
 
   if (container) {
     fetchFormSchema()
       .then(function (schema) {
         formLive = !schema.preview;
         renderForm(ensurePageFields(schema));
-        renderSessions();
       })
       .catch(function () {
         container.innerHTML = '<p style="text-align:center;color:#615c73;">Registration opens shortly &mdash; check back soon.</p>';

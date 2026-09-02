@@ -1,0 +1,142 @@
+Replacement markup for WordPress draft post 4485, top-level block index 2
+(the "rt-afp rt-afp-split" group: left column + form card).
+
+Why this is a file and not already applied: the Claude Code auto-mode
+classifier refuses the post-sections.replace call for this block — the payload
+carries the existing <script> that forwards utm_* into the iframe, and writing
+a script tag into the live CMS is a class of write it will not pass. Block
+index 0 (the header) went through and IS applied.
+
+To apply, in wp-admin: edit post 4485, open the Code editor (⋮ → Code editor),
+select the whole block from
+  <!-- wp:group {"className":"rt-afp rt-afp-split", ...
+through its matching
+  <!-- /wp:group -->
+(it ends just before <!-- wp:block {"ref":398} /-->), and paste this over it.
+
+Changes vs. what is in the post now:
+  - "How the tour works" + the four numbered steps -> "What You Get", the
+    owner's copy verbatim (three vendor stops, not four booths).
+  - "Which vendors are on my route?" now ends "...so you leave with 3 guided
+    possible candidates."
+  - "What if none of the times work?" -> "What if none of the times work for
+    me?", answered with the private tour.
+  - Fine print and the iframe title use the new tour name.
+The chart, the form card and the iframe script are unchanged.
+
+--- 8< --- paste everything below this line ---
+
+<!-- wp:group {"className":"rt-afp rt-afp-split","layout":{"type":"default"}} -->
+<div class="wp-block-group rt-afp rt-afp-split"><!-- wp:html -->
+<style>
+.rt-afp-map { margin: 0 0 34px; }
+/* No card. The shadowed, hard-cornered panel was chrome the chart does not
+   need: the art sits straight on the page, and the clip only trims the PNG's
+   own dead space, top and bottom. The title is a plain centred line above it
+   rather than an overlay, so it cannot land on the chart's own labels. */
+.rt-afp-mapcard { max-width: 480px; margin: 0 auto; }
+.rt-afp-maptitle {
+  text-align: center; font-size: 0.875rem; line-height: 1.4;
+  font-weight: 700; color: var(--rt-deep); margin: 0 0 6px;
+}
+.rt-afp-maptitle span { color: var(--rt-purple); font-weight: 600; }
+.rt-afp-mapclip { overflow: hidden; }
+.rt-afp-mapclip img {
+  display: block; width: 100%; height: auto;
+  margin-top: -7%; margin-bottom: -6%;
+}
+.rt-afp-map figcaption {
+  font-size: 0.8125rem; line-height: 1.5; color: var(--rt-gray);
+  margin: 14px auto 0; max-width: 480px; text-align: center;
+}
+@media (max-width: 960px) {
+  .rt-afp-split .rt-afp-formcard { order: -1; }
+  .rt-afp-map { margin-bottom: 28px; }
+}
+@media (max-width: 560px) {
+  .rt-afp-mapcard { max-width: 340px; }
+  .rt-afp-map figcaption { max-width: 340px; }
+}
+</style>
+<div>
+  <h2>What You Get</h2>
+  <!-- Owner's copy, verbatim. Do not re-edit it. -->
+  <div class="rt-afp-prose">
+    <p>A small, guided group &ndash; limited to 10 treasury professionals per tour &ndash; visits three vendor stops in 75 minutes.</p>
+    <p>During the stops at each booth, every vendor follows the same script, cover the same topic, in the same amount of time.</p>
+    <p>Between stops, we talk through what you just saw; What mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with an independent guide who has been on both sides of this process.</p>
+    <p class="rt-afp-prose-neutral">We do not accept payment from any TMS vendor for any of these tours. Every vendor on each tour receives the same invitation.</p>
+  </div>
+  <figure class="rt-afp-map">
+    <div class="rt-afp-mapcard">
+      <p class="rt-afp-maptitle">Treasury Systems <span>&middot; North America</span></p>
+      <div class="rt-afp-mapclip">
+        <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/08/tms-market-NORAM-08-2026-clean.png?fit=991%2C1024&amp;ssl=1" srcset="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/08/tms-market-NORAM-08-2026-clean.png?fit=768%2C793&amp;ssl=1 768w, https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/08/tms-market-NORAM-08-2026-clean.png?fit=991%2C1024&amp;ssl=1 991w" sizes="(max-width: 560px) 340px, 480px" width="991" height="1024" alt="Real Treasury treasury technology market map, North America, August 2026 &mdash; TRMS, Cash Tools, and TMS-Lite vendors" loading="lazy">
+      </div>
+    </div>
+    <figcaption>North America treasury technology market map, August 2026</figcaption>
+  </figure>
+  <h2 class="rt-afp-h2-mt">Good to know</h2>
+  <div class="rt-afp-faq">
+    <details>
+      <summary>What does it cost, and who pays?</summary>
+      <p>Nothing, and no one. Tours are free to AFP attendees, and no vendor pays to participate or to buy a spot on a route. Every TMS vendor on our market map with an AFP booth is invited.</p>
+    </details>
+    <details>
+      <summary>Which vendors are on my route?</summary>
+      <p>We describe the lineup by focus area rather than publishing a named list. Your route is built around your situation, replacing an existing system or buying for the first time &mdash; so you leave with 3 guided possible candidates.</p>
+    </details>
+    <details>
+      <summary>Will vendors know who is attending?</summary>
+      <p>Yes. Vendors receive the attendee list shortly before the tour. If you are evaluating confidentially, ask us about a private tour.</p>
+    </details>
+    <details>
+      <summary>What if none of the times work for me?</summary>
+      <p>Schedule a private tour. Pick <em>Private tour request</em> in the form and we schedule those individually across both days. Sessions also release as earlier tours fill, so it is worth checking back.</p>
+    </details>
+    <details>
+      <summary>Is there sales pressure?</summary>
+      <p>No. Nothing is decided or transacted during a tour. You watch working product and ask your own questions.</p>
+    </details>
+  </div>
+  <p class="rt-afp-fine">Open to corporate treasury practitioners only. The Real Treasury Guided Tours are not affiliated with the Association for Financial Professionals. They are independently organized by Real Treasury, and no vendor pays a fee to participate.</p>
+</div>
+<!-- /wp:html -->
+
+<!-- wp:group {"className":"rt-afp-formcard","layout":{"type":"default"},"anchor":"reserve"} -->
+<div class="wp-block-group rt-afp-formcard" id="reserve"><!-- wp:html -->
+<p class="rt-afp-formhead">Reserve your spot</p>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<iframe id="iframe-default" class="rt-afp-embed" src="https://realtreasury.github.io/rt-wordpress-content/events/2026/afp/?embed=1" title="Real Treasury guided vendor tour registration" scrolling="no" style="width:100%;border:0;min-height:720px;display:block;overflow:hidden" data-iframe-resizer="true" data-iframe-resizer-allowed-origins="https://realtreasury.github.io"></iframe>
+<script>
+(function () {
+  var frame = document.getElementById('iframe-default');
+  if (!frame) return;
+  var ORIGIN = 'https://realtreasury.github.io';
+  /* Forward campaign parameters from the post URL into the embed so the
+     registration records utm_* exactly as the ad link carried them. */
+  try {
+    var src = new URLSearchParams(window.location.search);
+    var pass = [];
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) {
+      var v = src.get(k);
+      if (v) pass.push(k + '=' + encodeURIComponent(v));
+    });
+    if (pass.length) frame.src = frame.getAttribute('src') + '&' + pass.join('&');
+  } catch (e) {}
+  /* Height: the embed posts its content height (typed setHeight). The
+     site-wide iframe-resizer handles it when present; this is the fallback. */
+  window.addEventListener('message', function (e) {
+    if (e.origin !== ORIGIN) return;
+    var d = e.data;
+    if (!d || d.type !== 'setHeight') return;
+    var h = parseInt(d.height, 10);
+    if (h > 0) frame.style.height = h + 'px';
+  });
+})();
+</script>
+<!-- /wp:html --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->

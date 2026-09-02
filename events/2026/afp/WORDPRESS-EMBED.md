@@ -1,4 +1,4 @@
-# Walk the Map (AFP 2026) — WordPress + RT Gate wiring
+# The Real Treasury Guided Vendor Tours (AFP 2026) — WordPress + RT Gate wiring
 
 The page in this folder is served from GitHub Pages and embedded in the
 WordPress post (draft 4485, "Guided Vendor Tours at AFP 2026") inside the
@@ -12,7 +12,7 @@ In post 4485, inside the `rt-afp-formcard` group, delete the
 (after the "Reserve your spot" / "Pick a session below." paragraphs):
 
 ```html
-<iframe id="iframe-default" class="rt-afp-embed" src="https://realtreasury.github.io/rt-wordpress-content/events/2026/afp/?embed=1" title="Walk the Map tour registration" scrolling="no" style="width:100%;border:0;min-height:720px;display:block;overflow:hidden" data-iframe-resizer="true" data-iframe-resizer-allowed-origins="https://realtreasury.github.io"></iframe>
+<iframe id="iframe-default" class="rt-afp-embed" src="https://realtreasury.github.io/rt-wordpress-content/events/2026/afp/?embed=1" title="Real Treasury guided vendor tour registration" scrolling="no" style="width:100%;border:0;min-height:720px;display:block;overflow:hidden" data-iframe-resizer="true" data-iframe-resizer-allowed-origins="https://realtreasury.github.io"></iframe>
 <script>
 (function () {
   var frame = document.getElementById('iframe-default');
@@ -88,8 +88,10 @@ email-only form. Pasting the schema makes WP Admin show the same fields:
 [
   { "key": "full_name",       "label": "Full name",                              "type": "text",     "required": true,  "placeholder": "Jane Smith" },
   { "key": "email",           "label": "Work email",                             "type": "email",    "required": true,  "placeholder": "you@company.com" },
+  { "key": "phone",           "label": "Phone",                                  "type": "tel",      "required": true,  "placeholder": "(555) 555-5555" },
   { "key": "company",         "label": "Company",                                "type": "company",  "required": true },
   { "key": "title",           "label": "Title",                                  "type": "text",     "required": false },
+  { "key": "current_system",  "label": "Treasury system you use today",          "type": "text",     "required": true,  "placeholder": "System name, or \"none\"" },
   { "key": "group_size",      "label": "Group size",                             "type": "select",   "required": true,  "options": ["Just me", "2 people", "3 people", "4+ people"] },
   { "key": "tms_timeline",    "label": "Where are you in your evaluation?",      "type": "select",   "required": true,  "options": ["Actively selecting in 2026", "Planning for 2027", "Just researching"] },
   { "key": "tour_preference", "label": "Which tour?",                            "type": "text",     "required": true },
@@ -97,6 +99,16 @@ email-only form. Pasting the schema makes WP Admin show the same fields:
   { "key": "utm",             "label": "UTM",                                    "type": "text",     "required": false }
 ]
 ```
+
+`eligibility_confirm` is deliberately **not** in this schema. RT Gate's form
+builder has no checkbox-acknowledgement type, so the page renders it (see
+`PAGE_FIELDS` / `ACK_TEXT` in `index.html`) and submits it as an ordinary
+field — `handle_submit` stores any key it receives, so it lands on the lead
+next to the rest. Its value is stored as
+`Confirmed — attending AFP 2026 and actively evaluating a treasury system`.
+
+Paste order does not matter: the page sorts the merged field set into
+`FIELD_ORDER`.
 
 Email settings: confirmation to registrant only; internal notify
 tschultz@ + tknight@.

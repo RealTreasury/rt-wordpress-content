@@ -1,5 +1,5 @@
 <!--
-  Walk the Map — Real Treasury guided vendor tours, AFP 2026 (Las Vegas).
+  The Real Treasury Guided Vendor Tours — AFP 2026 (Las Vegas).
 
   Session release / capacity — TWO places, WP Admin wins:
     1. WP Admin -> Real Treasury Gate -> Assets -> (session asset) -> Config JSON:
@@ -15,8 +15,10 @@
   the WordPress post's form card); UTM params on the URL are captured.
 
   RT Gate wiring (WP Admin -> Real Treasury Gate):
-    - One form ("AFP 2026 Walk the Map") shared by all sessions; its ID goes
-      in RTG_CONFIG.formId below.
+    - One form ("AFP 2026 Walk the Map Tour Registration", the WP Admin name)
+      shared by all sessions; its ID goes in RTG_CONFIG.formId below. The
+      page adds phone, current system and the eligibility acknowledgement on
+      top of whatever that form defines (see PAGE_FIELDS).
     - One 'link' asset + mapping PER SESSION plus one for private-tour
       requests, so registrations count per session. The open session's asset
       config must contain "public_stats": true for the live spots display;
@@ -55,7 +57,7 @@ window.RT_TOUR = {
             audience: 'You run treasury on spreadsheets and bank portals.',
             when: 'Monday, November 9',
             time: '1:30–2:45 PM',
-            state: 'teased',
+            state: 'open',
             capacity: 10,
             assetSlug: 'afp-2026-tour-session-2',
             mappingId: 10
@@ -90,8 +92,8 @@ window.RT_TOUR = {
 };
 </script>
 <script>(function(){try{if(/[?&]embed=1(&|$)/.test(location.search)){document.documentElement.className+=' rt-t-embed';}}catch(e){}})();</script>
-  <title>Walk the Map — Guided Vendor Tours at AFP 2026 | Real Treasury</title>
-  <meta name="description" content="Free small-group guided tours of the TMS vendors in the AFP 2026 exhibit hall in Las Vegas, November 9–10. Four booths, twelve minutes each, and a neutral debrief — led by Real Treasury." />
+  <title>The Real Treasury Guided Vendor Tours — AFP 2026 Las Vegas</title>
+  <meta name="description" content="Free small-group guided tours of the TMS vendors in the AFP 2026 exhibit hall, Mandalay Bay, Las Vegas, November 9–10. Three vendor stops in 75 minutes, every vendor on the same script, with an independent guide." />
   <style>
     html, body { margin: 0; padding: 0; }
     body {
@@ -124,50 +126,40 @@ window.RT_TOUR = {
     .rt-t-container { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
 
     /* ---- Hero ----
-       Two tracks: the pitch on the left, the flat where/when/format facts on
-       the right, so a reader gets the whole shape of the thing without
-       reading a paragraph — and the wide band isn't half empty. */
+       One centred column: the tour name, then where and when. The old
+       two-track layout carried a where/when/format facts panel that the
+       header lines now duplicate (and whose "four booths" is no longer the
+       shape of a tour), so it is gone — centred keeps the band from reading
+       half empty, which is what the two tracks were there to avoid. */
     .rt-t-hero {
         background: var(--hero-gradient);
         color: #ffffff;
         border-radius: 28px;
-        padding: 44px 40px;
+        padding: 48px 40px 44px;
         margin: 40px auto 30px;
         box-shadow: 0 18px 38px rgba(14, 21, 58, 0.2);
         overflow: hidden;
-        display: flex; flex-wrap: wrap; align-items: flex-start; gap: 28px 44px;
+        text-align: center;
     }
-    .rt-t-hero-main { flex: 1 1 380px; min-width: 0; }
-    .rt-t-hero-eyebrow {
-        margin: 0 0 12px; font-size: 0.8rem; font-weight: 700;
-        letter-spacing: 0.13em; text-transform: uppercase;
-        color: var(--lavender-pink);
-    }
+    /* Wide enough that the name breaks in two, not three, and the venue line
+       stays whole; `balance` keeps the two halves even. */
+    .rt-t-hero-main { max-width: 30em; margin: 0 auto; }
     .rt-t-hero h2 {
-        font-size: 2.15rem; font-weight: 800; line-height: 1.2;
-        color: #ffffff; margin: 0 0 14px;
+        font-size: 2.35rem; font-weight: 800; line-height: 1.16;
+        color: #ffffff; margin: 0 0 18px; letter-spacing: -0.015em;
+        text-wrap: balance;
     }
-    .rt-t-hero-lede {
-        font-size: 1.05rem; line-height: 1.62; margin: 0;
-        color: rgba(255, 255, 255, 0.86);
+    .rt-t-hero-meta { margin: 0; }
+    .rt-t-hero-meta .rt-t-hero-where {
+        display: block; font-size: 1.18rem; font-weight: 700;
+        line-height: 1.35; color: #ffffff;
     }
-    .rt-t-hero-facts {
-        flex: 0 1 316px; margin: 0; padding: 20px 22px;
-        border-radius: 18px; display: grid; gap: 13px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    .rt-t-hero-meta .rt-t-hero-when {
+        display: block; margin-top: 5px;
+        font-size: 1rem; font-weight: 500; line-height: 1.4;
+        color: rgba(255, 255, 255, 0.82);
     }
-    .rt-t-hero-facts dt {
-        font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
-        text-transform: uppercase; color: rgba(255, 255, 255, 0.62);
-        margin: 0 0 3px;
-    }
-    .rt-t-hero-facts dd {
-        margin: 0; font-size: 0.97rem; font-weight: 600;
-        line-height: 1.4; color: #ffffff;
-    }
-    .rt-t-hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+    .rt-t-hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 28px; }
     .rt-t-hero-actions a {
         display: inline-flex; align-items: center; justify-content: center; gap: 10px;
         padding: 13px 23px; border-radius: 12px;
@@ -196,23 +188,21 @@ window.RT_TOUR = {
     .rt-t-card > p { font-size: 1.08rem; color: var(--gray-text); margin: 0 0 8px; }
     .rt-t-section-note { font-size: 0.9rem; color: var(--gray-text); margin: 2px 0 20px; }
 
-    /* ---- How it works ---- */
-    .rt-t-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 28px; margin-top: 22px; }
-    .rt-t-step-num {
-        display: inline-flex; align-items: center; justify-content: center;
-        width: 34px; height: 34px; border-radius: 999px;
-        background: var(--gradient-primary); color: #fff;
-        font-weight: 800; font-size: 1rem; margin-bottom: 10px;
+    /* ---- What you get ----
+       Prose, not a step grid: the copy is a single argument that builds to
+       "a real basis for comparison", and chopping it into numbered cards
+       broke that. The last paragraph is the neutrality statement, so the
+       separate .rt-t-neutrality strip is gone. */
+    .rt-t-prose p {
+        font-size: 1.05rem; line-height: 1.68; color: var(--gray-text);
+        margin: 0 0 16px; max-width: 78ch;
     }
-    .rt-t-step h4 { font-size: 1.12rem; font-weight: 700; margin: 0 0 6px; color: var(--dark-text); }
-    .rt-t-step p { font-size: 1rem; color: var(--gray-text); margin: 0; }
-
-    .rt-t-neutrality {
-        margin-top: 30px; padding-top: 24px;
-        border-top: 1px solid rgba(199, 125, 255, 0.22);
-        display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: center;
+    .rt-t-prose p:last-child { margin-bottom: 0; }
+    .rt-t-prose .rt-t-prose-neutral {
+        margin-top: 22px; padding-top: 18px;
+        border-top: 1px solid rgba(114, 22, 244, 0.14);
+        font-size: 0.95rem; color: var(--dark-text); font-weight: 600;
     }
-    .rt-t-neutrality span { font-weight: 700; color: var(--deep-purple); font-size: 1rem; }
 
     /* ---- Sessions ---- */
     .rt-t-sessions { display: grid; gap: 16px; margin-top: 20px; }
@@ -295,6 +285,19 @@ window.RT_TOUR = {
     .rt-t-form-wrap .rtg-consent-group { margin: 10px 0 10px; font-size: 0.85rem; color: var(--gray-text); }
     .rt-t-form-wrap .rtg-consent-group label { display: flex; gap: 8px; align-items: flex-start; font-weight: 500; }
     .rt-t-form-wrap .rtg-consent-group input { width: auto; margin-top: 3px; }
+    /* Eligibility acknowledgement — a boxed statement, separate from the
+       marketing consent below it, because it is a condition of registering
+       rather than a permission. */
+    .rt-t-form-wrap .rtg-ack-group {
+        margin: 6px 0 12px; padding: 12px 14px;
+        border: 1px solid rgba(114, 22, 244, 0.18); border-radius: 10px;
+    }
+    .rt-t-form-wrap .rtg-ack-group label {
+        display: flex; gap: 9px; align-items: flex-start; margin: 0;
+        font-size: 0.8125rem; font-weight: 500; line-height: 1.55;
+        color: var(--gray-text); cursor: pointer;
+    }
+    .rt-t-form-wrap .rtg-ack-group input { width: auto; flex: 0 0 auto; margin-top: 3px; }
     .rt-t-form-wrap .rtg-invalid { border-color: #e53e3e !important; outline-color: rgba(229, 62, 62, 0.4) !important; }
     .rt-t-form-wrap .rtg-submit-btn {
         width: 100%; padding: 13px 20px; border: 0; border-radius: 12px; color: #fff;
@@ -367,26 +370,23 @@ window.RT_TOUR = {
         html.rt-t-embed .rt-t-pill { grid-column: 1; grid-row: auto; justify-self: start; margin-top: 6px; }
     }
 
-    @media (max-width: 840px) {
-        .rt-t-hero { display: block; }
-        .rt-t-hero-facts { margin-top: 26px; }
-    }
     @media (max-width: 768px) {
-        .rt-t-hero { padding: 34px 26px; margin-top: 24px; }
+        .rt-t-hero { padding: 36px 26px 32px; margin-top: 24px; }
         .rt-t-hero h2 { font-size: 1.85rem; }
+        .rt-t-hero-meta .rt-t-hero-where { font-size: 1.08rem; }
         .rt-t-card, .rt-t-form-card { padding: 26px 22px; }
-        .rt-t-steps { grid-template-columns: 1fr; }
+        .rt-t-prose p { font-size: 1rem; }
         .rt-t-session { flex-direction: column; align-items: flex-start; }
         .rt-t-session-when { min-width: 0; }
     }
     @media (max-width: 480px) {
-        .rt-t-hero { padding: 28px 20px; border-radius: 22px; }
-        .rt-t-hero h2 { font-size: 1.55rem; }
-        .rt-t-hero-lede { font-size: 1rem; }
-        .rt-t-hero-facts { padding: 16px 18px; gap: 11px; }
+        .rt-t-hero { padding: 28px 20px 26px; border-radius: 22px; }
+        .rt-t-hero h2 { font-size: 1.55rem; margin-bottom: 14px; }
+        .rt-t-hero-meta .rt-t-hero-where { font-size: 1rem; }
+        .rt-t-hero-meta .rt-t-hero-when { font-size: 0.9rem; }
         /* Trimmed so both buttons still sit on one line at 390px of content. */
-        .rt-t-hero-actions { gap: 12px; }
-        .rt-t-hero-actions a { padding: 12px 18px; font-size: 0.95rem; }
+        .rt-t-hero-actions { gap: 10px; flex-wrap: nowrap; }
+        .rt-t-hero-actions a { padding: 12px 14px; font-size: 0.9rem; white-space: nowrap; }
         .rt-t-container { padding: 0 14px; }
         .rt-t-card, .rt-t-form-card { padding: 22px 16px; border-radius: 16px; }
     }
@@ -398,51 +398,26 @@ window.RT_TOUR = {
 
     <section class="rt-t-hero" aria-labelledby="rt-t-hero-heading">
       <div class="rt-t-hero-main">
-        <p class="rt-t-hero-eyebrow">Walk the Map &middot; AFP 2026</p>
-        <h2 id="rt-t-hero-heading">Guided TMS vendor tours of the AFP exhibit hall.</h2>
-        <p class="rt-t-hero-lede">A small group, a route planned around where you actually are, and the same scenario demoed at every booth &mdash; so for once the vendors are comparable. Led by Tim Schultz and Tracey Knight of Real Treasury.</p>
+        <h2 id="rt-t-hero-heading">The Real Treasury Guided Vendor Tours</h2>
+        <p class="rt-t-hero-meta">
+          <span class="rt-t-hero-where">AFP 2026 Las Vegas</span>
+          <span class="rt-t-hero-when">November 9 &ndash; 10 | Mandalay Bay Convention Center</span>
+        </p>
         <div class="rt-t-hero-actions">
           <a class="rt-t-cta-primary" href="#register">Reserve your spot</a>
-          <a class="rt-t-cta-secondary" href="#how">How it works</a>
+          <a class="rt-t-cta-secondary" href="#how">What you get</a>
         </div>
       </div>
-      <dl class="rt-t-hero-facts">
-        <div><dt>Where</dt><dd>Mandalay Bay, Las Vegas</dd></div>
-        <div><dt>When</dt><dd>November 9&ndash;10, 2026</dd></div>
-        <div><dt>Format</dt><dd>Four booths, twelve minutes each</dd></div>
-        <div><dt>Group</dt><dd>Ten practitioners, 75 minutes</dd></div>
-        <div><dt>Cost</dt><dd>Free. No vendor pays us either.</dd></div>
-      </dl>
     </section>
 
+    <!-- Copy in this section is the owner's, verbatim. Do not re-edit it. -->
     <section class="rt-t-card" id="how" aria-labelledby="rt-t-how-heading">
-      <h3 id="rt-t-how-heading">How a tour works</h3>
-      <p>Seventy-five minutes, during session windows when the hall is quiet.</p>
-      <div class="rt-t-steps">
-        <div class="rt-t-step">
-          <span class="rt-t-step-num">1</span>
-          <h4>Register below</h4>
-          <p>Free, ten spots per tour. We confirm every spot personally.</p>
-        </div>
-        <div class="rt-t-step">
-          <span class="rt-t-step-num">2</span>
-          <h4>Walk a planned route</h4>
-          <p>Four TMS booths matched to your situation &mdash; replacing a system, or buying your first.</p>
-        </div>
-        <div class="rt-t-step">
-          <span class="rt-t-step-num">3</span>
-          <h4>Twelve minutes per booth</h4>
-          <p>A scenario we set in advance, shown live in the product. Hard stop.</p>
-        </div>
-        <div class="rt-t-step">
-          <span class="rt-t-step-num">4</span>
-          <h4>Debrief as a group</h4>
-          <p>Compare notes with your peers while it&rsquo;s fresh.</p>
-        </div>
-      </div>
-      <div class="rt-t-neutrality">
-        <span>Every TMS vendor on our market map with an AFP booth is invited.</span>
-        <span>No vendor pays us &mdash; for the tour, or for anything else.</span>
+      <h3 id="rt-t-how-heading">What You Get</h3>
+      <div class="rt-t-prose">
+        <p>A small, guided group &ndash; limited to 10 treasury professionals per tour &ndash; visits three vendor stops in 75 minutes.</p>
+        <p>During the stops at each booth, every vendor follows the same script, cover the same topic, in the same amount of time.</p>
+        <p>Between stops, we talk through what you just saw; What mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with an independent guide who has been on both sides of this process.</p>
+        <p class="rt-t-prose-neutral">We do not accept payment from any TMS vendor for any of these tours. Every vendor on each tour receives the same invitation.</p>
       </div>
     </section>
 
@@ -470,16 +445,16 @@ window.RT_TOUR = {
         <p>Yes. Attendees don&rsquo;t pay, vendors don&rsquo;t pay.</p>
       </div>
       <div class="rt-t-faq-item">
-        <h4>Which vendors are on the route?</h4>
-        <p>Routes are grouped by focus, not published vendor by vendor. Every TMS vendor on our market map with an AFP booth is invited, and each appears on one route.</p>
+        <h4>Which vendors are on my route?</h4>
+        <p>Routes are grouped by focus, not published vendor by vendor. Every TMS vendor on our market map with an AFP booth is invited, and each appears on one route &mdash; so you leave with 3 guided possible candidates.</p>
       </div>
       <div class="rt-t-faq-item">
         <h4>Will vendors know I&rsquo;m coming?</h4>
         <p>Vendors get the attendee list shortly before the tour. Prefer to evaluate quietly? Request a private tour.</p>
       </div>
       <div class="rt-t-faq-item">
-        <h4>These times don&rsquo;t work for me.</h4>
-        <p>Request a private tour &mdash; we schedule those individually across both days.</p>
+        <h4>What if none of the times work for me?</h4>
+        <p>Schedule a private tour. Pick <em>Private tour request</em> in the form above &mdash; we schedule those individually across both days.</p>
       </div>
       <div class="rt-t-faq-item">
         <h4>Am I signing up to be sold something?</h4>
@@ -488,7 +463,7 @@ window.RT_TOUR = {
     </section>
 
     <p class="rt-t-footer-note">
-      Walk the Map is organized independently by Real Treasury and is not an official AFP program.<br>
+      The Real Treasury Guided Tours are not affiliated with the Association for Financial Professionals.<br>
       Real Treasury is a vendor-independent treasury advisory firm. We accept no vendor fees.
     </p>
 
@@ -505,6 +480,13 @@ window.RT_TOUR = {
   var FREE_EMAIL_DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'proton.me', 'protonmail.com'];
   var HIDDEN_FIELD_KEYS = ['utm'];
   var TOUR_FIELD_KEY = 'tour_preference';
+  var ACK_FIELD_KEY = 'eligibility_confirm';
+  var ACK_TEXT = 'By registering, you confirm you are attending AFP 2026 in Las Vegas and are actively evaluating a treasury system. Real Treasury reserves the right to decline registrations that don\u2019t meet these criteria. The Real Treasury Guided Tours are not affiliated with the Association for Financial Professionals.';
+  var ACK_VALUE = 'Confirmed \u2014 attending AFP 2026 and actively evaluating a treasury system';
+
+  /* Render order for the merged field set. Keys not listed keep their schema
+     order and land just before the acknowledgement. */
+  var FIELD_ORDER = ['full_name', 'email', 'phone', 'company', 'title', 'current_system', 'group_size', 'tms_timeline', 'tour_preference', 'interests', ACK_FIELD_KEY, 'utm'];
 
   var sessionCounts = null; /* slug -> registrations, from /stats/registrations */
   var serverReg = {};       /* slug -> {state, capacity} published from WP Admin asset config */
@@ -738,12 +720,15 @@ window.RT_TOUR = {
     fields: [
       { type: 'text',     label: 'Full name',  key: 'full_name', required: true,  placeholder: 'Jane Smith' },
       { type: 'email',    label: 'Work email', key: 'email',     required: true,  placeholder: 'you@company.com' },
+      { type: 'tel',      label: 'Phone',      key: 'phone',     required: true,  placeholder: '(555) 555-5555' },
       { type: 'company',  label: 'Company',    key: 'company',   required: true },
       { type: 'text',     label: 'Title',      key: 'title',     required: false },
+      { type: 'text',     label: 'Treasury system you use today', key: 'current_system', required: true, placeholder: 'System name, or "none"' },
       { type: 'select',   label: 'Group size', key: 'group_size', required: true, options: ['Just me', '2 people', '3 people', '4+ people'] },
       { type: 'select',   label: 'Where are you in your evaluation?', key: 'tms_timeline', required: true, options: ['Actively selecting in 2026', 'Planning for 2027', 'Just researching'] },
       { type: 'text',     label: 'Which tour?', key: 'tour_preference', required: true },
       { type: 'textarea', label: 'Anything you want to be sure you see?', key: 'interests', required: false },
+      { type: 'acknowledge', label: ACK_TEXT, key: ACK_FIELD_KEY, required: true },
       { type: 'text',     label: 'UTM', key: 'utm', required: false }
     ],
     consent_text: 'I agree to receive updates and accept the privacy policy.'
@@ -764,18 +749,43 @@ window.RT_TOUR = {
     return Promise.resolve(PREVIEW_SCHEMA);
   }
 
+  /* Fields the page guarantees, whatever WP Admin form 3 currently holds.
+     `tour_preference` renders the session picker from page config, `utm` is
+     filled from the ad link, and phone / current system / the eligibility
+     acknowledgement are registration conditions that must not wait on a
+     hand-pasted form schema. Server-side handle_submit stores whatever keys
+     arrive, so a page-owned field is captured exactly like an authored one.
+     If WP Admin later authors any of these keys, its definition wins. */
+  var PAGE_FIELDS = [
+    { type: 'tel',  label: 'Phone', key: 'phone', required: true, placeholder: '(555) 555-5555' },
+    { type: 'text', label: 'Treasury system you use today', key: 'current_system', required: true, placeholder: 'System name, or "none"' },
+    { type: 'text', label: 'Which tour?', key: TOUR_FIELD_KEY, required: true },
+    { type: 'acknowledge', label: ACK_TEXT, key: ACK_FIELD_KEY, required: true },
+    { type: 'text', label: 'UTM', key: 'utm', required: false }
+  ];
+
+  /* Stable sort into FIELD_ORDER. Anything unrecognised keeps its relative
+     order and sits after the last known question, before the acknowledgement. */
+  function orderFields(fields) {
+    var tail = FIELD_ORDER.indexOf(ACK_FIELD_KEY);
+    return fields
+      .map(function (f, i) {
+        var at = FIELD_ORDER.indexOf(f.key);
+        return { f: f, rank: at === -1 ? tail - 0.5 : at, i: i };
+      })
+      .sort(function (a, b) { return (a.rank - b.rank) || (a.i - b.i); })
+      .map(function (x) { return x.f; });
+  }
+
   /* Field set precedence:
-     - WP Admin form 3 authored (any non-email field present): WP Admin wins;
-       the page only guarantees its two owned keys below.
+     - WP Admin form 3 authored (any non-email field present): WP Admin wins
+       for every key it defines; PAGE_FIELDS fills in the rest.
      - WP Admin form 3 still the plugin's stock email-only form: capture the
        full default set (name, company, title, group size, timeline,
-       interests). Server-side handle_submit stores any key, so nothing is
-       lost while WP Admin catches up.
-     The page owns two keys regardless: the session picker renders from
-     config (TOUR_FIELD_KEY) and `utm` is filled from the ad link. Without
-     the picker a submit cannot attribute a session and is refused. */
+       interests) so nothing is lost while WP Admin catches up.
+     Without the picker a submit cannot attribute a session and is refused. */
   function ensurePageFields(schema) {
-    if (schema.preview) return schema;
+    if (schema.preview) { schema.fields = orderFields(schema.fields || []); return schema; }
     var live = (schema.fields || []).slice();
     var authored = live.some(function (f) { return f.key !== 'email'; });
     var fields;
@@ -788,13 +798,10 @@ window.RT_TOUR = {
       });
     }
     var keys = fields.map(function (f) { return f.key; });
-    if (keys.indexOf(TOUR_FIELD_KEY) === -1) {
-      fields.push({ type: 'text', label: 'Which tour?', key: TOUR_FIELD_KEY, required: true });
-    }
-    if (keys.indexOf('utm') === -1) {
-      fields.push({ type: 'text', label: 'UTM', key: 'utm', required: false });
-    }
-    schema.fields = fields;
+    PAGE_FIELDS.forEach(function (d) {
+      if (keys.indexOf(d.key) === -1) { fields.push(Object.assign({}, d)); }
+    });
+    schema.fields = orderFields(fields);
     return schema;
   }
 
@@ -818,6 +825,13 @@ window.RT_TOUR = {
         html += '<div class="rtg-field-group" data-field="' + escAttr(f.key) + '" data-type="tour"><label id="rtTourChoiceLabel">' + escHtml(f.label || 'Which tour?') + mark + '</label><div class="rtg-option-group" id="rtTourChoiceGroup" role="radiogroup" aria-labelledby="rtTourChoiceLabel" data-required="' + (f.required ? '1' : '') + '">';
         html += tourChoiceOptionsHtml(!!f.required);
         html += '</div></div>';
+        return;
+      }
+
+      if (f.type === 'acknowledge') {
+        /* No ' *' marker: the sentence is the requirement, and a lone
+           asterisk after a paragraph of legal text reads as a footnote. */
+        html += '<div class="rtg-field-group rtg-ack-group" data-field="' + escAttr(f.key) + '" data-type="acknowledge"><label for="rtg_' + escAttr(f.key) + '"><input type="checkbox" id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + req + '> <span>' + escHtml(f.label) + '</span></label></div>';
         return;
       }
 
@@ -906,6 +920,18 @@ window.RT_TOUR = {
           }
           if (f.required && !chosenTour) { valid = false; var grp = document.getElementById('rtTourChoiceGroup'); if (grp) grp.querySelectorAll('label').forEach(function (l) { l.classList.add('rtg-invalid'); }); }
           collected[f.key] = chosenTour ? tourChoiceValue(chosenTour) : '';
+          return;
+        }
+        if (f.type === 'acknowledge') {
+          var ack = form.querySelector('[name="' + f.key + '"]');
+          var ackOn = !!(ack && ack.checked);
+          if (f.required && !ackOn) {
+            valid = false;
+            markInvalid(ack);
+            var ackGrp = form.querySelector('.rtg-ack-group');
+            if (ackGrp) ackGrp.classList.add('rtg-invalid');
+          }
+          collected[f.key] = ackOn ? ACK_VALUE : '';
           return;
         }
         if (f.type === 'checkbox' && f.options) {

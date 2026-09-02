@@ -53,7 +53,7 @@ window.RT_TOUR = {
         },
         {
             id: 's2',
-            focus: 'First-time TMS',
+            focus: 'Visibility Tour',
             audience: 'You run treasury on spreadsheets and bank portals.',
             when: 'Monday, November 9',
             time: '1:30–2:45 PM',
@@ -64,7 +64,7 @@ window.RT_TOUR = {
         },
         {
             id: 's3',
-            focus: 'First-time TMS',
+            focus: 'Visibility Tour',
             audience: 'You run treasury on spreadsheets and bank portals.',
             when: 'Tuesday, November 10',
             time: '1:45–3:00 PM',
@@ -198,6 +198,18 @@ window.RT_TOUR = {
         font-size: 0.95rem; color: var(--dark-text); font-weight: 600;
     }
 
+    /* ---- Tour themes ----
+       Replaces the schedule section that used to sit under the form. A reader
+       choosing between two routes needs to know what each one is for; the old
+       list only told them when each one ran, which the picker already says. */
+    .rt-t-themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 34px; margin-top: 18px; }
+    .rt-t-theme h4 {
+        font-size: 1.08rem; font-weight: 700; margin: 0 0 7px;
+        color: var(--deep-purple);
+    }
+    .rt-t-theme p { font-size: 1rem; line-height: 1.6; color: var(--gray-text); margin: 0; }
+    @media (max-width: 700px) { .rt-t-themes { grid-template-columns: 1fr; gap: 22px; } }
+
     /* ---- Spots-left pill ----
        Lives on the tour options inside the form. There is no separate schedule
        section any more: it repeated the picker and put the count where a
@@ -316,7 +328,7 @@ window.RT_TOUR = {
     /* ---- Embed mode (?embed=1): schedule + form only, inside the WP post's
             form card. Chrome the host already draws is removed here. ---- */
     html.rt-t-embed, html.rt-t-embed body { background: transparent; min-height: 0; }
-    html.rt-t-embed .rt-t-hero, html.rt-t-embed #how, html.rt-t-embed #faq,
+    html.rt-t-embed .rt-t-hero, html.rt-t-embed #how, html.rt-t-embed #tours, html.rt-t-embed #faq,
     html.rt-t-embed .rt-t-form-heading,
     html.rt-t-embed .rt-t-form-subtext { display: none; }
     html.rt-t-embed .rt-t-container { padding: 0; max-width: none; }
@@ -378,6 +390,20 @@ window.RT_TOUR = {
         <p>During the stops at each booth, every vendor follows the same script, covers the same topic, in the same amount of time.</p>
         <p>Between stops, we talk through what you just saw: what mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with an independent guide who has been on both sides of this process.</p>
         <p class="rt-t-prose-neutral">We do not accept payment from any TMS vendor for any of these tours. Every vendor on each tour receives the same invitation.</p>
+      </div>
+    </section>
+
+    <section class="rt-t-card" id="tours" aria-labelledby="rt-t-tours-heading">
+      <h3 id="rt-t-tours-heading">The two tours</h3>
+      <div class="rt-t-themes">
+        <div class="rt-t-theme">
+          <h4>TMS Replacement</h4>
+          <p>For teams already running a treasury system and weighing a change. The route visits vendors that could replace what you have, and every stop runs the same scenario &mdash; so what differs between them is the product rather than the pitch.</p>
+        </div>
+        <div class="rt-t-theme">
+          <h4>Visibility Tour</h4>
+          <p>For teams running treasury on spreadsheets and bank portals, where the honest answer to &ldquo;where is our cash right now&rdquo; takes half a morning. The route visits vendors that solve that first, and seeing the same scenario three times is the quickest way to tell a working capability from a promise.</p>
+        </div>
       </div>
     </section>
 
@@ -535,7 +561,9 @@ window.RT_TOUR = {
       sessionId: '',
       session: null,
       label: 'Private tour request',
-      note: 'For teams, larger groups, or quieter evaluations — scheduled individually across both days.'
+      /* Kept to two lines so it does not tower over the session options above
+         it; the "across both days" detail is in the Good to know answer. */
+      note: 'A time that isn’t listed, a team too big for a shared tour, or an evaluation you’d rather not do alongside other companies.'
     });
     return choices;
   }

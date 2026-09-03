@@ -556,14 +556,16 @@ window.RT_TOUR = {
      live count means the capacity is stated instead of a number. */
   function pillFor(s) {
     var state = effectiveState(s);
-    /* Nothing left reads as SOLD OUT. "0 of 10 spots open" is a count that
-       says the opposite of what it means, so the zero case is caught here as
-       well as via effectiveState, and the pill keeps the full/waitlist
-       styling — the tour is closed, but the option still collects interest. */
+    /* Sold out is a state, not a count: "0 of 10 spots open" says the opposite
+       of what it means. effectiveState() owns that seam — it returns
+       'waitlist' the moment remainingFor() reaches 0 — so rem is already
+       guaranteed non-zero by the time the count branches below run. Preserve
+       that invariant if you ever change effectiveState, or the count comes
+       back. The pill reuses the full/waitlist styling: the tour is closed, but
+       the option still collects interest. */
     if (state === 'waitlist' || state === 'full') return '<span class="rt-t-pill rt-t-pill-full">SOLD OUT</span>';
     var rem = remainingFor(s);
     if (rem === null) return '<span class="rt-t-pill rt-t-pill-open">Limited to ' + cfgCapacity(s) + ' practitioners</span>';
-    if (rem === 0) return '<span class="rt-t-pill rt-t-pill-full">SOLD OUT</span>';
     if (rem <= (T.lowSpotsThreshold || 5)) return '<span class="rt-t-pill rt-t-pill-low">Only ' + rem + ' spot' + (rem === 1 ? '' : 's') + ' left</span>';
     return '<span class="rt-t-pill rt-t-pill-open">' + rem + ' of ' + cfgCapacity(s) + ' spots open</span>';
   }

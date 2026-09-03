@@ -1,47 +1,37 @@
 <!--
-  RT Gate config for the 2026 TMS Guidebook download.
+  RT Gate config for the 2026 Real Treasury Tech Selection Guide download.
 
   WP Admin -> Real Treasury Gate setup:
     - Asset:   treasury-tech-selection-guidebook, type "link".
-               Config target_url currently points at a sample WordPress
-               file for testing — swap to the real guidebook PDF/doc
-               URL before this page is promoted out of draft.
-    - Form:    TODO — clone a dedicated form for this asset (do not
-               reuse "General Form"). Set email_settings ->
-               lead_email_mode: confirmation_and_links, so RT Gate
-               emails the download link via the built-in RTG_Email
-               behavior (includes/class-email.php) — no custom email
-               code needed on this page.
-    - Mapping: TODO — create a new mapping (dedicated form ->
-               treasury-tech-selection-guidebook) and put its ID
-               below. Mapping #8 was the old General Form mapping;
-               replace it once the dedicated form/mapping exist so
-               /submit doesn't fall back to every asset General Form
-               is mapped to (see docs/rt-gate.md "One form per page").
+    - Mapping: #8 (General Form -> treasury-tech-selection-guidebook).
+               Every gated asset on the site shares form 2; that is by
+               design, and anything asset-specific lives on the mapping,
+               not the form. Two mapping settings matter here:
+                 resend_segment_id  -> the "Tech Selection Guide —
+                                       Downloads" segment, so each signup
+                                       fires signup.created and the Resend
+                                       automation delivers the guide.
+                 lead_email_mode    -> "none". Resend sends the delivery
+                                       email; leaving this on the form's
+                                       default means the submitter gets
+                                       two emails for one download.
+    - The document URL lives in the Resend template, not in the asset
+      config, because Resend is what delivers it.
 
-  Still a content draft: the preview image, copy, and target_url are
-  placeholders until the real 2026 guide asset is ready.
+  On-page behavior: after a successful submit the browser is redirected
+  to redirectUrl below, navigating window.top so it works while this
+  page is iframe-embedded in WordPress. The document link is never shown
+  on-page — receiving the email is what verifies the address.
 
   Next year: create a new asset (e.g. slug suffixed -2027) and a new
-  mapping, then swap assetSlug/mappingId below. The page URL itself
-  stays evergreen — see chat history for the reasoning on why the
-  year lives in the asset, not the URL.
-
-  On-page behavior: after a successful submit, the browser is
-  redirected to redirectUrl below (a thank-you/landing page) —
-  navigating window.top so it works when this page is iframe-embedded
-  in WordPress. The actual document link is delivered only by the
-  RT Gate confirmation email (lead_email_mode above); it is
-  intentionally never shown on-page. This mirrors the waitlist page's
-  redirect pattern (treasury-tech-selection/waitlist/index.html) but
-  points at a dedicated thank-you page instead of the asset itself.
+  mapping, then swap assetSlug/mappingId below. The page URL stays
+  evergreen — the year lives in the asset, not the URL.
 -->
 <script>
 window.RTG_CONFIG = {
     assetSlug:   'treasury-tech-selection-guidebook', // RT Gate -> Assets
-    mappingId:   8,                                   // TODO: replace with the dedicated form's mapping ID
-    // formId:   123,                                  // Optional: pin a specific form ID
-    redirectUrl: 'https://realtreasury.com/treasury-tech-selection/guidebook/thank-you/'
+    mappingId:   8,                                   // RT Gate -> Mappings
+    redirectUrl: 'https://realtreasury.com/treasury-tech-selection-guide/thank-you/'
 };
 </script>
 

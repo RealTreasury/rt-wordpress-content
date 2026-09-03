@@ -1,11 +1,15 @@
 <!--
-  Thank-you / landing page for the 2026 TMS Guidebook download form.
-  Reached only via redirect from treasury-tech-selection/guidebook/
-  after a successful RT Gate submit (see that page's RTG_CONFIG.redirectUrl).
-  Not itself gated — no RT Gate form or asset here. The actual document
-  link is delivered exclusively by the RT Gate confirmation email
-  (Form -> email_settings.lead_email_mode: confirmation_and_links),
-  intentionally not shown on this page.
+  Thank-you / landing page for the Real Treasury Tech Selection Guide
+  download form. Reached only via redirect from
+  treasury-tech-selection/guidebook/ after a successful RT Gate submit
+  (see that page's RTG_CONFIG.redirectUrl).
+
+  Not itself gated — no RT Gate form or asset here. The document link is
+  delivered exclusively by the Resend automation that fires on the
+  signup.created event, and is intentionally not shown on this page:
+  receiving the email is what verifies the address.
+
+  Lives in WordPress as a child page of /treasury-tech-selection-guide/.
 -->
 <!doctype html>
 <html lang="en">

@@ -1,35 +1,19 @@
 <!--
-  Thank-you / landing page for the Real Treasury Tech Selection Guide
-  download form. Reached only via redirect from
-  treasury-tech-selection/guidebook/ after a successful RT Gate submit
-  (see that page's RTG_CONFIG.redirectUrl).
+  WordPress-native copy of the guide download thank-you page.
+  Source of record; deployed by pasting into the WordPress page as a
+  Custom HTML block. See ../wordpress-page.html for why this page is not
+  on the iframe pipeline.
 
-  Not itself gated — no RT Gate form or asset here. The document link is
-  delivered exclusively by the Resend automation that fires on the
-  signup.created event, and is intentionally not shown on this page:
-  receiving the email is what verifies the address.
-
-  Lives in WordPress as a child page of /treasury-tech-selection-guide/.
+  Reached only by redirect from the download page after a successful
+  RT Gate submit. The document link is delivered by the Resend automation,
+  never shown here — receiving the email is what verifies the address.
 -->
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex, follow" />
-  <title>Check Your Email | Real Treasury Tech Selection Guide</title>
-  <meta name="description" content="Thanks for requesting the Real Treasury Tech Selection Guide — check your inbox for the download link." />
-  <style>
-    html, body { margin: 0; padding: 0; }
-    body {
+<style>
+    .rt-gbty {
         background:
           radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
           radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
           linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
-        min-height: 100vh;
-    }
-
-    .rt-gbty {
         --primary-purple: #7216f4;
         --secondary-purple: #8f47f6;
         --dark-text: #281345;
@@ -58,8 +42,7 @@
         .rt-gbty-heading { font-size: 1.6rem; }
     }
   </style>
-</head>
-<body>
+
 <div class="rt-gbty">
   <div class="rt-gbty-container">
     <div class="rt-gbty-icon">&#9993;</div>
@@ -70,5 +53,3 @@
     <a class="rt-gbty-back" href="https://realtreasury.com">Back to Real Treasury</a>
   </div>
 </div>
-</body>
-</html>

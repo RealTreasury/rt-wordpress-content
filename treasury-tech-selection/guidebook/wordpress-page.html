@@ -1,31 +1,18 @@
 <!--
-  RT Gate config for the 2026 Real Treasury Tech Selection Guide download.
+  WordPress-native copy of the Tech Selection Guide download page.
 
-  WP Admin -> Real Treasury Gate setup:
-    - Asset:   treasury-tech-selection-guidebook, type "link".
-    - Mapping: #8 (General Form -> treasury-tech-selection-guidebook).
-               Every gated asset on the site shares form 2; that is by
-               design, and anything asset-specific lives on the mapping,
-               not the form. Two mapping settings matter here:
-                 resend_segment_id  -> the "Tech Selection Guide —
-                                       Downloads" segment, so each signup
-                                       fires signup.created and the Resend
-                                       automation delivers the guide.
-                 lead_email_mode    -> "none". Resend sends the delivery
-                                       email; leaving this on the form's
-                                       default means the submitter gets
-                                       two emails for one download.
-    - The document URL lives in the Resend template, not in the asset
-      config, because Resend is what delivers it.
+  This file is the source of record; deploying it means pasting it into the
+  WordPress page as a Custom HTML block. It is deliberately NOT on the
+  GitHub Pages -> iframe pipeline the other landing pages use, because:
+    - same-origin removes rt-gate's github.io CORS dependency,
+    - there is no cross-origin iframe height to negotiate, and
+    - iframe content is invisible to search and LLM crawlers, which is a
+      real cost on a lead-generation page.
+  The trade is that a push here does not deploy; the last mile is a paste.
+  Same model as header/main-menu (the site banner).
 
-  On-page behavior: after a successful submit the browser is redirected
-  to redirectUrl below, navigating window.top so it works while this
-  page is iframe-embedded in WordPress. The document link is never shown
-  on-page — receiving the email is what verifies the address.
-
-  Next year: create a new asset (e.g. slug suffixed -2027) and a new
-  mapping, then swap assetSlug/mappingId below. The page URL stays
-  evergreen — the year lives in the asset, not the URL.
+  No document wrapper (doctype / html / head / body) — WordPress supplies it.
+  Every rule is scoped to .rt-guidebook / .rt-gb-*; nothing touches the theme.
 -->
 <script>
 window.RTG_CONFIG = {
@@ -35,25 +22,14 @@ window.RTG_CONFIG = {
 };
 </script>
 
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2026 Real Treasury Tech Selection Guide | Download</title>
-  <meta name="description" content="Download the 2026 Real Treasury Tech Selection Guide — the practitioner-led guide to evaluating and selecting treasury technology." />
-  <style>
-    /* Brand-forward light background (no dark theme) so embeds match RT pages. */
-    html, body { margin: 0; padding: 0; }
-    body {
+<style>
+    /* Native WordPress page, not a standalone document: the brand background
+       lives on the scoped wrapper so it never restyles the theme's body. */
+    .rt-guidebook {
         background:
           radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
           radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
           linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
-        min-height: 100vh;
-    }
-
-    .rt-guidebook {
         --primary-purple: #7216f4;
         --secondary-purple: #8f47f6;
         --deep-purple: #5b0acd;
@@ -159,8 +135,7 @@ window.RTG_CONFIG = {
         .rt-gb-content-section { padding-bottom: 36px; }
     }
   </style>
-</head>
-<body>
+
 <div class="rt-guidebook">
 
   <section class="rt-gb-hero" aria-labelledby="rt-gb-hero-heading">
@@ -283,7 +258,12 @@ window.RTG_CONFIG = {
         f.options.forEach(function(o, i){
           var it = f.type === 'radio' ? 'radio' : 'checkbox';
           var nm = f.type === 'radio' ? f.key : f.key + '[]';
-          html += '<label><input type="' + it + '" name="' + escAttr(nm) + '" value="' + escAttr(o) + '"' + (i === 0 && f.required ? req : '') + '> ' + escHtml(o) + '</label>';
+          // Keep the && off the line that builds HTML: WordPress's texturize
+          // pass rewrote it to &#038;&#038; there, which is a syntax error
+          // inside <script> and silently killed the whole form.
+          var reqAttr = '';
+          if (i === 0) { if (f.required) { reqAttr = req; } }
+          html += '<label><input type="' + it + '" name="' + escAttr(nm) + '" value="' + escAttr(o) + '"' + reqAttr + '> ' + escHtml(o) + '</label>';
         });
         html += '</div>';
       } else {
@@ -342,20 +322,14 @@ window.RTG_CONFIG = {
       fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
         .then(parseJsonOrThrow)
         .then(function(){
-          // The document link itself is delivered only via the RT Gate
-          // confirmation email (Form -> email_settings.lead_email_mode).
-          // On-page we just move the visitor to the thank-you page.
+          // The document link is delivered only by the Resend automation
+          // that fires on the signup.created event. On-page we just move
+          // the visitor to the thank-you page.
           if (!CONFIG_REDIRECT_URL) {
             if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = "You're all set — check your email for the download link."; }
             return;
           }
           if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = 'Success! Redirecting...'; }
-          try {
-            if (window.top && window.top !== window.self) {
-              window.top.location.href = CONFIG_REDIRECT_URL;
-              return;
-            }
-          } catch (e) { /* cross-origin parent; fall through */ }
           window.location.href = CONFIG_REDIRECT_URL;
         })
         .catch(function(err){ if (btn) btn.disabled = false; if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = (err && err.message) || 'Submission failed.'; } });
@@ -367,34 +341,3 @@ window.RTG_CONFIG = {
     .catch(function(err){ container.innerHTML = '<p style="color:#b91c1c;">Unable to load form. ' + escHtml((err && err.message) || 'Unknown error') + '</p>'; });
 })();
 </script>
-
-<script>
-/* iFrame auto-resize — posts content height to the parent so the embed
-   can't clip the form below the submit button. Pairs with
-   assets/js/iframe-resizer.js on the WordPress side. No-op when this
-   page is opened standalone. */
-(function () {
-  if (window.parent === window) return;
-  var parentFrameId = null;
-  try { parentFrameId = window.frameElement && window.frameElement.id; } catch (e) { parentFrameId = null; }
-  var id = parentFrameId
-    || (document.body && document.body.dataset && document.body.dataset.iframeId)
-    || 'iframe-default';
-  function postHeight() {
-    var h = (document.documentElement && document.documentElement.scrollHeight) || (document.body && document.body.scrollHeight) || 0;
-    if (window.parent && typeof window.parent.postMessage === 'function') {
-      window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*');
-    }
-  }
-  var rafId;
-  function schedule() { if (rafId) cancelAnimationFrame(rafId); rafId = requestAnimationFrame(postHeight); }
-  window.addEventListener('load', schedule, { passive: true });
-  window.addEventListener('resize', schedule, { passive: true });
-  if (typeof MutationObserver !== 'undefined' && document.body) {
-    new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
-  }
-  schedule();
-})();
-</script>
-</body>
-</html>

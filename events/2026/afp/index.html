@@ -20,9 +20,12 @@
       page adds phone, current system and the eligibility acknowledgement on
       top of whatever that form defines (see PAGE_FIELDS).
     - One 'link' asset + mapping PER SESSION plus one for private-tour
-      requests, so registrations count per session. The open session's asset
-      config must contain "public_stats": true for the live spots display;
-      the endpoint is GET /wp-json/rtg/v1/stats/registrations.
+      requests, so registrations count per session. The fourth choice,
+      "None of These Work for Me", has no asset of its own yet and records
+      through the private-tour mapping (see RT_TOUR.generalInterest).
+      The open session's asset config must contain "public_stats": true for
+      the live spots display; the endpoint is
+      GET /wp-json/rtg/v1/stats/registrations.
     - The live counter fails soft: if the stats endpoint or flag is missing,
       the page shows "Limited to 10 practitioners" instead of a number.
 -->
@@ -88,12 +91,21 @@ window.RT_TOUR = {
     privateTour: {
         assetSlug: 'afp-2026-tour-private',
         mappingId: 13
+    },
+    /* "None of These Work for Me" — general interest, kept separate from a
+       custom-tour request. No RT Gate asset exists for it yet, so these stay
+       null and the choice records through the private-tour mapping; the
+       submitted tour_preference value is what tells the two apart. Create an
+       asset + mapping and fill these in to split them — no other change. */
+    generalInterest: {
+        assetSlug: null,
+        mappingId: null
     }
 };
 </script>
 <script>(function(){try{if(/[?&]embed=1(&|$)/.test(location.search)){document.documentElement.className+=' rt-t-embed';}}catch(e){}})();</script>
   <title>The Real Treasury Guided Vendor Tours — AFP 2026 Las Vegas</title>
-  <meta name="description" content="Free small-group guided tours of the TMS vendors in the AFP 2026 exhibit hall, Mandalay Bay, Las Vegas, November 9–10. Three vendor stops in 75 minutes, every vendor on the same script, with an independent guide." />
+  <meta name="description" content="Free small-group guided tours of the TMS vendors in the AFP 2026 exhibit hall, Mandalay Bay, Las Vegas, November 9–10. Three vendor stops in 75 minutes, every vendor on the same script, with independent guides." />
   <style>
     html, body { margin: 0; padding: 0; }
     body {
@@ -380,21 +392,23 @@ window.RT_TOUR = {
       </div>
     </section>
 
-    <!-- Owner's copy. Two typos corrected at his request on September 2, 2026
-         ("cover" -> "covers"; "; What mattered" -> ": what mattered").
-         Otherwise verbatim — do not re-edit it. -->
+    <!-- Owner's copy. Three changes made at his request, so a later pass does
+         not read them as drift: two typos on September 2, 2026 ("cover" ->
+         "covers"; "; What mattered" -> ": what mattered"), and on September 3,
+         2026 "an independent guide who has been" -> "independent guides who
+         have been". Otherwise verbatim — do not re-edit it. -->
     <section class="rt-t-card" id="how" aria-labelledby="rt-t-how-heading">
       <h3 id="rt-t-how-heading">What You Get</h3>
       <div class="rt-t-prose">
         <p>A small, guided group &ndash; limited to 10 treasury professionals per tour &ndash; visits three vendor stops in 75 minutes.</p>
         <p>During the stops at each booth, every vendor follows the same script, covers the same topic, in the same amount of time.</p>
-        <p>Between stops, we talk through what you just saw: what mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with an independent guide who has been on both sides of this process.</p>
+        <p>Between stops, we talk through what you just saw: what mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with independent guides who have been on both sides of this process.</p>
         <p class="rt-t-prose-neutral">We do not accept payment from any TMS vendor for any of these tours. Every vendor on each tour receives the same invitation.</p>
       </div>
     </section>
 
     <section class="rt-t-card" id="tours" aria-labelledby="rt-t-tours-heading">
-      <h3 id="rt-t-tours-heading">The two tours</h3>
+      <h3 id="rt-t-tours-heading">The Two Tours</h3>
       <div class="rt-t-themes">
         <div class="rt-t-theme">
           <h4>TMS Replacement</h4>
@@ -414,27 +428,27 @@ window.RT_TOUR = {
         <div id="rtTourFormContainer"><p>Loading form&hellip;</p></div>
       </div>
       <p class="rt-t-fineprint" id="rtTourGroupFineprint" hidden>
-        Bringing a group? Register once with your group size &mdash; bigger teams usually fit a private tour better.
+        Bringing a group? Register once with your group size &mdash; bigger teams usually fit a custom tour better.
       </p>
     </section>
 
     <section class="rt-t-card" id="faq" aria-labelledby="rt-t-faq-heading">
-      <h3 id="rt-t-faq-heading">Good to know</h3>
+      <h3 id="rt-t-faq-heading">Good to Know</h3>
       <div class="rt-t-faq-item">
         <h4>Is it really free?</h4>
         <p>Yes. Attendees don&rsquo;t pay, vendors don&rsquo;t pay.</p>
       </div>
       <div class="rt-t-faq-item">
         <h4>Which vendors are on my route?</h4>
-        <p>Routes are grouped by focus, not published vendor by vendor. Every TMS vendor on our market map with an AFP booth is invited, and each appears on one route &mdash; so you leave with 3 guided possible candidates.</p>
+        <p>Routes are grouped by focus, not published vendor by vendor. Every TMS vendor on our market map with an AFP booth is invited, and each appears on one route. Your route is built around your situation &mdash; replacing an existing system or improving treasury visibility &mdash; so you meet with three candidates selected around your needs.</p>
       </div>
       <div class="rt-t-faq-item">
         <h4>Will vendors know I&rsquo;m coming?</h4>
-        <p>Vendors get the attendee list shortly before the tour. Prefer to evaluate quietly? Request a private tour.</p>
+        <p>Vendors get the attendee list shortly before the tour. Prefer to evaluate quietly? <em>Request a Custom Tour</em>.</p>
       </div>
       <div class="rt-t-faq-item">
         <h4>What if none of the times work for me?</h4>
-        <p>Schedule a private tour. Pick <em>Private tour request</em> in the form above &mdash; we schedule those individually across both days.</p>
+        <p>Select <em>None of These Work for Me</em> when you register and leave your details. We&rsquo;ll reach out to see what may work.</p>
       </div>
       <div class="rt-t-faq-item">
         <h4>Am I signing up to be sold something?</h4>
@@ -542,7 +556,14 @@ window.RT_TOUR = {
      live count means the capacity is stated instead of a number. */
   function pillFor(s) {
     var state = effectiveState(s);
-    if (state === 'waitlist' || state === 'full') return '<span class="rt-t-pill rt-t-pill-full">Full &mdash; waitlist open</span>';
+    /* Sold out is a state, not a count: "0 of 10 spots open" says the opposite
+       of what it means. effectiveState() owns that seam — it returns
+       'waitlist' the moment remainingFor() reaches 0 — so rem is already
+       guaranteed non-zero by the time the count branches below run. Preserve
+       that invariant if you ever change effectiveState, or the count comes
+       back. The pill reuses the full/waitlist styling: the tour is closed, but
+       the option still collects interest. */
+    if (state === 'waitlist' || state === 'full') return '<span class="rt-t-pill rt-t-pill-full">SOLD OUT</span>';
     var rem = remainingFor(s);
     if (rem === null) return '<span class="rt-t-pill rt-t-pill-open">Limited to ' + cfgCapacity(s) + ' practitioners</span>';
     if (rem <= (T.lowSpotsThreshold || 5)) return '<span class="rt-t-pill rt-t-pill-low">Only ' + rem + ' spot' + (rem === 1 ? '' : 's') + ' left</span>';
@@ -563,7 +584,7 @@ window.RT_TOUR = {
           sessionId: s.id,
           session: s,
           label: sessionLabelFor(s, full),
-          note: full ? 'This tour is full — we’ll contact you if a spot opens or a new session is released.' : (s.audience || ''),
+          note: full ? 'This tour is full — we’ll contact you if a spot opens.' : (s.audience || ''),
           pill: pillFor(s)
         });
       }
@@ -572,10 +593,28 @@ window.RT_TOUR = {
       kind: 'private',
       sessionId: '',
       session: null,
-      label: 'Private tour request',
+      /* Customer-facing label only. The submitted value stays "Private tour
+         request" (tourChoiceValue) and the mapping stays the private-tour
+         asset, so the rename touches nothing downstream. */
+      label: 'Request a Custom Tour',
       /* Kept to two lines so it does not tower over the session options above
-         it; the "across both days" detail is in the Good to know answer. */
-      note: 'A time that isn’t listed, a team too big for a shared tour, or an evaluation you’d rather not do alongside other companies.'
+         it; the "across both days" detail is in the Good to Know answer.
+         "A time that isn't listed" used to lead this note and was dropped on
+         September 3, 2026 — that is what "None of These Work for Me" below is
+         for, and naming it here blurred the two. */
+      note: 'A team too big for a shared tour, or an evaluation you’d rather not do alongside other companies.'
+    });
+    /* Deliberately NOT folded into the custom-tour option above. That one is
+       someone who knows they want a different arrangement; this one is
+       someone interested for whom the listed tours or timing simply do not
+       work. Low pressure on purpose — it keeps the interest instead of
+       sending them away to check back later. */
+    choices.push({
+      kind: 'none',
+      sessionId: '',
+      session: null,
+      label: 'None of These Work for Me',
+      note: 'Leave your details and we’ll contact you.'
     });
     return choices;
   }
@@ -586,7 +625,11 @@ window.RT_TOUR = {
 
   /* The submitted field value, computed from live state at submit time. */
   function tourChoiceValue(chosen) {
+    /* The private-tour value predates the "Request a Custom Tour" label and is
+       kept as-is: it is what already sits on existing leads and in the RT Gate
+       exports, and the label is only what a visitor reads. */
     if (chosen.kind === 'private') return 'Private tour request';
+    if (chosen.kind === 'none') return 'None of These Work for Me';
     return sessionLabelFor(chosen.session, isFullState(effectiveState(chosen.session)));
   }
 
@@ -606,7 +649,14 @@ window.RT_TOUR = {
       if (sess && sess.assetSlug) return viaGate(sess.assetSlug);
       return Promise.resolve(null);
     }
-    var p = T.privateTour || {};
+    /* 'none' resolves through its own config when one exists, and otherwise
+       falls back to the private-tour mapping — there is no RT Gate asset for
+       general interest yet, and refusing the submit would lose the lead the
+       option exists to capture. The two stay distinguishable on the lead by
+       their tour_preference value. */
+    var p = (chosen.kind === 'none' && T.generalInterest && (T.generalInterest.mappingId || T.generalInterest.assetSlug))
+      ? T.generalInterest
+      : (T.privateTour || {});
     if (p.mappingId) return Promise.resolve(Number(p.mappingId));
     if (p.assetSlug) return viaGate(p.assetSlug);
     return Promise.resolve(null);
@@ -831,7 +881,10 @@ window.RT_TOUR = {
     }
     html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
     if (schema.preview) {
-      html += '<button type="submit" class="rtg-submit-btn" disabled>Registration opens shortly</button>';
+      /* Reached when the RT Gate schema cannot be fetched, not when
+         registration is closed — registration is open. Saying "opens shortly"
+         here told visitors the opposite of the truth during an outage. */
+      html += '<button type="submit" class="rtg-submit-btn" disabled>Registration form unavailable</button>';
     } else {
       html += '<button type="submit" class="rtg-submit-btn">Request my spot</button>';
     }
@@ -880,9 +933,9 @@ window.RT_TOUR = {
           var selTour = form.querySelector('[name="' + TOUR_FIELD_KEY + '"]:checked');
           if (selTour) {
             var choiceKind = selTour.getAttribute('data-kind');
-            chosenTour = choiceKind === 'private'
-              ? { kind: 'private', session: null }
-              : { kind: 'session', session: findSession(selTour.getAttribute('data-session-id')) };
+            chosenTour = choiceKind === 'session'
+              ? { kind: 'session', session: findSession(selTour.getAttribute('data-session-id')) }
+              : { kind: choiceKind, session: null };
             if (chosenTour.kind === 'session' && !chosenTour.session) { chosenTour = null; }
           }
           if (f.required && !chosenTour) { valid = false; var grp = document.getElementById('rtTourChoiceGroup'); if (grp) grp.querySelectorAll('label').forEach(function (l) { l.classList.add('rtg-invalid'); }); }
@@ -932,6 +985,7 @@ window.RT_TOUR = {
 
       var payload = { form_id: schema.form_id, fields: collected, consent: true, honeypot: '' };
       var isPrivate = chosenTour.kind === 'private';
+      var isNone = chosenTour.kind === 'none';
       var isWaitlist = false;
 
       /* Refresh counts first: the boot-time snapshot can be stale by submit
@@ -944,7 +998,7 @@ window.RT_TOUR = {
              the front of the label, and a success headline that depends on
              where a word sits in a display string breaks the next time that
              string is reworded. */
-          isWaitlist = !isPrivate && isFullState(effectiveState(chosenTour.session));
+          isWaitlist = chosenTour.kind === 'session' && isFullState(effectiveState(chosenTour.session));
           return resolveMappingId(chosenTour);
         })
         .then(function (mappingId) {
@@ -961,10 +1015,14 @@ window.RT_TOUR = {
         .then(function () {
           /* Inline success on purpose — the mapped asset's target_url points
              back at this page, so a redirect would just reload the form. */
-          var headline = isWaitlist ? 'You’re on the waitlist' : (isPrivate ? 'Private tour requested' : 'You’re on the list');
+          var headline = isWaitlist ? 'You’re on the waitlist'
+            : (isPrivate ? 'Custom tour requested'
+            : (isNone ? 'Thanks — we have your details' : 'You’re on the list'));
           var detail = isPrivate
             ? 'We’ll reach out to plan a time and route that fits your team across the two exhibit-hall days.'
-            : 'Watch your inbox, we will follow up to confirm your spot and share additional materials and information ahead of AFP 2026 Las Vegas.';
+            : (isNone
+              ? 'We’ll reach out to see what may work.'
+              : 'Watch your inbox, we will follow up to confirm your spot and share additional materials and information ahead of AFP 2026 Las Vegas.');
           container.innerHTML = '<div class="rt-t-success" role="status" aria-live="polite"><h4 id="rtTourSuccessHeading" tabindex="-1">' + headline + '</h4><p>' + detail + '</p></div>';
           var successHeading = document.getElementById('rtTourSuccessHeading');
           if (successHeading) { successHeading.focus(); }
@@ -990,7 +1048,10 @@ window.RT_TOUR = {
         renderForm(ensurePageFields(schema));
       })
       .catch(function () {
-        container.innerHTML = '<p style="text-align:center;color:#615c73;">Registration opens shortly &mdash; check back soon.</p>';
+        /* Same rule as the disabled button above: this is a load failure,
+           not a closed registration. Give them a way through rather than
+           telling them to come back later. */
+        container.innerHTML = '<p style="text-align:center;color:#615c73;">The registration form didn&rsquo;t load. Refresh the page, or email <a href="mailto:contact@realtreasury.com">contact@realtreasury.com</a> and we&rsquo;ll get you registered.</p>';
       });
   }
 })();

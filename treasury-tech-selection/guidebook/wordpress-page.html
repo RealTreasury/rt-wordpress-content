@@ -13,6 +13,14 @@
 
   No document wrapper (doctype / html / head / body) — WordPress supplies it.
   Every rule is scoped to .rt-guidebook / .rt-gb-*; nothing touches the theme.
+
+  redirectUrl is the thank-you page, a WordPress child of /treasury-tech-selection-guide/
+  (page 4202) with slug "thank-you". Its source is ./thank-you/wordpress-page.html;
+  the repo path is not a URL.
+
+  Release precondition: the RT Gate asset's target_url must point at the uploaded
+  guide PDF before this page is published. That URL is what the Resend delivery
+  email carries; the page itself never shows it.
 -->
 <script>
 window.RTG_CONFIG = {
@@ -62,7 +70,7 @@ window.RTG_CONFIG = {
 
     /* ---- Side-by-side row ---- */
     .rt-gb-content-section { padding: 48px 0 72px; }
-    .rt-gb-content-row { display: flex; gap: 32px; align-items: stretch; transition: opacity 0.5s ease, transform 0.5s ease; }
+    .rt-gb-content-row { display: flex; gap: 32px; align-items: stretch; }
 
     /* ---- Preview Card ---- */
     .rt-gb-preview { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 24px 20px 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); position: relative; overflow: visible; }
@@ -113,8 +121,7 @@ window.RTG_CONFIG = {
         .rt-gb-hero { padding: 32px 0 20px; }
         .rt-gb-title { font-size: 2.25rem; }
         .rt-gb-subtitle { font-size: 1.05rem; }
-        /* Surface the form first so it isn't pushed below the preview
-           image (and out of the embedding iframe's visible area). */
+        /* Surface the form first so it isn't pushed below the preview image. */
         .rt-gb-content-row { flex-direction: column-reverse; gap: 28px; }
         .rt-gb-content-section { padding: 20px 0 44px; }
         .rt-gb-form-card { padding: 28px 22px; width: 100%; }
@@ -148,7 +155,7 @@ window.RTG_CONFIG = {
 
   <section class="rt-gb-content-section" aria-label="Guidebook download">
     <div class="rt-gb-container">
-      <div id="rtGbContentRow" class="rt-gb-content-row">
+      <div class="rt-gb-content-row">
 
         <!-- Left: Guide preview image + highlights -->
         <div class="rt-gb-preview">
@@ -166,9 +173,9 @@ window.RTG_CONFIG = {
         </div>
 
         <!-- Right: Download request form card -->
-        <div id="rtGbFormCard" class="rt-gb-form-card" role="region" aria-labelledby="rt-gb-form-heading">
+        <div class="rt-gb-form-card" role="region" aria-labelledby="rt-gb-form-heading">
           <h2 id="rt-gb-form-heading" class="rt-gb-form-heading">Get the Guide</h2>
-          <p class="rt-gb-form-subtext" id="rtGbFormSubtext">Fill out the short form below and we'll email you the download link.</p>
+          <p class="rt-gb-form-subtext">Fill out the short form below and we'll email you the download link.</p>
 
           <div class="rt-gb-form-wrap">
             <div id="rtGbFormContainer"><p>Loading form...</p></div>
@@ -322,9 +329,13 @@ window.RTG_CONFIG = {
       fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
         .then(parseJsonOrThrow)
         .then(function(){
-          // The document link is delivered only by the Resend automation
-          // that fires on the signup.created event. On-page we just move
-          // the visitor to the thank-you page.
+          // The /submit response is deliberately ignored. For a link-type
+          // asset rt-gate sets primary_redirect_url to the asset's target_url,
+          // which here is the guide PDF itself. Following it (as the waitlist
+          // page does for its own redirect) would hand the file to anyone who
+          // typed an address, and the point of this gate is that only a real
+          // inbox receives the link. Delivery is the Resend automation on
+          // signup.created; on-page we only move the visitor to the thank-you page.
           if (!CONFIG_REDIRECT_URL) {
             if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = "You're all set — check your email for the download link."; }
             return;

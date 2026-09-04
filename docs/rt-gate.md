@@ -109,6 +109,18 @@ here; never add new content there.
   gate (mapping #7). Custom variant: reveals a live YouTube embed rather than a
   rehosted `<video>`, and unlocks the worksheet download in the same submit.
 - `treasury-tech-selection/waitlist/index.html` — waitlist signup (mapping #5)
+- `treasury-tech-selection/guidebook/wordpress-page.html` — 2026 Tech Selection
+  Guide download request (mapping #8). **WordPress-native, not on the GitHub
+  Pages iframe pipeline:** the file is pasted into the WordPress page as a Custom
+  HTML block, so a push here does not deploy (same model as `header/main-menu`).
+  The header comment says why. `link`-type asset; on submit the page redirects to
+  `https://realtreasury.com/treasury-tech-selection-guide/thank-you/` (source:
+  `treasury-tech-selection/guidebook/thank-you/wordpress-page.html`) instead of
+  revealing the document. It deliberately ignores the `/submit` response's
+  `primary_redirect_url`, which for a `link` asset is the PDF itself. The download
+  link is delivered by the Resend automation on `signup.created`, so mapping #8
+  needs `lead_email_mode: none` or every downloader gets two emails. Before
+  publishing: the asset's `target_url` must be the uploaded guide PDF.
 
 ## One form per page
 

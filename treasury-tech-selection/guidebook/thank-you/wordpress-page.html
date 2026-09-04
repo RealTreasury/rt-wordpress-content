@@ -1,0 +1,55 @@
+<!--
+  WordPress-native copy of the guide download thank-you page.
+  Source of record; deployed by pasting into the WordPress page as a
+  Custom HTML block. See ../wordpress-page.html for why this page is not
+  on the iframe pipeline.
+
+  Reached only by redirect from the download page after a successful
+  RT Gate submit. The document link is delivered by the Resend automation,
+  never shown here — receiving the email is what verifies the address.
+-->
+<style>
+    .rt-gbty {
+        background:
+          radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
+          radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
+          linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .rt-gbty *, .rt-gbty *::before, .rt-gbty *::after { box-sizing: border-box; }
+    .rt-gbty a { color: var(--primary-purple); }
+
+    .rt-gbty-container { max-width: 640px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+
+    .rt-gbty-icon { width: 64px; height: 64px; margin: 0 auto 24px; border-radius: 50%; background: rgba(114,22,244,0.1); display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--primary-purple); }
+    .rt-gbty-heading { font-size: 2rem; font-weight: 800; margin: 0 0 16px; background: linear-gradient(90deg, #2f1850 0%, #5b0acd 48%, #7216f4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .rt-gbty-text { font-size: 1.05rem; color: var(--gray-text); margin: 0 0 12px; }
+    .rt-gbty-note { font-size: 0.9rem; color: var(--gray-text); margin: 24px 0 0; }
+    .rt-gbty-back { display: inline-block; margin-top: 32px; padding: 14px 28px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
+    .rt-gbty-back:hover { filter: brightness(1.05); }
+
+    @media (max-width: 480px) {
+        .rt-gbty-container { padding: 56px 20px; }
+        .rt-gbty-heading { font-size: 1.6rem; }
+    }
+  </style>
+
+<div class="rt-gbty">
+  <div class="rt-gbty-container">
+    <div class="rt-gbty-icon">&#9993;</div>
+    <h1 class="rt-gbty-heading">Check your inbox</h1>
+    <p class="rt-gbty-text">We've sent the download link for the 2026 Real Treasury Tech Selection Guide to the email address you gave us.</p>
+    <p class="rt-gbty-text">Don't see it in a minute or two? Check spam/junk, or search for an email from Real Treasury.</p>
+    <p class="rt-gbty-note">Questions in the meantime? Reach out any time at <a href="mailto:contact@realtreasury.com">contact@realtreasury.com</a>.</p>
+    <a class="rt-gbty-back" href="https://realtreasury.com">Back to Real Treasury</a>
+  </div>
+</div>

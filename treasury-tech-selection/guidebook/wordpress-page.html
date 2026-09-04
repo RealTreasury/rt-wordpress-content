@@ -1,0 +1,354 @@
+<!--
+  WordPress-native copy of the Tech Selection Guide download page.
+
+  This file is the source of record; deploying it means pasting it into the
+  WordPress page as a Custom HTML block. It is deliberately NOT on the
+  GitHub Pages -> iframe pipeline the other landing pages use, because:
+    - same-origin removes rt-gate's github.io CORS dependency,
+    - there is no cross-origin iframe height to negotiate, and
+    - iframe content is invisible to search and LLM crawlers, which is a
+      real cost on a lead-generation page.
+  The trade is that a push here does not deploy; the last mile is a paste.
+  Same model as header/main-menu (the site banner).
+
+  No document wrapper (doctype / html / head / body) — WordPress supplies it.
+  Every rule is scoped to .rt-guidebook / .rt-gb-*; nothing touches the theme.
+
+  redirectUrl is the thank-you page, a WordPress child of /treasury-tech-selection-guide/
+  (page 4202) with slug "thank-you". Its source is ./thank-you/wordpress-page.html;
+  the repo path is not a URL.
+
+  Release precondition: the RT Gate asset's target_url must point at the uploaded
+  guide PDF before this page is published. That URL is what the Resend delivery
+  email carries; the page itself never shows it.
+-->
+<script>
+window.RTG_CONFIG = {
+    assetSlug:   'treasury-tech-selection-guidebook', // RT Gate -> Assets
+    mappingId:   8,                                   // RT Gate -> Mappings
+    redirectUrl: 'https://realtreasury.com/treasury-tech-selection-guide/thank-you/'
+};
+</script>
+
+<style>
+    /* Native WordPress page, not a standalone document: the brand background
+       lives on the scoped wrapper so it never restyles the theme's body. */
+    .rt-guidebook {
+        background:
+          radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
+          radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
+          linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --deep-purple: #5b0acd;
+        --lavender-pink: #c77dff;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        --white: #ffffff;
+        --off-white: #f8f8f8;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        --gradient-light: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .rt-guidebook *, .rt-guidebook *::before, .rt-guidebook *::after { box-sizing: border-box; }
+    .rt-guidebook img { max-width: 100%; height: auto; }
+    .rt-guidebook a { color: inherit; text-decoration: none; }
+
+    /* ---- Layout ---- */
+    .rt-gb-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---- Hero ---- */
+    .rt-gb-hero { background: transparent; padding: 60px 0 48px; text-align: center; position: relative; overflow: hidden; }
+    .rt-gb-hero .rt-gb-container { position: relative; z-index: 2; }
+    .rt-gb-badge { display: inline-block; background: rgba(114,22,244,0.1); border: 1px solid rgba(114,22,244,0.28); border-radius: 20px; padding: 8px 20px; font-size: 0.875rem; font-weight: 600; color: #5b0acd; margin-bottom: 24px; }
+    .rt-gb-title { font-size: 3rem; font-weight: 800; line-height: 1.15; margin-bottom: 20px; background: linear-gradient(90deg, #2f1850 0%, #5b0acd 48%, #7216f4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; padding-bottom: 0.08em; }
+    .rt-gb-subtitle { font-size: 1.15rem; color: #4f4c63; line-height: 1.6; max-width: 720px; margin: 0 auto; font-weight: 400; }
+
+    /* ---- Side-by-side row ---- */
+    .rt-gb-content-section { padding: 48px 0 72px; }
+    .rt-gb-content-row { display: flex; gap: 32px; align-items: stretch; }
+
+    /* ---- Preview Card ---- */
+    .rt-gb-preview { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 24px 20px 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); position: relative; overflow: visible; }
+    .rt-gb-preview-label { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(199,125,255,0.3); color: var(--dark-text); border-radius: 16px; padding: 12px 20px; box-shadow: 0 8px 20px rgba(91, 10, 205, 0.12); text-align: center; line-height: 1.3; min-width: 320px; max-width: calc(100% - 36px); margin: 0; }
+    .rt-gb-preview-label strong { display: block; font-size: 1rem; font-weight: 700; margin: 0 0 4px 0; white-space: nowrap; }
+    .rt-gb-preview-label span { display: block; font-size: 1.1rem; color: var(--lavender-pink); font-weight: 600; opacity: 0.95; margin: 0; }
+    .rt-gb-preview img { width: 100%; height: auto; border-radius: 10px; display: block; margin-top: 18px; }
+    .rt-gb-preview-list { list-style: none; margin: 18px 0 0; padding: 0; }
+    .rt-gb-preview-list li { position: relative; padding-left: 26px; margin: 10px 0; font-size: 0.95rem; color: var(--dark-text); }
+    .rt-gb-preview-list li::before { content: "✓"; position: absolute; left: 0; color: var(--primary-purple); font-weight: 700; }
+
+    /* ---- Form Card ---- */
+    .rt-gb-form-card { flex: 1 1 0; min-width: 0; background: #ffffff; border: 2px solid rgba(114,22,244,0.16); border-radius: 20px; padding: 48px 40px; box-shadow: 0 14px 36px rgba(91,10,205,0.08); position: relative; }
+    .rt-gb-form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient-primary); border-radius: 18px 18px 0 0; }
+    .rt-gb-form-heading { font-size: 1.5rem; font-weight: 700; color: var(--dark-text); margin: 0 0 8px; text-align: center; }
+    .rt-gb-form-subtext { font-size: 0.95rem; color: var(--gray-text); text-align: center; margin-bottom: 32px; }
+
+    /* ---- Embedded Form ---- */
+    .rt-gb-form-wrap .rtg-field-group { margin-bottom: 14px; }
+    .rt-gb-form-wrap label { display:block; font-size:0.9rem; font-weight:600; color: var(--dark-text); margin-bottom: 6px; }
+    .rt-gb-form-wrap input, .rt-gb-form-wrap select, .rt-gb-form-wrap textarea { width:100%; padding:12px 14px; border:1px solid #d8c9f7; border-radius:10px; font: inherit; background: #fff; color: var(--dark-text); }
+    .rt-gb-form-wrap select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--primary-purple) 50%), linear-gradient(135deg, var(--primary-purple) 50%, transparent 50%); background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
+    .rt-gb-form-wrap .rtg-option-group { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+    .rt-gb-form-wrap .rtg-option-group label { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; margin: 0; }
+    .rt-gb-form-wrap .rtg-option-group input { width: auto; padding: 0; }
+    .rt-gb-form-wrap .rtg-consent-group { margin: 14px 0 8px; font-size: 0.85rem; color: var(--gray-text); }
+    .rt-gb-form-wrap .rtg-consent-group label { display: flex; gap: 8px; align-items: flex-start; font-weight: 500; }
+    .rt-gb-form-wrap .rtg-consent-group input { width: auto; margin-top: 3px; }
+    .rt-gb-form-wrap .rtg-invalid { border-color: #e53e3e !important; outline-color: rgba(229,62,62,0.4) !important; }
+    .rt-gb-form-wrap .rtg-submit-btn { width:100%; padding:14px 20px; border:0; border-radius:12px; color:#fff; font-weight:700; background: linear-gradient(135deg, rgba(114,22,244,0.95), rgba(143,71,246,0.95)); cursor:pointer; }
+    .rt-gb-form-wrap .rtg-submit-btn[disabled] { opacity: 0.7; cursor: not-allowed; }
+    .rt-gb-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
+    .rt-gb-form-wrap .rtg-response.rtg-error { color: #b91c1c; }
+    .rt-gb-form-wrap .rtg-response.rtg-success { color: #047857; }
+    .rt-gb-form-wrap input:focus, .rt-gb-form-wrap select:focus, .rt-gb-form-wrap textarea:focus { outline: 2px solid rgba(114,22,244,0.5); outline-offset: 1px; border-color: rgba(114,22,244,0.55); }
+    .rt-gb-form-wrap .rtg-submit-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    .rt-gb-form-wrap .rtg-submit-btn:active { transform: translateY(0); }
+
+    .rt-gb-disclaimer { font-size: 0.8rem; color: #6b7280; text-align: center; margin-top: 16px; line-height: 1.5; }
+
+    /* ---- Social proof strip ---- */
+    .rt-gb-proof { display: flex; gap: 24px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(199,125,255,0.15); flex-wrap: wrap; }
+    .rt-gb-proof-item { flex: 1 1 120px; text-align: center; }
+    .rt-gb-proof-number { font-size: 1.5rem; font-weight: 800; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+    .rt-gb-proof-label { font-size: 0.8rem; color: var(--gray-text); }
+
+    @media (max-width: 768px) {
+        .rt-gb-hero { padding: 32px 0 20px; }
+        .rt-gb-title { font-size: 2.25rem; }
+        .rt-gb-subtitle { font-size: 1.05rem; }
+        /* Surface the form first so it isn't pushed below the preview image. */
+        .rt-gb-content-row { flex-direction: column-reverse; gap: 28px; }
+        .rt-gb-content-section { padding: 20px 0 44px; }
+        .rt-gb-form-card { padding: 28px 22px; width: 100%; }
+        .rt-gb-proof { gap: 12px; margin-top: 24px; padding-top: 20px; }
+        .rt-gb-preview { padding: 20px 16px 16px; }
+        .rt-gb-preview-label { padding: 8px 14px; min-width: 260px; }
+        .rt-gb-preview-label strong { font-size: 0.85rem; }
+        .rt-gb-preview-label span { font-size: 0.85rem; }
+    }
+    @media (max-width: 480px) {
+        .rt-gb-title { font-size: 1.85rem; }
+        .rt-gb-container { padding: 0 16px; }
+        .rt-gb-badge { font-size: 0.8rem; padding: 6px 14px; }
+        .rt-gb-form-card { padding: 22px 16px; border-radius: 16px; width: 100%; }
+        .rt-gb-form-card::before { border-radius: 14px 14px 0 0; }
+        .rt-gb-form-heading { font-size: 1.35rem; }
+        .rt-gb-form-subtext { margin-bottom: 20px; }
+        .rt-gb-content-section { padding-bottom: 36px; }
+    }
+  </style>
+
+<div class="rt-guidebook">
+
+  <section class="rt-gb-hero" aria-labelledby="rt-gb-hero-heading">
+    <div class="rt-gb-container">
+      <span class="rt-gb-badge">2026 Edition</span>
+      <h1 id="rt-gb-hero-heading" class="rt-gb-title">The Real Treasury Tech Selection Guide</h1>
+      <p class="rt-gb-subtitle">The practitioner-led guide to evaluating and selecting treasury technology — enter your details below and we'll email you the download link.</p>
+    </div>
+  </section>
+
+  <section class="rt-gb-content-section" aria-label="Guidebook download">
+    <div class="rt-gb-container">
+      <div class="rt-gb-content-row">
+
+        <!-- Left: Guide preview image + highlights -->
+        <div class="rt-gb-preview">
+          <p class="rt-gb-preview-label"><strong>Treasury Systems</strong><span>North American Vendors</span></p>
+          <img
+            src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-NORAM-05-2026-clean.png"
+            alt="Treasury Tech Market Map — North America, preview of the 2026 Real Treasury Tech Selection Guide"
+            loading="lazy"
+          >
+          <ul class="rt-gb-preview-list">
+            <li>Independent, practitioner-written vendor categorization</li>
+            <li>Covers cash, payments, bank connectivity, and TMS selection</li>
+            <li>Built from live client TMS selection engagements</li>
+          </ul>
+        </div>
+
+        <!-- Right: Download request form card -->
+        <div class="rt-gb-form-card" role="region" aria-labelledby="rt-gb-form-heading">
+          <h2 id="rt-gb-form-heading" class="rt-gb-form-heading">Get the Guide</h2>
+          <p class="rt-gb-form-subtext">Fill out the short form below and we'll email you the download link.</p>
+
+          <div class="rt-gb-form-wrap">
+            <div id="rtGbFormContainer"><p>Loading form...</p></div>
+          </div>
+
+          <p class="rt-gb-disclaimer">
+            No spam — unsubscribe any time.
+          </p>
+
+          <div class="rt-gb-proof">
+            <div class="rt-gb-proof-item">
+              <span class="rt-gb-proof-number">2026</span>
+              <span class="rt-gb-proof-label">Edition</span>
+            </div>
+            <div class="rt-gb-proof-item">
+              <span class="rt-gb-proof-number">Free</span>
+              <span class="rt-gb-proof-label">Download</span>
+            </div>
+            <div class="rt-gb-proof-item">
+              <span class="rt-gb-proof-number">100%</span>
+              <span class="rt-gb-proof-label">Independent</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var C = window.RTG_CONFIG || {};
+  var API_BASE = (C.wpSiteUrl || 'https://realtreasury.com') + '/wp-json/rtg/v1';
+  var ASSET_SLUG = C.assetSlug;
+  var CONFIG_FORM_ID = C.formId || null;
+  var CONFIG_MAPPING_ID = C.mappingId ? Number(C.mappingId) : null;
+  var CONFIG_REDIRECT_URL = C.redirectUrl || '';
+  var container = document.getElementById('rtGbFormContainer');
+  if (!container || !ASSET_SLUG) return;
+
+  function escHtml(s){ var d=document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+  function escAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON ('+res.status+')');} if(!res.ok) throw new Error(j.message||'Request failed ('+res.status+')'); return j;}); }
+  function fieldTypeToInputType(t){ return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
+  function fieldAutocomplete(f){ if (f.autocomplete === false) return 'off'; if (f.key === 'full_name') return 'name'; if (f.key === 'first_name') return 'given-name'; if (f.key === 'last_name') return 'family-name'; return ({ email:'email', tel:'tel', company:'organization', url:'url' })[f.type] || 'on'; }
+
+  function fetchGateSchema(){ return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow); }
+  function fetchFormSchemaById(id){ return fetch(API_BASE + '/form/' + id).then(parseJsonOrThrow); }
+
+  function fetchFormSchema(){
+    if (CONFIG_FORM_ID) {
+      return fetchFormSchemaById(CONFIG_FORM_ID).then(function(s){
+        s.form_id = s.form_id || CONFIG_FORM_ID;
+        if (CONFIG_MAPPING_ID) s.mapping_id = CONFIG_MAPPING_ID;
+        return s;
+      });
+    }
+    return fetchGateSchema().then(function(s){
+      if (CONFIG_MAPPING_ID && s.mapping_id && Number(s.mapping_id) !== CONFIG_MAPPING_ID) {
+        console.warn('RTG: Configured mappingId', CONFIG_MAPPING_ID, 'does not match mapped ID', s.mapping_id, 'for asset', ASSET_SLUG);
+      }
+      if (CONFIG_MAPPING_ID) s.mapping_id = CONFIG_MAPPING_ID;
+      return s;
+    });
+  }
+
+  function renderForm(schema){
+    var fields = schema.fields || [];
+    var consentText = schema.consent_text || '';
+    var html = '<form id="rtGbForm" novalidate>';
+    fields.forEach(function(f){
+      var req = f.required ? ' required' : '';
+      var mark = f.required ? ' *' : '';
+      var ph = f.placeholder ? ' placeholder="' + escAttr(f.placeholder) + '"' : '';
+      var ac = ' autocomplete="' + fieldAutocomplete(f) + '"';
+      html += '<div class="rtg-field-group"><label for="rtg_' + escAttr(f.key) + '">' + escHtml(f.label) + mark + '</label>';
+      if (f.type === 'textarea') {
+        html += '<textarea id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ph + ac + req + '></textarea>';
+      } else if (f.type === 'select' && f.options) {
+        html += '<select id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ac + req + '><option value="">Select...</option>';
+        f.options.forEach(function(o){ html += '<option value="' + escAttr(o) + '">' + escHtml(o) + '</option>'; });
+        html += '</select>';
+      } else if ((f.type === 'radio' || f.type === 'checkbox') && f.options) {
+        html += '<div class="rtg-option-group">';
+        f.options.forEach(function(o, i){
+          var it = f.type === 'radio' ? 'radio' : 'checkbox';
+          var nm = f.type === 'radio' ? f.key : f.key + '[]';
+          // Keep the && off the line that builds HTML: WordPress's texturize
+          // pass rewrote it to &#038;&#038; there, which is a syntax error
+          // inside <script> and silently killed the whole form.
+          var reqAttr = '';
+          if (i === 0) { if (f.required) { reqAttr = req; } }
+          html += '<label><input type="' + it + '" name="' + escAttr(nm) + '" value="' + escAttr(o) + '"' + reqAttr + '> ' + escHtml(o) + '</label>';
+        });
+        html += '</div>';
+      } else {
+        html += '<input type="' + fieldTypeToInputType(f.type) + '" id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ph + ac + req + '>';
+      }
+      html += '</div>';
+    });
+    if (consentText) {
+      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + escHtml(consentText) + '</span></label></div>';
+    }
+    html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
+    html += '<button type="submit" class="rtg-submit-btn">Send Me the Guide</button>';
+    html += '<div class="rtg-response" id="rtGbResponse" aria-live="polite" role="status"></div></form>';
+    container.innerHTML = html;
+    attachFormHandler(schema, fields);
+  }
+
+  function attachFormHandler(schema, fieldDefs){
+    var form = document.getElementById('rtGbForm');
+    if (!form) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var hp = form.querySelector('[name="_rtg_hp"]'); if (hp && hp.value) return;
+      form.querySelectorAll('.rtg-invalid').forEach(function(el){ el.classList.remove('rtg-invalid'); });
+      var valid = true;
+      var collected = {};
+      fieldDefs.forEach(function(f){
+        if (f.type === 'checkbox' && f.options) {
+          var checked = [];
+          form.querySelectorAll('[name="' + f.key + '[]"]:checked').forEach(function(cb){ checked.push(cb.value); });
+          if (f.required && checked.length === 0) { valid = false; var g = form.querySelector('[name="' + f.key + '[]"]'); if (g) g.classList.add('rtg-invalid'); }
+          collected[f.key] = checked.join(', ');
+        } else if (f.type === 'radio') {
+          var sel = form.querySelector('[name="' + f.key + '"]:checked');
+          var v = sel ? sel.value : '';
+          if (f.required && !v) { valid = false; var fi = form.querySelector('[name="' + f.key + '"]'); if (fi) fi.classList.add('rtg-invalid'); }
+          collected[f.key] = v;
+        } else {
+          var input = form.querySelector('[name="' + f.key + '"]');
+          if (!input) return;
+          var v2 = input.value.trim();
+          if (f.required && !v2) { input.classList.add('rtg-invalid'); valid = false; }
+          if (f.type === 'email' && v2 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v2)) { input.classList.add('rtg-invalid'); valid = false; }
+          collected[f.key] = v2;
+        }
+      });
+      var consent = document.getElementById('rtGbConsent');
+      if (consent && !consent.checked) { valid = false; consent.classList.add('rtg-invalid'); }
+      var resp = document.getElementById('rtGbResponse');
+      var btn = form.querySelector('.rtg-submit-btn');
+      if (!valid) { if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = 'Please fill in the highlighted fields.'; } return; }
+      if (btn) btn.disabled = true;
+      if (resp) { resp.className = 'rtg-response'; resp.textContent = ''; }
+      var payload = { form_id: schema.form_id, fields: collected, consent: true, honeypot: '' };
+      if (schema.mapping_id) payload.mapping_id = Number(schema.mapping_id);
+      fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        .then(parseJsonOrThrow)
+        .then(function(){
+          // The /submit response is deliberately ignored. For a link-type
+          // asset rt-gate sets primary_redirect_url to the asset's target_url,
+          // which here is the guide PDF itself. Following it (as the waitlist
+          // page does for its own redirect) would hand the file to anyone who
+          // typed an address, and the point of this gate is that only a real
+          // inbox receives the link. Delivery is the Resend automation on
+          // signup.created; on-page we only move the visitor to the thank-you page.
+          if (!CONFIG_REDIRECT_URL) {
+            if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = "You're all set — check your email for the download link."; }
+            return;
+          }
+          if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = 'Success! Redirecting...'; }
+          window.location.href = CONFIG_REDIRECT_URL;
+        })
+        .catch(function(err){ if (btn) btn.disabled = false; if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = (err && err.message) || 'Submission failed.'; } });
+    });
+  }
+
+  fetchFormSchema()
+    .then(renderForm)
+    .catch(function(err){ container.innerHTML = '<p style="color:#b91c1c;">Unable to load form. ' + escHtml((err && err.message) || 'Unknown error') + '</p>'; });
+})();
+</script>

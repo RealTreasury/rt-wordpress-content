@@ -1198,15 +1198,9 @@ function rt_rest_permission_check() {
  * table). Nothing here is inferred — no founding year, revenue, client
  * names, or street address, since none of those are published on the site.
  *
- * Note: Yoast SEO already emits its own Organization node site-wide
- * (@id "https://realtreasury.com/#organization", name/url/logo only).
- * This block intentionally uses a *different* @id
- * ("#realtreasury-professional-service") rather than trying to merge into
- * Yoast's node, to avoid guessing at how this theme's JSON-LD parser
- * would reconcile two script blocks describing the same @id. Flag for
- * whoever approves this: confirm in Google's Rich Results / Search
- * Console that this doesn't read as a duplicate/competing Organization
- * before treating it as final.
+ * Reuse Yoast's canonical Organization identifier. JSON-LD nodes with the
+ * same @id describe the same entity, so founder/worksFor edges enrich that
+ * organization instead of creating a second company on every page.
  */
 add_action( 'wp_head', 'rt_output_jsonld_structured_data', 5 );
 function rt_output_jsonld_structured_data() {
@@ -1219,7 +1213,7 @@ function rt_output_jsonld_structured_data() {
 		'@graph'   => array(
 			array(
 				'@type'       => array( 'Organization', 'ProfessionalService' ),
-				'@id'         => 'https://realtreasury.com/#realtreasury-professional-service',
+				'@id'         => 'https://realtreasury.com/#organization',
 				'name'        => 'Real Treasury',
 				'legalName'   => 'Real Treasury, LLC',
 				'url'         => 'https://realtreasury.com/',
@@ -1272,7 +1266,7 @@ function rt_output_jsonld_structured_data() {
 						'addressCountry' => 'US',
 					),
 				),
-				'worksFor'      => array( '@id' => 'https://realtreasury.com/#realtreasury-professional-service' ),
+				'worksFor'      => array( '@id' => 'https://realtreasury.com/#organization' ),
 			),
 			array(
 				'@type'         => 'Person',
@@ -1294,7 +1288,7 @@ function rt_output_jsonld_structured_data() {
 						'addressCountry' => 'US',
 					),
 				),
-				'worksFor'      => array( '@id' => 'https://realtreasury.com/#realtreasury-professional-service' ),
+				'worksFor'      => array( '@id' => 'https://realtreasury.com/#organization' ),
 			),
 		),
 	);

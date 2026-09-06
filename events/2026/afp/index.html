@@ -291,7 +291,9 @@ window.RT_TOUR = {
     .rt-t-form-wrap .rtg-option-group label:has(input:checked) { border-color: var(--primary-purple); background: rgba(114, 22, 244, 0.05); }
     .rt-t-form-wrap .rtg-option-group label:focus-within { outline: 2px solid rgba(114, 22, 244, 0.5); outline-offset: 1px; }
     .rt-t-form-wrap .rtg-option-group input { width: auto; padding: 0; margin-top: 4px; }
-    .rt-t-form-wrap .rtg-option-group .rt-t-opt-note { display: block; font-size: 0.85rem; color: var(--gray-text); font-weight: 400; }
+    .rt-t-form-wrap .rtg-option-group .rt-t-opt-name { display: block; font-size: 1.0625rem; font-weight: 700; color: var(--dark-text); }
+    .rt-t-form-wrap .rtg-option-group .rt-t-opt-when { display: block; font-size: 0.875rem; font-weight: 500; color: var(--gray-text); margin-top: 2px; }
+    .rt-t-form-wrap .rtg-option-group .rt-t-opt-note { display: block; font-size: 0.85rem; color: var(--gray-text); font-weight: 400; margin-top: 2px; }
     .rt-t-form-wrap .rtg-consent-group { margin: 10px 0 10px; font-size: 0.85rem; color: var(--gray-text); }
     .rt-t-form-wrap .rtg-consent-group label { display: flex; gap: 8px; align-items: flex-start; font-weight: 500; }
     .rt-t-form-wrap .rtg-consent-group input { width: auto; margin-top: 3px; }
@@ -584,6 +586,8 @@ window.RT_TOUR = {
           sessionId: s.id,
           session: s,
           label: sessionLabelFor(s, full),
+          name: tourName(s),
+          when: s.when + ', ' + s.time + (full ? ' — waitlist' : ''),
           note: full ? 'This tour is full — we’ll contact you if a spot opens.' : (s.audience || ''),
           pill: pillFor(s)
         });
@@ -597,6 +601,8 @@ window.RT_TOUR = {
          request" (tourChoiceValue) and the mapping stays the private-tour
          asset, so the rename touches nothing downstream. */
       label: 'Request a Custom Tour',
+      name: 'Request a Custom Tour',
+      when: '',
       /* Kept to two lines so it does not tower over the session options above
          it; the "across both days" detail is in the Good to Know answer.
          "A time that isn't listed" used to lead this note and was dropped on
@@ -614,6 +620,8 @@ window.RT_TOUR = {
       sessionId: '',
       session: null,
       label: 'None of These Work for Me',
+      name: 'None of These Work for Me',
+      when: '',
       note: 'Leave your details and we’ll contact you.'
     });
     return choices;
@@ -665,7 +673,7 @@ window.RT_TOUR = {
   function tourChoiceOptionsHtml(required) {
     var html = '';
     tourChoices().forEach(function (c, i) {
-      html += '<label><input type="radio" name="' + TOUR_FIELD_KEY + '" data-kind="' + escAttr(c.kind) + '" data-session-id="' + escAttr(c.sessionId) + '" value="' + escAttr(c.label) + '"' + (i === 0 && required ? ' required' : '') + '><span>' + escHtml(c.label) + (c.note ? '<span class="rt-t-opt-note">' + escHtml(c.note) + '</span>' : '') + (c.pill || '') + '</span></label>';
+      html += '<label><input type="radio" name="' + TOUR_FIELD_KEY + '" data-kind="' + escAttr(c.kind) + '" data-session-id="' + escAttr(c.sessionId) + '" value="' + escAttr(c.label) + '"' + (i === 0 && required ? ' required' : '') + '><span><span class="rt-t-opt-name">' + escHtml(c.name) + '</span>' + (c.when ? '<span class="rt-t-opt-when">' + escHtml(c.when) + '</span>' : '') + (c.note ? '<span class="rt-t-opt-note">' + escHtml(c.note) + '</span>' : '') + (c.pill || '') + '</span></label>';
     });
     return html;
   }

@@ -518,7 +518,7 @@ body.banner-minimized .rt-nav-container {
     }
 
     /* Stacked banner is taller than the 768px breakpoint assumes. */
-    body.banner-present .rt-nav-container {
+    body.banner-present:not(.banner-minimized) .rt-nav-container {
         top: 134px !important;
     }
 }

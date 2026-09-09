@@ -1764,6 +1764,17 @@ body.banner-closed .rt-nav-container {
     top: 0 !important;
 }
 
+/*
+ * The synced header's narrow-phone rule is emitted after Additional CSS and
+ * targets body.banner-present. Include both active state classes so the
+ * compact 60px position wins sitewide, regardless of stylesheet order.
+ */
+@media (max-width: 480px) {
+    body.banner-present.banner-minimized .rt-nav-container {
+        top: 60px !important;
+    }
+}
+
 
 .rt-nav-wrapper {
     width: 100%;

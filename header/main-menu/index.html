@@ -12,6 +12,9 @@
 }
 
 :root {
+    /* Parked: the .banner-logo rules below are unused while the banner
+       promotes an RT-owned event. Re-add the class to the banner-icon div
+       to bring the Forum mark back. */
     --forum-logo: url("https://realtreasury.com/wp-content/uploads/2026/08/TreasuryTech-Virtual-Forum-Main-Logo-White.jpg");
 }
 
@@ -568,20 +571,20 @@ body.banner-minimized .rt-nav-container {
         <button class="close-btn" onclick="closeBanner(event)" aria-label="Close banner">&times;</button>
         
         <div class="banner-content">
-            <div class="banner-icon banner-logo" role="img" aria-label="Treasury Tech Virtual Forum"></div>
+            <div class="banner-icon" role="img" aria-label="Real Treasury">RT</div>
 
             <div class="banner-text">
                 <div class="banner-title">
-                    <span class="banner-highlight">Treasury Tech Virtual Forum</span>
+                    <span class="banner-highlight">Make AFP Count</span>
                 </div>
                 <div class="banner-subtitle">
-                    September 22–24, 2026 — product demos plus a full treasury market review.
+                    September 15, 2026, 1:00 PM CDT — a TMS buyer’s pre-conference briefing.
                 </div>
             </div>
         </div>
 
         <div class="banner-actions">
-            <a href="https://www.airmeet.com/e/b5614f90-335b-11f1-9b89-15a6c9df688e?Source=RealTreasury" class="banner-cta" onclick="registerLive(event)">
+            <a href="https://events.teams.microsoft.com/event/52ec549d-0107-4908-a71d-21a4844f4afe@cdc422ca-d271-4ba3-856d-77081c6a7f04" class="banner-cta" onclick="registerLive(event)">
                 Register Now
                 <span>→</span>
             </a>
@@ -591,7 +594,7 @@ body.banner-minimized .rt-nav-container {
     <div class="site-content"></div>
 
 <script>
-const LIVE_EVENT_REGISTRATION_URL = 'https://www.airmeet.com/e/b5614f90-335b-11f1-9b89-15a6c9df688e?Source=RealTreasury';
+const LIVE_EVENT_REGISTRATION_URL = 'https://events.teams.microsoft.com/event/52ec549d-0107-4908-a71d-21a4844f4afe@cdc422ca-d271-4ba3-856d-77081c6a7f04';
 
 // Add banner state management
 function updateBannerState() {

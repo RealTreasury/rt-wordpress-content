@@ -659,6 +659,17 @@ function isMobileDevice() {
     );
 }
 
+// The expanded promotion and fixed nav consume too much of a narrow phone's
+// first viewport. Apply the existing compact state synchronously so there is
+// no full-height banner flash before the window load handler runs.
+if (window.matchMedia('(max-width: 480px)').matches) {
+    const banner = document.getElementById('workshopBanner');
+    if (banner) {
+        banner.classList.add('minimized');
+        updateBannerState();
+    }
+}
+
 // Simplified initialization - no glitchy animations
 // Add to the window load event
 window.addEventListener('load', function() {

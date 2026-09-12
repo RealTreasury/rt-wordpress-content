@@ -103,6 +103,11 @@ the theme. To keep these styles active, copy the contents into
 **Appearance -> Customize -> Additional CSS** in WP and click Publish.
 Repeat whenever `shared.css` changes.
 
+The reviewed design for a future CSS-only, compare-and-set publishing rail is
+in `docs/shared-css-publishing.md`. It is design-only: do not add credentials,
+activate a plugin, or publish CSS without a separate implementation task and
+explicit production approval.
+
 ## Webinar publishing
 
 See `docs/webinar-publishing.md` for the taxonomy contract and pre-publish

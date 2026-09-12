@@ -41,6 +41,10 @@ manually copy the file contents into WordPress:
 
 Repeat these steps whenever `shared.css` changes in Git.
 
+For the reviewed design of a future least-privilege, CSS-only publishing rail,
+see `docs/shared-css-publishing.md`. That document does not authorize
+credential creation, plugin activation, or a production publish.
+
 ## Gated content — RT Gate
 
 All new gated forms (waitlists, video unlocks, downloads) use the **RT Gate**

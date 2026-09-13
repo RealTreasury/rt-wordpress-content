@@ -65,10 +65,17 @@ The plugin checks the custom capability before calling the core function; the
 user cannot use the ordinary content endpoints to edit the site, and it cannot
 mint the approval its own writes require.
 
-One capability decision does have to go the publisher's way — `unfiltered_html`,
-for the reason set out immediately below. It is granted by a `map_meta_cap`
-filter scoped to that role and that decision, and it is never written into the
-role's capability list.
+What the credential can still do, because any logged-in user can, is post a
+comment through `/wp/v2/comments` on a post with comments open. That is
+ordinary subscriber-level behavior and is filtered by KSES like anyone else's —
+but it is the reason the capability approach below was abandoned: an
+`unfiltered_html` grant would have made that same comment path unfiltered.
+
+The publisher gets no capability grant of any kind beyond those two. Earlier
+revisions of this design granted `unfiltered_html` through a scoped
+`map_meta_cap` filter; that was wrong, for reasons set out under "Lifting KSES
+for one write, not for one user" below, and it is gone. The exception the rail
+needs is made around one function call, not around a user.
 
 Authenticate over HTTPS with a WordPress Application Password named
 `rt-css-publish`. Application Passwords are API credentials, are stored hashed,
@@ -138,56 +145,99 @@ multisite for a non-super-admin it resolves to `do_not_allow`; otherwise it
 resolves to the primitive `unfiltered_html`. The mechanism described was real;
 only the capability name was wrong.
 
-### The narrow grant
+### Lifting KSES for one write, not for one user
 
-The plugin registers a `map_meta_cap` filter — the filter at the end of
-`map_meta_cap()`, which every `WP_User::has_cap()` call passes through — that:
+The previous revision granted the publisher `unfiltered_html` through a
+`map_meta_cap` filter scoped to its role. That is not a narrow grant, and the
+review that caught it is right.
 
-- acts only when the capability being resolved is `unfiltered_html`, and
-  deliberately not `edit_css`: the `custom_css` post type is registered with
-  `'edit_post'` and `'edit_posts'` mapped to `edit_css`, so granting `edit_css`
-  would hand the publisher edit authority over that post type through any other
-  code path that checks it. Nothing in the rail's own write path checks
-  `edit_css` — `wp_update_custom_css_post()`, `wp_update_post()`, and
-  `wp_save_post_revision()` perform no capability checks — so the narrower
-  grant is sufficient;
-- acts only when the user being tested holds the `rt-css-publisher` role;
-- returns core's answer untouched if core already put `do_not_allow` in the
-  required-capability list, so the `DISALLOW_UNFILTERED_HTML` and multisite
-  rules still win;
-- otherwise replaces the required-capability list with
-  `array( 'rt_publish_shared_css' )`.
+`kses_init()` does not filter per request or per endpoint. When
+`current_user_can( 'unfiltered_html' )` is true it calls `kses_remove_filters()`
+and installs nothing, for the whole request — post content, excerpts, titles,
+and comments alike. And the publisher is an ordinary authenticated user
+elsewhere: `WP_REST_Comments_Controller::create_item_permissions_check()`
+requires only that the user be logged in (plus the usual comment-status checks
+on the target post); it does not require `edit_posts`. So a role-scoped
+`unfiltered_html` grant turns the Application Password into a way to post
+unsanitized markup through `/wp/v2/comments`, on a credential whose whole
+justification is that it can do exactly one thing.
 
-The effect is that `current_user_can( 'unfiltered_html' )` is true for that one
-user, because that user holds `rt_publish_shared_css`, so `kses_init()` does
-not register KSES on its requests. The role's stored capabilities never include
-`unfiltered_html`: nothing that reads role capabilities sees the publisher as
-an unfiltered-HTML user, no other user is affected, and no other capability is
-granted. `map_meta_cap` is the right hook rather than `user_has_cap` because
-`map_meta_cap` decides what a capability *requires*, while `user_has_cap` would
-mean injecting `unfiltered_html` into the user's effective capability array —
-the broader thing we are avoiding.
+Narrowing the grant to the handler does not work either, and for a reason worth
+recording: `kses_init()` is hooked to `init` and to `set_current_user`, both of
+which run before any REST callback. The filter set for the request is decided
+by then. A capability that only answered "true" inside the publish handler
+would arrive too late to lift anything — the filters would already be
+installed. A capability-based grant is therefore either always on, and leaks
+into every other request the credential can make, or it is scoped to the
+handler and does nothing at all. There is no version of it that is both narrow
+and effective.
 
-State the consequence plainly: with the grant in place, the publisher can store
-arbitrary bytes, markup included, in the `custom_css` post's content. What
-bounds that is not KSES but the rest of the rail — one canonical tracked source
-file, a reviewed diff, an approval bound to the source hash, and the markup
-rule the preflight enforces.
+So the rail does not touch the capability system. Inside the publish handler
+only, after the approval record has been validated and while the lock is held,
+the plugin calls `kses_remove_filters()` immediately before
+`wp_update_custom_css_post()` and restores the filters in a `finally`
+immediately after. Both functions are core's own:
+`kses_remove_filters()` removes `title_save_pre`, both `pre_comment_content`
+variants, and the `content_save_pre` / `excerpt_save_pre` /
+`content_filtered_save_pre` filters; `kses_init_filters()` re-adds them.
 
-### Hosts where the grant cannot apply
+The restore calls `kses_init()`, not `kses_init_filters()` directly.
+`kses_init()` is `kses_remove_filters()` followed by `kses_init_filters()` only
+when the current user lacks `unfiltered_html`, which is exactly core's own
+decision for whoever is making this request. For the publisher — who has no
+such capability now — the two are equivalent; for an administrator who somehow
+reached this route, `kses_init_filters()` alone would leave KSES installed for
+a user core would not filter. Re-running core's decision is the version that is
+right in both cases.
 
-If the host defines `DISALLOW_UNFILTERED_HTML` as true, or the install is
-multisite and the publisher is not a super admin, `map_meta_cap()` resolves the
-capability to `do_not_allow` and the plugin does not override it. KSES then
-runs on the rail's write and the exact-byte verification would fail by design.
-The rail refuses instead: the preflight detects the divergence before any
-write, the plugin reports the host condition by name, and shared CSS stays a
-manual task on that install until the owner changes the host's own setting.
+Why this is narrower than the capability route: it applies to one code path, on
+one route, for the duration of one function call, only after an
+administrator-minted approval has been validated and the lock acquired. Nothing
+about the publisher's identity changes, so every other request that credential
+makes — comments included — is filtered exactly as any other subscriber-level
+user's would be.
 
-The plugin must not call `kses_remove_filters()`, unhook `wp_filter_post_kses`,
-or otherwise strip the filter around its own write to work around this. That
-would be a plugin quietly reversing a site-wide security decision the host
-operator made deliberately, and it is out of scope for a publishing rail.
+**Guardrails.** The lift is refused unless all of these hold at the moment it
+happens:
+
+- `current_user_can( 'rt_publish_shared_css' )` is true;
+- the request is the rail's own REST route, established from the matched route
+  rather than from anything in the request body;
+- the approval record has already been validated and the lock is held — the
+  lift happens between step 3 and step 4 of the locked sequence, never before;
+- the restore is in a `finally`, so an exception or a fatal in the write path
+  cannot leave the filters off. Because PHP does not guarantee a `finally` on a
+  fatal error, the plugin also registers a `shutdown` callback that restores
+  the filters if its own flag says they are still lifted — the same
+  belt-and-braces pattern used for the Customizer lock.
+
+The rule that earlier revisions of this document stated as "never unhook KSES"
+is therefore restated, because as written it forbade the safest available
+design: **never unhook KSES globally, and never by capability; unhook it only
+inside the locked, approved write, and re-add it in a `finally`.**
+
+**What the lift still allows.** For the duration of that one call the publisher
+can store arbitrary bytes, markup included, in the `custom_css` post's content.
+That is the point — it is what byte-exact publishing of a stylesheet requires.
+What bounds it is the rest of the rail: one canonical tracked source file, a
+reviewed diff, an administrator-minted approval bound to the source hash, the
+`</style` markup rule the preflight enforces, and a post-write read-back that
+fails the publish if the stored bytes are not the approved bytes.
+
+### Hosts that disallow unfiltered HTML
+
+Because the rail no longer asks the capability system for anything, neither
+`DISALLOW_UNFILTERED_HTML` nor multisite's super-admin rule affects whether the
+write can produce byte-exact CSS. The multisite condition was an artifact of
+the capability route and no longer applies at all.
+
+`DISALLOW_UNFILTERED_HTML` is different: it is an explicit statement by the
+host operator that nothing on this install should write unfiltered content
+through WordPress. The rail honors it and refuses to publish where it is
+defined and true, even though it could technically proceed. Shared CSS stays a
+manual task on such an install unless the owner changes the host's own setting.
+That is a deliberate choice to treat the constant as an instruction rather than
+an obstacle.
 
 ### The preprocessed field
 
@@ -209,8 +259,9 @@ exists:
   administrator can set when minting the record. Setting it is an explicit
   statement that the preprocessed source is expendable on this install.
 - Every snapshot the rail takes — the approval record, the in-lock pre-change
-  capture, and the receipt — carries both fields and both hashes, not just the
-  content.
+  capture, and the receipt — carries both fields, not just the content. Hashes
+  alone would not be enough to restore anything, which is why the pre-change
+  snapshot stores the bytes; see "Durable copies of the preprocessed source".
 - Restores put both back:
   `wp_update_custom_css_post( $pre_change_css, array( 'stylesheet' => get_stylesheet(), 'preprocessed' => $pre_change_preprocessed ) )`.
   A rollback that restored only `post_content` would leave the clearing in
@@ -220,6 +271,53 @@ A preprocessor could also write the field from inside `update_custom_css_data`
 during our own write. The preflight applies that filter, so it sees the
 resulting `preprocessed` value; a non-empty result is the same signal and gets
 the same refusal.
+
+### Durable copies of the preprocessed source
+
+Hashes prove a restore worked; they cannot perform one. Two things follow, and
+the previous revision of this design had neither.
+
+**Revisions do not carry the field by default.** `_wp_post_revision_fields()`
+returns `post_title`, `post_content`, and `post_excerpt`, so a `custom_css`
+revision stores the CSS and not the preprocessed source. The plugin therefore
+filters `_wp_post_revision_fields` to add `post_content_filtered` when the post
+being revisioned is a `custom_css` post, which makes `_wp_put_post_revision()`
+copy the field into every revision the rail saves — and makes
+`wp_save_post_revision()`'s change detection notice a change in that field
+alone.
+
+The filter must also remove the field for every other post type, not merely
+decline to add it: `_wp_post_revision_fields()` caches its list in a `static`
+and re-applies the filter to that cached value on each call, so a field added
+for one post would otherwise persist for the next post in the same request.
+
+Two limits to state rather than discover later. Revisions saved before this
+plugin was active do not carry `post_content_filtered` — for those, only
+`post_content` can be restored from the revision. And the filter changes what
+core stores for `custom_css` revisions generally, including revisions created
+by a Customizer save, which is the intended effect but is a site-wide change
+the plugin makes.
+
+**The approval record keeps a full pre-change snapshot.** At publish time,
+inside the lock and before the write, the handler stores both fields as content
+on the approval record's row — `pre_change_content` and
+`pre_change_preprocessed`, alongside the hashes it already keeps. The record's
+post type is already `'public' => false` and `'show_in_rest' => false`, and the
+snapshot fields are excluded from search and from any REST exposure; they are
+readable only by a user holding `rt_approve_shared_css`.
+
+Snapshots are retained for 90 days and then cleared by a scheduled cleanup that
+leaves the rest of the record — hashes, commit, approver, state — in place as
+the audit row. Ninety days is a judgment call, not a derived number: long
+enough that a preprocessed source cleared by mistake is still recoverable after
+a quiet period, short enough that the site is not holding stylesheet copies
+indefinitely.
+
+**Restore order.** The recovery path reads the snapshot on the approval record
+first, because it is the only copy guaranteed to hold both fields, and falls
+back to the revision named by `pre_change_revision_id` when the snapshot has
+aged out. A fallback restore can only put back what the revision holds, and the
+failure report says which source was used.
 
 ## Approval is a server-side record
 
@@ -235,8 +333,8 @@ publisher identity cannot create.
 the administrator role at plugin activation and to no other role. Approvals are
 minted only from an authenticated wp-admin session, through a small screen the
 plugin registers, or from WP-CLI running as an administrator. The
-`rt-css-publisher` role does not hold `rt_approve_shared_css`, and the scoped
-`map_meta_cap` filter described above does not touch it.
+`rt-css-publisher` role does not hold `rt_approve_shared_css`, and nothing in
+the plugin grants it at runtime.
 
 **What is stored.** Each approval is one record in a private custom post type,
 `rt_css_approval`, registered with `'public' => false`,
@@ -249,6 +347,8 @@ mapped to `rt_approve_shared_css`:
 | `expected_live_sha256` | SHA-256 of the live CSS the approver saw, read by the server, not supplied |
 | `expected_live_filtered_sha256` | SHA-256 of `post_content_filtered` as the approver saw it, also read by the server |
 | `clear_preprocessed` | Default false. True only if an administrator explicitly approved clearing a non-empty `post_content_filtered` |
+| `pre_change_content` | The live `post_content` bytes captured in the lock immediately before the write; retained 90 days |
+| `pre_change_preprocessed` | The live `post_content_filtered` bytes captured at the same moment; retained 90 days |
 | `source_commit` | Repository commit those bytes came from |
 | `stylesheet` | Stylesheet slug this approval is valid for |
 | `approver_user_id` | The administrator who minted it |
@@ -361,10 +461,11 @@ authoritative check is the post-write read-back described later. What it covers:
 6. the preprocessed field: a non-empty `post_content_filtered`, or an
    `update_custom_css_data` filter that produces a non-empty `preprocessed`
    value, refuses unless the approval record sets `clear_preprocessed`;
-7. the preconditions the rest of the rail depends on: that the capability grant
-   resolves on this host, and that revisions are enabled for the `custom_css`
-   post type, since the rollback artifact and the post-write version signal
-   both depend on them.
+7. the preconditions the rest of the rail depends on: that
+   `DISALLOW_UNFILTERED_HTML` is not set on this host, that revisions are
+   enabled for the `custom_css` post type, and that the plugin's
+   `_wp_post_revision_fields` filter is installed — the rollback artifact, the
+   preprocessed copy, and the post-write version signal all depend on them.
 
 If the result differs from the input by one byte, `preflight` fails, names the
 stage that changed it and the first differing offset, and `plan` refuses to
@@ -491,9 +592,9 @@ releasing the lock in between:
    `clear_preprocessed`. Any mismatch or refusal aborts with no write and
    releases the lock.
 3. Re-run the preflight against the bytes about to be written. If it reports
-   that any byte would change, that the host cannot grant the capability, that
-   the `post_content` column is not `utf8mb4`, or that revisions are
-   unavailable, abort with no write and release the lock.
+   that any byte would change, that `DISALLOW_UNFILTERED_HTML` is set, that the
+   `post_content` column is not `utf8mb4`, or that revisions are unavailable,
+   abort with no write and release the lock.
 4. Save the current custom-CSS post as a revision with `wp_save_post_revision()`
    and record its ID as `pre_change_revision_id` (see "Revision, audit, and
    rollback" below). A null return here is not automatically a failure:
@@ -503,8 +604,12 @@ releasing the lock in between:
    null as a failure only when no revision of the current content exists.
    Then — after that revision exists, not before — read the post's latest
    revision ID from `wp_get_latest_revision_id_and_total_count()` and record it
-   as `pre_write_revision_id`. Only then call
-   `wp_update_custom_css_post($css, ['stylesheet' => get_stylesheet(), 'preprocessed' => ''])`.
+   as `pre_write_revision_id`. Write the pre-change snapshot — both fields as
+   content, not hashes — onto the approval record. Then lift KSES with
+   `kses_remove_filters()` under the guardrails above, call
+   `wp_update_custom_css_post($css, ['stylesheet' => get_stylesheet(), 'preprocessed' => ''])`,
+   and restore the filters with `kses_init()` in a `finally` that wraps only
+   that call.
 5. Read the post back, again with `wp_get_custom_css_post()`. Require the
    stored CSS hash to equal the record's `source_sha256`, the stored
    `post_content_filtered` to match what the preflight predicted (empty, in
@@ -566,8 +671,11 @@ the lock cannot cover.
 Restoring would silently destroy that writer's content, so the rail does not
 restore.
 
-The restore itself re-writes the pre-change snapshot captured in step 1 —
-both fields — through
+The restore reads the pre-change snapshot from the approval record — the only
+copy guaranteed to hold both fields — and falls back to the revision named by
+`pre_change_revision_id` if that snapshot has aged out of retention, in which
+case it can only restore what the revision holds and the report says so. It
+then re-writes that snapshot — both fields — through
 `wp_update_custom_css_post( $pre_change_css, array( 'stylesheet' => get_stylesheet(), 'preprocessed' => $pre_change_preprocessed ) )`,
 rather than calling `wp_restore_post_revision()` on the recorded revision ID.
 Passing `preprocessed` explicitly is not optional here: omitting it would leave
@@ -594,9 +702,9 @@ automatic recovery.
 | State after the write | What the rail does |
 | --- | --- |
 | Read-back content hash equals the record's `source_sha256`, `post_content_filtered` matches the preflight's prediction, and the latest revision ID is greater than `pre_write_revision_id` | Success. Mark the approval `consumed`, release the lock, return the receipt. |
-| Verification failed, and the re-read content hash equals the hash observed in the failed read-back | Restore both pre-change fields through `wp_update_custom_css_post()` with the captured `preprocessed` value; read back and require both stored hashes to equal the pre-change hashes from step 1; mark the approval `failed`; release the lock; report the publish as failed and the restore as verified. |
+| Verification failed, and the re-read content hash equals the hash observed in the failed read-back | Restore both pre-change fields from the approval record's snapshot (falling back to `pre_change_revision_id` if it has aged out) through `wp_update_custom_css_post()` with the captured `preprocessed` value; read back and require both stored hashes to equal the pre-change hashes from step 1; mark the approval `failed`; release the lock; report the publish as failed, the restore as verified, and which source it came from. |
 | Verification failed, and the re-read content hash differs from the hash observed in the failed read-back | Do not restore. Mark the approval `failed`, release the lock, and fail loudly, recording the approved source hash, the hash observed in the read-back, the differing re-read hash, both pre-change hashes, `pre_change_revision_id`, and `pre_write_revision_id`. An out-of-band writer touched the post; what to keep is a human decision. |
-| The restore's own read-back does not match the pre-change hashes, either field | Stop. Attempt nothing further automatically. Mark the approval `failed`, release the lock, and report every hash observed plus `pre_change_revision_id`, `pre_write_revision_id`, and the post-write revision ID. The site's CSS is in a known-bad state and the next step is manual. |
+| The restore's own read-back does not match the pre-change hashes, either field | Stop. Attempt nothing further automatically. Mark the approval `failed`, release the lock, and report every hash observed, the restore source used, and `pre_change_revision_id`, `pre_write_revision_id`, and the post-write revision ID. The site's CSS is in a known-bad state, the snapshot on the approval record is the copy to recover from, and the next step is manual. |
 
 In every row the approval is spent, the lock is released exactly once in the
 `finally` block, and no row retries a write automatically. A retry after any
@@ -605,7 +713,9 @@ failure needs a new approval minted by an administrator.
 ## Revision, audit, and rollback
 
 Before changing CSS, the plugin explicitly saves the current custom-CSS post as
-a revision, records its ID as `pre_change_revision_id`, reads the post's latest
+a revision — carrying `post_content_filtered` as well as `post_content`,
+because the plugin's `_wp_post_revision_fields` filter is installed — records
+its ID as `pre_change_revision_id`, reads the post's latest
 revision ID once that revision exists as `pre_write_revision_id`, and records
 the SHA-256 of both the pre-change `post_content` and the pre-change
 `post_content_filtered` it just read — those hashes are what a restore is
@@ -615,7 +725,9 @@ user ID, target origin, stylesheet, approval reference, approver user ID,
 source commit, old/new SHA-256 for `post_content`, old/new SHA-256 for
 `post_content_filtered`, whether `clear_preprocessed` was set,
 `pre_change_revision_id`, `pre_write_revision_id`, the post-write latest
-revision ID, resulting post ID, and the approval record's resulting state.
+revision ID, resulting post ID, whether a pre-change snapshot was stored on the
+approval record and when it expires, the restore source if a restore ran, and
+the approval record's resulting state.
 A failed publish records the same fields plus every hash named in the recovery
 table, and which row of that table was taken. CSS and credentials are not
 copied into the receipt.
@@ -653,7 +765,8 @@ Every uncertainty fails closed and leaves WordPress unchanged: authentication
 failure, missing capability, a host that cannot grant the filtering capability,
 an unknown, expired, spent, or mismatched approval record, preflight
 divergence, a non-empty `post_content_filtered` without an explicit
-`clear_preprocessed` approval, a `post_content` column that is not `utf8mb4`,
+`clear_preprocessed` approval, a host with `DISALLOW_UNFILTERED_HTML` set, a
+`post_content` column that is not `utf8mb4`,
 revisions unavailable for the `custom_css` post type, wrong site/theme,
 malformed response, hash drift, lock-acquisition timeout, post-write
 verification failure, a restore refused because the post changed out
@@ -666,16 +779,30 @@ Customizer save held against the lock, a lock-acquisition
 timeout on both paths, idempotent no-op, revision creation, core update
 failure, secret redaction, and rollback through the same guarded path.
 
-The capability and recovery behavior need their own cases:
+The KSES lift and the recovery behavior need their own cases:
 
-- the `map_meta_cap` filter changes the answer only for the publisher role and
-  only for `unfiltered_html`/`edit_css`; another user's `unfiltered_html` check
-  and the publisher's other capability checks are unaffected;
-- with `DISALLOW_UNFILTERED_HTML` defined true, the filter leaves core's
-  `do_not_allow` in place, the preflight fails, and no write is attempted;
+- `current_user_can( 'unfiltered_html' )` is false for the publisher on every
+  request, including inside the publish handler;
+- **the comment test**: a `POST` to `/wp/v2/comments` authenticated with the
+  publisher's Application Password, carrying `<script>` in the comment body,
+  must come back with the markup stripped. That is the regression this design
+  revision exists to prevent, and it runs against a build where a publish has
+  already happened in the same test session;
+- the filters are lifted only between the approval check and the write:
+  assertions before the lift, during the write, and after the `finally` show
+  `has_filter( 'content_save_pre', 'wp_filter_post_kses' )` off only in the
+  middle window;
+- an exception thrown inside `wp_update_custom_css_post()` still leaves the
+  filters restored, and the `shutdown` fallback restores them if the `finally`
+  is bypassed;
+- the lift refuses when `current_user_can( 'rt_publish_shared_css' )` is false,
+  when the request did not match the rail's route, or when the lock is not
+  held;
+- with `DISALLOW_UNFILTERED_HTML` defined true, the preflight refuses and no
+  write is attempted;
 - the preflight rejects CSS whose bytes KSES would change — an `&` in a `url()`
-  data URI is the cheap fixture — when the grant is absent, and passes the same
-  CSS when it is present;
+  data URI is the cheap fixture — when the lift is not in effect, and the same
+  CSS is stored byte-for-byte through the rail's own write;
 - the preflight rejects content carrying a `</style` sequence or a trailing
   prefix of one, matching `WP_Customize_Custom_CSS_Setting::validate()`;
 - post-write verification fails and the re-read hash matches the failed
@@ -719,6 +846,15 @@ need cases of their own:
   pre-change filtered hash;
 - a restore after a failed write puts both fields back, verified against both
   pre-change hashes — a restore that omits `preprocessed` must fail the test;
+- a full round trip on a fixture whose `post_content_filtered` is non-empty:
+  publish with `clear_preprocessed` set, fail verification, restore, and assert
+  the preprocessed bytes are back exactly;
+- the same round trip with the approval snapshot removed, proving the revision
+  fallback works and that the report names the fallback as the source used;
+- a `custom_css` revision saved with the plugin active carries
+  `post_content_filtered`, and a revision of an ordinary post does not — the
+  `static` cache inside `_wp_post_revision_fields()` makes the second assertion
+  the one that catches a filter which only adds and never removes;
 - an `update_custom_css_data` filter returning a non-empty `preprocessed` value
   is detected by preflight and refused;
 - a filter hooked to `wp_insert_post_data` that rewrites `post_content` is
@@ -729,11 +865,12 @@ need cases of their own:
   fixture that saves a pre-change revision and then short-circuits the update
   must be caught, which the earlier step-1 comparison would have passed.
 
-The plugin package may contain only these three routes, the scoped
-`map_meta_cap` filter, the approval record type and its admin screen, the
-Customizer lock hooks, and its activation/deactivation role and capability
-cleanup. The repository publisher may read only the canonical CSS file
-and its CSS-specific secrets. Neither component may change posts, pages,
+The plugin package may contain only these three routes, the scoped KSES lift
+inside the publish handler, the `_wp_post_revision_fields` filter for
+`custom_css`, the approval record type and its admin screen, the Customizer
+lock hooks, and its activation/deactivation role and capability cleanup. The
+repository publisher may read only the canonical CSS file and its CSS-specific
+secrets. Neither component may change posts, pages,
 plugins, templates, navigation, media, users, general options, or other theme
 settings.
 
@@ -764,17 +901,19 @@ save paths. They do not cover:
   serialize them as intended — this is the condition the `add_option()`
   fallback exists for, and rollout must confirm which situation the
   production host is in before relying on `GET_LOCK` alone.
-- **The `unfiltered_html` decision is a real widening.** It is scoped to one
-  role and one capability and never enters the role's stored capabilities, but
-  inside that scope it is exactly as broad as unfiltered HTML on that post's
-  content: the publisher can store markup in `custom_css`. The compensating
-  controls are the single canonical source file, the reviewed diff, the
-  approval binding, and the `</style` markup rule — not KSES.
+- **The KSES lift is still a lift.** For the duration of one call, with the
+  lock held and an approval validated, this plugin turns off WordPress's input
+  sanitization for the whole request context. Nothing else in the request is
+  supposed to write during that window, but nothing structurally prevents a
+  filter hooked to `update_custom_css_data` or `wp_insert_post_data` from
+  writing another post while the filters are down. The window is one function
+  call wide, the code path is one route, and the restore is in a `finally` with
+  a `shutdown` backstop — but the risk is a narrow window, not zero.
 - **Hosts that disallow unfiltered HTML.** Where `DISALLOW_UNFILTERED_HTML` is
-  set, or on multisite where the publisher is not a super admin, the rail
-  cannot write byte-exact CSS and refuses to write at all. Publishing shared
-  CSS on such an install stays manual until the host's own setting changes,
-  which is an owner decision rather than a plugin one.
+  defined and true, the rail refuses to publish even though the lift would
+  technically work, because that constant is the operator's instruction.
+  Publishing shared CSS on such an install stays manual until the owner changes
+  the host's own setting.
 - **Changeset publishes that skip validation.** A scheduled changeset
   published by WP-Cron, or code transitioning a `customize_changeset` post to
   `publish` directly, reaches `_publish_changeset_values()` without passing
@@ -784,9 +923,12 @@ save paths. They do not cover:
 - **Preprocessed CSS is out of scope, not supported.** The rail refuses on an
   install whose `post_content_filtered` is non-empty unless an administrator
   says to clear it. It does not compile, preserve, or regenerate a preprocessed
-  source, and after a `clear_preprocessed` publish the only copy of that source
-  is in the pre-change revision and the receipt. Adopting a preprocessor on
-  this site later means revisiting this design, not working around it.
+  source. After a `clear_preprocessed` publish the copies that exist are the
+  pre-change revision — which carries the field only because the plugin's
+  `_wp_post_revision_fields` filter is installed — and the retained snapshot on
+  the approval record, which ages out. Revisions taken before the plugin was
+  active do not carry the field at all. Adopting a preprocessor on this site
+  later means revisiting this design, not working around it.
 - **The preflight cannot model the write exactly.** `wp_insert_post()` builds
   the `$postarr` and `$unsanitized_postarr` arguments it passes to
   `wp_insert_post_data` internally, so simulating that filter is an
@@ -812,12 +954,12 @@ save paths. They do not cover:
 
 Implementation is a separate reviewed task and PR. Rollout order is: plugin
 tests → CLI tests against a disposable WordPress fixture → owner review →
-plugin install/activation → dedicated user, role, and the scoped capability
-grant → `rt_approve_shared_css` on the administrator role → Application
+plugin install/activation → dedicated user and role, with no capability grant
+of any kind → `rt_approve_shared_css` on the administrator role → Application
 Password → secret installation → a production preflight confirming byte
-fidelity and revision availability on the target host → read-only production
-`plan` → an approval record minted in wp-admin → one guarded write →
-verification. Each production mutation remains
+fidelity, revision availability, and that the comment path is still filtered
+for the publisher → read-only production `plan` → an approval record minted in
+wp-admin → one guarded write → verification. Each production mutation remains
 human-approved and individually auditable.
 
 ## Primary references
@@ -838,10 +980,6 @@ human-approved and individually auditable.
   https://developer.wordpress.org/advanced-administration/security/application-passwords/
 - WordPress core `map_meta_cap()`:
   https://developer.wordpress.org/reference/functions/map_meta_cap/
-- WordPress `map_meta_cap` filter:
-  https://developer.wordpress.org/reference/hooks/map_meta_cap/
-- WordPress `user_has_cap` filter (considered and not used):
-  https://developer.wordpress.org/reference/hooks/user_has_cap/
 - WordPress `WP_User::has_cap()`:
   https://developer.wordpress.org/reference/classes/wp_user/has_cap/
 - WordPress core `current_user_can()`:
@@ -850,6 +988,18 @@ human-approved and individually auditable.
   https://developer.wordpress.org/reference/functions/kses_init/
 - WordPress core `kses_init_filters()`:
   https://developer.wordpress.org/reference/functions/kses_init_filters/
+- WordPress core `kses_remove_filters()`:
+  https://developer.wordpress.org/reference/functions/kses_remove_filters/
+- WordPress core `wp_filter_kses()`:
+  https://developer.wordpress.org/reference/functions/wp_filter_kses/
+- WordPress core `WP_REST_Comments_Controller::create_item_permissions_check()`:
+  https://developer.wordpress.org/reference/classes/wp_rest_comments_controller/create_item_permissions_check/
+- WordPress core `_wp_post_revision_fields()`:
+  https://developer.wordpress.org/reference/functions/_wp_post_revision_fields/
+- WordPress `_wp_post_revision_fields` filter:
+  https://developer.wordpress.org/reference/hooks/_wp_post_revision_fields/
+- WordPress core `_wp_put_post_revision()`:
+  https://developer.wordpress.org/reference/functions/_wp_put_post_revision/
 - WordPress core `wp_filter_post_kses()`:
   https://developer.wordpress.org/reference/functions/wp_filter_post_kses/
 - WordPress core `wp_kses()`:

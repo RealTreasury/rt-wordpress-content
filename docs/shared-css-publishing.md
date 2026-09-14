@@ -38,6 +38,7 @@ owns exactly two authenticated routes under `rt-css/v1/shared`:
   enabled for `custom_css`, the `post_content` column charset, whether
   `DISALLOW_UNFILTERED_HTML` is set, whether the revision-fields filter is
   installed, whether the `GET_LOCK` probe succeeds (`lock_unavailable` if not),
+  the derived per-install lock name the plugin uses (see *The lock*),
   and whether a scheduled `customize_changeset` carrying a
   `custom_css[<stylesheet>]` value is pending. Given an `approval_ref` it also
   reports whether that record is open, unexpired, and bound to this stylesheet. It has no side effects, takes
@@ -574,11 +575,42 @@ the publish and triggers the guarded restore.
 ### The lock
 
 On entry, the `PUT` handler acquires a named MySQL advisory lock through
-`$wpdb`: `SELECT GET_LOCK('rt_shared_css_publish', <timeout_seconds>)`. A
-return of `0` (timeout) or `NULL` (error) fails the request closed with no
-write attempted. On exit — success, validation failure, or exception — the
-handler calls `SELECT RELEASE_LOCK('rt_shared_css_publish')` in a `finally`
-block so the lock is never held past the request.
+`$wpdb`: `SELECT GET_LOCK(<lock_name>, <timeout_seconds>)`. A return of `0`
+(timeout) or `NULL` (error) fails the request closed with no write attempted.
+On exit — success, validation failure, or exception — the handler calls
+`SELECT RELEASE_LOCK(<lock_name>)` in a `finally` block so the lock is never
+held past the request.
+
+**The lock name is derived per install, not fixed.** MySQL named locks live in
+one namespace for the whole server — they are not scoped to a database, a
+table prefix, or a site. A literal such as `rt_shared_css_publish` would
+therefore be shared by every WordPress install on the same MySQL server that
+runs this plugin (common on shared and managed hosting, and on any staging
+site that shares production's database server). One site's publish would block
+another's, and its Customizer saves would defer or be refused, for no reason
+visible from either site. The name the plugin uses is:
+
+```
+'rt_css_pub_' . substr( hash( 'sha256', DB_NAME . '|' . $wpdb->prefix ), 0, 32 )
+```
+
+`DB_NAME` plus `$wpdb->prefix` names exactly one `wp_posts` table on that
+server — which is the resource the lock protects — so two installs contend only
+when they would in fact write the same custom-CSS post. Both inputs are stable
+for the life of an install: the database name does not change and the table
+prefix is fixed at install time. `home`/`siteurl` were rejected as inputs
+because they change on domain moves and staging refreshes, which would
+silently change the lock name mid-fleet. The hash is truncated to 32 hex
+characters, giving a 43-character name; MySQL enforces a 64-character maximum
+on lock names and errors (`ER_USER_LOCK_OVERLONG_NAME`) above it, so a raw
+`DB_NAME . $wpdb->prefix` could not be used directly. Every acquisition site in
+this design — the `PUT` handler, the approval-time simulation, the Customizer
+validation filter, and the three changeset-publish hooks — calls one helper
+that returns this name, so no path can drift onto a different name. `GET`
+reports the derived name so an operator diagnosing contention on a shared
+server can see which name to look for in `performance_schema.metadata_locks`
+(object type `USER LEVEL LOCK`). The probe described below uses the same
+derived name, not a separate one.
 
 `GET_LOCK` is scoped to the MySQL session that acquired it (the `$wpdb`
 connection, which WordPress normally keeps open for the request), so the lock
@@ -1096,6 +1128,13 @@ Locking and the deferral hooks need their own cases:
 - with the `GET_LOCK` probe forced to fail, `GET` reports `lock_unavailable`,
   `PUT` refuses before loading an approval, and a Customizer save of Additional
   CSS is refused by the validation filter;
+- the lock name is per install: two test installs with different `DB_NAME` or
+  `$wpdb->prefix` on the same MySQL server derive different names, one holding
+  its lock does not block the other's `PUT` or Customizer save, and the name
+  `GET` reports is the one `IS_USED_LOCK` shows held during a publish. A
+  grep-level companion asserts no string literal is ever passed to `GET_LOCK`,
+  `RELEASE_LOCK`, or `IS_USED_LOCK` — every call goes through the one
+  lock-name helper — and that the derived name is under 64 characters;
 - no code path in the plugin writes an option, transient, or any other row as a
   substitute lock — a grep-level test, since the failure mode of reintroducing
   a fallback is silent.
@@ -1340,6 +1379,16 @@ save paths. They do not cover:
   connection cleanly (rare, but possible under some hosting/process-manager
   configurations) can hold the lock until the connection is reaped rather
   than until the request's nominal timeout.
+- **Lock-name inputs that change.** The per-install name is derived from
+  `DB_NAME` and `$wpdb->prefix`. Neither changes in normal operation, but a
+  migration that renames the database or re-prefixes the tables changes the
+  name; a request that acquired under the old name and one under the new name
+  would not contend. That window is the migration itself, during which nothing
+  should be publishing anyway; the name is recomputed on every request, so no
+  stale value survives past it. Conversely, two installs on one server that
+  derive the same name necessarily share a database name and prefix, which on
+  a single MySQL server means they are writing the same `wp_posts` table — in
+  which case contending is the correct behavior, not a collision.
 
 ## Implementation and rollout gates
 

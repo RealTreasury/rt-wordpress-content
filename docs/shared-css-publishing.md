@@ -148,7 +148,9 @@ second `PUT` with the same reference is refused.
    *un-minified* live CSS and the source, so the approver reads real CSS (see
    "Minified publish bytes" for how the live side is made readable). Writes no
    WordPress state and lifts no filters. Refuses if `post_content_filtered` is non-empty
-   and no administrator has set `clear_preprocessed`.
+   and no administrator has set `clear_preprocessed`. Refuses if the minified
+   bytes already equal the live bytes: there is nothing to publish, and the
+   post-write checks below assume the content changes.
 2. **Approve.** An administrator reads the diff and mints the approval record.
    The record binds the exact live hash the diff was computed against.
 3. **Publish** (`shared_css_publish.py publish --approval <ref>`). Sends
@@ -158,12 +160,26 @@ second `PUT` with the same reference is refused.
       the request body equals `proposed_sha256`
    2. re-read the live post; refuse unless both field hashes equal the
       record's expected hashes (drift refusal)
-   3. save a pre-change revision and record its ID as `pre_write_revision_id`
+   3. establish `pre_write_revision_id`. Read the latest non-autosave
+      revision ID with `wp_get_latest_revision_id_and_total_count()`, then
+      call `wp_save_post_revision()`. If it returns an ID, use that. If it
+      returns `null`, core found the post identical to its latest revision;
+      that is the normal state after any earlier save, because core already
+      revisioned that save on `post_updated`. Use the ID read a moment ago,
+      after confirming that revision's `post_content` hashes to the live hash
+      from step 3.2. If there is no revision and none was created, refuse:
+      revisions are off for `custom_css`, which `plan` should already have
+      caught as a failed precondition. The snapshot on the approval record is
+      the rollback source in every case; the revision is the second copy.
    4. lift KSES, call `wp_update_custom_css_post( $css, [ 'stylesheet' =>
       $slug, 'preprocessed' => $preprocessed ] )`, restore KSES
    5. read back both fields; require `post_content` hash equal to
-      `proposed_sha256`, `post_content_filtered` hash equal to what was
-      intended, and the latest revision ID greater than `pre_write_revision_id`
+      `proposed_sha256` and `post_content_filtered` hash equal to what was
+      intended. Also read the latest revision ID: because the bytes changed,
+      core's `post_updated` hook has saved the new state, so it should exceed
+      `pre_write_revision_id`. If it does not, the receipt carries a warning;
+      it does not trigger a restore, because the two hashes are the truth about
+      what is live
    6. on any read-back mismatch, restore the snapshot through the same
       guarded write and mark the record failed; the response names which
       check failed and whether the restore succeeded
@@ -171,10 +187,18 @@ second `PUT` with the same reference is refused.
       hashes, revision IDs, the approval reference
 4. **Verify** (`shared_css_publish.py verify`). Fetches three representative
    pages (home, a webinar landing page, a gated-content page) with a
-   cache-busting query string, confirms the `wp-custom-css` style block hashes
-   to `proposed_sha256` (the minified bytes), and captures phone, tablet, and desktop screenshots
-   with the existing `~/tools/webshot.py` for a person to look at. The rail
-   does not judge the screenshots.
+   cache-busting query string and confirms the CSS arrived. Core's
+   `wp_custom_css_cb()` prints the stored bytes as the text of
+   `<style id="wp-custom-css">` with one newline added before and one after,
+   so the page bytes never hash to `proposed_sha256` as-is. `verify` takes the
+   text content of that element, strips exactly one leading and one trailing
+   newline, and compares the result byte-for-byte to the minified bytes,
+   which themselves end in one newline. `proposed_sha256` is checked against
+   the stored post in step 3.5; the page check confirms delivery, not storage.
+   A page mismatch after a clean 3.5 points at a `wp_get_custom_css` filter or
+   a stale cache, and the receipt says so. `verify` then captures phone,
+   tablet, and desktop screenshots with the existing `~/tools/webshot.py` for
+   a person to look at. The rail does not judge the screenshots.
 
 ### Minified publish bytes
 
@@ -267,7 +291,7 @@ residual risk.
 ## Rollback
 
 Two copies of the prior state exist after every publish: the WordPress
-revision saved in step 3.3, and the two-field snapshot on the approval record.
+revision identified in step 3.3, and the two-field snapshot on the approval record.
 Core revisions carry `post_content` but not `post_content_filtered`, so the
 plugin adds a `_wp_post_revision_fields` filter that includes the filtered
 field for `custom_css` only (and removes it for other post types, because the
@@ -374,6 +398,14 @@ Checked against WordPress 7.1 source during review of this design.
   column charset is `utf8` or `utf8mb3`; the rail requires `utf8mb4`.
 - Core revisions store `post_content` and not `post_content_filtered`;
   `_wp_post_revision_fields()` caches its field list in a static.
+- `wp_save_post_revision()` returns `null` when the post matches its latest
+  non-autosave revision (the `wp_save_post_revision_check_for_changes`
+  filter), when revisions are disabled for the post type, and for autosaves
+  and revisions themselves. It runs on `post_updated`, so every ordinary save
+  leaves the post identical to its latest revision.
+- `wp_custom_css_cb()` outputs `wp_get_custom_css()` wrapped in one leading
+  and one trailing newline inside `<style id="wp-custom-css">`;
+  `wp_get_custom_css()` applies the `wp_get_custom_css` filter first.
 - MySQL named locks are server-wide, not namespaced per database.
 
 ## Primary references
@@ -403,6 +435,11 @@ Checked against WordPress 7.1 source during review of this design.
   https://developer.wordpress.org/reference/hooks/_wp_post_revision_fields/
 - `wp_get_latest_revision_id_and_total_count()`:
   https://developer.wordpress.org/reference/functions/wp_get_latest_revision_id_and_total_count/
+- `wp_save_post_revision()`:
+  https://developer.wordpress.org/reference/functions/wp_save_post_revision/
+- `wp_custom_css_cb()` and the `wp_get_custom_css` filter:
+  https://developer.wordpress.org/reference/functions/wp_custom_css_cb/
+  https://developer.wordpress.org/reference/hooks/wp_get_custom_css/
 - `wp_encode_emoji()` and `wpdb::get_col_charset()`:
   https://developer.wordpress.org/reference/functions/wp_encode_emoji/
   https://developer.wordpress.org/reference/classes/wpdb/get_col_charset/

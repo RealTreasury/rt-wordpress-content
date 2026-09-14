@@ -71,10 +71,10 @@ The chart, the form card and the iframe script are unchanged.
     <div class="rt-afp-mapcard">
       <p class="rt-afp-maptitle">Treasury Systems <span>&middot; North America</span></p>
       <div class="rt-afp-mapclip">
-        <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new.png?fit=1024%2C1024&amp;ssl=1" srcset="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new.png?fit=768%2C768&amp;ssl=1 768w, https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new.png?fit=1024%2C1024&amp;ssl=1 1024w" sizes="(max-width: 560px) 340px, 480px" width="1024" height="1024" alt="Real Treasury treasury technology market map, North America, September 2026 &mdash; TRMS, Cash Tools, and TMS-Lite vendors" loading="lazy">
+        <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png?fit=1024%2C1024&amp;ssl=1" srcset="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png?fit=768%2C768&amp;ssl=1 768w, https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png?fit=1024%2C1024&amp;ssl=1 1024w" sizes="(max-width: 560px) 340px, 480px" width="1024" height="1024" alt="Real Treasury treasury technology market map, North America, September 2026 &mdash; TRMS, Cash Tools, and TMS-Lite vendors" loading="lazy">
       </div>
     </div>
-    <figcaption>North America treasury technology market map, August 2026</figcaption>
+    <figcaption>North America treasury technology market map, September 2026</figcaption>
   </figure>
   <h2 class="rt-afp-h2-mt">Good to know</h2>
   <div class="rt-afp-faq">

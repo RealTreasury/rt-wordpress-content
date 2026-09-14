@@ -36,9 +36,11 @@ owns exactly two authenticated routes under `rt-css/v1/shared`:
   preprocessed field, normally empty), custom-CSS post ID, latest revision ID,
   and the install preconditions the CLI needs to check — whether revisions are
   enabled for `custom_css`, the `post_content` column charset, whether
-  `DISALLOW_UNFILTERED_HTML` is set, and whether the revision-fields filter is
-  installed. Given an `approval_ref` it also reports whether that record is
-  open, unexpired, and bound to this stylesheet. It has no side effects, takes
+  `DISALLOW_UNFILTERED_HTML` is set, whether the revision-fields filter is
+  installed, whether the `GET_LOCK` probe succeeds (`lock_unavailable` if not),
+  and whether a scheduled `customize_changeset` carrying a
+  `custom_css[<stylesheet>]` value is pending. Given an `approval_ref` it also
+  reports whether that record is open, unexpired, and bound to this stylesheet. It has no side effects, takes
   no CSS body, and never lifts KSES. The preprocessed bytes themselves are not
   exported: the rail never authors them, and the in-lock snapshot is what a
   restore uses.
@@ -582,21 +584,49 @@ block so the lock is never held past the request.
 connection, which WordPress normally keeps open for the request), so the lock
 disappears if that connection drops without releasing it; the request-scoped
 lifetime and the timeout bound how long a crashed request can hold it stale.
-Where `GET_LOCK` is unavailable (managed database services that block it, or a
-replica/proxy topology where writer connections aren't guaranteed to land on
-the same backend), fall back to an `add_option()`-based lock: `add_option()`
-fails if the option row already exists, which is the same INSERT-uniqueness
-guarantee a database primary key gives, so it can serve as a mutex primitive.
-The fallback lock option stores an acquisition timestamp and is treated as
-stale and reclaimable after a fixed TTL, since there is no session teardown to
-release it automatically.
+It is also re-entrant per session — a second acquisition of the same name needs
+a matching second `RELEASE_LOCK` — which is why every path in this design
+acquires at most once per request and tracks that in a request-scoped flag.
 
-A **transient** (`set_transient()` / `get_transient()`) is not acceptable as
-the primary lock: transients are commonly backed by an external object cache
-(Memcached, Redis) whose read-then-write is not itself atomic, so two
-concurrent requests can both see the transient absent and both proceed. Using
-a transient to guard the thing that is supposed to prevent a race would
-reintroduce the same race one layer up.
+**`GET_LOCK` is a requirement, not a preference.** There is no fallback lock.
+An earlier revision of this design offered an `add_option()`-based one: acquire
+by INSERT, treat the row as stale and reclaimable after a fixed TTL. That is
+not a mutex. A fixed TTL lets a contender reclaim the row while the original
+holder is still executing — the TTL measures elapsed time, not whether the
+holder finished — and with no ownership token in the value, a release is an
+unconditional `delete_option()` that can delete a lock somebody else has since
+acquired. Two publishers can end up inside the write sequence at once, which is
+the exact failure the lock exists to prevent. A correct version would need an
+owner token and an expiry inside the value, acquisition by atomic INSERT,
+reclaim only through a single conditional `UPDATE … WHERE option_value = <the
+exact stale value observed>`, and release through a conditional
+`DELETE … WHERE option_value = <own token>` — and would still carry a
+clock-skew risk on the expiry. Rather than ship a second, weaker locking
+protocol to be maintained alongside the real one, the rail requires the real
+one.
+
+So the plugin probes for `GET_LOCK` support at activation and on every `GET`:
+it acquires the probe name with a zero timeout, checks `IS_USED_LOCK` reports
+the same session, and releases. If the probe fails — `NULL` returns, an error,
+or `IS_USED_LOCK` answering inconsistently, which is what a connection pooler
+or a read/write-split topology without a stable primary looks like from here —
+`GET` reports `lock_unavailable`, and from then on:
+
+- every publish refuses, before any approval is even loaded;
+- every Customizer save of Additional CSS refuses too, through the same
+  validation filter used for lock contention, because an unlockable install
+  cannot serialize the two paths in either direction.
+
+That is deliberately severe: on such a host the plugin makes Additional CSS
+unsavable, so the correct response is not to install it there. Whether the
+production host supports `GET_LOCK` **must be confirmed at rollout** — it is
+the first gate in the rollout order below, and this document does not assume an
+answer.
+
+A **transient** (`set_transient()` / `get_transient()`) was also considered and
+rejected, for completeness: transients are commonly backed by an external
+object cache whose read-then-write is not atomic, so two concurrent requests
+can both find it absent and both proceed — the same race, one layer up.
 
 ### Bringing the Customizer under the same lock
 
@@ -667,14 +697,75 @@ request — and the validate path also runs for changeset saves that never
 publish, which never reach `customize_save_after` at all and rely entirely on
 the `shutdown` release.
 
-This is a plugin responsibility, not a storage-layer guarantee. Two paths reach
-`_publish_changeset_values()` without passing through the validate filter: a
-scheduled changeset published by WP-Cron, and any code that transitions a
-`customize_changeset` post to `publish` directly. The plugin still acquires on
-`customize_save` for those, with a bounded wait, but that hook cannot refuse —
-so a failed acquisition there is recorded loudly rather than enforced. If the
-plugin is deactivated, or a future core change moves these hooks, only rail
-writers are serialized against each other. See "Residual risks" below.
+### Changeset publishes that never reach the validation filter
+
+Two paths reach `_publish_changeset_values()` without passing through
+`customize_validate_custom_css[<stylesheet>]`: a scheduled changeset published
+by WP-Cron, and code that transitions a `customize_changeset` post to `publish`
+directly. An earlier revision acquired the lock on `customize_save` for these
+and, on failure, logged and let the save proceed — which is not serialization
+at all, since `customize_save` has no way to refuse. A publish that cannot be
+refused has to be **deferred** instead, and core provides the levers.
+
+**What the cron path actually does, read from WordPress 7.1 source.**
+`wp-includes/default-filters.php` hooks `check_and_publish_future_post()` to
+`publish_future_post` at priority 10. That function re-reads the post, and if
+`post_date_gmt` is still in the future it clears and reschedules
+`publish_future_post` and returns without publishing — core's own "someone
+jumped the gun" branch. Otherwise it calls `wp_publish_post()`, which sets the
+status with a direct `$wpdb->update( $wpdb->posts, ... )` and then runs
+`wp_transition_post_status()`. Two consequences matter here: `wp_insert_post()`
+is not involved on this path, so **`wp_insert_post_data` never fires for a cron
+publish**, and `_wp_customize_publish_changeset()` — hooked to
+`transition_post_status` at priority 10 — is what carries the changeset into
+`_publish_changeset_values()`.
+
+So the plugin hooks three places, each matched to how that path publishes:
+
+- **`publish_future_post`, priority 1** — ahead of core's priority 10. For a
+  `customize_changeset` post whose data contains a `custom_css[<stylesheet>]`
+  setting, it attempts the bounded `GET_LOCK`. On success the lock is held, and
+  because `GET_LOCK` is connection-scoped it stays held through
+  `wp_publish_post()`, the status transition, and
+  `_publish_changeset_values()`, releasing on `shutdown`. On failure it moves
+  the post's `post_date` and `post_date_gmt` forward to now plus 60 seconds
+  with `wp_update_post()` — which cleans the post cache, so core's own
+  `get_post()` a moment later reads the new date — and returns. Core then takes
+  its reschedule branch and publishes nothing this run. The deferral is logged.
+- **`wp_insert_post_data`** — for a `customize_changeset` being written to
+  `publish` through `wp_insert_post()` or `wp_update_post()`, which is how
+  interactive and programmatic saves publish a changeset. On a failed
+  acquisition the filter rewrites `post_status` back to `future` and
+  `post_date_gmt` to now plus 60 seconds, so the changeset is rescheduled
+  rather than published under contention.
+- **`transition_post_status`, priority 9** — immediately before
+  `_wp_customize_publish_changeset()`, as a last acquisition point for anything
+  that reached `wp_publish_post()` without passing either hook above. This one
+  can only acquire, never refuse: if the bounded wait times out here, the
+  publish proceeds and the plugin logs it. That residual is stated in
+  "Residual risks" rather than papered over.
+
+The cost of the first two is a scheduled changeset publishing up to a minute
+late — and then a minute later again, if a rail publish is still in flight.
+That is the intended trade: a scheduled Additional CSS save is not
+time-critical, and a silent concurrent write is not acceptable.
+
+| Path into the custom-CSS write | On failed lock acquisition |
+| --- | --- |
+| Interactive Customizer save (`customize_validate_custom_css[<stylesheet>]`) | Return `WP_Error`; `save_changeset_post()` returns `transaction_fail` and no setting is written. The person saving sees the refusal. |
+| Scheduled changeset, WP-Cron (`publish_future_post`, priority 1) | Move `post_date`/`post_date_gmt` to now + 60 s and return; core reschedules and publishes nothing this run. Logged. |
+| Changeset published through `wp_insert_post()`/`wp_update_post()` (`wp_insert_post_data`) | Rewrite `post_status` to `future` and `post_date_gmt` to now + 60 s; the publish becomes a reschedule. Logged. |
+| Anything reaching `wp_publish_post()` directly (`transition_post_status`, priority 9) | Cannot refuse. The publish proceeds unlocked and is logged; this is the one residual window, stated in "Residual risks". |
+| The rail's own `PUT` | Fails closed with no write attempted. |
+
+`plan` and `GET` also report, for information, whether any `customize_changeset`
+post with status `future` carries a `custom_css[<stylesheet>]` value, so an
+operator can see that a scheduled save is queued to land on top of the publish
+they are about to approve. It is information, not a guard: the deferral hooks
+are what prevent the race.
+
+If the plugin is deactivated, or a future core change moves these hooks, only
+rail writers are serialized against each other. See "Residual risks" below.
 
 ### The guarded write
 
@@ -976,17 +1067,38 @@ record, a simulation divergence at approval time or in the lock, a non-empty
 `live_absent` approval whose post exists by publish time or an ordinary
 approval whose post has disappeared, a host with
 `DISALLOW_UNFILTERED_HTML` set, a `post_content` column that is not `utf8mb4`,
-revisions unavailable for the `custom_css` post type, wrong site/theme,
-malformed response, hash drift, lock-acquisition timeout, post-write
-verification failure, a restore refused because the post changed out
+revisions unavailable for the `custom_css` post type, `GET_LOCK` unavailable on
+the host, wrong site/theme, malformed response, hash drift, lock-acquisition
+timeout, post-write verification failure, a restore refused because the post changed out
 of band, revision failure, or validation failure.
 
 The plugin and CLI test suite must cover permission denial, immutable target
 selection, unknown-field and size rejection, exact hash matching, a simulated
 concurrent rail request held against the lock, a simulated concurrent
-Customizer save held against the lock, a lock-acquisition
-timeout on both paths, idempotent no-op, revision creation, core update
-failure, secret redaction, and rollback through the same guarded path.
+Customizer save held against the lock, a lock-acquisition timeout on both
+paths, idempotent no-op, revision creation, core update failure, secret
+redaction, and rollback through the same guarded path.
+
+Locking and the deferral hooks need their own cases:
+
+- a scheduled `customize_changeset` carrying `custom_css[<stylesheet>]` fires
+  `publish_future_post` while the lock is held: the post is still `future`
+  afterwards, its `post_date_gmt` has moved forward by about a minute, no
+  custom-CSS write happened, and the deferral is logged. Released the lock and
+  run cron again: it publishes;
+- the same changeset with the lock free publishes immediately, and the lock is
+  held through `_publish_changeset_values()` — asserted by a callback on
+  `customize_save` that checks `IS_USED_LOCK` reports this session;
+- publishing a changeset through `wp_update_post()` while the lock is held
+  leaves it at `future` with the date moved, not `publish`;
+- a changeset carrying no `custom_css` value is never deferred, lock held or
+  not;
+- with the `GET_LOCK` probe forced to fail, `GET` reports `lock_unavailable`,
+  `PUT` refuses before loading an approval, and a Customizer save of Additional
+  CSS is refused by the validation filter;
+- no code path in the plugin writes an option, transient, or any other row as a
+  substitute lock — a grep-level test, since the failure mode of reintroducing
+  a fallback is silent.
 
 The KSES lift and the recovery behavior need their own cases:
 
@@ -1145,9 +1257,13 @@ save paths. They do not cover:
   environment routes writes through a connection pooler or a
   read/write-split replica setup where different requests can land on
   different backend connections without a stable primary, `GET_LOCK` may not
-  serialize them as intended — this is the condition the `add_option()`
-  fallback exists for, and rollout must confirm which situation the
-  production host is in before relying on `GET_LOCK` alone.
+  serialize them as intended. The activation probe catches the obvious cases —
+  `NULL` returns, errors, `IS_USED_LOCK` disagreeing about the session — and
+  reports `lock_unavailable`, which disables both the rail and Customizer saves
+  of Additional CSS. It cannot catch a topology that only intermittently routes
+  to a different backend. Rollout must confirm what the production host does
+  before this plugin is installed at all; there is no fallback lock to fall
+  back to, by design.
 - **The KSES lift is still a lift.** For the duration of one call, with the
   lock held and an approval validated, this plugin turns off WordPress's input
   sanitization for the whole request context. Nothing else in the request is
@@ -1169,12 +1285,19 @@ save paths. They do not cover:
   optimization the design can lose without becoming unsafe. What the design
   does still depend on is that validation runs before the settings are written
   in the same request.
-- **Changeset publishes that skip validation.** A scheduled changeset
-  published by WP-Cron, or code transitioning a `customize_changeset` post to
-  `publish` directly, reaches `_publish_changeset_values()` without passing
-  through `customize_validate_custom_css[<stylesheet>]`. The plugin still
-  acquires the lock on `customize_save` there, but that hook cannot refuse a
-  save, so contention on that path is recorded rather than prevented.
+- **One publishing path can still proceed unlocked.** Code that calls
+  `wp_publish_post()` on a `customize_changeset` in-process, without going
+  through `wp_insert_post()` and without the cron path's
+  `publish_future_post` hook, reaches `transition_post_status` — where the
+  plugin can acquire the lock but cannot refuse the transition. On a bounded-wait
+  timeout there, the publish proceeds and is logged. The two paths that
+  actually occur in practice, the Customizer and WP-Cron, are refused and
+  deferred respectively; this one is a narrow residual, not a covered case.
+- **Deferral has a visible cost.** A scheduled Additional CSS change can
+  publish up to a minute late, repeatedly, while a rail publish is in flight.
+  That is the intended trade — a late scheduled save against a silent
+  concurrent write — but someone watching for a scheduled change at an exact
+  minute will see it slip.
 - **Preprocessed CSS is out of scope, not supported.** The rail refuses on an
   install whose `post_content_filtered` is non-empty unless an administrator
   says to clear it. It does not compile, preserve, or regenerate a preprocessed
@@ -1220,8 +1343,11 @@ save paths. They do not cover:
 
 ## Implementation and rollout gates
 
-Implementation is a separate reviewed task and PR. Rollout order is: plugin
-tests → CLI tests against a disposable WordPress fixture → owner review →
+Implementation is a separate reviewed task and PR. Rollout order is: **confirm
+the production host supports `GET_LOCK` and that repeated requests reach a
+stable primary** — this design is not deployable without it and has no
+fallback — → plugin tests → CLI tests against a disposable WordPress fixture →
+owner review →
 plugin install/activation → dedicated user and role, with no capability grant
 of any kind → `rt_approve_shared_css` on the administrator role → Application
 Password → secret installation → an audit of what is hooked to
@@ -1242,8 +1368,18 @@ human-approved and individually auditable.
   https://developer.wordpress.org/reference/hooks/customize_save/
 - WordPress hook `customize_save_after`:
   https://developer.wordpress.org/reference/hooks/customize_save_after/
-- WordPress core `add_option()`:
+- WordPress core `add_option()` (considered as a fallback lock and rejected):
   https://developer.wordpress.org/reference/functions/add_option/
+- WordPress core `wp_publish_post()`:
+  https://developer.wordpress.org/reference/functions/wp_publish_post/
+- WordPress core `check_and_publish_future_post()`:
+  https://developer.wordpress.org/reference/functions/check_and_publish_future_post/
+- WordPress core `wp_transition_post_status()`:
+  https://developer.wordpress.org/reference/functions/wp_transition_post_status/
+- WordPress hook `transition_post_status`:
+  https://developer.wordpress.org/reference/hooks/transition_post_status/
+- WordPress core `_wp_customize_publish_changeset()`:
+  https://developer.wordpress.org/reference/functions/_wp_customize_publish_changeset/
 - WordPress REST routes and mandatory permission callbacks:
   https://developer.wordpress.org/rest-api/extending-the-rest-api/routes-and-endpoints/
 - WordPress Application Passwords:

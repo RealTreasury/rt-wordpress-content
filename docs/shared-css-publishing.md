@@ -125,8 +125,9 @@ Each record carries:
 - stylesheet slug
 - `expected_live_sha256` and `expected_filtered_sha256`, read from the live
   post at mint time
-- `source_sha256` and the Git commit of `shared.css`
-- `proposed_sha256`, the hash of the bytes the write should produce
+- `source_sha256` and the Git commit of `shared.css`, the readable file
+- `proposed_sha256`, the hash of the minified bytes the write should produce
+  (see "Minified publish bytes"); the two hashes never describe the same bytes
 - a full snapshot of both live fields at mint time, retained 90 days
 - `clear_preprocessed: false` by default; only an administrator can set it,
   and only when they have decided the non-empty preprocessed source should be
@@ -141,9 +142,12 @@ second `PUT` with the same reference is refused.
 1. **Plan** (`shared_css_publish.py plan`, read-only). Requires a clean
    checkout and the canonical tracked path, rejects symlinks and path
    overrides. Calls `GET`, hashes source and live bytes, checks the
-   preconditions, and prints a unified diff with stylesheet, source commit,
-   source and live hashes, byte counts, and proposed hash. Writes no WordPress
-   state and lifts no filters. Refuses if `post_content_filtered` is non-empty
+   preconditions, minifies the source, and prints a unified diff with
+   stylesheet, source commit, source and live hashes, byte counts of source
+   and minified output, and proposed hash. The diff is between the
+   *un-minified* live CSS and the source, so the approver reads real CSS (see
+   "Minified publish bytes" for how the live side is made readable). Writes no
+   WordPress state and lifts no filters. Refuses if `post_content_filtered` is non-empty
    and no administrator has set `clear_preprocessed`.
 2. **Approve.** An administrator reads the diff and mints the approval record.
    The record binds the exact live hash the diff was computed against.
@@ -168,9 +172,64 @@ second `PUT` with the same reference is refused.
 4. **Verify** (`shared_css_publish.py verify`). Fetches three representative
    pages (home, a webinar landing page, a gated-content page) with a
    cache-busting query string, confirms the `wp-custom-css` style block hashes
-   to `proposed_sha256`, and captures phone, tablet, and desktop screenshots
+   to `proposed_sha256` (the minified bytes), and captures phone, tablet, and desktop screenshots
    with the existing `~/tools/webshot.py` for a person to look at. The rail
    does not judge the screenshots.
+
+### Minified publish bytes
+
+The repository file stays readable: comments, blank lines, indentation. The
+bytes that reach WordPress do not need any of that, and at the time of writing
+comments and collapsible whitespace are about 34 KB of a 106 KB file. So the
+CLI minifies at publish time, and the minified output is what `PUT` carries,
+what `proposed_sha256` names, what the snapshot holds, and what `verify`
+looks for in the page.
+
+The minifier is deliberately dumb. It removes comments and collapses
+whitespace and nothing else: no rule merging, no reordering, no shorthand
+rewriting, no unit or color changes, no dropping of "redundant" declarations.
+Those optimisations change cascade behaviour in ways a byte compare cannot see,
+and the whole rail rests on byte compares. Rules:
+
+- strip `/* ... */` comments, except a comment whose first character is `!`
+- collapse runs of whitespace to one space; drop whitespace adjacent to
+  `{ } ; : ,` and drop the space after `(` and before `)` outside strings
+- drop the last `;` before `}`
+- leave string literals, `url(...)`, `calc(...)`, attribute selectors, and
+  `@media` query text untouched apart from the whitespace rules above
+- emit UTF-8 with a single trailing newline
+
+It is implemented in the CLI in Python with no third-party dependency, so the
+output is reproducible from the repository alone and does not depend on a
+package version. Two guards make it safe to trust:
+
+- **Round-trip check at `plan` time.** The CLI parses source and minified
+  output into the same sequence of (context, selector, declarations) tuples
+  and refuses to plan if they differ. This catches any minifier bug before a
+  hash is minted.
+- **Determinism.** Same source bytes, same output bytes, on any machine. The
+  approver's `plan` and the publisher's `publish` compute the same
+  `proposed_sha256`; if they do not, `PUT` refuses because the body hash does
+  not match the record.
+
+Two consequences for the rest of the design:
+
+- `expected_live_sha256` is the hash of whatever is live, minified or not.
+  After the first rail publish it is always a minified hash. Before that, it
+  is the hash of the last hand-pasted readable file.
+- The readable diff in `plan` needs a readable live side. The CLI does not
+  try to un-minify. It instead looks for the Git commit recorded in the
+  receipt of the last rail publish (the receipt is committed to
+  `docs/publish-receipts/` by the publish step), checks that minifying that
+  commit's `shared.css` reproduces the live hash, and diffs source against
+  that commit. If no receipt matches the live hash, the live CSS has drifted,
+  the CLI says so, and the diff is shown against the minified live bytes,
+  which is ugly but honest.
+
+Until the rail exists, `shared_css_publish.py minify` can be run by hand and
+its output pasted into Additional CSS instead of the readable file. That is
+the same bytes the rail would publish, and the round-trip check runs there
+too.
 
 ### The `preprocessed` argument
 
@@ -259,11 +318,12 @@ receipt in every case.
 
 ## What the rail cannot do
 
-It cannot change posts, pages, media, plugins, templates, template parts,
-navigation, options, users, or the theme header. It cannot publish any file
-but `assets/css/shared.css`, cannot write to any stylesheet but the active one,
-and cannot write without an approval record minted by an administrator in the
-last 30 minutes.
+It cannot publish anything but the minified form of `assets/css/shared.css`,
+and the minifier cannot add, merge, reorder, or rewrite a rule. It cannot
+change posts, pages, media, plugins, templates, template parts,
+navigation, options, users, or the theme header. It cannot write to any
+stylesheet but the active one, and cannot write without an approval record
+minted by an administrator in the last 30 minutes.
 
 ## Implementation and rollout gates
 
@@ -274,13 +334,26 @@ In order, each gated by a person:
 2. Plugin and CLI tests against a disposable WordPress fixture: KSES lifted
    only inside the approved write; comments endpoint still filtered for the
    publisher; drift refusal; first-publish branch; rollback through the same
-   primitive; `preprocessed` preserved and cleared paths.
+   primitive; `preprocessed` preserved and cleared paths; minifier
+   round-trip on the current file and on a fixture of edge cases (strings
+   containing `/*`, `url()` with spaces, `!` comments, attribute selectors).
 3. Owner review of the implementation PR.
 4. Plugin install and activation. Dedicated user and role, with only
    `rt_publish_shared_css`. `rt_approve_shared_css` added to the administrator
    role. Application Password created and stored through the render flow.
 5. Audit of what is hooked to the three write-path filters.
 6. Read-only production `plan`, an approval, one guarded write, `verify`.
+
+## Publish receipts in the repository
+
+Each successful publish or rollback appends one JSON file under
+`docs/publish-receipts/`: source commit, `source_sha256`, `proposed_sha256`,
+pre- and post-write live hashes, revision IDs, approval reference, and the
+time. The file is committed on a branch by the publish step and merged by a
+person like any other change. The receipts are what let `plan` show a
+readable diff against a minified live stylesheet, and they are the audit
+trail the task asked for. They contain no credential and nothing that is not
+already visible on the public site.
 
 ## Verified WordPress behavior this design relies on
 

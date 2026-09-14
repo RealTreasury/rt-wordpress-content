@@ -347,7 +347,8 @@ mapped to `rt_approve_shared_css`:
 | `expected_live_sha256` | SHA-256 of the live CSS the approver saw, read by the server, not supplied |
 | `expected_live_filtered_sha256` | SHA-256 of `post_content_filtered` as the approver saw it, also read by the server |
 | `clear_preprocessed` | Default false. True only if an administrator explicitly approved clearing a non-empty `post_content_filtered` |
-| `pre_change_content` | The live `post_content` bytes captured in the lock immediately before the write; retained 90 days |
+| `live_absent` | True only when the minting screen found no custom-CSS post at all; `expected_live_sha256` then holds the sentinel `absent` |
+| `pre_change_content` | The live `post_content` bytes captured in the lock immediately before the write; retained 90 days, and absent on a first publish |
 | `pre_change_preprocessed` | The live `post_content_filtered` bytes captured at the same moment; retained 90 days |
 | `source_commit` | Repository commit those bytes came from |
 | `stylesheet` | Stylesheet slug this approval is valid for |
@@ -424,10 +425,25 @@ or an "optimistic guard" means this locked sequence.
 ### Filtering preflight
 
 The `preflight` route asks one question — if this exact string were written
-now, by this user, on this install, would the stored `post_content` be these
-same bytes? — by running the candidate through as much of the write path as can
-be reproduced without writing. It is an early detector, not a proof; the
-authoritative check is the post-write read-back described later. What it covers:
+now, by this user, on this install, **by the rail**, would the stored
+`post_content` be these same bytes? — by running the candidate through as much
+of the write path as can be reproduced without writing. It is an early
+detector, not a proof; the authoritative check is the post-write read-back
+described later.
+
+"By the rail" is load-bearing. The approved write runs with KSES lifted, so a
+simulation that left KSES installed would reject exactly the CSS the lift
+exists to allow — an `&` in a `url()` data URI would fail preflight and then
+store perfectly. The preflight therefore applies the same scoped lift it is
+modelling: `kses_remove_filters()` before the simulation, `kses_init()` in a
+`finally` after it, under the same guardrails (`rt_publish_shared_css` and the
+rail's own matched route), with no lock because nothing is written. The lift is
+scoped identically in both places, so what preflight measures is what the write
+will do. Everything else on the chain stays in: `pre_post_content`, any
+non-KSES `content_save_pre` filters a plugin has added, `wp_insert_post_data`,
+and the emoji and charset behavior.
+
+What it covers:
 
 1. the `update_custom_css_data` filter, exactly as `wp_update_custom_css_post()`
    applies it;
@@ -438,8 +454,8 @@ authoritative check is the post-write read-back described later. What it covers:
    In `db` context `sanitize_post_field()` applies `pre_post_content` before
    `content_save_pre`, so simulating `content_save_pre` alone would miss a
    filter the real write runs and could pass while the write changes the bytes.
-   Running it as the publisher means KSES is present in the chain exactly when
-   it would be present on the write;
+   The KSES entries on that chain are absent during the simulation because they
+   will be absent during the write; anything else hooked there is not;
 3. the markup rule `WP_Customize_Custom_CSS_Setting::validate()` enforces, so
    content the rail accepts is content a later Customizer save would also
    accept;
@@ -475,7 +491,9 @@ capability state, an object cache, or a plugin update can change between `plan`
 and `apply`.
 
 **What the preflight does not establish.** It is a best-effort early detector.
-It cannot be a proof, for reasons that are structural rather than fixable:
+It cannot be a proof, for reasons that are structural rather than fixable: the
+simulation runs in a different request from the write, so the set of filters
+installed can differ between them;
 `wp_insert_post()` builds `$postarr` and `$unsanitized_postarr` internally and
 passes them to `wp_insert_post_data`, so a filter reading those arguments can
 behave differently under simulation; a filter whose behavior depends on time,
@@ -550,19 +568,45 @@ So the plugin:
   On success it returns the validity object untouched; on timeout it returns a
   `WP_Error` — "a shared CSS publish is in progress, try again" — which refuses
   the entire save rather than letting it write unlocked;
-- releases on `customize_save_after`, which fires at the end of
-  `_publish_changeset_values()` once the settings have been written;
-- keeps a request-scoped flag for whether it holds the lock, acquires at most
-  once per request, and releases once on `shutdown` if it still holds it. Both
-  halves matter: the validate path also runs for changeset saves that never
-  publish, which never reach `customize_save_after`, and MySQL's `GET_LOCK` is
-  re-entrant per session, so a second acquisition of the same name would need a
-  second `RELEASE_LOCK` to clear.
+- **releases on `shutdown`.** That is the primary release, not a backstop. The
+  Customizer-path lock is held to the end of the request, and a request-scoped
+  flag records whether this request holds it so the release happens exactly
+  once. Acquiring at most once per request matters independently: MySQL's
+  `GET_LOCK` is re-entrant per session, so a second acquisition of the same
+  name would need a second `RELEASE_LOCK` to clear;
+- **releases early on `customize_save_after` as an optimization only.** Source
+  supports this: `customize_save_after` fires after the setting writes, not
+  before them. But the early release is an optimization, and the design does
+  not depend on it — if it were removed, or if a future core change moved it,
+  the `shutdown` release still covers the whole request.
 
-Even if all of that fails, nothing holds the lock past the request. `GET_LOCK`
-is scoped to the MySQL session; the session ends when the request ends, and
-anything it held is released then. An aborted or fatal save costs at most the
-remainder of that request.
+**The hook order, verified in WordPress 7.1 source.** A round-6 review asserted
+that `customize_save_after` "runs as part of saving the changeset, before
+`WP_Customize_Manager::save()` invokes `_publish_changeset_values()`", which
+would leave the custom-CSS write unlocked. That is not what core does. In
+`wp-includes/class-wp-customize-manager.php`, all three land inside
+`_publish_changeset_values()` and in this order: `do_action( 'customize_save' )`,
+then the loop that calls `$setting->save()` on each changeset setting — which
+for Additional CSS is `WP_Customize_Custom_CSS_Setting::update()` calling
+`wp_update_custom_css_post()` — and only then
+`do_action( 'customize_save_after' )`. `save()` reaches that function through
+`save_changeset_post()`, whose publish transition runs
+`_wp_customize_publish_changeset()` in the same request, after the validation
+step where the lock is taken. So releasing on `customize_save_after` would in
+fact have been after the write.
+
+The design still moves the primary release to `shutdown`, because a release
+whose correctness depends on the internal ordering of a core method is a
+release that a future core refactor can silently break, and because `GET_LOCK`
+is connection-scoped anyway: holding it to the end of the request costs
+nothing that the session teardown would not already have cost.
+
+Nothing holds the lock past the request in any case. `GET_LOCK` is scoped to
+the MySQL session; the session ends when the request ends, and anything it held
+is released then. An aborted or fatal save costs at most the remainder of that
+request — and the validate path also runs for changeset saves that never
+publish, which never reach `customize_save_after` at all and rely entirely on
+the `shutdown` release.
 
 This is a plugin responsibility, not a storage-layer guarantee. Two paths reach
 `_publish_changeset_values()` without passing through the validate filter: a
@@ -573,13 +617,56 @@ so a failed acquisition there is recorded loudly rather than enforced. If the
 plugin is deactivated, or a future core change moves these hooks, only rail
 writers are serialized against each other. See "Residual risks" below.
 
+### The guarded write
+
+Publish and restore write the same post under the same constraints. An earlier
+revision of this document spelled each out separately, and they diverged: the
+publish path lifted KSES around its write while the restore path called
+`wp_update_custom_css_post()` after the filters had been put back, so a
+rollback could alter the admin-authored CSS it was supposed to be restoring —
+exactly the bytes this design has already said KSES changes. Both paths now go
+through one primitive, defined here and referenced everywhere else.
+
+**Inputs:** the content bytes, the preprocessed bytes, the two hashes the
+result must match, and whether a revision advance is required.
+
+**Preconditions, asserted on every call:**
+`current_user_can( 'rt_publish_shared_css' )`, a request that matched the
+rail's own REST route, and the advisory lock held by this request. Any of them
+false is a bug in the caller, and the primitive fails closed without writing.
+
+**Steps:**
+
+1. Read the post's current `post_content` and `post_content_filtered`. If both
+   already equal the target bytes, there is nothing to write: return "already
+   in the target state" and require no revision advance. This is the case a
+   restore hits when the failed write never landed at all.
+2. Record the latest revision ID as `pre_write_revision_id`, after any
+   pre-change revision the caller asked for already exists.
+3. `kses_remove_filters()`.
+4. `wp_update_custom_css_post( $content, array( 'stylesheet' => get_stylesheet(), 'preprocessed' => $preprocessed ) )`.
+5. `kses_init()`, in a `finally` wrapping steps 3 and 4, with the `shutdown`
+   backstop described under "Lifting KSES for one write, not for one user".
+6. Read the post back. Require the stored `post_content` and
+   `post_content_filtered` hashes to equal the two expected hashes and — when
+   step 1 found a difference — the latest revision ID to exceed
+   `pre_write_revision_id`.
+7. Return the outcome with every hash and revision ID observed.
+
+The primitive decides nothing about a failure; it reports one. The publish path
+and the restore path interpret the outcome, which is what the states table
+below does. Because both go through it, the KSES lift, the verification, and
+the revision check cannot drift apart between them.
+
 ### Inside the lock: read, compare, preflight, write, verify
 
 Once `GET_LOCK` returns success, the handler runs this sequence without
 releasing the lock in between:
 
 1. Load the approval record named by `approval_ref` and check it is open,
-   unexpired, and bound to the active stylesheet. Re-read the live post with
+   unexpired, and bound to the active stylesheet. If it carries
+   `live_absent = true`, take the first-publish branch described below instead
+   of the rest of this sequence. Otherwise re-read the live post with
    `wp_get_custom_css_post()` (not the value from any earlier `GET` request or
    from the CLI's own prior read). Hold both `post_content` and
    `post_content_filtered` in request memory as the pre-change snapshot, and
@@ -602,21 +689,15 @@ releasing the lock in between:
    exactly this content, which is the normal state right after a previous rail
    write. In that case record the existing latest revision ID instead; treat
    null as a failure only when no revision of the current content exists.
-   Then — after that revision exists, not before — read the post's latest
-   revision ID from `wp_get_latest_revision_id_and_total_count()` and record it
-   as `pre_write_revision_id`. Write the pre-change snapshot — both fields as
-   content, not hashes — onto the approval record. Then lift KSES with
-   `kses_remove_filters()` under the guardrails above, call
-   `wp_update_custom_css_post($css, ['stylesheet' => get_stylesheet(), 'preprocessed' => ''])`,
-   and restore the filters with `kses_init()` in a `finally` that wraps only
-   that call.
-5. Read the post back, again with `wp_get_custom_css_post()`. Require the
-   stored CSS hash to equal the record's `source_sha256`, the stored
-   `post_content_filtered` to match what the preflight predicted (empty, in
-   every case the rail permits), and the post's latest revision ID to be
-   greater than `pre_write_revision_id`. Any failure means the write did not
-   land as intended: record the hashes just observed and go to "When post-write
-   verification fails" below, still holding the lock.
+   Then write the pre-change snapshot — both fields as content, not hashes —
+   onto the approval record.
+5. Call the guarded write with the approved CSS, an empty preprocessed value,
+   the record's `source_sha256` and the empty-string hash as the two expected
+   hashes, and a revision advance required. It reads
+   `pre_write_revision_id` for itself, after the step-4 revision exists. Any
+   failure it reports means the write did not land as intended: record the
+   hashes it observed and go to "When post-write verification fails" below,
+   still holding the lock.
 6. Mark the approval record spent — `consumed` on a verified write, `failed`
    otherwise — while the lock is still held.
 7. Release `GET_LOCK` in the `finally` block, on every branch.
@@ -656,6 +737,50 @@ so revisions apply to it. If an install disables them —
 version signal, and the rail refuses at preflight rather than writing without
 either.
 
+### First publish, when there is no custom-CSS post yet
+
+`wp_get_custom_css_post()` returns null on an install that has never saved
+Additional CSS. The sequence above assumes a post exists: step 1 hashes its
+content, step 4 saves a pre-change revision of it, and the guarded write
+compares revision IDs. None of that is available on a first publish, and
+running the normal path anyway would either fail on a null or silently skip the
+checks that make the write safe.
+
+The first publish is therefore an explicit branch, approved as such:
+
+- The approval record carries `live_absent = true`, and its
+  `expected_live_sha256` holds the literal sentinel `absent` rather than a
+  digest. The sentinel is not valid hex, so it cannot collide with a real hash,
+  and a record minted while the post was absent cannot be replayed against a
+  site that has one by then.
+- The minting screen sets `live_absent` only when it reads no post itself. It
+  is never accepted from the caller.
+- The preflight and the in-lock re-read both require the post to still be
+  absent. If one exists, the approval is refused: someone saved Additional CSS
+  between minting and publishing, and that CSS is live state nobody reviewed.
+- There is no pre-change revision, no `pre_change_revision_id`, and no
+  pre-change snapshot. The receipt records their absence explicitly rather than
+  leaving empty fields to be guessed at later.
+- The guarded write runs with no revision advance required, because there is no
+  revision to advance from.
+- Verification is three things: the post now exists; the `custom_css_post_id`
+  theme mod points at its ID; and its `post_content` hash equals the record's
+  `source_sha256` with `post_content_filtered` empty. Core does the theme-mod
+  bookkeeping itself — the insert branch of `wp_update_custom_css_post()` calls
+  `set_theme_mod( 'custom_css_post_id', $r )` and forces a first revision when
+  the new post has none — so checking the theme mod confirms that branch ran.
+- Rollback for this branch writes empty content through the same guarded write.
+  It does not delete the post. Deleting would orphan the `custom_css_post_id`
+  theme mod, discard the revision history the rail has just started, and need
+  delete capabilities the publisher deliberately does not have: `custom_css` is
+  registered with `delete_post` mapped to `edit_theme_options`. An empty
+  custom-CSS post renders identically to no post — `wp_custom_css_cb()` returns
+  without printing anything when the CSS is empty and the request is not a
+  Customizer preview.
+
+Every later publish on that install takes the ordinary path, because the post
+now exists.
+
 ### When post-write verification fails
 
 Recovery runs inside the same held lock. Releasing it first would let the next
@@ -675,17 +800,25 @@ The restore reads the pre-change snapshot from the approval record — the only
 copy guaranteed to hold both fields — and falls back to the revision named by
 `pre_change_revision_id` if that snapshot has aged out of retention, in which
 case it can only restore what the revision holds and the report says so. It
-then re-writes that snapshot — both fields — through
-`wp_update_custom_css_post( $pre_change_css, array( 'stylesheet' => get_stylesheet(), 'preprocessed' => $pre_change_preprocessed ) )`,
-rather than calling `wp_restore_post_revision()` on the recorded revision ID.
-Passing `preprocessed` explicitly is not optional here: omitting it would leave
-`post_content_filtered` cleared, which is the data loss the restore is supposed
-to undo. Either approach would put the old CSS back; this one is chosen
-because:
+then puts that snapshot back — both fields — through **the guarded write**,
+with the pre-change hashes recorded in step 1 as the expected values, rather
+than calling `wp_restore_post_revision()` on the recorded revision ID.
 
-- it is the path the rail already preflights and verifies, so the restore gets
-  the same treatment as a publish, including a read-back whose expected values —
-  the pre-change hashes recorded in step 1, for both fields — were known before
+Going through the primitive is what makes the restore safe rather than merely
+well-intentioned. The restore is writing CSS someone else authored, which may
+contain exactly the bytes KSES rewrites; a restore that ran with the filters
+installed would mangle the content it was recovering and then fail its own
+verification, leaving the site in a worse state than the failed publish did.
+The primitive lifts KSES for the restore write exactly as it does for the
+publish write, passes `preprocessed` explicitly so the filtered field is not
+left cleared, and verifies the result by read-back against hashes that were
+recorded before anything was written.
+
+The alternative, `wp_restore_post_revision()`, is not used, because:
+
+- the guarded write is the path the rail already preflights and verifies, so
+  the restore gets the same treatment as a publish, including a read-back whose
+  expected values — the pre-change hashes for both fields — were known before
   the write rather than read out of the row being repaired;
 - `wp_restore_post_revision()` calls `wp_update_post()` directly, so it skips
   `update_custom_css_data` and the `custom_css_post_id` theme-mod bookkeeping
@@ -702,6 +835,8 @@ automatic recovery.
 | State after the write | What the rail does |
 | --- | --- |
 | Read-back content hash equals the record's `source_sha256`, `post_content_filtered` matches the preflight's prediction, and the latest revision ID is greater than `pre_write_revision_id` | Success. Mark the approval `consumed`, release the lock, return the receipt. |
+| First-publish branch: the post now exists, `custom_css_post_id` points at it, its content hash equals `source_sha256`, and `post_content_filtered` is empty | Success. Mark the approval `consumed`, release the lock, return a receipt that records the absence of a pre-change revision and snapshot. |
+| First-publish branch, verification failed | No pre-change state exists to restore. Write empty content through the guarded write, verify that read-back, mark the approval `failed`, release the lock, and report. Never delete the post. |
 | Verification failed, and the re-read content hash equals the hash observed in the failed read-back | Restore both pre-change fields from the approval record's snapshot (falling back to `pre_change_revision_id` if it has aged out) through `wp_update_custom_css_post()` with the captured `preprocessed` value; read back and require both stored hashes to equal the pre-change hashes from step 1; mark the approval `failed`; release the lock; report the publish as failed, the restore as verified, and which source it came from. |
 | Verification failed, and the re-read content hash differs from the hash observed in the failed read-back | Do not restore. Mark the approval `failed`, release the lock, and fail loudly, recording the approved source hash, the hash observed in the read-back, the differing re-read hash, both pre-change hashes, `pre_change_revision_id`, and `pre_write_revision_id`. An out-of-band writer touched the post; what to keep is a human decision. |
 | The restore's own read-back does not match the pre-change hashes, either field | Stop. Attempt nothing further automatically. Mark the approval `failed`, release the lock, and report every hash observed, the restore source used, and `pre_change_revision_id`, `pre_write_revision_id`, and the post-write revision ID. The site's CSS is in a known-bad state, the snapshot on the approval record is the copy to recover from, and the next step is manual. |
@@ -712,8 +847,9 @@ failure needs a new approval minted by an administrator.
 
 ## Revision, audit, and rollback
 
-Before changing CSS, the plugin explicitly saves the current custom-CSS post as
-a revision — carrying `post_content_filtered` as well as `post_content`,
+On every publish but the first, and before changing CSS, the plugin explicitly
+saves the current custom-CSS post as a revision — carrying
+`post_content_filtered` as well as `post_content`,
 because the plugin's `_wp_post_revision_fields` filter is installed — records
 its ID as `pre_change_revision_id`, reads the post's latest
 revision ID once that revision exists as `pre_write_revision_id`, and records
@@ -726,8 +862,9 @@ source commit, old/new SHA-256 for `post_content`, old/new SHA-256 for
 `post_content_filtered`, whether `clear_preprocessed` was set,
 `pre_change_revision_id`, `pre_write_revision_id`, the post-write latest
 revision ID, resulting post ID, whether a pre-change snapshot was stored on the
-approval record and when it expires, the restore source if a restore ran, and
-the approval record's resulting state.
+approval record and when it expires, the restore source if a restore ran,
+whether this was a first publish (and so has no pre-change revision or
+snapshot), and the approval record's resulting state.
 A failed publish records the same fields plus every hash named in the recovery
 table, and which row of that table was taken. CSS and credentials are not
 copied into the receipt.
@@ -765,8 +902,9 @@ Every uncertainty fails closed and leaves WordPress unchanged: authentication
 failure, missing capability, a host that cannot grant the filtering capability,
 an unknown, expired, spent, or mismatched approval record, preflight
 divergence, a non-empty `post_content_filtered` without an explicit
-`clear_preprocessed` approval, a host with `DISALLOW_UNFILTERED_HTML` set, a
-`post_content` column that is not `utf8mb4`,
+`clear_preprocessed` approval, a `live_absent` approval whose post exists by
+publish time or an ordinary approval whose post has disappeared, a host with
+`DISALLOW_UNFILTERED_HTML` set, a `post_content` column that is not `utf8mb4`,
 revisions unavailable for the `custom_css` post type, wrong site/theme,
 malformed response, hash drift, lock-acquisition timeout, post-write
 verification failure, a restore refused because the post changed out
@@ -800,9 +938,32 @@ The KSES lift and the recovery behavior need their own cases:
   held;
 - with `DISALLOW_UNFILTERED_HTML` defined true, the preflight refuses and no
   write is attempted;
-- the preflight rejects CSS whose bytes KSES would change — an `&` in a `url()`
-  data URI is the cheap fixture — when the lift is not in effect, and the same
-  CSS is stored byte-for-byte through the rail's own write;
+- the Customizer lock survives to the end of the request: a save that reaches
+  `_publish_changeset_values()` finds the lock still held at
+  `do_action( 'customize_save' )` and at each `$setting->save()`, and the
+  `shutdown` release runs exactly once whether or not `customize_save_after`
+  fired;
+- a changeset save that validates but never publishes releases the lock on
+  `shutdown` alone;
+- the restore write runs with KSES lifted: a fixture whose pre-change CSS
+  contains `&` in a `url()` data URI is restored byte-for-byte after a forced
+  verification failure. With the lift removed from the restore path the test
+  must fail — that is the round-6 regression;
+- publish and restore both go through the guarded write: a test that stubs the
+  primitive sees both callers, and no other code path calls
+  `wp_update_custom_css_post()` directly;
+- first publish on a fixture with no custom-CSS post: the approval carries
+  `live_absent`, the write creates the post, `custom_css_post_id` points at it,
+  and the receipt records that no pre-change revision or snapshot exists;
+- a `live_absent` approval is refused when a post exists by publish time, and a
+  normal approval is refused when the post has disappeared;
+- first-publish rollback writes empty content and leaves the post in place,
+  with `custom_css_post_id` still pointing at it;
+- CSS whose bytes KSES would change — an `&` in a `url()` data URI is the cheap
+  fixture — **passes** preflight, because preflight simulates the write with
+  the same lift the write uses, and is then stored byte-for-byte by the rail's
+  own write. The control is the same simulation with the lift disabled, which
+  must report a divergence: that pair proves the lift, not just the outcome;
 - the preflight rejects content carrying a `</style` sequence or a trailing
   prefix of one, matching `WP_Customize_Custom_CSS_Setting::validate()`;
 - post-write verification fails and the re-read hash matches the failed
@@ -914,6 +1075,14 @@ save paths. They do not cover:
   technically work, because that constant is the operator's instruction.
   Publishing shared CSS on such an install stays manual until the owner changes
   the host's own setting.
+- **Core hook order is a dependency, even when it is currently right.** The
+  Customizer lock is taken in `customize_validate_custom_css[<stylesheet>]` and
+  released on `shutdown`, which does not depend on where
+  `customize_save_after` sits relative to the setting writes. The early release
+  on `customize_save_after` does depend on it, and is therefore an
+  optimization the design can lose without becoming unsafe. What the design
+  does still depend on is that validation runs before the settings are written
+  in the same request.
 - **Changeset publishes that skip validation.** A scheduled changeset
   published by WP-Cron, or code transitioning a `customize_changeset` post to
   `publish` directly, reaches `_publish_changeset_values()` without passing

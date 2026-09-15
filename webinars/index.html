@@ -806,15 +806,37 @@
 
 
     <script>
+    /* Posts this page's content height to the parent so the WordPress embed can
+       size its iframe (assets/js/iframe-resizer.js listens; the live iframe is
+       id="iframe-default" and allows this origin). Written without "&&" on
+       purpose: WordPress texturizes an inline script's "&&" into "&#038;&#038;"
+       when it sits in attribute position, which kills the whole script. */
     (function () {
+        if (window.parent === window) { return; }
         var id = 'iframe-default';
         var last = 0;
+        /* The BODY box, never documentElement.scrollHeight. Once the parent has
+           sized the iframe, the child's viewport IS that height, so
+           documentElement.scrollHeight can only ever grow -- filtering the list
+           down would leave the embed frozen at its tallest, with a screen of
+           blank page under it. Measured headless: content 2000 -> 300 reports
+           documentElement 2000, body 300. This page filters, searches and has a
+           Show More button, so it shrinks often. */
+        function contentHeight() {
+            var body = document.body;
+            if (!body) { return 0; }
+            var box = body.getBoundingClientRect().height;
+            var style = window.getComputedStyle ? window.getComputedStyle(body) : null;
+            var margin = 0;
+            if (style) { margin = (parseFloat(style.marginTop) || 0) + (parseFloat(style.marginBottom) || 0); }
+            return Math.ceil(Math.max(body.scrollHeight, box) + margin);
+        }
         function postHeight() {
-            var h = Math.max(document.documentElement ? document.documentElement.scrollHeight : 0, document.body ? document.body.scrollHeight : 0);
+            var h = contentHeight();
             if (!h) { return; }
             if (h === last) { return; }
             last = h;
-            if (window.parent) { if (window.parent !== window) { window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*'); } }
+            window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*');
         }
         var frameId;
         function schedule() { if (frameId) { cancelAnimationFrame(frameId); } frameId = requestAnimationFrame(postHeight); }

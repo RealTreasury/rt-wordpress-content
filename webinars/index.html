@@ -805,5 +805,26 @@
     </script>
 
 
+    <script>
+    (function () {
+        var id = 'iframe-default';
+        var last = 0;
+        function postHeight() {
+            var h = Math.max(document.documentElement ? document.documentElement.scrollHeight : 0, document.body ? document.body.scrollHeight : 0);
+            if (!h) { return; }
+            if (h === last) { return; }
+            last = h;
+            if (window.parent) { if (window.parent !== window) { window.parent.postMessage({ type: 'setHeight', height: h, id: id }, '*'); } }
+        }
+        var frameId;
+        function schedule() { if (frameId) { cancelAnimationFrame(frameId); } frameId = requestAnimationFrame(postHeight); }
+        window.addEventListener('load', schedule, { passive: true });
+        window.addEventListener('resize', schedule, { passive: true });
+        if (typeof MutationObserver !== 'undefined') { if (document.body) { new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true }); } }
+        if (typeof ResizeObserver !== 'undefined') { if (document.body) { new ResizeObserver(schedule).observe(document.body); } }
+        setInterval(postHeight, 1500);
+        schedule();
+    })();
+    </script>
 </body>
 </html>

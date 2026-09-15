@@ -20,6 +20,8 @@
 #
 # Publish also requires the CSS being sent to be what origin/main has. A committed change on a
 # feature branch is refused until it is merged; --allow-unmerged overrides for an emergency.
+# The guard refreshes refs/remotes/origin/main itself and fails closed if it cannot reach the
+# remote, rather than comparing against a tracking ref that may predate a newer CSS change.
 
 set -euo pipefail
 
@@ -118,8 +120,14 @@ fi
 # The bytes going live must be the bytes on origin/main, or the receipt points at a commit that
 # may never merge and the next publish from main silently reverts it.
 if [ "$ALLOW_UNMERGED" = 0 ]; then
-  git -C "$REPO_ROOT" fetch -q origin main 2>/dev/null || note "could not fetch origin/main; checking against the last known origin/main"
-  MAIN_BLOB="$(git -C "$REPO_ROOT" rev-parse -q --verify "origin/main:$SOURCE_REL" 2>/dev/null || true)"
+  # `git fetch origin main` writes FETCH_HEAD and leaves refs/remotes/origin/main alone, so
+  # reading `origin/main:...` after it compares against whatever this checkout last happened to
+  # sync — which can predate a newer CSS change on main and let an old file overwrite newer live
+  # CSS. Fetch with an explicit refspec so the tracking ref actually moves, and fail closed if
+  # the fetch does not happen: a stale comparison is the exact case this guard exists to catch.
+  git -C "$REPO_ROOT" fetch -q origin "+refs/heads/main:refs/remotes/origin/main" \
+    || die "could not fetch origin/main; refusing to publish against a possibly stale ref (--allow-unmerged overrides for an emergency)"
+  MAIN_BLOB="$(git -C "$REPO_ROOT" rev-parse -q --verify "refs/remotes/origin/main:$SOURCE_REL" 2>/dev/null || true)"
   HEAD_BLOB="$(git -C "$REPO_ROOT" hash-object "$SOURCE")"
   [ -n "$MAIN_BLOB" ] || die "cannot read origin/main:$SOURCE_REL"
   [ "$MAIN_BLOB" = "$HEAD_BLOB" ] || die "$SOURCE_REL differs from origin/main. Merge first; --allow-unmerged overrides for an emergency."

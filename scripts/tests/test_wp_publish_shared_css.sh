@@ -10,6 +10,8 @@
 #   9. a remote that stored something else fails the read-back AND leaves the receipt
 #      alone, so the next run sees drift rather than adopting the bad bytes
 #  10. trailing blank lines alone are forgiven, because WordPress trims them
+#  11. when origin cannot be reached, publish is refused instead of falling back to a
+#      stale tracking ref and overwriting newer live CSS with an older file
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
@@ -85,6 +87,27 @@ printf 'body { color: silver; }\n' > "$W/assets/css/shared.css"; commit_and_merg
 STUB_CORRUPT=$'\n\n' run publish > "$T/out" 2>&1 || { cat "$T/out" >&2; fail "trailing blank lines were not forgiven"; }
 grep -q 'trailing blank lines' "$T/out" || { cat "$T/out" >&2; fail "the trailing-blank-line path did not run"; }
 pass "trailing blank lines forgiven"
+
+# 11 origin moved on, and this checkout cannot reach it. The merge guard used to warn and then
+#    compare against whatever refs/remotes/origin/main still held, which is the stale state it
+#    exists to catch — so an older file could overwrite newer live CSS. It must fail closed.
+#    (`git fetch origin main` does update the tracking ref opportunistically when the remote
+#    carries the usual fetch refspec; the hole is the path where the fetch does not happen.)
+git clone -q "$T/origin" "$T/other"
+printf 'body { color: teal; }\n' > "$T/other/assets/css/shared.css"
+git -C "$T/other" -c user.email=t@t -c user.name=t commit -qam teal
+git -C "$T/other" push -q origin HEAD:main
+mv "$T/origin" "$T/origin.away"                  # W keeps its pre-teal tracking ref and cannot refresh
+[ "$(git -C "$W" rev-parse origin/main)" != "$(git -C "$T/other" rev-parse HEAD)" ] || fail "the working clone's tracking ref was not stale"
+printf 'body { color: maroon; }\n' > "$STORE"   # live must differ from source or publish short-circuits
+run baseline >/dev/null                          # adopt it so the drift guard does not mask the result
+run publish > "$T/out11" 2>&1 && fail "publish was not refused when origin/main could not be refreshed"
+grep -q 'possibly stale ref' "$T/out11" || { cat "$T/out11" >&2; fail "refusal did not come from the merged-main guard"; }
+cmp -s "$STORE" "$W/assets/css/shared.css" && fail "the stale checkout published anyway"
+# --allow-unmerged is the documented emergency override and must still work offline
+run publish --allow-unmerged >/dev/null; cmp -s "$STORE" "$W/assets/css/shared.css" || fail "--allow-unmerged did not publish offline"
+pass "an unrefreshable origin/main fails closed"
+mv "$T/origin.away" "$T/origin"
 
 # 7 host key must be pinned (checked before any ssh; the stub is not used because the guard runs first)
 : > "$W/scripts/wpcom_known_hosts"

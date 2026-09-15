@@ -3,7 +3,7 @@
 #
 #   scripts/wp_publish_shared_css.sh plan                 read-only: hashes, drift, diff
 #   scripts/wp_publish_shared_css.sh baseline             record the live hash as the receipt (first adoption)
-#   scripts/wp_publish_shared_css.sh publish [--accept-drift]
+#   scripts/wp_publish_shared_css.sh publish [--accept-drift] [--allow-unmerged]
 #
 # Guards, in order: clean tracked source, live CSS matches the last receipt (drift refusal),
 # something actually changed, write through core wp_update_custom_css_post(), read back and
@@ -12,6 +12,14 @@
 # Credentials come from /opt/rt-ai/secrets/wpcom-ssh.env (rendered from the rt-ai secrets flow):
 #   WPCOM_SSH_USER, WPCOM_SSH_HOST, WPCOM_SSH_KEY_FILE
 # This is a whole-site credential. The script uses it for exactly one post and nothing else.
+#
+# The host key is pinned: scripts/wpcom_known_hosts is the only known_hosts file consulted and
+# StrictHostKeyChecking=yes, so a key that is not in that file fails the connection rather than
+# being accepted on first use. Update the file deliberately (ssh-keyscan -t ed25519 ssh.wp.com,
+# compare the fingerprint against a connection you already trust) and commit it.
+#
+# Publish also requires the CSS being sent to be what origin/main has. A committed change on a
+# feature branch is refused until it is merged; --allow-unmerged overrides for an emergency.
 
 set -euo pipefail
 
@@ -29,9 +37,11 @@ note()  { echo "-- $*"; }
 
 CMD="${1:-}"; shift || true
 ACCEPT_DRIFT=0
+ALLOW_UNMERGED=0
 for a in "$@"; do
   case "$a" in
     --accept-drift) ACCEPT_DRIFT=1 ;;
+    --allow-unmerged) ALLOW_UNMERGED=1 ;;
     *) usage ;;
   esac
 done
@@ -43,12 +53,15 @@ case "$CMD" in plan|baseline|publish) ;; *) usage ;; esac
 set -a; . "$ENV_FILE"; set +a
 : "${WPCOM_SSH_USER:?}" "${WPCOM_SSH_HOST:?}" "${WPCOM_SSH_KEY_FILE:?}"
 [ -r "$WPCOM_SSH_KEY_FILE" ] || die "cannot read key $WPCOM_SSH_KEY_FILE"
+KNOWN_HOSTS="${WPCOM_KNOWN_HOSTS:-$REPO_ROOT/scripts/wpcom_known_hosts}"
+[ -s "$KNOWN_HOSTS" ] || die "pinned host key file $KNOWN_HOSTS missing or empty"
+grep -q "^$WPCOM_SSH_HOST " "$KNOWN_HOSTS" || die "no pinned host key for $WPCOM_SSH_HOST in $KNOWN_HOSTS"
 
 # WP_SSH_CMD lets tests substitute a stub for the remote side.
 ssh_wp() {
   if [ -n "${WP_SSH_CMD:-}" ]; then "$WP_SSH_CMD" "$@"; return; fi
   ssh -i "$WPCOM_SSH_KEY_FILE" -o IdentitiesOnly=yes -o BatchMode=yes \
-      -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30 \
+      -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$KNOWN_HOSTS" -o ConnectTimeout=30 \
       "$WPCOM_SSH_USER@$WPCOM_SSH_HOST" "$@"
 }
 
@@ -101,6 +114,15 @@ diff -u --label live --label "$SOURCE_REL" "$LIVE" "$SOURCE" || true
 # ---------------------------------------------------------------- publish
 if ! git -C "$REPO_ROOT" diff --quiet -- "$SOURCE_REL" || ! git -C "$REPO_ROOT" diff --cached --quiet -- "$SOURCE_REL"; then
   die "$SOURCE_REL has uncommitted changes. Commit (and merge) first so the receipt points at a real commit."
+fi
+# The bytes going live must be the bytes on origin/main, or the receipt points at a commit that
+# may never merge and the next publish from main silently reverts it.
+if [ "$ALLOW_UNMERGED" = 0 ]; then
+  git -C "$REPO_ROOT" fetch -q origin main 2>/dev/null || note "could not fetch origin/main; checking against the last known origin/main"
+  MAIN_BLOB="$(git -C "$REPO_ROOT" rev-parse -q --verify "origin/main:$SOURCE_REL" 2>/dev/null || true)"
+  HEAD_BLOB="$(git -C "$REPO_ROOT" hash-object "$SOURCE")"
+  [ -n "$MAIN_BLOB" ] || die "cannot read origin/main:$SOURCE_REL"
+  [ "$MAIN_BLOB" = "$HEAD_BLOB" ] || die "$SOURCE_REL differs from origin/main. Merge first; --allow-unmerged overrides for an emergency."
 fi
 if [ "$DRIFT" = 1 ] && [ "$ACCEPT_DRIFT" = 0 ]; then
   die "refusing to overwrite drifted live CSS. Read the diff above; rerun with --accept-drift to overwrite it anyway (the prior CSS stays in WordPress revisions)."

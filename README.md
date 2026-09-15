@@ -37,7 +37,7 @@ published there from the rt-ai-02 box over SSH and WP-CLI:
 
 ```bash
 scripts/wp_publish_shared_css.sh plan       # read-only: hashes, drift, diff
-scripts/wp_publish_shared_css.sh publish    # after the change is merged to main
+scripts/wp_publish_shared_css.sh publish    # after the change is merged to main (enforced)
 ```
 
 `plan` shows the diff between the live CSS and the file. `publish` refuses if the
@@ -48,6 +48,18 @@ the post back and compares bytes, records the hash in
 `assets/css/shared.css.published.sha256` (commit that file), and checks the home
 page serves the new CSS. Credentials come from `/opt/rt-ai/secrets/wpcom-ssh.env`.
 First-time adoption on a site: `baseline` records the current live hash.
+
+Host key: the connection only trusts the key in `scripts/wpcom_known_hosts`
+(`StrictHostKeyChecking=yes`). Rotate it deliberately: `ssh-keyscan -t ed25519 ssh.wp.com`,
+compare the fingerprint with a connection you already trust, commit the new line.
+
+Merge guard: `publish` compares the file with `origin/main` and refuses a committed but
+unmerged change, so the receipt always names a commit that reached `main`.
+`--allow-unmerged` overrides for an emergency.
+
+Tests: `scripts/tests/test_wp_publish_shared_css.sh` runs plan, baseline, publish, no-op,
+drift refusal, unmerged refusal, both overrides and the missing-host-key refusal against a
+stub remote. No network, no credentials.
 
 Fallback if the box is down: copy the file's text into Additional CSS by hand and
 click **Publish**, then run `baseline` when the box is back.

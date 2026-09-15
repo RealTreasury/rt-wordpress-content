@@ -1,102 +1,85 @@
-Replacement markup for WordPress draft post 4485, top-level block index 2
-(the "rt-afp rt-afp-split" group: left column + form card).
+Block markup for WordPress post 4485 ("The Real Treasury Guided Vendor Tours"),
+top-level block index 2: the "rt-afp rt-afp-split" group (What You Get + The
+Two Tours + Good to Know + the form card that embeds the GitHub Pages
+registration page).
 
-Why this is a file and not already applied: the Claude Code auto-mode
-classifier refuses the post-sections.replace call for this block — the payload
-carries the existing <script> that forwards utm_* into the iframe, and writing
-a script tag into the live CMS is a class of write it will not pass. Block
-index 0 (the header) went through and IS applied.
+This is what is LIVE as of September 15, 2026, 13:36 GMT - written back with
+post-sections.replace after the block was found empty on the live site that
+morning (no form for several hours while the homepage popup drove traffic to
+it). The copy is the owner-approved text from events/2026/afp/index.html
+(September 5, 2026): the two September 2 typo fixes, the September 3 "independent
+guides who have been" change, the Two Tours section, and the reworded FAQ. The
+chart figure the owner removed on September 2 is not here. Keep this file in
+step with the post: it is the recovery copy, and the September 2 version of it
+was stale enough to ship the wrong words when it was used for the first restore.
 
-To apply, in wp-admin: edit post 4485, open the Code editor (⋮ → Code editor),
-select the whole block from
+To apply by hand: post 4485 -> Code editor -> select the whole block from
   <!-- wp:group {"className":"rt-afp rt-afp-split", ...
-through its matching
-  <!-- /wp:group -->
-(it ends just before <!-- wp:block {"ref":398} /-->), and paste this over it.
-
-Changes vs. what is in the post now:
-  - "How the tour works" + the four numbered steps -> "What You Get", the
-    owner's copy verbatim (three vendor stops, not four booths).
-  - "Which vendors are on my route?" now ends "...so you leave with 3 guided
-    possible candidates."
-  - "What if none of the times work?" -> "What if none of the times work for
-    me?", answered with the private tour.
-  - Fine print and the iframe title use the new tour name.
-The chart, the form card and the iframe script are unchanged.
+through its matching <!-- /wp:group --> (just before <!-- wp:block {"ref":398} /-->)
+and paste everything below the line over it. Then re-read the post with
+post-sections.list and confirm block 2 has_inner_blocks: true, and curl the
+live page for events/2026/afp/?embed=1 - WordPress strips markup it rejects
+silently.
 
 --- 8< --- paste everything below this line ---
 
 <!-- wp:group {"className":"rt-afp rt-afp-split","layout":{"type":"default"}} -->
 <div class="wp-block-group rt-afp rt-afp-split"><!-- wp:html -->
 <style>
-.rt-afp-map { margin: 0 0 34px; }
-/* No card. The shadowed, hard-cornered panel was chrome the chart does not
-   need: the art sits straight on the page, and the clip only trims the PNG's
-   own dead space, top and bottom. The title is a plain centred line above it
-   rather than an overlay, so it cannot land on the chart's own labels. */
-.rt-afp-mapcard { max-width: 480px; margin: 0 auto; }
-.rt-afp-maptitle {
-  text-align: center; font-size: 0.875rem; line-height: 1.4;
-  font-weight: 700; color: var(--rt-deep); margin: 0 0 6px;
+.rt-afp-themes { margin-bottom: 34px; }
+.rt-afp-theme + .rt-afp-theme { margin-top: 16px; }
+.rt-afp-theme h3 {
+  font-size: 1rem; font-weight: 700; line-height: 1.3;
+  color: var(--rt-black); margin: 0 0 6px;
 }
-.rt-afp-maptitle span { color: var(--rt-purple); font-weight: 600; }
-.rt-afp-mapclip { overflow: hidden; }
-.rt-afp-mapclip img {
-  display: block; width: 100%; height: auto;
-  margin-top: -7%; margin-bottom: -6%;
-}
-.rt-afp-map figcaption {
-  font-size: 0.8125rem; line-height: 1.5; color: var(--rt-gray);
-  margin: 14px auto 0; max-width: 480px; text-align: center;
+.rt-afp-theme p {
+  margin: 0; font-size: 0.9375rem; line-height: 1.62; color: var(--rt-charcoal);
 }
 @media (max-width: 960px) {
   .rt-afp-split .rt-afp-formcard { order: -1; }
-  .rt-afp-map { margin-bottom: 28px; }
-}
-@media (max-width: 560px) {
-  .rt-afp-mapcard { max-width: 340px; }
-  .rt-afp-map figcaption { max-width: 340px; }
 }
 </style>
 <div>
   <h2>What You Get</h2>
-  <!-- Owner's copy, verbatim. Do not re-edit it. -->
+  <!-- Owner's copy, as on events/2026/afp/index.html (September 5, 2026). Do not re-edit it. -->
   <div class="rt-afp-prose">
     <p>A small, guided group &ndash; limited to 10 treasury professionals per tour &ndash; visits three vendor stops in 75 minutes.</p>
-    <p>During the stops at each booth, every vendor follows the same script, cover the same topic, in the same amount of time.</p>
-    <p>Between stops, we talk through what you just saw; What mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with an independent guide who has been on both sides of this process.</p>
+    <p>During the stops at each booth, every vendor follows the same script, covers the same topic, in the same amount of time.</p>
+    <p>Between stops, we talk through what you just saw: what mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with independent guides who have been on both sides of this process.</p>
     <p class="rt-afp-prose-neutral">We do not accept payment from any TMS vendor for any of these tours. Every vendor on each tour receives the same invitation.</p>
   </div>
-  <figure class="rt-afp-map">
-    <div class="rt-afp-mapcard">
-      <p class="rt-afp-maptitle">Treasury Systems <span>&middot; North America</span></p>
-      <div class="rt-afp-mapclip">
-        <img src="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png?fit=1024%2C1024&amp;ssl=1" srcset="https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png?fit=768%2C768&amp;ssl=1 768w, https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png?fit=1024%2C1024&amp;ssl=1 1024w" sizes="(max-width: 560px) 340px, 480px" width="1024" height="1024" alt="Real Treasury treasury technology market map, North America, September 2026 &mdash; TRMS, Cash Tools, and TMS-Lite vendors" loading="lazy">
-      </div>
+  <h2>The Two Tours</h2>
+  <div class="rt-afp-themes">
+    <div class="rt-afp-theme">
+      <h3>TMS Replacement</h3>
+      <p>For teams already running a treasury system and weighing a change. The route visits vendors that could replace what you have, and every stop runs the same scenario &mdash; so what differs between them is the product rather than the pitch.</p>
     </div>
-    <figcaption>North America treasury technology market map, September 2026</figcaption>
-  </figure>
-  <h2 class="rt-afp-h2-mt">Good to know</h2>
+    <div class="rt-afp-theme">
+      <h3>Visibility Tour</h3>
+      <p>For teams running treasury on spreadsheets and bank portals, where the honest answer to &ldquo;where is our cash right now&rdquo; takes half a morning. The route visits vendors that solve that first, and seeing the same scenario three times is the quickest way to tell a working capability from a promise.</p>
+    </div>
+  </div>
+  <h2>Good to Know</h2>
   <div class="rt-afp-faq">
     <details>
-      <summary>What does it cost, and who pays?</summary>
-      <p>Nothing, and no one. Tours are free to AFP attendees, and no vendor pays to participate or to buy a spot on a route. Every TMS vendor on our market map with an AFP booth is invited.</p>
+      <summary>Is it really free?</summary>
+      <p>Yes. Attendees don&rsquo;t pay, vendors don&rsquo;t pay.</p>
     </details>
     <details>
       <summary>Which vendors are on my route?</summary>
-      <p>We describe the lineup by focus area rather than publishing a named list. Your route is built around your situation, replacing an existing system or buying for the first time &mdash; so you leave with 3 guided possible candidates.</p>
+      <p>Routes are grouped by focus, not published vendor by vendor. Every TMS vendor on our market map with an AFP booth is invited, and each appears on one route. Your route is built around your situation &mdash; replacing an existing system or improving treasury visibility &mdash; so you meet with three candidates selected around your needs.</p>
     </details>
     <details>
-      <summary>Will vendors know who is attending?</summary>
-      <p>Yes. Vendors receive the attendee list shortly before the tour. If you are evaluating confidentially, ask us about a private tour.</p>
+      <summary>Will vendors know I&rsquo;m coming?</summary>
+      <p>Vendors get the attendee list shortly before the tour. Prefer to evaluate quietly? <em>Request a Custom Tour</em>.</p>
     </details>
     <details>
       <summary>What if none of the times work for me?</summary>
-      <p>Schedule a private tour. Pick <em>Private tour request</em> in the form and we schedule those individually across both days. Sessions also release as earlier tours fill, so it is worth checking back.</p>
+      <p>Select <em>None of These Work for Me</em> when you register and leave your details. We&rsquo;ll reach out to see what may work.</p>
     </details>
     <details>
-      <summary>Is there sales pressure?</summary>
-      <p>No. Nothing is decided or transacted during a tour. You watch working product and ask your own questions.</p>
+      <summary>Am I signing up to be sold something?</summary>
+      <p>No. Nothing is bought or decided on a tour, and the debrief is vendor-free by design.</p>
     </details>
   </div>
   <p class="rt-afp-fine">Open to corporate treasury practitioners only. The Real Treasury Guided Tours are not affiliated with the Association for Financial Professionals. They are independently organized by Real Treasury, and no vendor pays a fee to participate.</p>

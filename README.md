@@ -48,6 +48,7 @@ the post back and compares bytes, records the hash in
 `assets/css/shared.css.published.sha256` (commit that file), and checks the home
 page serves the new CSS. Credentials come from `/opt/rt-ai/secrets/wpcom-ssh.env`.
 First-time adoption on a site: `baseline` records the current live hash.
+`npm run test:publish-css` runs that whole state machine against a stub remote — no SSH, no network, no WordPress — and runs in CI.
 
 Host key: the connection only trusts the key in `scripts/wpcom_known_hosts`
 (`StrictHostKeyChecking=yes`). Rotate it deliberately: `ssh-keyscan -t ed25519 ssh.wp.com`,

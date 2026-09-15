@@ -6,6 +6,10 @@
 #   4. a second publish is a no-op  5. drift is refused, --accept-drift overrides
 #   6. unmerged CSS is refused, --allow-unmerged overrides
 #   7. a host key that is not pinned is refused before any connection
+#   8. uncommitted source is refused
+#   9. a remote that stored something else fails the read-back AND leaves the receipt
+#      alone, so the next run sees drift rather than adopting the bad bytes
+#  10. trailing blank lines alone are forgiven, because WordPress trims them
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
@@ -26,17 +30,21 @@ git -C "$W" add -A && git -C "$W" -c user.email=t@t -c user.name=t commit -q -m 
 
 # --- stub remote: "wp eval" prints the stored CSS, "wp eval-file -" stores the payload --------
 STORE="$T/live.css"; : > "$STORE"
+# STUB_CORRUPT appends bytes to whatever is sent, which is what the read-back
+# compare exists to catch.
 cat > "$T/stub_wp" <<STUB
 #!/usr/bin/env bash
 case "\$*" in
-  *eval-file*) php="\$(cat)"; b64="\$(printf '%s' "\$php" | grep -o 'base64_decode("[^"]*")' | sed 's/base64_decode("//; s/")//')"; printf '%s' "\$b64" | base64 -d > "$STORE"; echo 42 ;;
+  *eval-file*) php="\$(cat)"; b64="\$(printf '%s' "\$php" | grep -o 'base64_decode("[^"]*")' | sed 's/base64_decode("//; s/")//')"; printf '%s' "\$b64" | base64 -d > "$STORE"; [ -n "\${STUB_CORRUPT:-}" ] && printf '%s' "\${STUB_CORRUPT}" >> "$STORE"; echo 42 ;;
   *eval*)      cat "$STORE" ;;
   *) echo "unexpected: \$*" >&2; exit 9 ;;
 esac
 STUB
 chmod +x "$T/stub_wp"
 printf 'WPCOM_SSH_USER=u\nWPCOM_SSH_HOST=ssh.wp.com\nWPCOM_SSH_KEY_FILE=%s\n' "$T/key" > "$T/env"; : > "$T/key"
-run() { ( cd "$W" && WPCOM_SSH_ENV="$T/env" WP_SSH_CMD="$T/stub_wp" WP_SITE_URL="http://127.0.0.1:9/" bash scripts/wp_publish_shared_css.sh "$@" ); }
+run() { ( cd "$W" && WPCOM_SSH_ENV="$T/env" WP_SSH_CMD="$T/stub_wp" WP_SITE_URL="http://127.0.0.1:9/" \
+    STUB_CORRUPT="${STUB_CORRUPT:-}" bash scripts/wp_publish_shared_css.sh "$@" ); }
+commit_and_merge() { git -C "$W" -c user.email=t@t -c user.name=t commit -qam "$1" && git -C "$W" push -q origin HEAD:main; }
 
 # 1 plan is read-only
 run plan >/dev/null; [ ! -e "$W/assets/css/shared.css.published.sha256" ] || fail "plan wrote a receipt"; pass "plan is read-only"
@@ -56,6 +64,28 @@ run publish --accept-drift >/dev/null; cmp -s "$STORE" "$W/assets/css/shared.css
 printf 'body { color: black; }\n' > "$W/assets/css/shared.css"; git -C "$W" -c user.email=t@t -c user.name=t commit -qam black   # committed, NOT pushed
 run publish >/dev/null 2>&1 && fail "unmerged CSS was not refused"; pass "unmerged CSS refused"
 run publish --allow-unmerged >/dev/null; cmp -s "$STORE" "$W/assets/css/shared.css" || fail "--allow-unmerged did not publish"; pass "--allow-unmerged overrides"
+# 8 uncommitted source: the receipt would point at a commit that does not exist
+printf 'body { color: navy; }\n' > "$W/assets/css/shared.css"
+run publish --allow-unmerged >/dev/null 2>&1 && fail "uncommitted source was not refused"; pass "uncommitted source refused"
+git -C "$W" checkout -q -- assets/css/shared.css
+
+# 9 the remote stored something other than what was sent
+printf 'body { color: gold; }\n' > "$W/assets/css/shared.css"; commit_and_merge gold
+STUB_CORRUPT='/* injected */' run publish >/dev/null 2>&1 && fail "read-back mismatch was not refused"
+cmp -s "$STORE" "$W/assets/css/shared.css" && fail "stub did not actually corrupt the write"
+pass "read-back mismatch refused"
+# The receipt is deliberately not advanced over a bad write, so the next run treats
+# the injected bytes as drift instead of quietly adopting them.
+run publish >/dev/null 2>&1 && fail "the run after a bad write did not see drift"; pass "a bad write leaves the receipt alone"
+
+# 10 WordPress trims trailing blank lines; that alone must not fail a publish
+printf 'body { color: gold; }\n' > "$STORE"
+run baseline >/dev/null
+printf 'body { color: silver; }\n' > "$W/assets/css/shared.css"; commit_and_merge silver
+STUB_CORRUPT=$'\n\n' run publish > "$T/out" 2>&1 || { cat "$T/out" >&2; fail "trailing blank lines were not forgiven"; }
+grep -q 'trailing blank lines' "$T/out" || { cat "$T/out" >&2; fail "the trailing-blank-line path did not run"; }
+pass "trailing blank lines forgiven"
+
 # 7 host key must be pinned (checked before any ssh; the stub is not used because the guard runs first)
 : > "$W/scripts/wpcom_known_hosts"
 run plan >/dev/null 2>&1 && fail "empty known_hosts was not refused"; pass "missing pinned host key refused"

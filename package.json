@@ -6,7 +6,8 @@
     "build": "node build.js",
     "test:ejs": "node -e \"console.log('EJS installed:', require('ejs').VERSION)\"",
     "format": "prettier --write .",
-    "serve": "npx http-server -p 8080"
+    "serve": "npx http-server -p 8080",
+    "test:publish-css": "bash scripts/tests/test_wp_publish_shared_css.sh"
   },
   "devDependencies": {
     "ejs": "^3.1.10",

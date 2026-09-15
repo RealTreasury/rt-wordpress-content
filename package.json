@@ -6,7 +6,8 @@
     "build": "node build.js",
     "test:ejs": "node -e \"console.log('EJS installed:', require('ejs').VERSION)\"",
     "format": "prettier --write .",
-    "serve": "npx http-server -p 8080"
+    "serve": "npx http-server -p 8080",
+    "test:build-clean": "node scripts/tests/test_build_output_is_committed.js"
   },
   "devDependencies": {
     "ejs": "^3.1.10",

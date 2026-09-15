@@ -1384,8 +1384,12 @@
         if (!carousel) return;
         var slides = carousel.querySelectorAll('.chart-slide');
         var dots = carousel.querySelectorAll('.carousel-dot');
+        var ROTATE_MS = 15000;          // normal dwell per chart
+        var HOLD_AFTER_CLICK_MS = 45000; // dwell after a visitor picks a chart
         var current = 0;
-        var interval;
+        var interval = null;
+        var holdTimer = null;
+        var holdUntil = 0;
 
         function goTo(index) {
             slides.forEach(function(s) { s.classList.remove('active'); });
@@ -1399,26 +1403,39 @@
             goTo((current + 1) % slides.length);
         }
 
-        function startAutoRotate() {
-            interval = setInterval(next, 15000);
+        function stopAutoRotate() {
+            clearInterval(interval);
+            interval = null;
+            clearTimeout(holdTimer);
+            holdTimer = null;
         }
 
-        function resetAutoRotate() {
-            clearInterval(interval);
-            startAutoRotate();
+        function startAutoRotate() {
+            stopAutoRotate();
+            interval = setInterval(next, ROTATE_MS);
+        }
+
+        // Resume rotation only once any click hold has run out.
+        function resumeAfterHold() {
+            stopAutoRotate();
+            var remaining = holdUntil - Date.now();
+            if (remaining > 0) {
+                holdTimer = setTimeout(function() { next(); startAutoRotate(); }, remaining);
+            } else {
+                startAutoRotate();
+            }
         }
 
         dots.forEach(function(dot, i) {
             dot.addEventListener('click', function() {
-                if (i !== current) {
-                    goTo(i);
-                    resetAutoRotate();
-                }
+                goTo(i);
+                holdUntil = Date.now() + HOLD_AFTER_CLICK_MS;
+                resumeAfterHold();
             });
         });
 
-        carousel.addEventListener('mouseenter', function() { clearInterval(interval); });
-        carousel.addEventListener('mouseleave', startAutoRotate);
+        carousel.addEventListener('mouseenter', stopAutoRotate);
+        carousel.addEventListener('mouseleave', resumeAfterHold);
 
         startAutoRotate();
     })();

@@ -1390,6 +1390,7 @@
         var interval = null;
         var holdTimer = null;
         var holdUntil = 0;
+        var hovered = false;
 
         function goTo(index) {
             slides.forEach(function(s) { s.classList.remove('active'); });
@@ -1415,13 +1416,21 @@
             interval = setInterval(next, ROTATE_MS);
         }
 
-        // Resume rotation only once any click hold has run out.
+        // Resume rotation only once any click hold has run out. A pointer resting
+        // on the carousel outranks the hold: nothing is scheduled while hovered,
+        // and mouseleave calls back in to pick up whatever hold time is left.
         function resumeAfterHold() {
             stopAutoRotate();
+            if (hovered) return;
             var remaining = holdUntil - Date.now();
             if (remaining > 0) {
-                holdTimer = setTimeout(function() { next(); startAutoRotate(); }, remaining);
+                holdTimer = setTimeout(function() {
+                    holdUntil = 0;
+                    next();
+                    startAutoRotate();
+                }, remaining);
             } else {
+                holdUntil = 0;
                 startAutoRotate();
             }
         }
@@ -1434,8 +1443,14 @@
             });
         });
 
-        carousel.addEventListener('mouseenter', stopAutoRotate);
-        carousel.addEventListener('mouseleave', resumeAfterHold);
+        carousel.addEventListener('mouseenter', function() {
+            hovered = true;
+            stopAutoRotate();
+        });
+        carousel.addEventListener('mouseleave', function() {
+            hovered = false;
+            resumeAfterHold();
+        });
 
         startAutoRotate();
     })();

@@ -140,14 +140,17 @@
             display: block;
         }
 
-        /* Chart title - sits above the chart, never over it */
+        /* Chart title - a header band across the top of the card, set off from
+           the chart by a hairline rule. The chart art carries about 4.7% of its
+           own white margin, which supplies the gap below the rule. */
         .chart-title-overlay-large {
             position: relative;
             text-decoration: none;
-            margin: 0 auto 14px;
-            padding: 0;
+            margin: 0;
+            padding: 20px 16px 16px;
             background: none;
             border: 0;
+            border-bottom: 1px solid rgba(114, 22, 244, 0.12);
             box-shadow: none;
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
@@ -608,7 +611,7 @@
             }
 
             .chart-title-overlay-large {
-                margin-bottom: 10px;
+                padding: 14px 12px 12px;
                 line-height: 1.3;
             }
 

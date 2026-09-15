@@ -1,63 +1,85 @@
 Block markup for WordPress post 4485 ("The Real Treasury Guided Vendor Tours"),
-top-level block index 2: the "rt-afp rt-afp-split" group (What You Get + FAQ +
-the form card that embeds the GitHub Pages registration page).
+top-level block index 2: the "rt-afp rt-afp-split" group (What You Get + The
+Two Tours + Good to Know + the form card that embeds the GitHub Pages
+registration page).
 
-This is what is LIVE as of September 15, 2026 - written back with
+This is what is LIVE as of September 15, 2026, 13:36 GMT - written back with
 post-sections.replace after the block was found empty on the live site that
 morning (no form for several hours while the homepage popup drove traffic to
-it). Keep this file in step with the post: it is the recovery copy.
-
-Sep 15 differences from the Sep 2 version of this file: the chart figure and
-its CSS are gone (owner removed the chart on Sep 2), the two typos the owner
-asked fixed on Sep 2 are fixed ("covers the same topic", "saw: what mattered"),
-and the FAQ names the form option as it actually reads ("Request a Custom Tour").
+it). The copy is the owner-approved text from events/2026/afp/index.html
+(September 5, 2026): the two September 2 typo fixes, the September 3 "independent
+guides who have been" change, the Two Tours section, and the reworded FAQ. The
+chart figure the owner removed on September 2 is not here. Keep this file in
+step with the post: it is the recovery copy, and the September 2 version of it
+was stale enough to ship the wrong words when it was used for the first restore.
 
 To apply by hand: post 4485 -> Code editor -> select the whole block from
   <!-- wp:group {"className":"rt-afp rt-afp-split", ...
 through its matching <!-- /wp:group --> (just before <!-- wp:block {"ref":398} /-->)
 and paste everything below the line over it. Then re-read the post with
-post-sections.list and confirm block 2 has_inner_blocks: true - WordPress
-strips markup it rejects silently.
+post-sections.list and confirm block 2 has_inner_blocks: true, and curl the
+live page for events/2026/afp/?embed=1 - WordPress strips markup it rejects
+silently.
 
 --- 8< --- paste everything below this line ---
 
 <!-- wp:group {"className":"rt-afp rt-afp-split","layout":{"type":"default"}} -->
 <div class="wp-block-group rt-afp rt-afp-split"><!-- wp:html -->
 <style>
+.rt-afp-themes { margin-bottom: 34px; }
+.rt-afp-theme + .rt-afp-theme { margin-top: 16px; }
+.rt-afp-theme h3 {
+  font-size: 1rem; font-weight: 700; line-height: 1.3;
+  color: var(--rt-black); margin: 0 0 6px;
+}
+.rt-afp-theme p {
+  margin: 0; font-size: 0.9375rem; line-height: 1.62; color: var(--rt-charcoal);
+}
 @media (max-width: 960px) {
   .rt-afp-split .rt-afp-formcard { order: -1; }
 }
 </style>
 <div>
   <h2>What You Get</h2>
-  <!-- Owner's copy, verbatim. Do not re-edit it. -->
+  <!-- Owner's copy, as on events/2026/afp/index.html (September 5, 2026). Do not re-edit it. -->
   <div class="rt-afp-prose">
     <p>A small, guided group &ndash; limited to 10 treasury professionals per tour &ndash; visits three vendor stops in 75 minutes.</p>
     <p>During the stops at each booth, every vendor follows the same script, covers the same topic, in the same amount of time.</p>
-    <p>Between stops, we talk through what you just saw: what mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with an independent guide who has been on both sides of this process.</p>
+    <p>Between stops, we talk through what you just saw: what mattered, what didn&rsquo;t, and what was different. After the third demo, you have a real basis for comparison &ndash; three vendors evaluated against identical criteria, with independent guides who have been on both sides of this process.</p>
     <p class="rt-afp-prose-neutral">We do not accept payment from any TMS vendor for any of these tours. Every vendor on each tour receives the same invitation.</p>
   </div>
-  <h2>Good to know</h2>
+  <h2>The Two Tours</h2>
+  <div class="rt-afp-themes">
+    <div class="rt-afp-theme">
+      <h3>TMS Replacement</h3>
+      <p>For teams already running a treasury system and weighing a change. The route visits vendors that could replace what you have, and every stop runs the same scenario &mdash; so what differs between them is the product rather than the pitch.</p>
+    </div>
+    <div class="rt-afp-theme">
+      <h3>Visibility Tour</h3>
+      <p>For teams running treasury on spreadsheets and bank portals, where the honest answer to &ldquo;where is our cash right now&rdquo; takes half a morning. The route visits vendors that solve that first, and seeing the same scenario three times is the quickest way to tell a working capability from a promise.</p>
+    </div>
+  </div>
+  <h2>Good to Know</h2>
   <div class="rt-afp-faq">
     <details>
-      <summary>What does it cost, and who pays?</summary>
-      <p>Nothing, and no one. Tours are free to AFP attendees, and no vendor pays to participate or to buy a spot on a route. Every TMS vendor on our market map with an AFP booth is invited.</p>
+      <summary>Is it really free?</summary>
+      <p>Yes. Attendees don&rsquo;t pay, vendors don&rsquo;t pay.</p>
     </details>
     <details>
       <summary>Which vendors are on my route?</summary>
-      <p>We describe the lineup by focus area rather than publishing a named list. Your route is built around your situation, replacing an existing system or buying for the first time &mdash; so you leave with 3 guided possible candidates.</p>
+      <p>Routes are grouped by focus, not published vendor by vendor. Every TMS vendor on our market map with an AFP booth is invited, and each appears on one route. Your route is built around your situation &mdash; replacing an existing system or improving treasury visibility &mdash; so you meet with three candidates selected around your needs.</p>
     </details>
     <details>
-      <summary>Will vendors know who is attending?</summary>
-      <p>Yes. Vendors receive the attendee list shortly before the tour. If you are evaluating confidentially, ask us about a private tour.</p>
+      <summary>Will vendors know I&rsquo;m coming?</summary>
+      <p>Vendors get the attendee list shortly before the tour. Prefer to evaluate quietly? <em>Request a Custom Tour</em>.</p>
     </details>
     <details>
       <summary>What if none of the times work for me?</summary>
-      <p>Schedule a private tour. Pick <em>Request a Custom Tour</em> in the form and we schedule those individually across both days. Sessions also release as earlier tours fill, so it is worth checking back.</p>
+      <p>Select <em>None of These Work for Me</em> when you register and leave your details. We&rsquo;ll reach out to see what may work.</p>
     </details>
     <details>
-      <summary>Is there sales pressure?</summary>
-      <p>No. Nothing is decided or transacted during a tour. You watch working product and ask your own questions.</p>
+      <summary>Am I signing up to be sold something?</summary>
+      <p>No. Nothing is bought or decided on a tour, and the debrief is vendor-free by design.</p>
     </details>
   </div>
   <p class="rt-afp-fine">Open to corporate treasury practitioners only. The Real Treasury Guided Tours are not affiliated with the Association for Financial Professionals. They are independently organized by Real Treasury, and no vendor pays a fee to participate.</p>

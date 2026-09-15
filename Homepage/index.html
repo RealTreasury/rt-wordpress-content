@@ -256,9 +256,13 @@
             animation: float 6s ease-in-out infinite;
         }
 
-        .hero-image img {
-            width: 100%;
+        /* The card is the link: title and chart share one white panel */
+        .hero-image .chart-slide > a {
+            display: block;
+            text-decoration: none;
+            background: #ffffff;
             border-radius: 24px;
+            padding: 18px 18px 14px;
             box-shadow: 
                 0 24px 48px rgba(114, 22, 244, 0.15),
                 0 0 0 1px rgba(199, 125, 255, 0.2);
@@ -266,11 +270,19 @@
             position: relative;
         }
 
-        .hero-image img:hover {
+        .hero-image .chart-slide > a:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 
                 0 40px 80px rgba(114, 22, 244, 0.25),
                 0 0 0 1px rgba(199, 125, 255, 0.4);
+        }
+
+        .hero-image img {
+            width: 100%;
+            display: block;
+            border-radius: 0;
+            box-shadow: none;
+            position: relative;
         }
 
         /* Chart Carousel */
@@ -328,12 +340,7 @@
             background: rgba(114, 22, 244, 0.4);
         }
 
-        /* Chart title - sits above the chart, never over it */
-        .hero-image .chart-slide > a {
-            display: block;
-            text-decoration: none;
-        }
-
+        /* Chart title - inside the card, directly above the chart */
         .chart-title-overlay {
             position: relative;
             text-decoration: none;
@@ -354,8 +361,8 @@
 
         .chart-title-overlay h3 {
             color: var(--dark-text);
-            font-size: 1rem;
-            margin: 0 0 2px 0;
+            font-size: 1.15rem;
+            margin: 0;
             font-weight: 700;
             text-shadow: none;
             white-space: nowrap;
@@ -1044,8 +1051,13 @@
             }
 
             .chart-title-overlay h3 {
-                font-size: 0.85rem;
+                font-size: 0.95rem;
                 white-space: nowrap;
+            }
+
+            .hero-image .chart-slide > a {
+                padding: 12px 12px 10px;
+                border-radius: 18px;
             }
 
             .chart-title-overlay p {
@@ -1122,8 +1134,7 @@
                         <div class="chart-slide active">
                             <a href="https://realtreasury.com/treasury-tech-market/">
                                 <div class="chart-title-overlay">
-                                    <h3>Treasury Systems</h3>
-                                    <p>North American Vendors</p>
+                                    <h3>TMS Systems - NORAM</h3>
                                 </div>
                                 <img src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png" alt="Treasury Tech Market Map - North America">
                             </a>
@@ -1131,8 +1142,7 @@
                         <div class="chart-slide">
                             <a href="https://realtreasury.com/treasury-tech-market/">
                                 <div class="chart-title-overlay">
-                                    <h3>Treasury Systems</h3>
-                                    <p>EMEA Vendors</p>
+                                    <h3>TMS Systems - EMEA</h3>
                                 </div>
                                 <img src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-clean-EMEA-09-2026-new-1.png" alt="Treasury Tech Market Map - EMEA">
                             </a>

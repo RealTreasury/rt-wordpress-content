@@ -48,7 +48,7 @@ function add_my_custom_header_html() {
                                                     <h3>TMS Systems - EMEA</h3>
                                                 </div>
                                                 <img class="rt-explore-image"
-                                                    src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-clean-EMEA-09-2026-new-1.png"
+                                                    src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-clean-EMEA-09-2026-new-2.png"
                                                      alt="Treasury Tech Market - EMEA">
                                             </a>
                                         </div>

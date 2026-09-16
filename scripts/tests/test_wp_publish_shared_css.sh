@@ -15,6 +15,12 @@
 #  12. a publish accepted on the trailing-blank-line path is a no-op on the next run,
 #      rather than re-sending the same bytes forever
 #  13. publish refuses outright if the remote does not read the script from stdin
+#  14b. a live copy that differs ONLY by the final newline is recognised as unchanged.
+#      WordPress strips it; sed preserves it, so the first production `plan` reported a
+#      diff on a byte-identical stylesheet and a publish would have failed its read-back.
+#  14. WP-CLI global flags are sent BEFORE the subcommand. realtreasury.com runs WP-CLI
+#      2.12.0, which rejects `wp eval --quiet ...`; the stub rejects it the same way, so
+#      an offline run catches what previously needed a live SSH session to find.
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
@@ -43,6 +49,13 @@ STORE="$T/live.css"; : > "$STORE"
 # which is the failure the probe exists to catch.
 cat > "$T/stub_wp" <<STUB
 #!/usr/bin/env bash
+# WP-CLI 2.12.0 parses global flags only before the subcommand. Anything after it is
+# "Error: Parameter errors: unknown --quiet parameter" and a non-zero exit. Reproduced
+# here so the offline suite fails on it instead of the first production run.
+case "\$*" in
+  *eval\ --quiet*|*eval-file\ --quiet*|*eval-file\ -\ --quiet*)
+      echo "Error: Parameter errors:" >&2; echo " unknown --quiet parameter" >&2; exit 1 ;;
+esac
 case "\$*" in
   *eval-file*) php="\$(cat)"; [ -n "\${STUB_NO_STDIN:-}" ] && exit 0
                case "\$php" in
@@ -108,6 +121,18 @@ run publish > "$T/out12" 2>&1 || { cat "$T/out12" >&2; fail "the run after a for
 grep -q 'nothing to publish' "$T/out12" || { cat "$T/out12" >&2; fail "a forgiven publish is not idempotent: it published again"; }
 pass "a forgiven trailing-blank publish is idempotent"
 
+# 12b The live site strips the FINAL NEWLINE, not just blank lines. Measured: the repo file
+#     is 142,507 bytes and the stored copy 142,506. sed keeps that difference, so the real
+#     `plan` printed a diff for a stylesheet that matches, and a publish would have died on
+#     its own read-back. Both sides must normalise it.
+printf 'body { color: gold; }' > "$STORE"                    # stored WITHOUT a final newline
+printf 'body { color: gold; }\n' > "$W/assets/css/shared.css"  # repo file WITH one
+commit_and_merge goldnl
+run baseline >/dev/null
+run publish > "$T/out12b" 2>&1 || { cat "$T/out12b" >&2; fail "a missing final newline errored"; }
+grep -q 'nothing to publish' "$T/out12b" || { cat "$T/out12b" >&2; fail "a final-newline-only difference was treated as a change"; }
+pass "a final-newline-only difference is not a change"
+
 # 13 the remote must actually read the publish script from stdin. `wp eval-file -` does, but
 #    this has never run against the real host; a jail that swallowed stdin would otherwise
 #    fail mid-publish with no useful message.
@@ -142,4 +167,12 @@ mv "$T/origin.away" "$T/origin"
 # 7 host key must be pinned (checked before any ssh; the stub is not used because the guard runs first)
 : > "$W/scripts/wpcom_known_hosts"
 run plan >/dev/null 2>&1 && fail "empty known_hosts was not refused"; pass "missing pinned host key refused"
+# 14 the flag-order guard above must actually be reachable: assert the stub rejects the
+#    broken form, so a future edit cannot quietly reintroduce it.
+if printf '<?php echo 1;' | "$T/stub_wp" wp eval-file --quiet - >/dev/null 2>&1; then
+  fail "the stub accepted 'wp eval-file --quiet -', which the live host rejects"
+fi
+"$T/stub_wp" wp --quiet eval 'echo 1;' >/dev/null 2>&1 || fail "the stub rejected the correct flag order"
+pass "WP-CLI global flags are sent before the subcommand"
+
 echo "all wp_publish_shared_css checks passed"

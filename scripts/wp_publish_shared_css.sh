@@ -13,6 +13,11 @@
 #   WPCOM_SSH_USER, WPCOM_SSH_HOST, WPCOM_SSH_KEY_FILE
 # This is a whole-site credential. The script uses it for exactly one post and nothing else.
 #
+# WP-CLI global flags go BEFORE the subcommand: realtreasury.com runs WP-CLI 2.12.0, which
+# rejects `wp eval --quiet ...` with "Error: Parameter errors: unknown --quiet parameter".
+# Both remote calls here are written `wp --quiet <cmd>` for that reason. Verified against the
+# live host September 16, 2026.
+#
 # The host key is pinned: scripts/wpcom_known_hosts is the only known_hosts file consulted
 # (the global one is pointed at /dev/null) and StrictHostKeyChecking=yes, so a key that is not
 # in that file fails the connection rather than being accepted on first use. Update the file deliberately (ssh-keyscan -t ed25519 ssh.wp.com,
@@ -82,17 +87,30 @@ STDIN_PROBE_TOKEN='RT_STDIN_OK'
 probe_stdin() {
   local out
   out="$(printf '<?php echo "%s";' "$STDIN_PROBE_TOKEN" \
-         | ssh_wp 'wp eval-file --quiet -' 2>/dev/null \
+         | ssh_wp 'wp --quiet eval-file -' 2>/dev/null \
          | tr -d '[:space:]' || true)"
   [ "$out" = "$STDIN_PROBE_TOKEN" ]
 }
 
 sha() { sha256sum "$1" | cut -d' ' -f1; }
 
-# WordPress trims trailing blank lines off the stored CSS, so a source that ends in them can
-# never read back byte-identical. Both the no-op check and the read-back compare have to use
-# the same equivalence or a publish that was accepted on read-back is re-sent on every run.
-strip_trailing_blanks() { sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$1"; }
+# WordPress trims trailing whitespace off the stored CSS -- both blank lines AND the final
+# newline. Measured against the live site September 16, 2026: the repo file is 142,507 bytes
+# and the stored copy is 142,506, differing only by the newline after the last `}`.
+#
+# Both the no-op check and the read-back compare have to use the same equivalence, or a
+# publish that WordPress stored perfectly fails its own read-back, and one that was accepted
+# is re-sent on every run afterwards.
+#
+# awk, not sed: sed preserves a missing final newline, so `...}` and `...}\n` stay different
+# through it, which is exactly the pair this has to call equal. awk drops trailing blank
+# lines and re-emits every surviving line with one newline, normalising both sides.
+strip_trailing_blanks() {
+  awk '{ line[NR] = $0 }
+       END { n = NR
+             while (n > 0 && line[n] ~ /^[[:space:]]*$/) n--
+             for (i = 1; i <= n; i++) printf "%s\n", line[i] }' "$1"
+}
 same_but_for_trailing_blanks() {
   cmp -s <(strip_trailing_blanks "$1") <(strip_trailing_blanks "$2")
 }
@@ -102,7 +120,7 @@ LIVE="$TMP/live.css"
 
 fetch_live() {
   # Prints the stored post_content exactly. Empty output when no custom_css post exists yet.
-  ssh_wp 'wp eval --quiet '"'"'$p = wp_get_custom_css_post(); if ($p) { echo $p->post_content; }'"'" > "$LIVE"
+  ssh_wp 'wp --quiet eval '"'"'$p = wp_get_custom_css_post(); if ($p) { echo $p->post_content; }'"'" > "$LIVE"
 }
 
 fetch_live
@@ -189,7 +207,7 @@ probe_stdin || die "the remote did not return the STDIN probe token: 'wp eval-fi
 note "remote reads the publish script from stdin (probe OK)"
 
 note "publishing $(wc -c < "$SOURCE") bytes"
-POST_ID="$(ssh_wp 'wp eval-file --quiet -' < "$PHP" | tr -d '[:space:]')"
+POST_ID="$(ssh_wp 'wp --quiet eval-file -' < "$PHP" | tr -d '[:space:]')"
 [ -n "$POST_ID" ] || die "write returned no post ID"
 note "wrote custom_css post $POST_ID"
 

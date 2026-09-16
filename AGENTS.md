@@ -98,10 +98,21 @@ authoritative slugs and IDs — don't guess.
 
 ## WordPress Additional CSS
 
-`assets/css/shared.css` is version controlled but no longer auto-loaded by
-the theme. To keep these styles active, copy the contents into
-**Appearance -> Customize -> Additional CSS** in WP and click Publish.
-Repeat whenever `shared.css` changes.
+`assets/css/shared.css` is version controlled but not loaded by the theme; it
+lives in **Appearance -> Customize -> Additional CSS**. Do not paste it by hand.
+Publish it from the rt-ai-02 box after the change is merged to `main`:
+
+```bash
+scripts/wp_publish_shared_css.sh plan       # read-only: live vs source diff, drift
+scripts/wp_publish_shared_css.sh publish    # guarded write, byte read-back, receipt
+```
+
+`publish` refuses unmerged or uncommitted CSS, refuses when the live CSS is not
+what the script last published (drift), pins the `ssh.wp.com` host key from
+`scripts/wpcom_known_hosts`, and writes `assets/css/shared.css.published.sha256`
+(commit it). Credentials: `/opt/rt-ai/secrets/wpcom-ssh.env`. Tests:
+`scripts/tests/test_wp_publish_shared_css.sh` (stub remote, no network). Full
+notes in `README.md`.
 
 ## Webinar publishing
 

@@ -23,6 +23,24 @@
 // reports every change main has taken since the branch was cut as if this branch had made
 // it; that produced a confident false alarm about edited rules the first time this was
 // run. PRUNE_BASE_REF overrides it.
+//
+// WHAT RUNS ON WHICH BRANCH. This is wired into CI for every pull request, so it must be
+// green on a branch that never touches shared.css and on one that legitimately adds rules.
+// Cases 1-3 above are true of a PRUNE and of nothing else: a normal change adds selectors
+// and rewrites declarations, and that is not a defect. So they run only in PRUNE MODE,
+// which the file itself decides:
+//
+//   shared.css unchanged from the base   -> structural checks only
+//   shared.css changed, a selector added -> not a prune; structural checks only
+//   shared.css changed, removals only    -> PRUNE MODE; cases 1-3 run
+//
+// "No selector was added" is therefore the mode discriminator rather than an assertion.
+// The assertion with teeth is the one left inside prune mode: a removal-only diff must not
+// ALSO quietly rewrite a rule that survives. That is the failure a size diff cannot show,
+// and it is still caught on exactly the diffs where it would be a lie.
+//
+// The structural checks (balanced braces, no empty block left behind) hold for any edit at
+// all and run every time.
 
 'use strict';
 const fs = require('fs');
@@ -42,7 +60,11 @@ function git(...args) {
 
 function baseRef() {
   if (process.env.PRUNE_BASE_REF) return process.env.PRUNE_BASE_REF;
-  for (const tip of ['origin/main', 'main']) {
+  // GITHUB_BASE_REF is the PR's target branch. It is first because a PR onto a branch
+  // other than main should compare against that branch, not main.
+  const tips = [process.env.GITHUB_BASE_REF && `origin/${process.env.GITHUB_BASE_REF}`,
+                'origin/main', 'main'].filter(Boolean);
+  for (const tip of tips) {
     const mb = git('merge-base', 'HEAD', tip);
     if (mb) return mb;
   }
@@ -178,26 +200,50 @@ const pruned = fs.readFileSync(path.join(REPO, CSS_REL), 'utf8');
 const prunedRules = parse(pruned);
 const baseCss = BASE === null ? null : git('show', `${BASE}:${CSS_REL}`);
 const baseRules = baseCss === null ? null : parse(baseCss);
-const skip = () => { console.log('     (skipped: no readable base for ' + CSS_REL + ')'); };
+
+// --- mode ------------------------------------------------------------------------------
+// Decided from the file, not from a flag anyone has to remember to set. See the header.
+const removedSelectors = baseRules
+  ? [...baseRules.keys()].filter(s => !prunedRules.has(s)) : [];
+const addedSelectors = baseRules
+  ? [...prunedRules.keys()].filter(s => !baseRules.has(s)) : [];
+// git() trims its output, so compare trimmed on both sides or an unchanged file reads
+// as changed by one trailing newline.
+const changed = baseCss !== null && baseCss !== pruned.trim();
+const IS_PRUNE = changed && removedSelectors.length > 0 && addedSelectors.length === 0;
+
+let modeLine;
+if (baseRules === null) {
+  modeLine = 'NO BASE — the merge base with main could not be read, so only the structural ' +
+             'checks ran. Set PRUNE_BASE_REF, or check out with fetch-depth: 0.';
+} else if (!changed) {
+  modeLine = `${CSS_REL} is unchanged from ${BASE.slice(0, 12)} — structural checks only.`;
+} else if (!IS_PRUNE) {
+  modeLine = `${CSS_REL} changed but is not a prune ` +
+             `(${addedSelectors.length} selector(s) added, ${removedSelectors.length} removed) ` +
+             '— structural checks only. Adding rules is a normal change, not a defect.';
+} else {
+  modeLine = `PRUNE MODE — removal-only change to ${CSS_REL} against ${BASE.slice(0, 12)}.`;
+}
+const skipNotPrune = () => { console.log('     (skipped: not a prune)'); };
 
 const cases = {
-  'the base is the merge base, and it is readable'() {
-    assert.ok(baseRules, 'could not resolve a merge base with main — set PRUNE_BASE_REF');
-    console.log(`     base ${BASE.slice(0, 12)}: ${baseRules.size} rules, ` +
-                `${(baseCss.length / 1024).toFixed(1)} KB -> ${prunedRules.size} rules, ` +
-                `${(pruned.length / 1024).toFixed(1)} KB`);
+  'the stylesheet and its base are readable'() {
+    if (baseRules) {
+      console.log(`     base ${BASE.slice(0, 12)}: ${baseRules.size} rules, ` +
+                  `${(baseCss.length / 1024).toFixed(1)} KB -> ${prunedRules.size} rules, ` +
+                  `${(pruned.length / 1024).toFixed(1)} KB`);
+    }
+    assert.ok(pruned.length > 0, CSS_REL + ' is empty or unreadable');
   },
 
-  'no selector was added'() {
-    if (!baseRules) return skip();
-    const added = [...prunedRules.keys()].filter(s => !baseRules.has(s));
-    assert.deepStrictEqual(added, [],
-      added.length + ' selector(s) are not in the base — this is not a pure removal:\n  ' +
-      added.slice(0, 25).join('\n  '));
+  'a removal-only change removed something (mode check, never fails off a prune)'() {
+    if (!IS_PRUNE) return skipNotPrune();
+    console.log(`     ${removedSelectors.length} selectors removed, none added`);
   },
 
   'no surviving rule had its declarations edited'() {
-    if (!baseRules) return skip();
+    if (!IS_PRUNE) return skipNotPrune();
     const edited = [];
     for (const [sel, bodies] of prunedRules) {
       const before = baseRules.get(sel);
@@ -213,13 +259,6 @@ const cases = {
       edited.length + ' surviving rule(s) carry a declaration block the base did not have. ' +
       'A prune removes rules; it does not rewrite them, and a rewritten rule that still ' +
       'matches is the one failure a size diff cannot show:\n  ' + edited.slice(0, 10).join('\n  '));
-  },
-
-  'something was actually removed'() {
-    if (!baseRules) return skip();
-    const removed = [...baseRules.keys()].filter(s => !prunedRules.has(s));
-    assert.ok(removed.length > 0, 'no selector was removed — is HEAD really the prune?');
-    console.log(`     ${removed.length} selectors removed`);
   },
 
   'the file is still a balanced stylesheet'() {
@@ -239,11 +278,11 @@ const cases = {
   },
 
   'removed selectors whose classes are still in the markup (advisory, never fails)'() {
-    if (!baseRules) return skip();
+    if (!IS_PRUNE) return skipNotPrune();
     const corpus = repoCorpus();
     const corpusTokens = new Set(corpus.match(/[-\w]{2,}/g) || []);
     const present = n => isRuntime(n) || corpusTokens.has(n) || corpus.includes(n);
-    const removed = [...baseRules.keys()].filter(s => !prunedRules.has(s));
+    const removed = removedSelectors;
     // Every part of a selector has to match, so ONE absent token proves the rule dead.
     const stillNamed = removed.filter(sel => {
       const names = tokensOf(sel);
@@ -257,6 +296,8 @@ const cases = {
     if (stillNamed.length > 60) console.log(`       ... and ${stillNamed.length - 60} more`);
   },
 };
+
+console.log(modeLine);
 
 let failed = 0;
 for (const [name, fn] of Object.entries(cases)) {

@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          # test:css-prune compares shared.css against its merge base with main,
-          # which a depth-1 checkout cannot resolve.
+          # test:css-prune compares shared.css against its merge base with the PR's base
+          # branch, which a depth-1 checkout cannot resolve.
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
@@ -19,4 +19,6 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run test:ejs
+      # Structural checks on shared.css always; the prune-specific assertions only on a
+      # removal-only change to it. Green on a PR that never touches the stylesheet.
       - run: npm run test:css-prune

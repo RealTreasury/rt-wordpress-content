@@ -12,6 +12,9 @@
 #  10. trailing blank lines alone are forgiven, because WordPress trims them
 #  11. when origin cannot be reached, publish is refused instead of falling back to a
 #      stale tracking ref and overwriting newer live CSS with an older file
+#  12. a publish accepted on the trailing-blank-line path is a no-op on the next run,
+#      rather than re-sending the same bytes forever
+#  13. publish refuses outright if the remote does not read the script from stdin
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
@@ -34,10 +37,18 @@ git -C "$W" add -A && git -C "$W" -c user.email=t@t -c user.name=t commit -q -m 
 STORE="$T/live.css"; : > "$STORE"
 # STUB_CORRUPT appends bytes to whatever is sent, which is what the read-back
 # compare exists to catch.
+# `wp eval-file -` is one invocation and the stub tells the two uses apart by what arrives
+# on stdin, exactly as the real remote would: the publish payload carries base64_decode(),
+# the stdin probe is a bare echo. STUB_NO_STDIN makes the remote ignore stdin altogether,
+# which is the failure the probe exists to catch.
 cat > "$T/stub_wp" <<STUB
 #!/usr/bin/env bash
 case "\$*" in
-  *eval-file*) php="\$(cat)"; b64="\$(printf '%s' "\$php" | grep -o 'base64_decode("[^"]*")' | sed 's/base64_decode("//; s/")//')"; printf '%s' "\$b64" | base64 -d > "$STORE"; [ -n "\${STUB_CORRUPT:-}" ] && printf '%s' "\${STUB_CORRUPT}" >> "$STORE"; echo 42 ;;
+  *eval-file*) php="\$(cat)"; [ -n "\${STUB_NO_STDIN:-}" ] && exit 0
+               case "\$php" in
+                 *base64_decode*) b64="\$(printf '%s' "\$php" | grep -o 'base64_decode("[^"]*")' | sed 's/base64_decode("//; s/")//')"; printf '%s' "\$b64" | base64 -d > "$STORE"; [ -n "\${STUB_CORRUPT:-}" ] && printf '%s' "\${STUB_CORRUPT}" >> "$STORE"; echo 42 ;;
+                 *) printf '%s' "\$php" | sed -n 's/.*echo "\([^"]*\)".*/\1/p' ;;
+               esac ;;
   *eval*)      cat "$STORE" ;;
   *) echo "unexpected: \$*" >&2; exit 9 ;;
 esac
@@ -45,7 +56,8 @@ STUB
 chmod +x "$T/stub_wp"
 printf 'WPCOM_SSH_USER=u\nWPCOM_SSH_HOST=ssh.wp.com\nWPCOM_SSH_KEY_FILE=%s\n' "$T/key" > "$T/env"; : > "$T/key"
 run() { ( cd "$W" && WPCOM_SSH_ENV="$T/env" WP_SSH_CMD="$T/stub_wp" WP_SITE_URL="http://127.0.0.1:9/" \
-    STUB_CORRUPT="${STUB_CORRUPT:-}" bash scripts/wp_publish_shared_css.sh "$@" ); }
+    STUB_CORRUPT="${STUB_CORRUPT:-}" STUB_NO_STDIN="${STUB_NO_STDIN:-}" \
+    bash scripts/wp_publish_shared_css.sh "$@" ); }
 commit_and_merge() { git -C "$W" -c user.email=t@t -c user.name=t commit -qam "$1" && git -C "$W" push -q origin HEAD:main; }
 
 # 1 plan is read-only
@@ -87,6 +99,24 @@ printf 'body { color: silver; }\n' > "$W/assets/css/shared.css"; commit_and_merg
 STUB_CORRUPT=$'\n\n' run publish > "$T/out" 2>&1 || { cat "$T/out" >&2; fail "trailing blank lines were not forgiven"; }
 grep -q 'trailing blank lines' "$T/out" || { cat "$T/out" >&2; fail "the trailing-blank-line path did not run"; }
 pass "trailing blank lines forgiven"
+
+# 12 ...and the run after it must be a no-op. The read-back acceptance records the LIVE hash,
+#    while the "nothing to publish" check compared the raw source and live hashes — which can
+#    never be equal once WordPress has trimmed the trailing blank lines off. Without the same
+#    equivalence on both sides, every subsequent run re-sends the same bytes.
+run publish > "$T/out12" 2>&1 || { cat "$T/out12" >&2; fail "the run after a forgiven publish errored"; }
+grep -q 'nothing to publish' "$T/out12" || { cat "$T/out12" >&2; fail "a forgiven publish is not idempotent: it published again"; }
+pass "a forgiven trailing-blank publish is idempotent"
+
+# 13 the remote must actually read the publish script from stdin. `wp eval-file -` does, but
+#    this has never run against the real host; a jail that swallowed stdin would otherwise
+#    fail mid-publish with no useful message.
+printf 'body { color: plum; }\n' > "$W/assets/css/shared.css"; commit_and_merge plum
+STUB_NO_STDIN=1 run publish > "$T/out13" 2>&1 && fail "publish ran with a remote that ignores stdin"
+grep -q 'STDIN probe token' "$T/out13" || { cat "$T/out13" >&2; fail "the refusal did not come from the stdin probe"; }
+cmp -s "$STORE" "$W/assets/css/shared.css" && fail "the write happened despite the failed probe"
+run publish >/dev/null; cmp -s "$STORE" "$W/assets/css/shared.css" || fail "publish did not deliver once the probe passed"
+pass "publish refuses a remote that does not read stdin"
 
 # 11 origin moved on, and this checkout cannot reach it. The merge guard used to warn and then
 #    compare against whatever refs/remotes/origin/main still held, which is the stale state it

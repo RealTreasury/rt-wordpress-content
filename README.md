@@ -51,8 +51,14 @@ First-time adoption on a site: `baseline` records the current live hash.
 `npm run test:publish-css` runs that whole state machine against a stub remote — no SSH, no network, no WordPress — and runs in CI.
 
 Host key: the connection only trusts the key in `scripts/wpcom_known_hosts`
-(`StrictHostKeyChecking=yes`). Rotate it deliberately: `ssh-keyscan -t ed25519 ssh.wp.com`,
+(`StrictHostKeyChecking=yes`, and `GlobalKnownHostsFile=/dev/null` so `/etc/ssh/ssh_known_hosts`
+cannot satisfy it instead). Rotate it deliberately: `ssh-keyscan -t ed25519 ssh.wp.com`,
 compare the fingerprint with a connection you already trust, commit the new line.
+
+Before the write, `publish` sends a throwaway script over the same `wp eval-file -`
+invocation and checks the token comes back. `wp eval-file -` has read STDIN since 2018, but
+nothing here has run against the real host yet, and a probe that fails gives a named reason
+instead of a confusing mid-publish error.
 
 Merge guard: `publish` compares the file with `origin/main` and refuses a committed but
 unmerged change, so the receipt always names a commit that reached `main`.

@@ -13,9 +13,9 @@
 #   WPCOM_SSH_USER, WPCOM_SSH_HOST, WPCOM_SSH_KEY_FILE
 # This is a whole-site credential. The script uses it for exactly one post and nothing else.
 #
-# The host key is pinned: scripts/wpcom_known_hosts is the only known_hosts file consulted and
-# StrictHostKeyChecking=yes, so a key that is not in that file fails the connection rather than
-# being accepted on first use. Update the file deliberately (ssh-keyscan -t ed25519 ssh.wp.com,
+# The host key is pinned: scripts/wpcom_known_hosts is the only known_hosts file consulted
+# (the global one is pointed at /dev/null) and StrictHostKeyChecking=yes, so a key that is not
+# in that file fails the connection rather than being accepted on first use. Update the file deliberately (ssh-keyscan -t ed25519 ssh.wp.com,
 # compare the fingerprint against a connection you already trust) and commit it.
 #
 # Publish also requires the CSS being sent to be what origin/main has. A committed change on a
@@ -62,12 +62,40 @@ grep -q "^$WPCOM_SSH_HOST " "$KNOWN_HOSTS" || die "no pinned host key for $WPCOM
 # WP_SSH_CMD lets tests substitute a stub for the remote side.
 ssh_wp() {
   if [ -n "${WP_SSH_CMD:-}" ]; then "$WP_SSH_CMD" "$@"; return; fi
+  # GlobalKnownHostsFile is silenced as well as UserKnownHostsFile set: OpenSSH consults
+  # /etc/ssh/ssh_known_hosts(2) in addition to the user file, so without this the pinned
+  # file is not actually the only key that can satisfy the connection.
   ssh -i "$WPCOM_SSH_KEY_FILE" -o IdentitiesOnly=yes -o BatchMode=yes \
-      -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$KNOWN_HOSTS" -o ConnectTimeout=30 \
+      -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$KNOWN_HOSTS" \
+      -o GlobalKnownHostsFile=/dev/null -o ConnectTimeout=30 \
       "$WPCOM_SSH_USER@$WPCOM_SSH_HOST" "$@"
 }
 
+# `wp eval-file -` reads the script from STDIN — wp-cli/eval-command has done so since
+# February 2018 ("Use '-' to run code from STDIN"; execute_eval reads php://stdin). Nothing
+# in this script has ever run against the real host, though, and an SSH jail that does not
+# forward stdin would fail in the middle of a publish with no useful message. So prove the
+# transport with a throwaway script before trusting it with the write. The probe uses the
+# same invocation as the write — no --skip-wordpress — so what it proves is the path that is
+# actually about to be used, not a near neighbour of it.
+STDIN_PROBE_TOKEN='RT_STDIN_OK'
+probe_stdin() {
+  local out
+  out="$(printf '<?php echo "%s";' "$STDIN_PROBE_TOKEN" \
+         | ssh_wp 'wp eval-file --quiet -' 2>/dev/null \
+         | tr -d '[:space:]' || true)"
+  [ "$out" = "$STDIN_PROBE_TOKEN" ]
+}
+
 sha() { sha256sum "$1" | cut -d' ' -f1; }
+
+# WordPress trims trailing blank lines off the stored CSS, so a source that ends in them can
+# never read back byte-identical. Both the no-op check and the read-back compare have to use
+# the same equivalence or a publish that was accepted on read-back is re-sent on every run.
+strip_trailing_blanks() { sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$1"; }
+same_but_for_trailing_blanks() {
+  cmp -s <(strip_trailing_blanks "$1") <(strip_trailing_blanks "$2")
+}
 
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 LIVE="$TMP/live.css"
@@ -104,14 +132,22 @@ fi
 
 if [ "$SRC_SHA" = "$LIVE_SHA" ]; then
   note "source and live are byte-identical: nothing to publish"
-  [ "$CMD" = "plan" ] && exit 0
+  exit 0
+fi
+if same_but_for_trailing_blanks "$LIVE" "$SOURCE"; then
+  note "source and live differ only in trailing blank lines, which WordPress trims: nothing to publish"
+  [ "$RECEIPT_SHA" = "$LIVE_SHA" ] || note "the receipt does not match this live hash; run 'baseline' to adopt it"
   exit 0
 fi
 
 note "diff (live -> source):"
 diff -u --label live --label "$SOURCE_REL" "$LIVE" "$SOURCE" || true
 
-[ "$CMD" = "plan" ] && exit 0
+if [ "$CMD" = "plan" ]; then
+  if probe_stdin; then note "remote reads the publish script from stdin (probe OK)"
+  else note "WARNING: the remote did not return the STDIN probe token. 'publish' will refuse."; fi
+  exit 0
+fi
 
 # ---------------------------------------------------------------- publish
 if ! git -C "$REPO_ROOT" diff --quiet -- "$SOURCE_REL" || ! git -C "$REPO_ROOT" diff --cached --quiet -- "$SOURCE_REL"; then
@@ -149,6 +185,9 @@ PHP="$TMP/publish.php"
   echo 'echo $r->ID, "\n";'
 } > "$PHP"
 
+probe_stdin || die "the remote did not return the STDIN probe token: 'wp eval-file -' is not reading the script this end sends. Refusing to attempt the write."
+note "remote reads the publish script from stdin (probe OK)"
+
 note "publishing $(wc -c < "$SOURCE") bytes"
 POST_ID="$(ssh_wp 'wp eval-file --quiet -' < "$PHP" | tr -d '[:space:]')"
 [ -n "$POST_ID" ] || die "write returned no post ID"
@@ -157,7 +196,7 @@ note "wrote custom_css post $POST_ID"
 fetch_live
 NEW_LIVE_SHA="$(sha "$LIVE")"
 if [ "$NEW_LIVE_SHA" != "$SRC_SHA" ]; then
-  if cmp -s <(sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$LIVE") <(sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$SOURCE"); then
+  if same_but_for_trailing_blanks "$LIVE" "$SOURCE"; then
     note "read-back differs only in trailing blank lines (WordPress trims); accepted"
   else
     echo "READ-BACK MISMATCH: live $NEW_LIVE_SHA != source $SRC_SHA" >&2

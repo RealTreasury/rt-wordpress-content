@@ -16,4 +16,6 @@ jobs:
       - run: npm run build
       - run: npm run test:ejs
       - run: npm run test:iframe-height
+      - run: npm run test:banner
+      - run: npm run test:publish-css
       - run: npm run test:carousel

@@ -7,9 +7,14 @@
 // that updates only the href looks completely correct in review and in the rendered page,
 // and sends every visitor to the previous event.
 //
-// So: the two must agree, and no id from a retired destination may survive anywhere in
-// the file. Neither check needs a browser, and both are exactly the mistake this file's
-// history keeps producing.
+// So: the two must agree, they must both be the destination this rota slot is for, and no
+// id from a retired destination may survive anywhere in the file. None of that needs a
+// browser, and all of it is exactly the mistake this file's history keeps producing.
+//
+// DESTINATION names the page the banner is currently supposed to send people to. Agreement
+// between the two fields alone is not enough — both could be moved to an unrelated URL and
+// still agree. Changing DESTINATION is part of a banner swap, not an obstacle to one: it is
+// the line that says which event this banner is for.
 
 'use strict';
 const fs = require('fs');
@@ -18,6 +23,9 @@ const assert = require('assert');
 
 const FILE = path.join(__dirname, '..', '..', 'header', 'main-menu', 'index.html');
 const html = fs.readFileSync(FILE, 'utf8');
+
+// The current rota slot: AFP 2026 guided vendor tours, September 15-18 2026.
+const DESTINATION = 'https://realtreasury.com/afp-2026-tms-tour/';
 
 function ctaHref() {
   const m = html.match(/<a\s+href="([^"]+)"\s+class="banner-cta"/);
@@ -51,6 +59,15 @@ const cases = {
 
   'the destination is an absolute https URL'() {
     assert.match(registrationConst(), /^https:\/\/[^\s"']+$/, 'the destination is not an absolute https URL');
+  },
+
+  'the banner points at the destination this rota slot is for'() {
+    assert.strictEqual(registrationConst(), DESTINATION,
+      'the banner navigates to ' + registrationConst() + ', not ' + DESTINATION + '. If the ' +
+      'rota moved on, move DESTINATION at the top of this file with it; if it did not, the ' +
+      'banner is pointing somewhere it should not.');
+    assert.strictEqual(ctaHref(), DESTINATION,
+      'the CTA href is ' + ctaHref() + ', not ' + DESTINATION);
   },
 
   'no retired destination survives anywhere in the file'() {

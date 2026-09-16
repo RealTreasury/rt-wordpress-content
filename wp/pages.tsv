@@ -1,4 +1,17 @@
-# slug	post_id	source page in this repo
-real-treasury-explained	1491	insights/2024/real-treasury-explained/index.html
-payment-networks-explained	1516	insights/2024/payment-networks-explained/index.html
-data-flows-of-a-tms	1510	insights/2024/tms-data-flow/index.html
+# slug	post_id	source in this repo	mode (page|raw, default page)
+#
+# Only PUBLISHED posts belong here. 11 of the 23 iframed posts are drafts — they 404,
+# are absent from the sitemap, and get_permalink() returns ?p=NNNN. Converting one is
+# zero value. Check post_status AND the permalink before adding a row.
+#
+# mode `page`: body+scoped CSS spliced into the post, pattern refs preserved.
+real-treasury-explained	1491	insights/2024/real-treasury-explained/index.html	page
+payment-networks-explained	1516	insights/2024/payment-networks-explained/index.html	page
+data-flows-of-a-tms	1510	insights/2024/tms-data-flow/index.html	page
+#
+# mode `raw`: the post's content IS the file. The site header (nav + explore carousel)
+# lives in WPCode snippet post 1885, titled
+# "rt-wordpress-content/header/main-menu /custom-header.php" — a normal post holding PHP,
+# hooked to astra_body_top. This is the deploy path for custom-header.php; merging the
+# repo file alone reaches nothing, which is what PR #898's review correctly flagged.
+site-header-snippet	1885	header/main-menu/custom-header.php	raw

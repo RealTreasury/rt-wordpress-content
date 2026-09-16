@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import difflib
 import hashlib
 import os
 import re
@@ -39,6 +40,7 @@ import page_to_block  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "wp" / "pages.tsv"
+TARGETS = ROOT / "wp" / "targets.tsv"
 BACKUPS = Path(os.environ.get("WP_POST_BACKUPS", Path.home() / "wp-post-backups"))
 ENV_FILE = Path(os.environ.get("WPCOM_SSH_ENV", "/opt/rt-ai/secrets/wpcom-ssh.env"))
 KNOWN_HOSTS = ROOT / "scripts" / "wpcom_known_hosts"
@@ -67,6 +69,26 @@ def load_env() -> dict[str, str]:
     return env
 
 
+def targets(env: dict[str, str]) -> dict[str, str]:
+    """target name -> ssh user. The KEY stays in the secrets rail; a username is not
+    a credential, so it is versioned here rather than hidden."""
+    if not TARGETS.exists():
+        die(f"{TARGETS} not found")
+    out = {}
+    for n, line in enumerate(TARGETS.read_text(encoding="utf-8").splitlines(), 1):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = line.split("\t")
+        if len(parts) != 2:
+            die(f"{TARGETS}:{n}: expected 'target<TAB>ssh_user'")
+        name, user = parts
+        if user == "${WPCOM_SSH_USER}":
+            user = env["WPCOM_SSH_USER"]
+        out[name] = user
+    return out
+
+
 def ssh(env: dict[str, str], remote_cmd: str, stdin: bytes | None = None) -> str:
     if not KNOWN_HOSTS.is_file() or KNOWN_HOSTS.stat().st_size == 0:
         die(f"pinned host key file {KNOWN_HOSTS} missing or empty")
@@ -77,7 +99,7 @@ def ssh(env: dict[str, str], remote_cmd: str, stdin: bytes | None = None) -> str
         "-o", f"UserKnownHostsFile={KNOWN_HOSTS}",
         "-o", "GlobalKnownHostsFile=/dev/null",
         "-o", "ConnectTimeout=30",
-        f"{env['WPCOM_SSH_USER']}@{env['WPCOM_SSH_HOST']}", remote_cmd,
+        f"{env['_user']}@{env['WPCOM_SSH_HOST']}", remote_cmd,
     ]
     r = subprocess.run(cmd, input=stdin, capture_output=True, timeout=180)
     if r.returncode != 0:
@@ -85,7 +107,17 @@ def ssh(env: dict[str, str], remote_cmd: str, stdin: bytes | None = None) -> str
     return r.stdout.decode("utf-8", "replace")
 
 
-def manifest() -> dict[str, tuple[int, Path]]:
+def manifest() -> dict[str, tuple[int, Path, str]]:
+    """slug -> (post id, source file, mode).
+
+    mode `page` wraps the source page's body+CSS in a core/html block and splices it
+    into the post, preserving the surrounding pattern refs.
+
+    mode `raw` writes the source file as the whole post_content, byte for byte. That is
+    for posts whose content IS the file — the site header lives in WPCode snippet post
+    1885 (`rt-wordpress-content/header/main-menu /custom-header.php`), which is a normal
+    post holding PHP. Splicing would be wrong there; there is no block structure to keep.
+    """
     if not MANIFEST.exists():
         die(f"{MANIFEST} not found")
     out = {}
@@ -94,10 +126,14 @@ def manifest() -> dict[str, tuple[int, Path]]:
         if not line or line.startswith("#"):
             continue
         parts = line.split("\t")
-        if len(parts) != 3:
-            die(f"{MANIFEST}:{n}: expected 'slug<TAB>post_id<TAB>source'")
-        slug, post_id, src = parts
-        out[slug] = (int(post_id), ROOT / src)
+        if len(parts) == 3:
+            parts.append("page")
+        if len(parts) != 4:
+            die(f"{MANIFEST}:{n}: expected 'slug<TAB>post_id<TAB>source[<TAB>mode]'")
+        slug, post_id, src, mode = parts
+        if mode not in ("page", "raw"):
+            die(f"{MANIFEST}:{n}: mode must be 'page' or 'raw', got {mode!r}")
+        out[slug] = (int(post_id), ROOT / src, mode)
     return out
 
 
@@ -132,21 +168,34 @@ def splice(current: str, block: str, slug: str) -> str:
     die("no rt:page-content region and no wp:html block containing a github.io iframe")
 
 
+def norm(text: str) -> str:
+    """Line endings and the trailing newline normalised away.
+
+    The live WPCode snippet is stored CRLF (337 of its 338 lines); the repo file is LF.
+    That is a 336-byte difference on a file that is otherwise identical, and comparing raw
+    bytes makes every publish look like a full rewrite and the no-op check never fire.
+    difflib.splitlines() hides it the other way -- it reported "identical" while the byte
+    counts differed -- so neither raw bytes nor split lines is the right comparison.
+    """
+    return text.replace("\r\n", "\n").replace("\r", "\n").rstrip("\n")
+
+
 def words(html: str) -> int:
     t = re.sub(r"<(script|style)[\s\S]*?</\1>", " ", html, flags=re.I)
     return len(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", t)).split())
 
 
-def build(slug: str, source: Path) -> str:
+def build(slug: str, source: Path, mode: str) -> str:
     if not source.exists():
         die(f"source page {source} not found")
-    return page_to_block.render(source.read_text(encoding="utf-8"), slug)
+    text = source.read_text(encoding="utf-8")
+    return text if mode == "raw" else page_to_block.render(text, slug)
 
 
-def cmd_plan(env, slug, post_id, source) -> int:
+def cmd_plan(env, slug, post_id, source, mode) -> int:
     current = fetch_content(env, post_id)
-    block = build(slug, source)
-    new = splice(current, block, slug)
+    block = build(slug, source, mode)
+    new = block if mode == "raw" else splice(current, block, slug)
     print(f"-- post {post_id} ({slug})")
     print(f"-- live now : {len(current):>7} bytes, {words(current):>5} words, "
           f"h1={'yes' if re.search(r'<h1', current, re.I) else 'NO'}, "
@@ -154,30 +203,60 @@ def cmd_plan(env, slug, post_id, source) -> int:
     print(f"-- would be : {len(new):>7} bytes, {words(new):>5} words, "
           f"h1={'yes' if re.search(r'<h1', new, re.I) else 'NO'}, "
           f"iframe={'yes' if 'github.io' in new else 'no'}")
-    preserved = [r for r in re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)]
-    kept = [r for r in re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)]
-    print(f"-- pattern refs: before {preserved} -> after {kept}"
-          f"{'  OK' if preserved == kept else '  *** PATTERNS CHANGED ***'}")
-    if preserved != kept:
-        die("the splice would drop a pattern reference; refusing to call this a safe plan")
+    if mode == "raw":
+        # No word-count or h1 signal to read here, and a raw write replaces everything,
+        # so show the actual change. Whitespace-only drift between a pasted snippet and
+        # the repo file is common and worth seeing before it is written.
+        crlf = current.count("\r\n")
+        if crlf and "\r\n" not in new:
+            print(f"-- line endings: live is CRLF on {crlf} line(s), the repo file is LF. "
+                  "A publish rewrites them to LF once; later runs then compare clean.")
+        d = list(difflib.unified_diff(
+            norm(current).split("\n"), norm(new).split("\n"),
+            fromfile="live", tofile=str(source.relative_to(ROOT)), lineterm="", n=1))
+        if not d:
+            print("-- identical apart from line endings"
+                  if norm(current) == norm(new) and current != new else "-- identical")
+        else:
+            visible = [l for l in d if l.startswith(("+", "-")) and not l.startswith(("+++", "---"))]
+            ws_only = all(l[1:].strip() == "" or
+                          any(o[1:].strip() == l[1:].strip() for o in visible if o[0] != l[0])
+                          for l in visible)
+            print(f"-- {len(visible)} changed line(s)"
+                  f"{'  (whitespace only)' if ws_only else ''}")
+            for line in d[:40]:
+                print("   " + line)
+            if len(d) > 40:
+                print(f"   ... {len(d) - 40} more diff lines")
+    if mode == "page":
+        preserved = re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)
+        kept = re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)
+        print(f"-- pattern refs: before {preserved} -> after {kept}"
+              f"{'  OK' if preserved == kept else '  *** PATTERNS CHANGED ***'}")
+        if preserved != kept:
+            die("the splice would drop a pattern reference; refusing to call this a safe plan")
     return 0
 
 
-def cmd_publish(env, slug, post_id, source) -> int:
+def cmd_publish(env, slug, post_id, source, mode) -> int:
     current = fetch_content(env, post_id)
-    block = build(slug, source)
-    new = splice(current, block, slug)
-    if new == current:
-        print("-- already published: nothing to do")
-        return 0
-    before_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)
-    after_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)
-    if before_refs != after_refs:
-        die(f"refusing: pattern refs would change {before_refs} -> {after_refs}")
+    block = build(slug, source, mode)
+    new = block if mode == "raw" else splice(current, block, slug)
+    if norm(new) == norm(current):
+        if new != current:
+            print("-- content matches; only line endings differ. Publishing to normalise them.")
+        else:
+            print("-- already published: nothing to do")
+            return 0
+    if mode == "page":
+        before_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)
+        after_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)
+        if before_refs != after_refs:
+            die(f"refusing: pattern refs would change {before_refs} -> {after_refs}")
 
     BACKUPS.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    backup = BACKUPS / f"{post_id}-{slug}-{stamp}.html"
+    backup = BACKUPS / f"{env['_target']}-{post_id}-{slug}-{stamp}.html"
     backup.write_text(current, encoding="utf-8")
     print(f"-- backed up {len(current)} bytes to {backup}")
 
@@ -198,7 +277,7 @@ def cmd_publish(env, slug, post_id, source) -> int:
     print(f"-- wrote post {out}")
 
     back = fetch_content(env, post_id)
-    if back.rstrip("\n") != new.rstrip("\n"):
+    if norm(back) != norm(new):
         print(f"READ-BACK MISMATCH: live {len(back)} bytes != sent {len(new)}", file=sys.stderr)
         die(f"restore with: {sys.argv[0]} restore {slug} {backup}")
     print(f"-- read-back OK: {len(back)} bytes, {words(back)} words")
@@ -220,7 +299,7 @@ def cmd_restore(env, slug, post_id, backup_path: str) -> int:
     ])
     ssh(env, "wp --quiet eval-file -", stdin=php.encode("utf-8"))
     back = fetch_content(env, post_id)
-    if back.rstrip("\n") != content.rstrip("\n"):
+    if norm(back) != norm(content):
         die("restore read-back did not match the backup")
     print(f"-- restored post {post_id} from {backup_path} ({len(content)} bytes)")
     return 0
@@ -229,6 +308,8 @@ def cmd_restore(env, slug, post_id, backup_path: str) -> int:
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("--target", default="production",
+                   help="which site to act on, from wp/targets.tsv (default: %(default)s)")
     p.add_argument("command", choices=["plan", "publish", "restore"])
     p.add_argument("slug")
     p.add_argument("backup", nargs="?")
@@ -236,12 +317,18 @@ def main(argv=None) -> int:
     pages = manifest()
     if a.slug not in pages:
         die(f"'{a.slug}' is not in {MANIFEST}")
-    post_id, source = pages[a.slug]
+    post_id, source, mode = pages[a.slug]
     env = load_env()
+    known = targets(env)
+    if a.target not in known:
+        die(f"unknown target '{a.target}'; {TARGETS} has {sorted(known)}")
+    env["_user"] = known[a.target]
+    env["_target"] = a.target
+    print(f"-- target: {a.target}  mode: {mode}")
     if a.command == "plan":
-        return cmd_plan(env, a.slug, post_id, source)
+        return cmd_plan(env, a.slug, post_id, source, mode)
     if a.command == "publish":
-        return cmd_publish(env, a.slug, post_id, source)
+        return cmd_publish(env, a.slug, post_id, source, mode)
     if not a.backup:
         die("restore needs a backup file")
     return cmd_restore(env, a.slug, post_id, a.backup)

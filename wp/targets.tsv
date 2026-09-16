@@ -1,0 +1,3 @@
+# target	ssh user (${WPCOM_SSH_USER} = the production user from the secrets rail)
+production	${WPCOM_SSH_USER}
+staging	staging-eb24-aisbee08e5bdvaliantmaker.wordpress.com

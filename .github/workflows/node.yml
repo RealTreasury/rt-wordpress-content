@@ -19,6 +19,7 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run test:ejs
+      - run: npm run test:iframe-height
       # Structural checks on shared.css always; the prune-specific assertions only on a
       # removal-only change to it. Green on a PR that never touches the stylesheet.
       - run: npm run test:css-prune

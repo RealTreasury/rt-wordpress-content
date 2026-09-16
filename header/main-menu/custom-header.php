@@ -35,22 +35,20 @@ function add_my_custom_header_html() {
                                         <div class="chart-slide active">
                                             <a href="https://realtreasury.com/treasury-tech-market/" class="rt-explore-link">
                                                 <div class="chart-title-overlay">
-                                                    <h3>Treasury Systems</h3>
-                                                    <p>North America</p>
+                                                    <h3>TMS Systems - NORAM</h3>
                                                 </div>
                                                 <img class="rt-explore-image"
-                                                    src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-NORAM-05-2026-clean.png"
+                                                    src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png"
                                                      alt="Treasury Tech Market - North America">
                                             </a>
                                         </div>
                                         <div class="chart-slide">
                                             <a href="https://realtreasury.com/treasury-tech-market/" class="rt-explore-link">
                                                 <div class="chart-title-overlay">
-                                                    <h3>Treasury Systems</h3>
-                                                    <p>EMEA Vendors</p>
+                                                    <h3>TMS Systems - EMEA</h3>
                                                 </div>
                                                 <img class="rt-explore-image"
-                                                    src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-clean-EMEA-05-2026.png"
+                                                    src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-clean-EMEA-09-2026-new-1.png"
                                                      alt="Treasury Tech Market - EMEA">
                                             </a>
                                         </div>

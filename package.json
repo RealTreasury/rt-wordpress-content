@@ -9,7 +9,8 @@
     "serve": "npx http-server -p 8080",
     "test:iframe-height": "node scripts/tests/test_webinars_iframe_height.js",
     "test:banner": "node scripts/tests/test_banner_destination.js",
-    "test:publish-css": "bash scripts/tests/test_wp_publish_shared_css.sh"
+    "test:publish-css": "bash scripts/tests/test_wp_publish_shared_css.sh",
+    "test:carousel": "node scripts/tests/test_homepage_carousel.js"
   },
   "devDependencies": {
     "ejs": "^3.1.10",

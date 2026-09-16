@@ -39,7 +39,7 @@ function add_my_custom_header_html() {
                                                 </div>
                                                 <img class="rt-explore-image"
                                                     src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png"
-                                                     alt="Treasury Tech Market - North America">
+                                                     alt="Treasury Tech Market - North America, September 2026">
                                             </a>
                                         </div>
                                         <div class="chart-slide">
@@ -49,7 +49,7 @@ function add_my_custom_header_html() {
                                                 </div>
                                                 <img class="rt-explore-image"
                                                     src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-clean-EMEA-09-2026-new-2.png"
-                                                     alt="Treasury Tech Market - EMEA">
+                                                     alt="Treasury Tech Market - EMEA, September 2026">
                                             </a>
                                         </div>
                                         <div class="carousel-dots">

@@ -7,6 +7,7 @@
     "test:ejs": "node -e \"console.log('EJS installed:', require('ejs').VERSION)\"",
     "format": "prettier --write .",
     "serve": "npx http-server -p 8080",
+    "test:iframe-height": "node scripts/tests/test_webinars_iframe_height.js",
     "test:build-clean": "node scripts/tests/test_build_output_is_committed.js"
   },
   "devDependencies": {

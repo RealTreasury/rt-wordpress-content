@@ -25,21 +25,27 @@ const git = (...args) =>
 // of a working change, and is the very thing this test is asked to validate.
 const GENERATED = ['--', '*.html', ':(exclude)templates/**'];
 
+// The build is run here rather than assumed, and the verdict is read only AFTER it.
+// CI runs `npm run build` as its own step before this one, so refusing to start on a
+// dirty tree would have meant a drifted branch failing with "commit or stash them
+// first" — advice that, followed, commits the reverted pages and deploys them. That is
+// the accident this test exists to prevent, so a pre-existing diff is reported and the
+// build still runs; the diff after it is the only thing that decides.
 const dirtyBefore = git('status', '--porcelain', ...GENERATED);
 if (dirtyBefore) {
-  console.error('Generated pages already have uncommitted changes:\n' + dirtyBefore);
-  console.error('\nCommit or stash them first — this test cannot tell them from build drift.');
-  process.exit(1);
+  console.log('Generated pages were already modified before this ran:\n' + dirtyBefore);
+  console.log('(An earlier `npm run build` step does exactly this. Rebuilding anyway.)\n');
 }
 
 execFileSync('npm', ['run', 'build'], { cwd: repo, stdio: 'ignore' });
 
 const drifted = git('status', '--porcelain', ...GENERATED);
 if (drifted) {
-  console.error('`npm run build` rewrote committed pages:\n' + drifted);
-  console.error('\nThe template is the source. Whatever those files hold now would be');
-  console.error('reverted on the next build — and deployed. Fix templates/<path> so the');
-  console.error('build reproduces the committed page, then rerun this.');
+  console.error('`npm run build` does not reproduce the committed pages:\n' + drifted);
+  console.error('\nThe template is the source. Whatever those files hold on the branch would');
+  console.error('be reverted by the next build — and, since a push to main is the deploy,');
+  console.error('published. Fix templates/<path> so the build reproduces the committed page.');
+  console.error('\nIf instead you meant to change a page, change its template and commit both.');
   console.error('\n' + git('diff', '--stat', ...GENERATED));
   process.exit(1);
 }

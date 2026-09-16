@@ -18,6 +18,10 @@
 #  14b. a live copy that differs ONLY by the final newline is recognised as unchanged.
 #      WordPress strips it; sed preserves it, so the first production `plan` reported a
 #      diff on a byte-identical stylesheet and a publish would have failed its read-back.
+#  15. the home-page delivery check actually runs, in BOTH outcomes. Every other case
+#      points WP_SITE_URL at a dead port, so `curl` fails and the whole verification
+#      block is skipped — the success path had never executed. A real local HTTP server
+#      serves a page with a #wp-custom-css block so both branches are exercised.
 #  14. WP-CLI global flags are sent BEFORE the subcommand. realtreasury.com runs WP-CLI
 #      2.12.0, which rejects `wp eval --quiet ...`; the stub rejects it the same way, so
 #      an offline run catches what previously needed a live SSH session to find.
@@ -174,5 +178,43 @@ if printf '<?php echo 1;' | "$T/stub_wp" wp eval-file --quiet - >/dev/null 2>&1;
 fi
 "$T/stub_wp" wp --quiet eval 'echo 1;' >/dev/null 2>&1 || fail "the stub rejected the correct flag order"
 pass "WP-CLI global flags are sent before the subcommand"
+
+# 15 the delivery verification, for real. A tiny HTTP server stands in for the home page.
+#    Two pieces of state from earlier cases have to be undone first, and both bit on the way in:
+#    case 7 empties the pinned known_hosts (so the script refuses before any ssh), and case 11
+#    leaves this clone behind its origin (so a push is rejected). The merge guard is not what
+#    is under test here, so these runs pass --allow-unmerged and commit without pushing.
+cp "$REPO/scripts/wpcom_known_hosts" "$W/scripts/wpcom_known_hosts"
+PORT="$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')"
+SRV="$T/site"; mkdir -p "$SRV"
+( cd "$SRV" && exec python3 -m http.server "$PORT" --bind 127.0.0.1 >/dev/null 2>&1 ) &
+SRV_PID=$!
+trap 'kill $SRV_PID 2>/dev/null; rm -rf "$T"' EXIT
+for _ in $(seq 1 50); do
+  curl -fsS -o /dev/null "http://127.0.0.1:$PORT/" 2>/dev/null && break
+  sleep 0.1
+done
+
+verify_run() { ( cd "$W" && WPCOM_SSH_ENV="$T/env" WP_SSH_CMD="$T/stub_wp" \
+    WP_SITE_URL="http://127.0.0.1:$PORT/" bash scripts/wp_publish_shared_css.sh "$@" ); }
+
+# 15a the served page carries exactly what was stored -> the success branch
+printf 'body { color: verified; }\n' > "$W/assets/css/shared.css"
+git -C "$W" -c user.email=t@t -c user.name=t commit -qam verified
+printf '<html><head><style id="wp-custom-css">\nbody { color: verified; }\n</style></head></html>\n' > "$SRV/index.html"
+verify_run publish --allow-unmerged > "$T/out15a" 2>&1 || { cat "$T/out15a" >&2; fail "publish errored against the local site"; }
+grep -q 'verify: home page serves the published CSS' "$T/out15a" \
+  || { cat "$T/out15a" >&2; fail "the delivery-verification success branch did not run"; }
+pass "the home page check confirms delivery"
+
+# 15b the served page carries something else -> the mismatch branch, not a false OK
+printf '<html><head><style id="wp-custom-css">\nbody { color: stale; }\n</style></head></html>\n' > "$SRV/index.html"
+printf 'body { color: fresh; }\n' > "$W/assets/css/shared.css"
+git -C "$W" -c user.email=t@t -c user.name=t commit -qam fresh
+verify_run publish --allow-unmerged > "$T/out15b" 2>&1 || { cat "$T/out15b" >&2; fail "publish errored on the mismatch case"; }
+grep -q 'home page style block differs' "$T/out15b" \
+  || { cat "$T/out15b" >&2; fail "a stale home page was not reported as a mismatch"; }
+pass "a stale home page is reported, not passed"
+kill $SRV_PID 2>/dev/null
 
 echo "all wp_publish_shared_css checks passed"

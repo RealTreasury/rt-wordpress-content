@@ -77,10 +77,12 @@ window.RTG_CONFIG = {
 
     /* ---- Image / Preview Card ---- */
     .rt-wl-preview { flex: 1 1 0; min-width: 0; background: var(--white); border: 2px solid rgba(199,125,255,0.2); border-radius: 16px; padding: 24px 20px 20px; box-shadow: 0 4px 16px rgba(114,22,244,0.08); position: relative; overflow: visible; }
-    .rt-wl-preview-label { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(199,125,255,0.3); color: var(--dark-text); border-radius: 16px; padding: 12px 20px; box-shadow: 0 8px 20px rgba(91, 10, 205, 0.12); text-align: center; line-height: 1.3; min-width: 320px; max-width: calc(100% - 36px); margin: 0; transition: all 0.3s ease; }
-    .rt-wl-preview-label strong { display: block; font-size: 1rem; font-weight: 700; margin: 0 0 4px 0; white-space: nowrap; }
-    .rt-wl-preview-label span { display: block; font-size: 1.1rem; color: var(--lavender-pink); font-weight: 600; opacity: 0.95; margin: 0; }
-    .rt-wl-preview img { width: 100%; height: auto; border-radius: 10px; display: block; margin-top: 18px; }
+    /* Header band across the top of the preview card, pulled out to the card
+       edges and set off from the chart by a hairline rule. */
+    .rt-wl-preview-label { position: static; transform: none; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; border: 0; border-bottom: 1px solid rgba(114, 22, 244, 0.12); color: var(--dark-text); border-radius: 0; padding: 18px 20px 14px; box-shadow: none; text-align: center; line-height: 1.3; max-width: none; margin: -24px -20px 18px; }
+    .rt-wl-preview-label strong { display: block; font-size: 1.1rem; font-weight: 700; margin: 0; white-space: nowrap; }
+    .rt-wl-preview-label span { display: block; font-size: 1.1rem; color: var(--primary-purple, #7216f4); font-weight: 600; opacity: 1; margin: 0; }
+    .rt-wl-preview img { width: 100%; height: auto; border-radius: 10px; display: block; margin-top: 0; }
 
     /* ---- Form Card ---- */
     .rt-wl-form-card { flex: 1 1 0; min-width: 0; background: #ffffff; border: 2px solid rgba(114,22,244,0.16); border-radius: 20px; padding: 48px 40px; box-shadow: 0 14px 36px rgba(91,10,205,0.08); position: relative; }
@@ -132,7 +134,7 @@ window.RTG_CONFIG = {
         .rt-wl-form-card { padding: 28px 22px; width: 100%; }
         .rt-wl-proof { gap: 12px; margin-top: 24px; padding-top: 20px; }
         .rt-wl-preview { padding: 20px 16px 16px; }
-        .rt-wl-preview-label { padding: 8px 14px; min-width: 260px; }
+        .rt-wl-preview-label { padding: 14px 16px 12px; margin: -20px -16px 14px; }
         .rt-wl-preview-label strong { font-size: 0.85rem; }
         .rt-wl-preview-label span { font-size: 0.85rem; }
     }
@@ -165,9 +167,9 @@ window.RTG_CONFIG = {
 
         <!-- Left: Guide preview image + feature highlights -->
         <div class="rt-wl-preview">
-          <p class="rt-wl-preview-label"><strong>Treasury Systems</strong><span>North American Vendors</span></p>
+          <p class="rt-wl-preview-label"><strong>TMS Systems - NORAM</strong></p>
           <img
-            src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-NORAM-05-2026-clean.png"
+            src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png"
             alt="Treasury Tech Market Map — North America, preview of the 2026 Real Treasury Tech Selection Guide"
             loading="lazy"
           >

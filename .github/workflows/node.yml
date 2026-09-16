@@ -15,4 +15,5 @@ jobs:
       - run: npm install
       - run: npm run build
       - run: npm run test:ejs
+      - run: npm run test:iframe-height
       - run: npm run test:publish-css

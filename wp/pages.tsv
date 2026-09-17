@@ -15,3 +15,17 @@ data-flows-of-a-tms	1510	insights/2024/tms-data-flow/index.html	page
 # hooked to astra_body_top. This is the deploy path for custom-header.php; merging the
 # repo file alone reaches nothing, which is what PR #898's review correctly flagged.
 site-header-snippet	1885	header/main-menu/custom-header.php	raw
+#
+# mode `native`: the post's content is the file wrapped as ONE Custom HTML block, with the
+# repo header comment swapped for a source-of-record note. These four are the guide release
+# pages. Three are DRAFTS on purpose and this script cannot publish them — it writes
+# post_content and refuses if post_status moved. Publishing stays a deliberate act.
+#
+# 4587 is a staging draft, not a destination: its slug 404s and should never be published,
+# because the download form's home is 4202. It is listed because it is the page that carried
+# the stripped-backslash corruption, and `plan` is how that stayed visible.
+# 4809's source arrives with PR #901; until that merges, `plan` on it dies on a missing file.
+guide-waitlist-confirmed	4809	treasury-tech-selection/waitlist/confirmed/wordpress-page.html	native
+guide-thank-you	4585	treasury-tech-selection/guidebook/thank-you/wordpress-page.html	native
+guide-download-staging	4587	treasury-tech-selection/guidebook/wordpress-page.html	native
+guide-download	4202	treasury-tech-selection/guidebook/wordpress-page.html	native

@@ -30,19 +30,19 @@ pipeline):
 
 The only expected differences between these files and their WordPress copies are
 the repo header comment (replaced by a one-line source-of-record note) and the
-`<!-- wp:html -->` block wrapper. `scripts/wp_publish_page.sh` derives both, so
-`scripts/wp_publish_page.sh plan` compares exactly rather than squinting past
+`<!-- wp:html -->` block wrapper. `scripts/wp_publish_post.py` derives both (mode
+`native`), so `wp_publish_post.py plan <slug>` compares exactly rather than squinting past
 paste noise — which is the only reason the corruption below was visible at all.
 
-Readback diff, September 17, after the repair: **4585 and 4587 match their repo
-sources.** 4809 matches too, but the script cannot write it until this branch
-merges, because it refuses to send bytes that are not on `origin/main`. 4202
-differs, correctly — it serves the waitlist confirmation until release.
+Readback diff, September 17, after the repair: **4585 and 4587 read back identical
+to their repo sources**, both still drafts. 4809 matches too. 4202 differs,
+correctly — it serves the waitlist confirmation until release, which is the whole
+reason 4809 exists.
 
 ## WordPress eats backslashes on the way in — `wp_slash()` or lose them
 
 **Repaired in 4587 on September 17, and it will recur on every paste or scripted
-write unless the write path handles it.** `scripts/wp_publish_page.sh` is that
+write unless the write path handles it.** `scripts/wp_publish_post.py` is that
 write path; use it rather than pasting.
 
 `treasury-tech-selection/guidebook/wordpress-page.html` contains exactly one
@@ -78,7 +78,7 @@ wp_update_post(array("ID" => 4202, "post_content" => wp_slash($content)), true);
 ```
 
 KSES has to be lifted for that call or core strips the `<script>` blocks as
-untrusted HTML — WP-CLI runs with no user. `scripts/wp_publish_page.sh` does it
+untrusted HTML — WP-CLI runs with no user. `scripts/wp_publish_post.py` does it
 inside the one `wp eval-file` process rather than globally.
 
 **Always read the content back and diff it against the source** — this failure is
@@ -120,11 +120,11 @@ The ordering matters because page 4202 changes meaning.
    PDF, with a visible orange `[PLACEHOLDER …]` line under the button. Swap both
    for the real URL and delete the warning line. Do the same in draft broadcast
    `ae14794e-68ff-459c-bcc4-f18cb079b6fe`.
-6. **Publish the download page.** `scripts/wp_publish_page.sh write
+6. **Publish the download page.** `scripts/wp_publish_post.py publish
    guide-download` puts `treasury-tech-selection/guidebook/wordpress-page.html`
-   into **4202**, then publish 4585 and 4202 in WP Admin. The script writes
-   `post_content` only and refuses if `post_status` moved, so it cannot publish
-   anything itself — that stays a deliberate act.
+   into **4202**, then publish 4585 and 4202 in WP Admin. Despite the name the
+   script writes `post_content` only and refuses if `post_status` moved, so it
+   cannot publish anything itself — that stays a deliberate act.
 7. **Enable automation** "Tech Selection Guide — deliver on signup"
    (`01a067af-c041-7579-a1f3-ad0f042f25fe`, currently disabled) and send the
    broadcast.

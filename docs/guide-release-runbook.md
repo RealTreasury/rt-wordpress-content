@@ -2,10 +2,16 @@
 
 State of play as of September 17, 2026. Every page state, RT Gate `target_url`
 and WordPress-vs-repo diff below was re-read from the live site on that date
-rather than carried over from the last write-up. The release is **on hold**:
-Revision 8 landed on SharePoint on September 15 (one full guide plus three
-segment cuts) and no file has been named as the release PDF. Everything below is staged so that
-release is a short, ordered sequence rather than a build.
+rather than carried over from the last write-up.
+
+**The release PDF is named, uploaded and wired.** Tim named Revision 9 on
+September 17 — `E-Guide_Real Treasury_AV_rev09 with links.pdf`, 42 pages,
+20,437,382 bytes, in file-repository under
+`Partnership with Ernie/Guidebook DRAFTS/Revision 9`. It is **one PDF**. An
+earlier draft of this runbook said Revision 8 shipped "three segment cuts"
+(Cash Tools / TMS-Lite / TRMS) — that was wrong, and there are no segment cuts
+to gate. Steps 3, 4 and 5 below are **done**; what remains is steps 1, 2, 6, 7,
+all of which are deliberate human acts in WP Admin and Resend.
 
 ## Pages
 
@@ -94,6 +100,17 @@ as static files and are verified intact.
 
 The ordering matters because page 4202 changes meaning.
 
+**What is left is exactly the set of acts a person has to perform:** publishing a
+WordPress page, publishing a Resend template, and arming a send. Claude is blocked
+from all three by the auto-mode classifier, deliberately, and by the house rule that
+a person publishes. Everything that could be staged ahead of them has been.
+
+**To see and test the download form before any of this, no publishing required:**
+WP Admin → Pages → *The Real Treasury Tech Selection Guide* (4587) → **Preview**.
+The form renders and submits for real against RT Gate — it writes a lead and creates
+a Resend contact in the Downloads segment. The only thing that misbehaves is the
+final redirect, which 404s until 4585 is published. No email arrives until step 7.
+
 1. **Publish the waitlist confirmation page 4809.** It is a draft today, so
    `/2026-treasury-tech-guide-waitlist-confirmed/` 404s — verified September 17.
    This has to land *before* step 2, not with it: repointing the gate at a draft
@@ -109,25 +126,62 @@ The ordering matters because page 4202 changes meaning.
    onto the download form. WP Admin only — the waitlist page carries no
    `redirectUrl` and follows the `/submit` response's `primary_redirect_url`.
    Verify by submitting the waitlist form once and watching where it lands.
-3. **Upload the release PDF** under an unguessable filename, linked from no page.
-   Email verification is the gate; the file itself is public.
-4. **Set RT Gate asset #12's `target_url`** (`treasury-tech-selection-guidebook`,
-   mapping #8) to that PDF. It currently points at the unrelated bank CRE exposure
-   report. Mapping #8's `lead_email_mode` is already `none` — verified, nothing to
-   do there.
-5. **Fix the two Resend placeholders.** Published template `guide-delivery` still
-   points its hero link and its "Download the guide" button at that same bank CRE
-   PDF, with a visible orange `[PLACEHOLDER …]` line under the button. Swap both
-   for the real URL and delete the warning line. Do the same in draft broadcast
-   `ae14794e-68ff-459c-bcc4-f18cb079b6fe`.
-6. **Publish the download page.** `scripts/wp_publish_post.py publish
-   guide-download` puts `treasury-tech-selection/guidebook/wordpress-page.html`
-   into **4202**, then publish 4585 and 4202 in WP Admin. Despite the name the
-   script writes `post_content` only and refuses if `post_status` moved, so it
-   cannot publish anything itself — that stays a deliberate act.
+3. ~~**Upload the release PDF**~~ **DONE September 17, 2026.** Revision 9 is in the
+   media library as attachment **4821**, under an unguessable filename linked from
+   no page, and serves 200 `application/pdf`:
+   `https://realtreasury.com/wp-content/uploads/2026/09/Real-Treasury-Technology-Selection-Guide-North-America-2026-3e2603e8f094.pdf`
+   Email verification is the gate; the file itself is public and that is intended.
+4. ~~**Set RT Gate asset #12's `target_url`**~~ **DONE September 17, 2026.** Asset #12
+   (`treasury-tech-selection-guidebook`, mapping #8) now carries the URL above;
+   written with a read-back check, previous value backed up. Mapping #8's
+   `lead_email_mode` was already `none`.
+5. ~~**Fix the two Resend placeholders**~~ **DONE September 17, 2026, with one thing
+   left to click.** Template `guide-delivery` and draft broadcast
+   `ae14794e-68ff-459c-bcc4-f18cb079b6fe` both carry the real PDF URL in every
+   position (hero link, button, and the broadcast's Outlook VML button), the orange
+   placeholder paragraphs are gone, and the stale `alt` text was corrected to the
+   `-new.png` cover's line ("Success Starts with Selection"). The broadcast was also
+   renamed from "Untitled" to "Guide waitlist — release".
+   **The template edit is a SAVED DRAFT — someone must click Publish in Resend.**
+   Until then the published version still carries the bank CRE placeholder. See the
+   section below; this is exactly the trap that bit us on September 16.
+6. **Publish the download page.** Two parts, in this order:
+   a. **Publish the Resend template.** `guide-delivery` has the correct content
+      saved as a draft; the published version still carries the bank CRE
+      placeholder. Resend → Templates → *Tech Selection Guide — delivery* →
+      **Publish**. Do this before step 7 or the first delivery goes out wrong,
+      which is precisely what happened on September 16.
+   b. **Write the form into 4202 and publish.** From a checkout of
+      `feat/native-page-publish`:
+      `python3 scripts/wp_publish_post.py publish guide-download --target production`
+      — that puts `treasury-tech-selection/guidebook/wordpress-page.html` into
+      **4202**. Then publish **4585** in WP Admin. The script writes `post_content`
+      only and refuses if `post_status` moved, so it cannot publish anything itself.
+      4202 is already published, so writing its content IS the cutover: the moment
+      it lands, `/treasury-tech-selection-guide/` stops being the waitlist
+      confirmation and becomes the download form. Steps 1 and 2 must already be done.
 7. **Enable automation** "Tech Selection Guide — deliver on signup"
-   (`01a067af-c041-7579-a1f3-ad0f042f25fe`, currently disabled) and send the
-   broadcast.
+   (`01a067af-c041-7579-a1f3-ad0f042f25fe`, currently disabled; wiring re-verified
+   September 17 and correct) and send the broadcast. This is the only step that
+   causes mail to leave.
+
+## How a download actually reaches someone
+
+The form on 4202 never shows the PDF URL. The chain is:
+
+1. Visitor submits the form on `/treasury-tech-selection-guide/`.
+2. rt-gate `/submit` records the lead against asset
+   `treasury-tech-selection-guidebook` (mapping #8) and, because that mapping
+   carries `resend_segment_id`, creates a Resend contact in the **Downloads**
+   segment `22b33094-35ee-4779-9809-7bdb7c6bb0a9` and fires `signup.created`.
+3. The page ignores `/submit`'s `primary_redirect_url` on purpose — honouring it
+   would hand the PDF to anyone who typed any address — and sends the visitor to
+   `/treasury-tech-selection-guide/thank-you/` instead.
+4. The Resend automation matches `event.segment_id` against that segment and sends
+   template `guide-delivery`, which is the only place the real PDF URL appears.
+
+So the email address is the gate, and every link in the chain is now wired except
+the two switches a person throws: publish the template, enable the automation.
 
 ## Resend: publish the template, or you ship the old one
 
@@ -160,8 +214,10 @@ it is what screen readers and image-blocked clients render.
 
 ## Safe today, because
 
-- The delivery automation is **disabled**, so the wrong-PDF placeholder in
-  `guide-delivery` cannot reach anyone.
+- The delivery automation is **disabled** (re-verified September 17), so nothing
+  in `guide-delivery` reaches anyone either way. Its wiring is correct: it triggers
+  on `signup.created`, branches on `event.segment_id == 22b33094-…` (the Downloads
+  segment), and sends template `da8cbac1-…`.
 - The release broadcast is a **draft**.
 - The waitlist confirmation email links only to `/treasury-tech-market/`, never to
   4202, so the waitlist keeps working correctly no matter when 4202 changes.

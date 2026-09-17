@@ -18,3 +18,7 @@ jobs:
       - run: npm run test:iframe-height
       - run: npm run test:banner
       - run: npm run test:publish-css
+      - run: npm run test:carousel
+      # Last: it rebuilds and asserts nothing committed moved, so it reads the tree the
+      # steps above have already touched.
+      - run: npm run test:build-clean

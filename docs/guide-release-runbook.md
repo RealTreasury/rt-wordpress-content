@@ -12,7 +12,7 @@ release is a short, ordered sequence rather than a build.
 | what | where | status |
 |---|---|---|
 | Download page (gated form) | WP **4202** `/treasury-tech-selection-guide/` | published, still serving the **waitlist confirmation** |
-| Download page content | WP **4587** draft, slug `…-guide-download` | draft; chart art now current, but the **email regex is corrupted** — see below |
+| Download page content | WP **4587** draft, slug `…-guide-download` | draft, matches the repo (the corrupted email check was repaired September 17) |
 | Guide thank-you | WP **4585** `/treasury-tech-selection-guide/thank-you/` | draft, matches the repo |
 | Waitlist signup | WP post **4211** `/2026-treasury-tech-guide-waitlist/` | published (GitHub Pages iframe) |
 | Waitlist confirmation | WP **4809** `/2026-treasury-tech-guide-waitlist-confirmed/` | draft, matches the repo |
@@ -29,17 +29,21 @@ pipeline):
 - `treasury-tech-selection/waitlist/confirmed/wordpress-page.html`
 
 The only expected differences between these files and their WordPress copies are
-the repo header comment (dropped on paste, replaced by a one-line
-source-of-record note) and the `<!-- wp:html -->` block wrapper.
+the repo header comment (replaced by a one-line source-of-record note) and the
+`<!-- wp:html -->` block wrapper. `scripts/wp_publish_page.sh` derives both, so
+`scripts/wp_publish_page.sh plan` compares exactly rather than squinting past
+paste noise — which is the only reason the corruption below was visible at all.
 
-Readback diff, September 17: **4809 and 4585 match their repo sources exactly**
-once those two expected differences are set aside. **4587 does not** — one line
-differs, and it is the corrupted email check below.
+Readback diff, September 17, after the repair: **4585 and 4587 match their repo
+sources.** 4809 matches too, but the script cannot write it until this branch
+merges, because it refuses to send bytes that are not on `origin/main`. 4202
+differs, correctly — it serves the waitlist confirmation until release.
 
 ## WordPress eats backslashes on the way in — `wp_slash()` or lose them
 
-**This is a live defect in 4587 and it will recur on every paste or scripted
-write unless the write path handles it.**
+**Repaired in 4587 on September 17, and it will recur on every paste or scripted
+write unless the write path handles it.** `scripts/wp_publish_page.sh` is that
+write path; use it rather than pasting.
 
 `treasury-tech-selection/guidebook/wordpress-page.html` contains exactly one
 backslash-bearing line, the client-side email check:
@@ -48,7 +52,8 @@ backslash-bearing line, the client-side email check:
 if (f.type === 'email' && v2 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v2)) { … }
 ```
 
-What is in WordPress page 4587 right now is:
+What was in WordPress page 4587 from the September 16 write until it was
+repaired on September 17:
 
 ```js
 if (f.type === 'email' && v2 && !/^[^s@]+@[^s@]+.[^s@]+$/.test(v2)) { … }
@@ -72,10 +77,13 @@ The fix on a scripted write is `wp_slash()`:
 wp_update_post(array("ID" => 4202, "post_content" => wp_slash($content)), true);
 ```
 
-Run it as the post author (`wp --user=240264699`) so `unfiltered_html` applies and
-KSES does not strip the `<script>` blocks; do not lift the KSES filters globally.
+KSES has to be lifted for that call or core strips the `<script>` blocks as
+untrusted HTML — WP-CLI runs with no user. `scripts/wp_publish_page.sh` does it
+inside the one `wp eval-file` process rather than globally.
+
 **Always read the content back and diff it against the source** — this failure is
-silent, and the page keeps working for most testers.
+silent, and the page keeps working for most testers. The script does that too, and
+refuses the write if the read-back does not match.
 
 Blast radius is limited to the three WordPress-native pages above, and only the
 guidebook page has any backslashes at all. The gated pages on the GitHub Pages
@@ -112,12 +120,11 @@ The ordering matters because page 4202 changes meaning.
    PDF, with a visible orange `[PLACEHOLDER …]` line under the button. Swap both
    for the real URL and delete the warning line. Do the same in draft broadcast
    `ae14794e-68ff-459c-bcc4-f18cb079b6fe`.
-6. **Publish the download page.** Write
-   `treasury-tech-selection/guidebook/wordpress-page.html` into **4202** and
-   publish 4585. Write it from the repo file, not by copying 4587 — 4587's copy
-   is the corrupted one (see the backslash section). Use `wp_slash()`, then read
-   4202 back and diff it against the repo file before publishing; the corruption
-   is silent.
+6. **Publish the download page.** `scripts/wp_publish_page.sh write
+   guide-download` puts `treasury-tech-selection/guidebook/wordpress-page.html`
+   into **4202**, then publish 4585 and 4202 in WP Admin. The script writes
+   `post_content` only and refuses if `post_status` moved, so it cannot publish
+   anything itself — that stays a deliberate act.
 7. **Enable automation** "Tech Selection Guide — deliver on signup"
    (`01a067af-c041-7579-a1f3-ad0f042f25fe`, currently disabled) and send the
    broadcast.
@@ -158,4 +165,7 @@ it is what screen readers and image-blocked clients render.
 - The release broadcast is a **draft**.
 - The waitlist confirmation email links only to `/treasury-tech-market/`, never to
   4202, so the waitlist keeps working correctly no matter when 4202 changes.
-- 4202 has not been touched; it still serves the waitlist confirmation.
+- 4202 has not been touched; it still serves the waitlist confirmation, so the
+  waitlist works today exactly as it always has. 4809 is not a fix for anything
+  live — it is only where the waitlist lands *after* 4202 becomes the download
+  page.

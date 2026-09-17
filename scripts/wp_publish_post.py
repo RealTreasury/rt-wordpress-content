@@ -21,6 +21,14 @@ SAFETY. Every publish writes the current post_content to wp-post-backups/ BEFORE
 the write, reads the post back afterwards and compares, and refuses if the
 read-back does not match what was sent. WordPress revisions are on and unlimited,
 so `restore` is a second way back.
+
+BACKSLASHES. wp_update_post() expects SLASHED input and runs wp_unslash() over it,
+so content passed raw loses one level of backslashes. That is not hypothetical:
+WordPress page 4587 sat with `[^s@]` where its source has `[^\\s@]`, turning "not
+whitespace" into "not the letter s" and making the form reject any address whose
+local part contains an "s". Hence wp_slash() on both write paths. Without it the
+read-back below refuses every backslash-bearing file, which is safe but means the
+script simply cannot publish one.
 """
 from __future__ import annotations
 
@@ -267,7 +275,7 @@ def cmd_publish(env, slug, post_id, source, mode) -> int:
         "kses_remove_filters();",
         f'$c = base64_decode("{payload}");',
         f'if (hash("sha256", $c) !== "{digest}") {{ fwrite(STDERR, "payload hash mismatch\\n"); exit(1); }}',
-        f'$r = wp_update_post(["ID" => {post_id}, "post_content" => $c], true);',
+        f'$r = wp_update_post(["ID" => {post_id}, "post_content" => wp_slash($c)], true);',
         'if (is_wp_error($r)) { fwrite(STDERR, $r->get_error_message() . "\\n"); exit(1); }',
         'echo $r;',
     ])
@@ -293,7 +301,7 @@ def cmd_restore(env, slug, post_id, backup_path: str) -> int:
         "kses_remove_filters();",
         f'$c = base64_decode("{payload}");',
         f'if (hash("sha256", $c) !== "{digest}") {{ fwrite(STDERR, "payload hash mismatch\\n"); exit(1); }}',
-        f'$r = wp_update_post(["ID" => {post_id}, "post_content" => $c], true);',
+        f'$r = wp_update_post(["ID" => {post_id}, "post_content" => wp_slash($c)], true);',
         'if (is_wp_error($r)) { fwrite(STDERR, $r->get_error_message() . "\\n"); exit(1); }',
         'echo $r;',
     ])

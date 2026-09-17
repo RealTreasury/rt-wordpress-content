@@ -31,15 +31,49 @@ This command starts [http-server](https://www.npmjs.com/package/http-server) on 
 
 ## WordPress Additional CSS
 
-The file `assets/css/shared.css` is version controlled in this repository but is
-no longer loaded automatically by the theme. To keep these shared styles active,
-manually copy the file contents into WordPress:
+The file `assets/css/shared.css` is version controlled here but is not loaded by
+the theme. It lives in **Appearance → Customize → Additional CSS** and is
+published there from the rt-ai-02 box over SSH and WP-CLI:
 
-1. Open `assets/css/shared.css` and copy all of its text.
-2. In the WordPress admin go to **Appearance → Customize → Additional CSS**.
-3. Paste the CSS into the editor and click **Publish**.
+```bash
+scripts/wp_publish_shared_css.sh plan       # read-only: hashes, drift, diff
+scripts/wp_publish_shared_css.sh publish    # after the change is merged to main (enforced)
+```
 
-Repeat these steps whenever `shared.css` changes in Git.
+`plan` shows the diff between the live CSS and the file. `publish` refuses if the
+file has uncommitted changes, if the live CSS is not what the script last
+published (someone edited it in WordPress; read the diff, then `--accept-drift`),
+or if nothing changed. It writes through core `wp_update_custom_css_post()`, reads
+the post back and compares bytes, records the hash in
+`assets/css/shared.css.published.sha256` (commit that file), and checks the home
+page serves the new CSS. Credentials come from `/opt/rt-ai/secrets/wpcom-ssh.env`.
+First-time adoption on a site: `baseline` records the current live hash.
+`npm run test:publish-css` runs that whole state machine against a stub remote — no SSH, no network, no WordPress — and runs in CI.
+
+Host key: the connection only trusts the key in `scripts/wpcom_known_hosts`
+(`StrictHostKeyChecking=yes`, and `GlobalKnownHostsFile=/dev/null` so `/etc/ssh/ssh_known_hosts`
+cannot satisfy it instead). Rotate it deliberately: `ssh-keyscan -t ed25519 ssh.wp.com`,
+compare the fingerprint with a connection you already trust, commit the new line.
+
+Before the write, `publish` sends a throwaway script over the same `wp eval-file -`
+invocation and checks the token comes back. `wp eval-file -` has read STDIN since 2018, but
+nothing here has run against the real host yet, and a probe that fails gives a named reason
+instead of a confusing mid-publish error.
+
+Merge guard: `publish` compares the file with `origin/main` and refuses a committed but
+unmerged change, so the receipt always names a commit that reached `main`.
+`--allow-unmerged` overrides for an emergency.
+
+Tests: `scripts/tests/test_wp_publish_shared_css.sh` runs plan, baseline, publish, no-op,
+drift refusal, unmerged refusal, both overrides and the missing-host-key refusal against a
+stub remote. No network, no credentials.
+
+Fallback if the box is down: copy the file's text into Additional CSS by hand and
+click **Publish**, then run `baseline` when the box is back.
+
+The earlier least-privilege design in `docs/shared-css-publishing.md` (PR #887)
+was superseded on September 14, 2026 by the owner's decision to hold a site SSH
+key on the box.
 
 ## Gated content — RT Gate
 

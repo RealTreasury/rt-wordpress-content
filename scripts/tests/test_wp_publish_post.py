@@ -126,7 +126,13 @@ built = wpp.render_native(SOURCE, "some/path/page.html")
 check("1 native strips the repo header comment",
       "Repo-facing header" not in built)
 check("1 native wraps the body as one Custom HTML block",
-      built.startswith("<!-- wp:html -->") and built.endswith("<!-- /wp:html -->"))
+      "<!-- wp:html -->" in built and "<!-- /wp:html -->" in built)
+check("1 native sandwiches the page between the header and footer patterns",
+      built.startswith('<!-- wp:block {"ref":183} /-->')
+      and built.endswith('<!-- wp:block {"ref":398} /-->'))
+check("1 native puts the body inside the full-width group, not beside it",
+      built.index('<!-- wp:group') < built.index("<!-- wp:html -->")
+      < built.index("<!-- /wp:html -->") < built.index('{"ref":398}'))
 check("1 native names the source in the note",
       "Source of record: some/path/page.html" in built)
 check("2 native keeps a comment that is not the header",
@@ -233,6 +239,26 @@ r.body[1491] = (
 wpp.cmd_plan(env, "real-treasury-explained", 1491, page_src, "page")
 refs_before = re.findall(r'wp:block\s+\{"ref":(\d+)\}', r.body[1491])
 check("11 page mode keeps the pattern refs", refs_before == ["183", "398"])
+
+# --- 11b. native mode refuses to drop a pattern ref ----------------------------------------
+# The bug this guards: 4202 carried refs 183 and 398 in post_content and mode `native` used
+# to emit a bare wp:html block, so the cutover would have taken the site footer off the
+# page with nothing in the diff drawing attention to it.
+r2 = Remote()
+env2 = env_for(r2)
+r2.body[4585] = ('<!-- wp:block {"ref":183} /-->\n<!-- wp:html -->\nold\n'
+                 '<!-- /wp:html -->\n<!-- wp:block {"ref":398} /-->')
+r2.status[4585] = "draft"
+saved_render = wpp.render_native
+wpp.render_native = lambda text, rel: "<!-- wp:html -->\nbare\n<!-- /wp:html -->"
+try:
+    wpp.cmd_publish(env2, "guide-thank-you", 4585, src, "native")
+    check("11b native refuses a write that would drop a pattern ref", False)
+except SystemExit:
+    check("11b native refuses a write that would drop a pattern ref", True)
+finally:
+    wpp.render_native = saved_render
+check("11b nothing was written when refs would be dropped", "bare" not in r2.body[4585])
 
 # --- 12. the manifest rejects an unknown mode ---------------------------------------------------------
 bad = tmp / "pages.tsv"

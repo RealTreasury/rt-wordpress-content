@@ -224,17 +224,40 @@ NATIVE_NOTE = (
 )
 
 
+HEADER_REF = 183   # wp_block "Header Menu"
+FOOTER_REF = 398   # wp_block "Footer"
+
+
 def render_native(text: str, rel: str) -> str:
-    """The repo file as one Custom HTML block.
+    """The repo file as one Custom HTML block, between the site's header and footer patterns.
 
     The leading header comment is repo-facing — it talks about paths and PR history — so it
     is dropped and replaced by a one-line note that tells whoever opens the page in
     WordPress where to edit it. Only a comment that STARTS the file counts as the header; a
     comment further in is content.
+
+    THE PATTERNS ARE NOT OPTIONAL. Every page on this site carries the nav and the footer as
+    synced patterns INSIDE post_content — `wp:block {"ref":183}` then a full-width group
+    holding the page, then `wp:block {"ref":398}`. The theme supplies a menu of its own, so a
+    page missing ref 183 still looks navigable and the loss is easy to miss; the FOOTER has no
+    such understudy and simply vanishes, taking Quick Links, the contact block, the copyright
+    line and the Privacy/Terms/Cookie/Sitemap links with it. That is what happened to page
+    4809 when it was first published from this rail: it went live with no footer at all, and
+    nothing complained. Emit the same sandwich every other page uses.
     """
     body = re.sub(r"\A\s*<!--[\s\S]*?-->\s*", "", text, count=1)
-    return "<!-- wp:html -->\n%s\n%s\n<!-- /wp:html -->" % (
-        NATIVE_NOTE.format(rel=rel), body.rstrip("\n"))
+    return (
+        '<!-- wp:block {"ref":%d} /-->\n'
+        '\n'
+        '<!-- wp:group {"align":"full","layout":{"type":"constrained"}} -->\n'
+        '<div class="wp-block-group alignfull"><!-- wp:html -->\n'
+        '%s\n'
+        '%s\n'
+        '<!-- /wp:html --></div>\n'
+        '<!-- /wp:group -->\n'
+        '\n'
+        '<!-- wp:block {"ref":%d} /-->'
+    ) % (HEADER_REF, NATIVE_NOTE.format(rel=rel), body.rstrip("\n"), FOOTER_REF)
 
 
 def rel_to_root(path: Path) -> str:
@@ -299,13 +322,14 @@ def cmd_plan(env, slug, post_id, source, mode) -> int:
                 print("   " + line)
             if len(d) > 40:
                 print(f"   ... {len(d) - 40} more diff lines")
-    if mode == "page":
+    if mode in ("page", "native"):
         preserved = re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)
         kept = re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)
+        dropped = [r for r in preserved if r not in kept]
         print(f"-- pattern refs: before {preserved} -> after {kept}"
-              f"{'  OK' if preserved == kept else '  *** PATTERNS CHANGED ***'}")
-        if preserved != kept:
-            die("the splice would drop a pattern reference; refusing to call this a safe plan")
+              f"{'  *** WOULD DROP ' + ','.join(dropped) + ' ***' if dropped else '  OK'}")
+        if dropped:
+            die("the write would drop a pattern reference; refusing to call this a safe plan")
     return 0
 
 
@@ -320,11 +344,16 @@ def cmd_publish(env, slug, post_id, source, mode) -> int:
         else:
             print("-- already published: nothing to do")
             return 0
-    if mode == "page":
+    if mode in ("page", "native"):
+        # A DROP is the failure that matters: the page silently loses its nav or footer.
+        # Gaining a ref is how a native page that was published without them gets repaired,
+        # so allow that rather than forcing a hand-edit in WP Admin.
         before_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)
         after_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)
-        if before_refs != after_refs:
-            die(f"refusing: pattern refs would change {before_refs} -> {after_refs}")
+        dropped = [r for r in before_refs if r not in after_refs]
+        if dropped:
+            die(f"refusing: the write would drop pattern ref(s) {dropped} "
+                f"({before_refs} -> {after_refs})")
 
     BACKUPS.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")

@@ -51,8 +51,11 @@
     .rt-wlty-text { font-size: 1.05rem; color: var(--gray-text); margin: 0 0 12px; }
     .rt-wlty-rule { border: 0; border-top: 1px solid rgba(114,22,244,0.14); margin: 40px 0 32px; }
     .rt-wlty-next { font-size: 1.05rem; color: var(--dark-text); margin: 0 0 20px; font-weight: 600; }
-    .rt-wlty-cta { display: inline-block; padding: 14px 28px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
-    .rt-wlty-cta:hover { filter: brightness(1.05); }
+    /* `.rt-wlty a` above is (0,1,1) and outranks a bare `.rt-wlty-cta` (0,1,0),
+       which painted the button's label purple on the purple gradient. Qualify the
+       CTA selectors with the element so they win. */
+    .rt-wlty a.rt-wlty-cta { display: inline-block; padding: 14px 28px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
+    .rt-wlty a.rt-wlty-cta:hover { filter: brightness(1.05); color: #fff; }
     .rt-wlty-note { font-size: 0.9rem; color: var(--gray-text); margin: 28px 0 0; }
     .rt-wlty-back { display: inline-block; margin-top: 12px; font-size: 0.9rem; }
 

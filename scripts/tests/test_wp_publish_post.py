@@ -62,6 +62,11 @@ class Remote:
     def __init__(self, **kw):
         self.body: dict[int, str] = {}
         self.status: dict[int, str] = {}
+        # What `wp post get <id> --field=post_name/post_type` answers. The identity guard
+        # reads these; ids are per-site, so a row's id can point at a different post on a
+        # different target and the guard is the only thing that sees it.
+        self.name: dict[int, str] = kw.get("name", {})
+        self.kind: dict[int, str] = kw.get("kind", {})
         self.unslash = kw.get("unslash", False)
         self.corrupt = kw.get("corrupt", False)
         self.flip = kw.get("flip", False)
@@ -77,6 +82,14 @@ class Remote:
         m = re.search(r"post get (\d+) --field=post_status", remote_cmd)
         if m:
             return self.status.get(int(m.group(1)), "") + "\n"
+        m = re.search(r"post get (\d+) --field=post_name", remote_cmd)
+        if m:
+            pid = int(m.group(1))
+            return self.name.get(pid, DEFAULT_NAMES.get(pid, "")) + "\n"
+        m = re.search(r"post get (\d+) --field=post_type", remote_cmd)
+        if m:
+            pid = int(m.group(1))
+            return self.kind.get(pid, DEFAULT_KINDS.get(pid, "page")) + "\n"
         m = re.search(r"get_post\((\d+)\)", remote_cmd)
         if m:
             return self.body.get(int(m.group(1)), "")
@@ -99,6 +112,12 @@ class Remote:
             self.writes += 1
             return str(pid)
         raise AssertionError(f"fake remote: unhandled command {remote_cmd!r}")
+
+
+# The ids the cases below use, and what they are on the target they pretend to be.
+DEFAULT_NAMES = {4585: "guide-thank-you", 1491: "real-treasury-explained",
+                 157: "errnot", 1885: "site-header-snippet"}
+DEFAULT_KINDS = {4585: "page", 1491: "post", 157: "page", 1885: "wpcode"}
 
 
 def env_for(remote):
@@ -333,8 +352,49 @@ check("13 no WP-CLI global flag is sent after the subcommand", not misplaced)
 check("13 the fake remote did see real commands", len(r.commands) > 0)
 
 # --- the real manifest still parses --------------------------------------------------------------------
-modes = {slug: m for slug, (_, _, m) in wpp.manifest().items()}
+rows = wpp.manifest()
+modes = {slug: r[2] for slug, r in rows.items()}
 check("the shipped manifest parses", "guide-download" in modes and modes["guide-download"] == "native")
+check("a row without a 5th column defaults post_name to its label",
+      rows["errnot"][3] == "errnot")
+check("a row whose label is not its slug declares the real post_name",
+      rows["guide-download"][3] == "treasury-tech-selection-guide")
+
+# --- 14 the identity guard ------------------------------------------------------------------------------
+# Post ids are per site. Production 1519 is the live /2024-tms-selection-guide/ post while
+# staging 1519 is how-to-select-a-tms; writing by id alone would replace a published page,
+# and the pattern-ref guard cannot see it because between two site pages the refs match.
+r14 = Remote(name={1519: "2024-tms-selection-guide"}, kind={1519: "post"})
+r14.body[1519] = "<!-- wp:block {\"ref\":183} /-->"
+r14.status[1519] = "publish"
+env14 = env_for(r14)
+try:
+    wpp.cmd_publish(env14, "how-to-select-a-tms", 1519, page_src, "page", "how-to-select-a-tms")
+    check("14 the guard refuses an id that is a different post on this target", False)
+except SystemExit:
+    check("14 the guard refuses an id that is a different post on this target", True)
+check("14 nothing was written when it refused", r14.writes == 0)
+
+# The same row against the target where the id IS that post must still go through.
+r14b = Remote(name={1519: "how-to-select-a-tms"}, kind={1519: "post"})
+r14b.body[1519] = ("<!-- wp:block {\"ref\":183} /-->\n<!-- wp:html -->\n"
+                   "<iframe src=\"https://realtreasury.github.io/x/\"></iframe>\n"
+                   "<!-- /wp:html -->")
+r14b.status[1519] = "publish"
+wpp.cmd_publish(env_for(r14b), "how-to-select-a-tms", 1519, page_src, "page",
+                "how-to-select-a-tms")
+check("14 the guard passes when the id is the right post", r14b.writes == 1)
+
+# A raw row points at a WPCode snippet, whose post_name is its own, not the row label.
+raw_src = tmp / "snippet.php"
+raw_src.write_text("<?php // nav snippet\n<nav class=\"rt-nav-link\">TMS SELECTION</nav>\n",
+                   encoding="utf-8")
+r14c = Remote(name={1885: "custom-header-html"}, kind={1885: "wpcode"})
+r14c.body[1885] = "old snippet"
+r14c.status[1885] = "publish"
+wpp.cmd_publish(env_for(r14c), "site-header-snippet", 1885, raw_src, "raw",
+                "site-header-snippet")
+check("14 a raw row is checked by post_type, not by name", r14c.writes == 1)
 
 if failures:
     print(f"\n{len(failures)} check(s) failed", file=sys.stderr)

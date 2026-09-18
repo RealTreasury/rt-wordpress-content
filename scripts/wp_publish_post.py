@@ -115,7 +115,7 @@ def ssh(env: dict[str, str], remote_cmd: str, stdin: bytes | None = None) -> str
     return r.stdout.decode("utf-8", "replace")
 
 
-def manifest() -> dict[str, tuple[int, Path, str]]:
+def manifest() -> dict[str, tuple[int, Path, str, str]]:
     """slug -> (post id, source file, mode).
 
     mode `page` wraps the source page's body+CSS in a core/html block and splices it
@@ -142,13 +142,17 @@ def manifest() -> dict[str, tuple[int, Path, str]]:
         parts = line.split("\t")
         if len(parts) == 3:
             parts.append("page")
-        if len(parts) != 4:
-            die(f"{MANIFEST}:{n}: expected 'slug<TAB>post_id<TAB>source[<TAB>mode]'")
-        slug, post_id, src, mode = parts
+        if len(parts) == 4:
+            # No 5th column: the row's label IS the post_name we expect to find.
+            parts.append(parts[0])
+        if len(parts) != 5:
+            die(f"{MANIFEST}:{n}: expected "
+                f"'slug<TAB>post_id<TAB>source[<TAB>mode[<TAB>post_name]]'")
+        slug, post_id, src, mode, post_name = parts
         if mode not in ("page", "raw", "native", "verbatim"):
             die(f"{MANIFEST}:{n}: mode must be 'page', 'raw', 'native' or 'verbatim', "
                 f"got {mode!r}")
-        out[slug] = (int(post_id), ROOT / src, mode)
+        out[slug] = (int(post_id), ROOT / src, mode, post_name)
     return out
 
 
@@ -159,6 +163,36 @@ def fetch_content(env, post_id: int) -> str:
 
 def fetch_status(env, post_id: int) -> str:
     return ssh(env, f"wp --quiet post get {post_id} --field=post_status").strip()
+
+
+def check_identity(env, slug: str, post_id: int, mode: str,
+                   post_name: str | None = None) -> None:
+    """Refuse if post_id is not the post this slug names ON THIS TARGET.
+
+    pages.tsv carries ONE id per slug, but ids are per-site. Staging was cloned
+    at a point in time and the two sites have drifted: staging 1519 is
+    how-to-select-a-tms, production 1519 is the live /2024-tms-selection-guide/
+    post, and staging 4799 is tms-selection-mistakes while production 4799 is a
+    Flamingo spam record. Writing by id alone would overwrite an unrelated,
+    published page and nothing else in this script would notice -- the pattern-ref
+    guard passes happily when the refs match, which between two site pages they do.
+    """
+    post_name = post_name or slug
+    name = ssh(env, f"wp --quiet post get {post_id} --field=post_name").strip()
+    kind = ssh(env, f"wp --quiet post get {post_id} --field=post_type").strip()
+    if mode == "raw":
+        # A raw row targets a WPCode snippet, whose post_name is the snippet's own
+        # (custom-header-html), not the manifest label. What matters there is that the
+        # id still points at a snippet and not at a page that happens to share the id.
+        if kind == "wpcode":
+            return
+        die(f"refusing: post {post_id} on this target is a '{kind}' named '{name}', "
+            f"not the wpcode snippet '{slug}' expects.")
+    if name != post_name:
+        die(f"refusing: post {post_id} on this target is '{name}' ({kind}), not "
+            f"'{post_name}' as row '{slug}' declares. "
+            f"pages.tsv holds one id per row and ids are per-site; resolve the id for "
+            f"this target (wp post list --name={post_name}) before writing.")
 
 
 def shell_quote(s: str) -> str:
@@ -321,7 +355,8 @@ def build(slug: str, source: Path, mode: str) -> str:
     return page_to_block.render(text, slug)
 
 
-def cmd_plan(env, slug, post_id, source, mode) -> int:
+def cmd_plan(env, slug, post_id, source, mode, post_name=None) -> int:
+    check_identity(env, slug, post_id, mode, post_name)
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
     block = build(slug, source, mode)
@@ -370,7 +405,8 @@ def cmd_plan(env, slug, post_id, source, mode) -> int:
     return 0
 
 
-def cmd_publish(env, slug, post_id, source, mode) -> int:
+def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
+    check_identity(env, slug, post_id, mode, post_name)
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
     block = build(slug, source, mode)
@@ -465,7 +501,7 @@ def main(argv=None) -> int:
     pages = manifest()
     if a.slug not in pages:
         die(f"'{a.slug}' is not in {MANIFEST}")
-    post_id, source, mode = pages[a.slug]
+    post_id, source, mode, post_name = pages[a.slug]
     env = load_env()
     known = targets(env)
     if a.target not in known:
@@ -474,9 +510,9 @@ def main(argv=None) -> int:
     env["_target"] = a.target
     print(f"-- target: {a.target}  mode: {mode}")
     if a.command == "plan":
-        return cmd_plan(env, a.slug, post_id, source, mode)
+        return cmd_plan(env, a.slug, post_id, source, mode, post_name)
     if a.command == "publish":
-        return cmd_publish(env, a.slug, post_id, source, mode)
+        return cmd_publish(env, a.slug, post_id, source, mode, post_name)
     if not a.backup:
         die("restore needs a backup file")
     return cmd_restore(env, a.slug, post_id, a.backup)

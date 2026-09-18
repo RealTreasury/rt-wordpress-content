@@ -25,10 +25,17 @@ site-header-snippet	1885	header/main-menu/custom-header.php	raw
 # because the download form's home is 4202. It is listed because it is the page that carried
 # the stripped-backslash corruption, and `plan` is how that stayed visible.
 # 4809's source arrives with PR #901; until that merges, `plan` on it dies on a missing file.
-guide-waitlist-confirmed	4809	treasury-tech-selection/waitlist/confirmed/wordpress-page.html	native
-guide-thank-you	4585	treasury-tech-selection/guidebook/thank-you/wordpress-page.html	native
-guide-download-staging	4587	treasury-tech-selection/guidebook/wordpress-page.html	native
-guide-download	4202	treasury-tech-selection/guidebook/wordpress-page.html	native
+#
+# COLUMN 5 is the post_name the id must carry on whichever target you are writing. It
+# defaults to column 1 when omitted. Post ids are PER SITE and staging has drifted from
+# production: production 1519 is the live /2024-tms-selection-guide/ post while staging
+# 1519 is how-to-select-a-tms, and production 4799 is a Flamingo spam record. Writing by
+# id alone would have overwritten a published page, and the pattern-ref guard would not
+# have noticed, because between two site pages the refs match.
+guide-waitlist-confirmed	4809	treasury-tech-selection/waitlist/confirmed/wordpress-page.html	native	2026-treasury-tech-guide-waitlist-confirmed
+guide-thank-you	4585	treasury-tech-selection/guidebook/thank-you/wordpress-page.html	native	thank-you
+guide-download-staging	4587	treasury-tech-selection/guidebook/wordpress-page.html	native	treasury-tech-selection-guide-download
+guide-download	4202	treasury-tech-selection/guidebook/wordpress-page.html	native	treasury-tech-selection-guide
 #
 # mode `verbatim`: the post's content IS the whole standalone document, spliced into the
 # wrapper and pattern refs the post already carries. For pages hand-pasted as a full

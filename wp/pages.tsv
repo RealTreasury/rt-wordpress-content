@@ -66,7 +66,7 @@ tms-selection-mistakes	4799	insights/2026/tms-selection-mistakes/index.html	page
 # rename post_name and post_title. That way the old URL never serves the new slug with old
 # content, and the new URL never appears before the article does. After the rename, column 5
 # below becomes `how-to-select-a-tms` — change it in the same commit that records the rename.
-how-to-select-a-tms-prod	1519	insights/2026/how-to-select-a-tms/index.html	page	2024-tms-selection-guide
+how-to-select-a-tms-prod	1519	insights/2026/how-to-select-a-tms/index.html	page	how-to-select-a-tms
 #
 # tms-selection-mistakes-prod has NO id yet. Create the post on production first —
 #   wp post create --post_type=post --post_status=draft --post_author=240264699 \
@@ -76,4 +76,4 @@ how-to-select-a-tms-prod	1519	insights/2026/how-to-select-a-tms/index.html	page	
 #     --porcelain
 # — then put the id it returns in the row below and uncomment it. Terms and author copied
 # from staging 4799, read live on September 18, 2026.
-#tms-selection-mistakes-prod	NNNN	insights/2026/tms-selection-mistakes/index.html	page	tms-selection-mistakes
+tms-selection-mistakes-prod	4832	insights/2026/tms-selection-mistakes/index.html	page	tms-selection-mistakes

@@ -355,12 +355,27 @@ def build(slug: str, source: Path, mode: str) -> str:
     return page_to_block.render(text, slug)
 
 
+def page_slug_for(slug: str, post_name: str | None) -> str:
+    """The slug that names the content region and scopes its CSS.
+
+    It is the post_name, not the manifest row label. Those are the same thing for
+    every row that targets one site, but they diverge for the `*-prod` rows, which
+    exist only because post ids are per site: the row is `how-to-select-a-tms-prod`
+    and the post is `how-to-select-a-tms`. Keying the region off the label would put
+    `rt-page--how-to-select-a-tms-prod` into production's markup while staging carried
+    `rt-page--how-to-select-a-tms` -- two sites whose HTML no longer diffs cleanly, for
+    no reason but a bookkeeping name. Column 5 already declares the post_name; use it.
+    """
+    return post_name or slug
+
+
 def cmd_plan(env, slug, post_id, source, mode, post_name=None) -> int:
     check_identity(env, slug, post_id, mode, post_name)
+    page_slug = page_slug_for(slug, post_name)
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
-    block = build(slug, source, mode)
-    new = block if mode in ("raw", "native") else splice(current, block, slug, mode)
+    block = build(page_slug, source, mode)
+    new = block if mode in ("raw", "native") else splice(current, block, page_slug, mode)
     print(f"-- post {post_id} ({slug}), post_status {status}")
     print(f"-- live now : {len(current):>7} bytes, {words(current):>5} words, "
           f"h1={'yes' if re.search(r'<h1', current, re.I) else 'NO'}, "
@@ -407,10 +422,11 @@ def cmd_plan(env, slug, post_id, source, mode, post_name=None) -> int:
 
 def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
     check_identity(env, slug, post_id, mode, post_name)
+    page_slug = page_slug_for(slug, post_name)
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
-    block = build(slug, source, mode)
-    new = block if mode in ("raw", "native") else splice(current, block, slug, mode)
+    block = build(page_slug, source, mode)
+    new = block if mode in ("raw", "native") else splice(current, block, page_slug, mode)
     if norm(new) == norm(current):
         if new != current:
             print("-- content matches; only line endings differ. Publishing to normalise them.")

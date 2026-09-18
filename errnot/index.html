@@ -313,6 +313,143 @@
                 margin-bottom: 1rem;
             }
         }
+
+        /* ---- ERR NOT method, long form ----
+           The six steps used to be three bullets each in a glass card. Carrying the
+           full method from the 2026 guide, a card per step is a wall: 300 words inside
+           a rounded box with a shadow reads as a UI element, not as prose. So: a strip
+           of six anchors at the top, then each step as a plain section with a letter,
+           a hairline rule between them, and one comfortable measure of text. */
+        .errnot-strip {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 8px;
+            max-width: 56rem;
+            margin: 0 auto 3.5rem;
+        }
+
+        .errnot-strip a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 6px;
+            border: 1px solid #e6dcf9;
+            border-radius: 12px;
+            background: #ffffff;
+            text-decoration: none;
+            transition: border-color .15s ease, background .15s ease;
+        }
+
+        .errnot-strip a:hover,
+        .errnot-strip a:focus-visible {
+            border-color: var(--primary-purple);
+            background: #faf7ff;
+        }
+
+        .errnot-strip b {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary-purple);
+            line-height: 1;
+        }
+
+        .errnot-strip span {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: #4b5563;
+            text-align: center;
+            line-height: 1.25;
+        }
+
+        .errnot-step { scroll-margin-top: 120px; }
+
+        .errnot-step + .errnot-step {
+            margin-top: 3.5rem;
+            padding-top: 3.5rem;
+            border-top: 1px solid #ebe4f7;
+        }
+
+        .errnot-step-head {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            margin-bottom: 0.4rem;
+        }
+
+        .errnot-letter {
+            flex: 0 0 auto;
+            font-size: 2.6rem;
+            font-weight: 800;
+            line-height: 0.9;
+            color: var(--primary-purple);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .errnot-step-head h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .errnot-tag {
+            margin: 0 0 1.5rem 3.6rem;
+            font-size: 1.02rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .errnot-body { font-size: 1.08rem; color: #4b5563; line-height: 1.75; }
+        .errnot-body > * + * { margin-top: 1.15rem; }
+        .errnot-body a { color: var(--primary-purple); text-decoration: underline; text-underline-offset: 2px; }
+        .errnot-body a:hover { color: var(--deep-purple); }
+        .errnot-body strong { color: #111827; }
+        .errnot-body ul { padding-left: 1.4rem; list-style: disc; }
+        .errnot-body li + li { margin-top: 0.55rem; }
+
+        .errnot-cols {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+        }
+
+        .errnot-cols h4 {
+            margin: 0 0 0.7rem;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #6b7280;
+        }
+
+        .errnot-cols > div:last-child h4 { color: var(--primary-purple); }
+        .errnot-cols ul { font-size: 1rem; }
+        .errnot-cols p { font-size: 1rem; }
+
+        .errnot-pull {
+            padding-left: 1.4rem;
+            border-left: 3px solid #d8c9f7;
+            font-size: 1.02rem;
+        }
+
+        .errnot-pull cite {
+            display: block;
+            margin-top: 0.8rem;
+            font-style: normal;
+            font-size: 0.88rem;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .errnot-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 2.5rem; }
+            .errnot-letter { font-size: 2rem; }
+            .errnot-step-head h3 { font-size: 1.4rem; }
+            .errnot-tag { margin-left: 0; }
+            .errnot-step + .errnot-step { margin-top: 2.5rem; padding-top: 2.5rem; }
+        }
     </style>
 </head>
 
@@ -365,7 +502,7 @@
     </section>
 
     <!-- Method Steps -->
-    <section class="bg-gray-50 section-padding">
+    <section class="bg-white section-padding">
         <div class="container mx-auto px-6">
             <h2 class="text-4xl md:text-5xl font-bold text-center mb-4">
                 The <span class="gradient-text">ERR NOT™</span> Method
@@ -374,7 +511,16 @@
                 Six proven steps to transform your technology selection process
             </p>
 
-            <div class="max-w-3xl mx-auto text-lg text-gray-600 space-y-6 mb-16">
+            <nav class="errnot-strip" aria-label="The six steps">
+                <a href="#errnot-education"><b>E</b><span>Education</span></a>
+                <a href="#errnot-requirements"><b>R</b><span>Requirements</span></a>
+                <a href="#errnot-rfi"><b>R</b><span>RFI</span></a>
+                <a href="#errnot-demo"><b>N</b><span>uNique Demo</span></a>
+                <a href="#errnot-winner"><b>O</b><span>Obvious Winner</span></a>
+                <a href="#errnot-transformation"><b>T</b><span>Transformation</span></a>
+            </nav>
+
+            <div class="max-w-3xl mx-auto errnot-body mb-16">
                 <p>
                     ERR NOT™ is Real Treasury's proprietary selection methodology. Every step was designed to
                     correct specific failures in the traditional process, to cut through the noise, avoid the
@@ -386,16 +532,15 @@
                 </p>
             </div>
 
-            <div class="max-w-3xl mx-auto space-y-12">
+            <div class="max-w-3xl mx-auto">
 
-                <!-- E — Education -->
-                <div class="glass-card rounded-2xl p-8 md:p-10">
-                    <div class="step-number">E</div>
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 text-center">Education</h3>
-                    <p class="text-center text-gray-500 mb-8">
-                        Because if your selection starts with demos, you're already off-track
-                    </p>
-                    <div class="text-lg text-gray-600 space-y-5">
+                <article class="errnot-step" id="errnot-education">
+                    <div class="errnot-step-head">
+                        <span class="errnot-letter" aria-hidden="true">E</span>
+                        <h3>Education</h3>
+                    </div>
+                    <p class="errnot-tag">Because if your selection starts with demos, you're already off-track</p>
+                    <div class="errnot-body">
                         <p>
                             Before you evaluate any products, you should understand the current marketplace and its
                             segments and determine which one(s) best fits your needs.
@@ -430,16 +575,15 @@
                             tool can make what should be easy more difficult.
                         </p>
                     </div>
-                </div>
+                </article>
 
-                <!-- R — Requirements -->
-                <div class="glass-card rounded-2xl p-8 md:p-10">
-                    <div class="step-number">R</div>
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 text-center">Requirements</h3>
-                    <p class="text-center text-gray-500 mb-8">
-                        Because demos don't create clarity
-                    </p>
-                    <div class="text-lg text-gray-600 space-y-5">
+                <article class="errnot-step" id="errnot-requirements">
+                    <div class="errnot-step-head">
+                        <span class="errnot-letter" aria-hidden="true">R</span>
+                        <h3>Requirements</h3>
+                    </div>
+                    <p class="errnot-tag">Because demos don't create clarity</p>
+                    <div class="errnot-body">
                         <p>
                             This is not a new concept, but it's one that gets skipped or rushed all too often. Without
                             a written, prioritized list of requirements, your selection will be based on looks,
@@ -459,47 +603,40 @@
                             clearly explain the rationale. You'll have a clear, defensible answer when stakeholders
                             later ask, "Why didn't we choose Vendor B?"
                         </p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+                        <div class="errnot-cols">
                             <div>
-                                <h4 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                                    Without written requirements
-                                </h4>
-                                <ul class="space-y-2 text-base">
+                                <h4>Without written requirements</h4>
+                                <ul>
                                     <li>Decision based on looks and demos</li>
                                     <li>Influenced by salesperson likeability</li>
                                     <li>Choose "the name you know"</li>
                                     <li>Distracted by buzzwords and AI hype</li>
                                     <li>Pick a system a teammate used before</li>
                                 </ul>
-                                <p class="text-base mt-3">
-                                    Result: poor fit, regret, and risk of loss. Time, money, opportunity, reputation.
-                                </p>
+                                <p>Result: poor fit, regret, and risk of loss. Time, money, opportunity, reputation.</p>
                             </div>
                             <div>
-                                <h4 class="text-sm font-bold uppercase tracking-wider text-purple-600 mb-3">
-                                    With written requirements
-                                </h4>
-                                <ul class="space-y-2 text-base">
+                                <h4>With written requirements</h4>
+                                <ul>
                                     <li><strong>Focus on what matters most.</strong> Driven by your goals and needs.</li>
                                     <li><strong>Objective evaluation.</strong> Every vendor measured against the same yardstick.</li>
                                     <li><strong>Prevents bias.</strong> Stops influence from sales, brands, or familiarity.</li>
                                     <li><strong>Cuts through the noise.</strong> Ignore buzzwords that don't add value to your priorities.</li>
                                     <li><strong>Creates accountability.</strong> Clear, defensible reasons for your decision.</li>
                                 </ul>
-                                <p class="text-base mt-3">Result: best fit, confidence, and ROI.</p>
+                                <p>Result: best fit, confidence, and ROI.</p>
                             </div>
                         </div>
                     </div>
-                </div>
+                </article>
 
-                <!-- R — RFI -->
-                <div class="glass-card rounded-2xl p-8 md:p-10">
-                    <div class="step-number">R</div>
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 text-center">RFI</h3>
-                    <p class="text-center text-gray-500 mb-8">
-                        A short and focused document that actually produces useful information
-                    </p>
-                    <div class="text-lg text-gray-600 space-y-5">
+                <article class="errnot-step" id="errnot-rfi">
+                    <div class="errnot-step-head">
+                        <span class="errnot-letter" aria-hidden="true">R</span>
+                        <h3>RFI</h3>
+                    </div>
+                    <p class="errnot-tag">A short and focused document that actually produces useful information</p>
+                    <div class="errnot-body">
                         <p>
                             We do not recommend the traditional RFP. Not even the AFP's standard RFP template, sorry.
                             As we've already established, bloated RFPs produce many "yes" answers, not meaningful
@@ -517,42 +654,35 @@
                             spent on vendors who can meet your must-have requirements and many of your like-to-haves,
                             as well.
                         </p>
-                        <p>
-                            Functional fit is best determined in the next stage of scripted demos.
-                        </p>
+                        <p>Functional fit is best determined in the next stage of scripted demos.</p>
                     </div>
-                </div>
+                </article>
 
-                <!-- N — uNique Demo Script -->
-                <div class="glass-card rounded-2xl p-8 md:p-10">
-                    <div class="step-number">N</div>
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 text-center">uNique Demo Script</h3>
-                    <p class="text-center text-gray-500 mb-8">
-                        Demos that are truly apples-to-apples
-                    </p>
-                    <div class="text-lg text-gray-600 space-y-5">
+                <article class="errnot-step" id="errnot-demo">
+                    <div class="errnot-step-head">
+                        <span class="errnot-letter" aria-hidden="true">N</span>
+                        <h3>uNique Demo Script</h3>
+                    </div>
+                    <p class="errnot-tag">Demos that are truly apples-to-apples</p>
+                    <div class="errnot-body">
                         <p>
                             This is the most powerful step in the ERR NOT™ process, and one of the most underused
                             strategies in treasury technology selection. Consulting firms take different approaches to
                             this step using a cookie-cutter script that is not truly tailored to each individual
                             client, so watch out!
                         </p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="errnot-cols">
                             <div>
-                                <h4 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">
-                                    Without a demo script
-                                </h4>
-                                <p class="text-base">
+                                <h4>Without a demo script</h4>
+                                <p>
                                     Vendors show what they want to show: sleek dashboards, shiny AI features, flashy
                                     reports. Different scenarios, different orders, different data. Impossible to
                                     compare. Decisions based on impressions, not on reality.
                                 </p>
                             </div>
                             <div>
-                                <h4 class="text-sm font-bold uppercase tracking-wider text-purple-600 mb-3">
-                                    With a uNique demo script
-                                </h4>
-                                <p class="text-base">
+                                <h4>With a uNique demo script</h4>
+                                <p>
                                     Every vendor shows the same scenarios in the same order with your data. Same
                                     scenarios, same order, same data. Easy to compare. Decisions based on evidence,
                                     not on general impressions.
@@ -575,7 +705,7 @@
                             Make sure you have your list of requirements in front of you while you write your script.
                             They should be the basis of the script you produce.
                         </p>
-                        <blockquote class="border-l-4 border-purple-300 pl-6 text-base space-y-4">
+                        <blockquote class="errnot-pull">
                             <p>
                                 I spent over 20 years as a solution consultant (the position was called numerous
                                 things over the years, solutions engineer, treasury consultant, product specialist,
@@ -591,9 +721,7 @@
                                 question, ask it. If the answer seems too glib, ask more. Better than just asking for
                                 a verbal answer, ask the demo person to SHOW you the answer in the product.
                             </p>
-                            <cite class="block not-italic text-sm text-gray-500">
-                                Tracey Knight, Co-Founder and Principal Consultant
-                            </cite>
+                            <cite>Tracey Knight, Co-Founder and Principal Consultant</cite>
                         </blockquote>
                         <p>
                             Using a demo script is how you can stop getting distracted by bells and whistles and focus
@@ -601,16 +729,15 @@
                             its strengths) and avoid being "surprised" during implementation.
                         </p>
                     </div>
-                </div>
+                </article>
 
-                <!-- O — Obvious Winner -->
-                <div class="glass-card rounded-2xl p-8 md:p-10">
-                    <div class="step-number">O</div>
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 text-center">Obvious Winner</h3>
-                    <p class="text-center text-gray-500 mb-8">
-                        Selection, when done right, will produce one
-                    </p>
-                    <div class="text-lg text-gray-600 space-y-5">
+                <article class="errnot-step" id="errnot-winner">
+                    <div class="errnot-step-head">
+                        <span class="errnot-letter" aria-hidden="true">O</span>
+                        <h3>Obvious Winner</h3>
+                    </div>
+                    <p class="errnot-tag">Selection, when done right, will produce one</p>
+                    <div class="errnot-body">
                         <p>
                             When you use the traditional scorecard approach to "grading" demos, you often end up with
                             several products with average scores that are very close to each other. That happens
@@ -628,7 +755,7 @@
                             the best-fit vendor obvious.
                         </p>
                         <p>Follow these best practices:</p>
-                        <ul class="space-y-3 list-disc pl-6">
+                        <ul>
                             <li>
                                 Schedule your final demos close together (on the same day or in the same week) so that
                                 you aren't relying on memory from last week or last month.
@@ -639,21 +766,20 @@
                             </li>
                             <li>
                                 Focus on your requirements when evaluating TMS systems. Don't let some of the
-                                <a href="/tms-selection-mistakes/">common errors we talk
-                                about</a> allow you to get off track and just "pick one" in an illogical manner.
+                                <a href="/tms-selection-mistakes/">common errors we talk about</a> allow you to get off
+                                track and just "pick one" in an illogical manner.
                             </li>
                         </ul>
                     </div>
-                </div>
+                </article>
 
-                <!-- T — Transformation -->
-                <div class="glass-card rounded-2xl p-8 md:p-10">
-                    <div class="step-number">T</div>
-                    <h3 class="text-2xl md:text-3xl font-bold mb-2 text-center">Transformation</h3>
-                    <p class="text-center text-gray-500 mb-8">
-                        Because the goal was never just to 'Go Live'
-                    </p>
-                    <div class="text-lg text-gray-600 space-y-5">
+                <article class="errnot-step" id="errnot-transformation">
+                    <div class="errnot-step-head">
+                        <span class="errnot-letter" aria-hidden="true">T</span>
+                        <h3>Transformation</h3>
+                    </div>
+                    <p class="errnot-tag">Because the goal was never just to 'Go Live'</p>
+                    <div class="errnot-body">
                         <p>
                             After you make the selection, the next potential problem is to mess up the implementation.
                             And the single biggest reason you might select the best-fit system and still not get the
@@ -687,10 +813,10 @@
                             technical implementation.
                         </p>
                         <div>
-                            <h4 class="text-sm font-bold uppercase tracking-wider text-purple-600 mb-3">
+                            <h4 class="text-xs font-bold uppercase tracking-widest text-purple-600 mb-3">
                                 What Real Treasury's Transformation delivers
                             </h4>
-                            <ul class="space-y-2 text-base list-disc pl-6">
+                            <ul>
                                 <li>Unbiased audit</li>
                                 <li>Early risk mitigation</li>
                                 <li>Vendor accountability</li>
@@ -699,24 +825,26 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </article>
 
-            </div>
+                <article class="errnot-step">
+                    <div class="errnot-step-head">
+                        <h3>Conclusion</h3>
+                    </div>
+                    <div class="errnot-body">
+                        <p>
+                            Selecting a TMS should not come down to the best demo, the best-known name, or the vendor
+                            that checks the most boxes on an RFP. From education through transformation, ERR NOT™ is
+                            designed to help you understand the market, define what you truly need, compare the right
+                            vendors on a level playing field, and make a decision you can clearly defend.
+                        </p>
+                        <p>
+                            With a better selection process, you can dramatically improve the odds that the technology
+                            you choose will deliver the results you expect.
+                        </p>
+                    </div>
+                </article>
 
-            <div class="max-w-3xl mx-auto mt-16">
-                <h3 class="text-2xl md:text-3xl font-bold mb-6">Conclusion</h3>
-                <div class="text-lg text-gray-600 space-y-5">
-                    <p>
-                        Selecting a TMS should not come down to the best demo, the best-known name, or the vendor that
-                        checks the most boxes on an RFP. From education through transformation, ERR NOT™ is designed
-                        to help you understand the market, define what you truly need, compare the right vendors on a
-                        level playing field, and make a decision you can clearly defend.
-                    </p>
-                    <p>
-                        With a better selection process, you can dramatically improve the odds that the technology you
-                        choose will deliver the results you expect.
-                    </p>
-                </div>
             </div>
         </div>
     </section>
@@ -725,7 +853,7 @@
     <section class="bg-white section-padding">
         <div class="container mx-auto px-6">
             <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
-                Real <span class="gradient-text">Results</span>
+                What Others <span class="gradient-text">Say</span>
             </h2>
             
             <div class="testimonial-slider mb-16 relative max-w-3xl mx-auto" tabindex="0">
@@ -733,23 +861,16 @@
                     <div class="testimonial-track">
                         <div class="testimonial-slide">
                             <div class="testimonial-card">
-                                <div class="testimonial-quote">"𝘈 𝘵𝘩𝘰𝘶𝘨𝘩𝘵𝘧𝘶𝘭, 𝘴𝘵𝘳𝘶𝘤𝘵𝘶𝘳𝘦𝘥 𝘱𝘳𝘰𝘤𝘦𝘴𝘴 𝘧𝘰𝘳 𝘴𝘦𝘭𝘦𝘤𝘵𝘪𝘯𝘨 𝘵𝘦𝘤𝘩𝘯𝘰𝘭𝘰𝘨𝘺..."</div>
-                                <div class="testimonial-author">Tony Vu</div>
-                                <div class="testimonial-role">Treasurer, Broward Health</div>
+                                <div class="testimonial-quote">&ldquo;What I like about this guide is that it&rsquo;s genuinely impartial&hellip; If you need a guide to the treasury technology market, this is it. It&rsquo;s almost like a workbook. It helps you see who&rsquo;s out there, what they offer and where they might fit. It&rsquo;s comprehensive, balanced and, most importantly, it doesn&rsquo;t leave you wondering what you might have missed.&rdquo;</div>
+                                <div class="testimonial-author">Mike Richards</div>
+                                <div class="testimonial-role">CEO &amp; Founder, The Treasury Recruitment Company</div>
                             </div>
                         </div>
                         <div class="testimonial-slide">
                             <div class="testimonial-card">
-                                <div class="testimonial-quote">"They effectively implemented treasury software that seamlessly integrates cash journal entry posting and has revolutionized our financial management, providing unparalleled efficiency and insight into our cash flow operations."</div>
-                                <div class="testimonial-author">Emily Bailey</div>
-                                <div class="testimonial-role">Accounting Manager, Carter Exchange</div>
-                            </div>
-                        </div>
-                        <div class="testimonial-slide">
-                            <div class="testimonial-card">
-                                <div class="testimonial-quote">“They brought strategic insights we hadn’t considered—highlighting key features, gaps, and opportunities.”</div>
-                                <div class="testimonial-author">Thi Pham</div>
-                                <div class="testimonial-role">CFO, Vie Management</div>
+                                <div class="testimonial-quote">&ldquo;Most treasury technology guides are written by vendors or consultants and read like sales collateral dressed up as advice. This one was written by practitioners with decades of hands-on systems experience, and it reads that way. You get an unbiased view of the entire landscape, a thorough summary of the systems on the market, and clear, experience-tested advice on the parts of the selection process that actually trip teams up.&rdquo;</div>
+                                <div class="testimonial-author">Zac Nesper</div>
+                                <div class="testimonial-role">Founder and Managing Director, Treasury Outcomes LLC</div>
                             </div>
                         </div>
                     </div>
@@ -889,13 +1010,13 @@
             
             <!-- Three Clear CTAs -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <!-- Option 1: Demo Access -->
+                <!-- Option 1: The 2026 Guide -->
                 <div class="bg-white rounded-2xl p-8 border border-purple-200 shadow-md">
-                    <div class="text-4xl mb-4">🎥</div>
-                    <h3 class="text-xl font-bold mb-4">Explore the Portal</h3>
-                    <p class="text-gray-600 mb-6 text-sm">Access and compare 28+ vendors and videos</p>
-                    <a href="https://realtreasury.com/treasury-tech-portal/" class="w-full text-center block cta-secondary tpa-btn-ready">
-                        Access Tech Portal
+                    <div class="text-4xl mb-4">📘</div>
+                    <h3 class="text-xl font-bold mb-4">Get the 2026 Guide</h3>
+                    <p class="text-gray-600 mb-6 text-sm">Every TMS vendor selling into North America, sorted into three segments, with a functionality matrix for each</p>
+                    <a href="/treasury-tech-selection-guide/" class="w-full text-center block cta-secondary">
+                        Get the Guide
                     </a>
                 </div>
 

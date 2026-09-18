@@ -270,6 +270,213 @@
             .rt-art-hero { padding: 48px 0 40px; }
             .rt-art-body { padding: 40px 0 56px; }
         }
+
+        /* ---- Contents ---- */
+        .rt-art-toc {
+            margin: 34px 0 0;
+            padding: 22px 0;
+            border-top: 1px solid #ebe4f7;
+            border-bottom: 1px solid #ebe4f7;
+        }
+
+        .rt-art-toc h2 {
+            margin: 0 0 12px !important;
+            padding: 0 !important;
+            border: 0 !important;
+            font-size: 0.76rem !important;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #7e7e7e !important;
+        }
+
+        .rt-art-toc ol {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: toc;
+            columns: 2;
+            column-gap: 36px;
+        }
+
+        .rt-art-toc li {
+            counter-increment: toc;
+            margin: 0 0 8px;
+            font-size: 0.97rem;
+            break-inside: avoid;
+        }
+
+        .rt-art-toc li::before {
+            content: counter(toc, decimal-leading-zero);
+            margin-right: 10px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 700;
+            color: #c8a7ff;
+        }
+
+        .rt-art-toc a { color: #393939 !important; text-decoration: none !important; }
+        .rt-art-toc a:hover { color: #7216f4 !important; text-decoration: underline !important; }
+
+        /* ---- Segment cards ---- */
+        .rt-art-segs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 18px;
+        }
+
+        .rt-art-segs > div {
+            display: flex;
+            flex-direction: column;
+            padding: 22px 20px;
+            border: 1px solid #ebe4f7;
+            border-radius: 14px;
+            background: #ffffff;
+        }
+
+        .rt-art-segs h3 {
+            margin: 0 0 10px !important;
+            font-size: 1.05rem;
+            color: #5b0acd;
+        }
+
+        .rt-art-segs p { font-size: 0.97rem !important; margin: 0; }
+
+        .rt-art-segs .rt-art-segs-fit {
+            display: block;
+            margin-top: auto;
+            padding-top: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: #7e7e7e;
+        }
+
+        /* ---- ERR NOT strip ---- */
+        .rt-art-steps {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: none;
+        }
+
+        .rt-art-steps li {
+            margin: 0;
+            padding: 16px 14px;
+            border: 1px solid #ebe4f7;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .rt-art-steps b {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #7216f4;
+            line-height: 1;
+        }
+
+        .rt-art-steps strong {
+            display: block;
+            hyphens: none;
+            margin: 8px 0 4px;
+            font-size: 0.95rem;
+            color: #131313;
+        }
+
+        .rt-art-steps span {
+            display: block;
+            font-size: 0.85rem;
+            color: #7e7e7e;
+            line-height: 1.45;
+        }
+
+        /* ---- Mistake headers ---- */
+        .rt-art-mistake {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-top: 58px !important;
+            padding-top: 28px;
+            border-top: 1px solid #ebe4f7;
+        }
+
+        .rt-art-mistake .rt-art-num {
+            flex: 0 0 auto;
+            font-size: 2.9rem;
+            font-weight: 800;
+            line-height: 0.82;
+            color: #e3d4fb;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rt-art-mistake h2 {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+        }
+
+        .rt-art-eq {
+            margin-top: 6px !important;
+            margin-left: 4.3rem;
+            font-size: 1.1rem !important;
+            font-weight: 700;
+            color: #5b0acd !important;
+            letter-spacing: 0.01em;
+        }
+
+        /* ---- How to avoid ---- */
+        .rt-art-avoid {
+            margin-top: 34px !important;
+            padding-top: 22px;
+            border-top: 1px dashed #ddd0f5;
+        }
+
+        .rt-art-avoid > h3 {
+            margin-top: 0 !important;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #7216f4;
+        }
+
+        .rt-art-body .rt-art-avoid > * + * { margin-top: 16px; }
+
+        /* ---- Recap ---- */
+        .rt-art-recap {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: recap;
+        }
+
+        .rt-art-recap li {
+            counter-increment: recap;
+            display: flex;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0eaf9;
+            font-size: 1.02rem;
+        }
+
+        .rt-art-recap li::before {
+            content: counter(recap);
+            flex: 0 0 1.6rem;
+            font-weight: 800;
+            color: #7216f4;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (max-width: 640px) {
+            .rt-art-toc ol { columns: 1; }
+            .rt-art-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .rt-art-mistake { gap: 12px; margin-top: 42px !important; }
+            .rt-art-mistake .rt-art-num { font-size: 2.1rem; }
+            .rt-art-eq { margin-left: 0; }
+        }
     </style>
 </head>
 <body>
@@ -281,6 +488,18 @@
       <h1>How to Select a Treasury Management System</h1>
       <p class="rt-art-lede">Have you ever sat through three or four TMS demos and by the last one thought, &ldquo;They all seem about the same?&rdquo;</p>
       <p class="rt-art-byline">By Tracey Knight, Co-Founder &amp; Principal Consultant, Real Treasury</p>
+      <nav class="rt-art-toc" aria-label="Contents">
+        <h2>On this page</h2>
+        <ol>
+          <li><a href="#what-is-a-tms">What is a treasury management system?</a></li>
+          <li><a href="#when-do-you-need-one">When does a treasury team need a TMS?</a></li>
+          <li><a href="#why-the-traditional-approach-fails">The traditional TMS selection approach doesn&rsquo;t work</a></li>
+          <li><a href="#market-segments">What are the segments of the TMS market?</a></li>
+          <li><a href="#err-not">What should you evaluate when assessing a treasury management system?</a></li>
+          <li><a href="#five-failures">The five most common selection failures</a></li>
+          <li><a href="#faq">Frequently asked questions</a></li>
+        </ol>
+      </nav>
     </div>
   </section>
 
@@ -295,7 +514,7 @@
 
       <p>That&rsquo;s why we developed ERR NOT&trade;.</p>
 
-      <h2>What is a treasury management system?</h2>
+      <h2 id="what-is-a-tms">What is a treasury management system?</h2>
 
       <p>A treasury management system (TMS) is the system of record for a corporate treasury function. It supports key treasury functions such as cash positioning and forecasting, bank connectivity, payments, in-house banking and intercompany, financial instruments (FX, debt and investments), commodities, hedging and all other core treasury functions.</p>
 
@@ -303,7 +522,7 @@
 
       <p>The term TMS covers a wide range of products. Some are broad platforms spanning every treasury workflow, while others specialize in one particular function such as: cash visibility, payment execution, forecasting.</p>
 
-      <h2>When does a treasury team need a TMS?</h2>
+      <h2 id="when-do-you-need-one">When does a treasury team need a TMS?</h2>
 
       <p>The tipping point is rarely a single event, but some common signals are:</p>
 
@@ -318,7 +537,7 @@
 
       <p>Typically, it&rsquo;s not a single event where you wake up and think &ldquo;I need a TMS&rdquo;. No, it happens overtime when the manual process has itself become the risk.</p>
 
-      <h2>The traditional TMS selection approach doesn&rsquo;t work</h2>
+      <h2 id="why-the-traditional-approach-fails">The traditional TMS selection approach doesn&rsquo;t work</h2>
 
       <p>Before we walk through the ERR NOT&trade; method, let&rsquo;s talk about why the traditional approach doesn&rsquo;t work. Roughly 50% of TMS selection projects end in &ldquo;no decision.&rdquo; That means treasury teams spend months talking to vendors, sitting through demos, writing and issuing an RFP, reading and scoring responses, and then making no decision at all. And for those that do make a decision, there is no guarantee that they&rsquo;ve selected the right one, the one that best fits their requirements. Not only that, but of those that make a decision, most are surprised during the implementation by what the system can&rsquo;t do that they thought it could. Surprised by needed workarounds or the need to subscribe to even more modules. Only 5% are truly happy from beginning to end.</p>
 
@@ -386,23 +605,26 @@
 
       <p>We believe that knowledge of the segments, and the products within each segment, gives you a better view of your available options so that you can find the best-fit product to meet your unique requirements.</p>
 
-      <h2>What are the segments of the TMS market?</h2>
+      <h2 id="market-segments">What are the segments of the TMS market?</h2>
 
       <p>Real Treasury divides the cash and treasury management system marketplace into three segments:</p>
 
-      <div class="rt-art-seg">
-        <h3>Cash Tools</h3>
-        <p>Bank connectivity. Cash visibility. Cash forecasting. Tools to help categorize and manage bank balance and transaction information. Cash Tools must do these four things, at a minimum, to be included in the Real Treasury North American chart. Cash Tools are ideal for simple treasuries.</p>
-      </div>
-
-      <div class="rt-art-seg">
-        <h3>TMS-Lite</h3>
-        <p>Everything in Cash Tools, plus treasury payment initiation and processing. TMS-Lite products may have a variety of other modules, but the addition of payments led to inclusion in this segment. TMS-Lite systems are typically fit for growing or mid-complexity treasuries.</p>
-      </div>
-
-      <div class="rt-art-seg">
-        <h3>TRMS (Treasury and Risk Management Systems)</h3>
-        <p>Everything in TMS-Lite, plus full support for FX, debt, and investments (tracking, valuing, accounting, and reporting). The TRMS products may have other modules, but the addition of full support for FX, debt, and investments led to inclusion in this segment. TRMS systems are built for complex, global treasuries.</p>
+      <div class="rt-art-segs">
+        <div>
+          <h3>Cash Tools</h3>
+          <p>Bank connectivity. Cash visibility. Cash forecasting. Tools to help categorize and manage bank balance and transaction information. Cash Tools must do these four things, at a minimum, to be included in the Real Treasury North American chart.</p>
+          <span class="rt-art-segs-fit">Fit: simple treasuries</span>
+        </div>
+        <div>
+          <h3>TMS-Lite</h3>
+          <p>Everything in Cash Tools, plus treasury payment initiation and processing. TMS-Lite products may have a variety of other modules, but the addition of payments led to inclusion in this segment.</p>
+          <span class="rt-art-segs-fit">Fit: growing or mid-complexity treasuries</span>
+        </div>
+        <div>
+          <h3>TRMS (Treasury and Risk Management Systems)</h3>
+          <p>Everything in TMS-Lite, plus full support for FX, debt, and investments (tracking, valuing, accounting, and reporting). The TRMS products may have other modules, but the addition of full support for FX, debt, and investments led to inclusion in this segment.</p>
+          <span class="rt-art-segs-fit">Fit: complex, global treasuries</span>
+        </div>
       </div>
 
       <p>Large multibillion-dollar companies can have fairly simple treasuries. Conversely, small &ldquo;mid-market&rdquo; companies can have very complex operations. So, complexity isn&rsquo;t about size nor revenue.</p>
@@ -411,20 +633,20 @@
 
       <p><a href="/treasury-tech-market/">See the Real Treasury market chart and what defines each segment.</a></p>
 
-      <h2>What should you evaluate when assessing a treasury management system?</h2>
+      <h2 id="err-not">What should you evaluate when assessing a treasury management system?</h2>
 
       <p>ERR NOT&trade; is Real Treasury&rsquo;s proprietary selection methodology. Every step was designed to correct specific failures in the traditional process, to cut through the noise, avoid the common pitfalls, and get treasury teams to a confident, well-reasoned decision faster.</p>
 
       <p>ERR NOT&trade; stands for:</p>
 
-      <ol>
-        <li><strong>E &mdash; Education</strong> | Because if your selection starts with demos, you&rsquo;re already off-track</li>
-        <li><strong>R &mdash; Requirements</strong> | Because demos don&rsquo;t create clarity</li>
-        <li><strong>R &mdash; RFI</strong> | A short and focused document that actually produces useful information</li>
-        <li><strong>N &mdash; uNique Demo Script</strong> | Demos that are truly apples-to-apples</li>
-        <li><strong>O &mdash; Obvious Winner</strong> | Selection, when done right, will produce one</li>
-        <li><strong>T &mdash; Transformation</strong> | Because the goal was never just to &lsquo;Go Live&rsquo;</li>
-      </ol>
+      <ul class="rt-art-steps">
+        <li><b>E</b><strong>Education</strong><span>Because if your selection starts with demos, you&rsquo;re already off-track</span></li>
+        <li><b>R</b><strong>Requirements</strong><span>Because demos don&rsquo;t create clarity</span></li>
+        <li><b>R</b><strong>RFI</strong><span>A short and focused document that actually produces useful information</span></li>
+        <li><b>N</b><strong>uNique Demo Script</strong><span>Demos that are truly apples-to-apples</span></li>
+        <li><b>O</b><strong>Obvious Winner</strong><span>Selection, when done right, will produce one</span></li>
+        <li><b>T</b><strong>Transformation</strong><span>Because the goal was never just to &lsquo;Go Live&rsquo;</span></li>
+      </ul>
 
       <p>How the method narrows the field:</p>
 
@@ -440,13 +662,13 @@
 
       <p><a href="/errnot/">Read the full walkthrough of the ERR NOT&trade; method.</a></p>
 
-      <h2>The five most common selection failures</h2>
+      <h2 id="five-failures">The five most common selection failures</h2>
 
       <p>You have likely heard of companies that love their TMS and others that definitely do not. The ones that feel like they aren&rsquo;t getting &ldquo;value,&rdquo; or just outright hate their TMS usually made a less than ideal selection. And that poor selection was compounded by an implementation that was doomed before it began. You can&rsquo;t &ldquo;out-implement&rdquo; a poor selection.</p>
 
       <p>Because treasury teams frequently make the same avoidable mistakes during the selection process. Once you know what these mistakes are, they&rsquo;re surprisingly easy to avoid.</p>
 
-      <ol>
+      <ol class="rt-art-recap">
         <li>Not having clear, written, and prioritized requirements.</li>
         <li>Buying what looks good, including beautiful dashboards and the latest technology buzzwords.</li>
         <li>Buying from the salesperson you like the most.</li>
@@ -458,13 +680,13 @@
 
       <p><a href="/tms-selection-mistakes/">Read each mistake and how to avoid it.</a></p>
 
-      <h2>Conclusion</h2>
+      <h2 id="conclusion">Conclusion</h2>
 
       <p>Selecting a TMS should not come down to the best demo, the best-known name, or the vendor that checks the most boxes on an RFP. From education through transformation, ERR NOT&trade; is designed to help you understand the market, define what you truly need, compare the right vendors on a level playing field, and make a decision you can clearly defend.</p>
 
       <p>With a better selection process, you can dramatically improve the odds that the technology you choose will deliver the results you expect.</p>
 
-      <h2>Frequently asked questions</h2>
+      <h2 id="faq">Frequently asked questions</h2>
 
       <dl class="rt-art-faq">
         <dt>How long should a TMS selection take?</dt>

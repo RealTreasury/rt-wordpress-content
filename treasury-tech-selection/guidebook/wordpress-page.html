@@ -173,6 +173,13 @@ window.RTG_CONFIG = {
         .rt-gb-prose h2 { font-size: 1.35rem; }
         .rt-gb-more { padding-bottom: 44px; }
     }
+
+    /* ---- Reader quote ---- */
+    .rt-gb-quote { max-width: 820px; margin: 30px auto 0; padding-left: 22px; border-left: 3px solid rgba(114, 22, 244, 0.35); }
+    .rt-gb-quote blockquote { margin: 0; font-size: 1.1rem; line-height: 1.7; color: var(--dark-text); }
+    .rt-gb-quote cite { display: block; margin-top: 12px; font-style: normal; font-size: 0.9rem; color: var(--gray-text); }
+    .rt-gb-quote cite b { color: var(--dark-text); font-weight: 600; }
+    @media (max-width: 768px) { .rt-gb-quote blockquote { font-size: 1rem; } }
   </style>
 
 <div class="rt-guidebook">
@@ -201,6 +208,11 @@ window.RTG_CONFIG = {
           <li>Several articles which are designed to give you information about changing technology and to help you make better selection decisions.</li>
         </ul>
       </div>
+
+      <figure class="rt-gb-quote">
+        <blockquote>&ldquo;What I like about this guide is that it&rsquo;s genuinely impartial&hellip; If you need a guide to the treasury technology market, this is it. It&rsquo;s almost like a workbook. It helps you see who&rsquo;s out there, what they offer and where they might fit. Whether you&rsquo;re a smaller treasury team with relatively straightforward needs, or a much larger and more complex treasury function, it gives you the chance to look across the whole market and properly consider the different options available to you. It&rsquo;s comprehensive, balanced and, most importantly, it doesn&rsquo;t leave you wondering what you might have missed.&rdquo;</blockquote>
+        <cite><b>Mike Richards</b>, CEO &amp; Founder, The Treasury Recruitment Company</cite>
+      </figure>
     </div>
   </section>
 

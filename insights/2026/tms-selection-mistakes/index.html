@@ -270,6 +270,213 @@
             .rt-art-hero { padding: 48px 0 40px; }
             .rt-art-body { padding: 40px 0 56px; }
         }
+
+        /* ---- Contents ---- */
+        .rt-art-toc {
+            margin: 34px 0 0;
+            padding: 22px 0;
+            border-top: 1px solid #ebe4f7;
+            border-bottom: 1px solid #ebe4f7;
+        }
+
+        .rt-art-toc h2 {
+            margin: 0 0 12px !important;
+            padding: 0 !important;
+            border: 0 !important;
+            font-size: 0.76rem !important;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #7e7e7e !important;
+        }
+
+        .rt-art-toc ol {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: toc;
+            columns: 2;
+            column-gap: 36px;
+        }
+
+        .rt-art-toc li {
+            counter-increment: toc;
+            margin: 0 0 8px;
+            font-size: 0.97rem;
+            break-inside: avoid;
+        }
+
+        .rt-art-toc li::before {
+            content: counter(toc, decimal-leading-zero);
+            margin-right: 10px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 700;
+            color: #c8a7ff;
+        }
+
+        .rt-art-toc a { color: #393939 !important; text-decoration: none !important; }
+        .rt-art-toc a:hover { color: #7216f4 !important; text-decoration: underline !important; }
+
+        /* ---- Segment cards ---- */
+        .rt-art-segs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 18px;
+        }
+
+        .rt-art-segs > div {
+            display: flex;
+            flex-direction: column;
+            padding: 22px 20px;
+            border: 1px solid #ebe4f7;
+            border-radius: 14px;
+            background: #ffffff;
+        }
+
+        .rt-art-segs h3 {
+            margin: 0 0 10px !important;
+            font-size: 1.05rem;
+            color: #5b0acd;
+        }
+
+        .rt-art-segs p { font-size: 0.97rem !important; margin: 0; }
+
+        .rt-art-segs .rt-art-segs-fit {
+            display: block;
+            margin-top: auto;
+            padding-top: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: #7e7e7e;
+        }
+
+        /* ---- ERR NOT strip ---- */
+        .rt-art-steps {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: none;
+        }
+
+        .rt-art-steps li {
+            margin: 0;
+            padding: 16px 14px;
+            border: 1px solid #ebe4f7;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .rt-art-steps b {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #7216f4;
+            line-height: 1;
+        }
+
+        .rt-art-steps strong {
+            display: block;
+            hyphens: none;
+            margin: 8px 0 4px;
+            font-size: 0.95rem;
+            color: #131313;
+        }
+
+        .rt-art-steps span {
+            display: block;
+            font-size: 0.85rem;
+            color: #7e7e7e;
+            line-height: 1.45;
+        }
+
+        /* ---- Mistake headers ---- */
+        .rt-art-mistake {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-top: 58px !important;
+            padding-top: 28px;
+            border-top: 1px solid #ebe4f7;
+        }
+
+        .rt-art-mistake .rt-art-num {
+            flex: 0 0 auto;
+            font-size: 2.9rem;
+            font-weight: 800;
+            line-height: 0.82;
+            color: #e3d4fb;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rt-art-mistake h2 {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+        }
+
+        .rt-art-eq {
+            margin-top: 6px !important;
+            margin-left: 4.3rem;
+            font-size: 1.1rem !important;
+            font-weight: 700;
+            color: #5b0acd !important;
+            letter-spacing: 0.01em;
+        }
+
+        /* ---- How to avoid ---- */
+        .rt-art-avoid {
+            margin-top: 34px !important;
+            padding-top: 22px;
+            border-top: 1px dashed #ddd0f5;
+        }
+
+        .rt-art-avoid > h3 {
+            margin-top: 0 !important;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #7216f4;
+        }
+
+        .rt-art-body .rt-art-avoid > * + * { margin-top: 16px; }
+
+        /* ---- Recap ---- */
+        .rt-art-recap {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: recap;
+        }
+
+        .rt-art-recap li {
+            counter-increment: recap;
+            display: flex;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f0eaf9;
+            font-size: 1.02rem;
+        }
+
+        .rt-art-recap li::before {
+            content: counter(recap);
+            flex: 0 0 1.6rem;
+            font-weight: 800;
+            color: #7216f4;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (max-width: 640px) {
+            .rt-art-toc ol { columns: 1; }
+            .rt-art-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .rt-art-mistake { gap: 12px; margin-top: 42px !important; }
+            .rt-art-mistake .rt-art-num { font-size: 2.1rem; }
+            .rt-art-eq { margin-left: 0; }
+        }
     </style>
 </head>
 <body>
@@ -281,6 +488,16 @@
       <h1>The 5 Most Common Selection Failures and How to Avoid Them</h1>
       <p class="rt-art-lede">You have likely heard of companies that love their TMS and others that definitely do not. The ones that feel like they aren&rsquo;t getting &ldquo;value,&rdquo; or just outright hate their TMS usually made a less than ideal selection.</p>
       <p class="rt-art-byline">By Tracey Knight, Co-Founder &amp; Principal Consultant, Real Treasury</p>
+      <nav class="rt-art-toc" aria-label="Contents">
+        <h2>The five</h2>
+        <ol>
+          <li><a href="#mistake-1">No written, prioritized requirements</a></li>
+          <li><a href="#mistake-2">Falling in love with the demo</a></li>
+          <li><a href="#mistake-3">Buying because you like the salesperson</a></li>
+          <li><a href="#mistake-4">Choosing the familiar option</a></li>
+          <li><a href="#mistake-5">Buying on price alone</a></li>
+        </ol>
+      </nav>
     </div>
   </section>
 
@@ -305,9 +522,12 @@
 
       <p>That one is hard to correct all by yourself; therefore, this is going to focus on the five that you can correct!</p>
 
-      <h2>Mistake #1: Not Having Written, Prioritized Requirements</h2>
+      <div class="rt-art-mistake" id="mistake-1">
+        <span class="rt-art-num" aria-hidden="true">1</span>
+        <h2>Not Having Written, Prioritized Requirements</h2>
+      </div>
 
-      <p><strong>Want &ne; Need.</strong></p>
+      <p class="rt-art-eq">Want &ne; Need.</p>
 
       <p>Many companies begin serious demos without having a written, prioritized list of requirements. They rely on general ideas like:</p>
 
@@ -342,23 +562,28 @@
 
       <p>Do this before serious demos begin.</p>
 
-      <h3>How to avoid mistake #1</h3>
+      <div class="rt-art-avoid">
+        <h3>How to avoid mistake #1</h3>
 
-      <p>The key is to create clear, prioritized requirements. Start by separating requirements into categories:</p>
+        <p>The key is to create clear, prioritized requirements. Start by separating requirements into categories:</p>
 
-      <ul>
-        <li><strong>Must-Have Requirements.</strong> The system cannot succeed without these.</li>
-        <li><strong>Like-to-Have Requirements.</strong> Valuable features, but not essential.</li>
-        <li><strong>Nice-to-Have Requirements.</strong> These aren&rsquo;t really necessary, but good if they are &ldquo;free.&rdquo;</li>
-      </ul>
+        <ul>
+          <li><strong>Must-Have Requirements.</strong> The system cannot succeed without these.</li>
+          <li><strong>Like-to-Have Requirements.</strong> Valuable features, but not essential.</li>
+          <li><strong>Nice-to-Have Requirements.</strong> These aren&rsquo;t really necessary, but good if they are &ldquo;free.&rdquo;</li>
+        </ul>
 
-      <p>You can share these with vendors and ask them how they support your requirements.</p>
+        <p>You can share these with vendors and ask them how they support your requirements.</p>
 
-      <p>Place the greatest weight on your must-have items. Must-have requirements should be just that: MUST HAVE. If a system can&rsquo;t meet them, move on to the next system.</p>
+        <p>Place the greatest weight on your must-have items. Must-have requirements should be just that: MUST HAVE. If a system can&rsquo;t meet them, move on to the next system.</p>
+      </div>
 
-      <h2>Mistake #2: Falling in Love with the Demo</h2>
+      <div class="rt-art-mistake" id="mistake-2">
+        <span class="rt-art-num" aria-hidden="true">2</span>
+        <h2>Falling in Love with the Demo</h2>
+      </div>
 
-      <p><strong>Great Pitch &ne; Great Product.</strong></p>
+      <p class="rt-art-eq">Great Pitch &ne; Great Product.</p>
 
       <p>The second mistake treasury teams commonly make when selecting treasury technology is buying what &ldquo;looks good.&rdquo;</p>
 
@@ -385,25 +610,30 @@
 
       <p>A strong demo can tell you a lot, but only if you are focused on your requirements.</p>
 
-      <h3>How to avoid mistake #2</h3>
+      <div class="rt-art-avoid">
+        <h3>How to avoid mistake #2</h3>
 
-      <p>Instead of letting vendors control the demo, treasury teams should control it themselves. A better approach to a deep dive demo (not the initial short overview demo) is to create a custom demo script that requires each vendor to demonstrate how they handle your specific requirements.</p>
+        <p>Instead of letting vendors control the demo, treasury teams should control it themselves. A better approach to a deep dive demo (not the initial short overview demo) is to create a custom demo script that requires each vendor to demonstrate how they handle your specific requirements.</p>
 
-      <p>For example:</p>
+        <p>For example:</p>
 
-      <ul>
-        <li>Show how you would build a daily cash position</li>
-        <li>Demonstrate how bank statements are reconciled and transactions categorized</li>
-        <li>Walk through the building of a forecast scenario</li>
-      </ul>
+        <ul>
+          <li>Show how you would build a daily cash position</li>
+          <li>Demonstrate how bank statements are reconciled and transactions categorized</li>
+          <li>Walk through the building of a forecast scenario</li>
+        </ul>
 
-      <p>When every vendor follows the same script, you get a true apples-to-apples comparison of how the systems actually perform.</p>
+        <p>When every vendor follows the same script, you get a true apples-to-apples comparison of how the systems actually perform.</p>
 
-      <p>Suddenly the differences become obvious.</p>
+        <p>Suddenly the differences become obvious.</p>
+      </div>
 
-      <h2>Mistake #3: Buying because you like the salesperson</h2>
+      <div class="rt-art-mistake" id="mistake-3">
+        <span class="rt-art-num" aria-hidden="true">3</span>
+        <h2>Buying because you like the salesperson</h2>
+      </div>
 
-      <p><strong>Great Salesperson &ne; Great Support/Great Product.</strong></p>
+      <p class="rt-art-eq">Great Salesperson &ne; Great Support/Great Product.</p>
 
       <p>The next common mistake treasury teams make is choosing the winning vendor based on the salesperson they like the most. There is an old sales adage that people buy from people they like. And that&rsquo;s true, but should it be?</p>
 
@@ -415,29 +645,34 @@
 
       <p>And do not let the salesperson&rsquo;s use of the latest buzzwords pull you away from what your treasury team actually needs. The only technologies that truly matter are the ones that help you achieve your goals and solve your problems.</p>
 
-      <h3>How to avoid mistake #3</h3>
+      <div class="rt-art-avoid">
+        <h3>How to avoid mistake #3</h3>
 
-      <p>Separate the person from the product. Imagine that you will never see them again after the sale (unlikely, but imagine it). Now, how do you like the product?</p>
+        <p>Separate the person from the product. Imagine that you will never see them again after the sale (unlikely, but imagine it). Now, how do you like the product?</p>
 
-      <p>Be sure to speak to references for your top one or two vendors. Ask questions about support and the vendor&rsquo;s responsiveness to problems. Ask about whether or not the vendor has kept promises regarding new functionality. Ask what would change if they could go back to the selection process and do it all over again.</p>
+        <p>Be sure to speak to references for your top one or two vendors. Ask questions about support and the vendor&rsquo;s responsiveness to problems. Ask about whether or not the vendor has kept promises regarding new functionality. Ask what would change if they could go back to the selection process and do it all over again.</p>
 
-      <p>Regarding all the great new advances in technology (Agentic AI, built-in chatbots, MCP servers and LLMs, APIs and more), every step of the way as you see and hear these, keep going back to your requirements:</p>
+        <p>Regarding all the great new advances in technology (Agentic AI, built-in chatbots, MCP servers and LLMs, APIs and more), every step of the way as you see and hear these, keep going back to your requirements:</p>
 
-      <ul>
-        <li>Does this help us achieve our goals?</li>
-        <li>Is this tied to a must-have or a like-to-have requirement?</li>
-        <li>Will this create real value for our treasury team?</li>
-      </ul>
+        <ul>
+          <li>Does this help us achieve our goals?</li>
+          <li>Is this tied to a must-have or a like-to-have requirement?</li>
+          <li>Will this create real value for our treasury team?</li>
+        </ul>
 
-      <p>Or does it simply look and sound good in the moment?</p>
+        <p>Or does it simply look and sound good in the moment?</p>
 
-      <p>It&rsquo;s very easy to get off track and choose a system that is &ldquo;okay.&rdquo; But when you stay focused on your requirements, your goals, and the value you need to create, selection will become the start of real success.</p>
+        <p>It&rsquo;s very easy to get off track and choose a system that is &ldquo;okay.&rdquo; But when you stay focused on your requirements, your goals, and the value you need to create, selection will become the start of real success.</p>
 
-      <p>And, you can do much better than just &ldquo;okay.&rdquo; Don&rsquo;t let these things distract you from your requirements.</p>
+        <p>And, you can do much better than just &ldquo;okay.&rdquo; Don&rsquo;t let these things distract you from your requirements.</p>
+      </div>
 
-      <h2>Mistake #4: Choosing the Familiar Option Instead of the Best One</h2>
+      <div class="rt-art-mistake" id="mistake-4">
+        <span class="rt-art-num" aria-hidden="true">4</span>
+        <h2>Choosing the Familiar Option Instead of the Best One</h2>
+      </div>
 
-      <p><strong>Familiar &ne; Best Fit.</strong></p>
+      <p class="rt-art-eq">Familiar &ne; Best Fit.</p>
 
       <p>The fourth common reason companies often select a system that isn&rsquo;t the very best one for them is that they opt for the &ldquo;easy button&rdquo; and choose:</p>
 
@@ -453,21 +688,26 @@
 
       <p>Run a serious, objective selection process. It should include at least 3-5 vendors from the correct segment(s) that most closely align with your requirements. Don&rsquo;t let the promise of a quarter-end &lsquo;special discount&rsquo; or &ldquo;signing by the end of the month&rdquo; cause you to rush the process to only look at 1 or 2 vendors.</p>
 
-      <h3>How to avoid mistake #4</h3>
+      <div class="rt-art-avoid">
+        <h3>How to avoid mistake #4</h3>
 
-      <p>The solution is simple: evaluate the current marketplace, not your past experience. Start by:</p>
+        <p>The solution is simple: evaluate the current marketplace, not your past experience. Start by:</p>
 
-      <ul>
-        <li>Understanding how the market has evolved</li>
-        <li>Identifying vendors across your relevant segment(s)</li>
-        <li>Looking beyond the handful of vendors everyone knows and adding others from the relevant segment(s)</li>
-      </ul>
+        <ul>
+          <li>Understanding how the market has evolved</li>
+          <li>Identifying vendors across your relevant segment(s)</li>
+          <li>Looking beyond the handful of vendors everyone knows and adding others from the relevant segment(s)</li>
+        </ul>
 
-      <p>Treasury teams are always surprised by how many new and innovative solutions now exist. Expanding your view of the market greatly increases the chance that you&rsquo;ll find the system that truly fits your needs.</p>
+        <p>Treasury teams are always surprised by how many new and innovative solutions now exist. Expanding your view of the market greatly increases the chance that you&rsquo;ll find the system that truly fits your needs.</p>
+      </div>
 
-      <h2>Mistake #5: Buying Based on Price Alone</h2>
+      <div class="rt-art-mistake" id="mistake-5">
+        <span class="rt-art-num" aria-hidden="true">5</span>
+        <h2>Buying Based on Price Alone</h2>
+      </div>
 
-      <p><strong>Price &ne; Value.</strong></p>
+      <p class="rt-art-eq">Price &ne; Value.</p>
 
       <p>The fifth and final common reason treasury teams don&rsquo;t select the technology that is the best fit for their operations is simple: They buy on price.</p>
 
@@ -483,32 +723,34 @@
 
       <p>Now don&rsquo;t get me wrong; price does matter. Your company has a budget, and the system needs to deliver enough value to justify the cost. But the lowest subscription or implementation cost doesn&rsquo;t automatically mean the lowest total cost of ownership nor the best value.</p>
 
-      <h3>How to avoid mistake #5</h3>
+      <div class="rt-art-avoid">
+        <h3>How to avoid mistake #5</h3>
 
-      <p>Instead of focusing on price alone, evaluate:</p>
+        <p>Instead of focusing on price alone, evaluate:</p>
 
-      <ul>
-        <li>Functional fit against your requirements</li>
-        <li>Vendor roadmap</li>
-        <li>Service and support</li>
-        <li>Total cost of ownership</li>
-        <li><strong>Scalability.</strong> If you are subscribing to a small solution that only takes a couple of months to implement, only consider what you may need in just 1&ndash;2 years. If you outgrow it and have to implement a more complex solution in a couple of years, that&rsquo;s ok given the time and effort spent. If you are subscribing to a large solution with a year-long implementation, look ahead 3&ndash;5 years. It will be considered a failure if you have to do it all over again too soon.</li>
-      </ul>
+        <ul>
+          <li>Functional fit against your requirements</li>
+          <li>Vendor roadmap</li>
+          <li>Service and support</li>
+          <li>Total cost of ownership</li>
+          <li><strong>Scalability.</strong> If you are subscribing to a small solution that only takes a couple of months to implement, only consider what you may need in just 1&ndash;2 years. If you outgrow it and have to implement a more complex solution in a couple of years, that&rsquo;s ok given the time and effort spent. If you are subscribing to a large solution with a year-long implementation, look ahead 3&ndash;5 years. It will be considered a failure if you have to do it all over again too soon.</li>
+        </ul>
 
-      <p>A higher subscription cost may ultimately deliver far greater value if the system better supports your treasury strategy.</p>
+        <p>A higher subscription cost may ultimately deliver far greater value if the system better supports your treasury strategy.</p>
 
-      <p>Price does matter, but value matters more:</p>
+        <p>Price does matter, but value matters more:</p>
 
-      <ul>
-        <li>Select the system that best meets your requirements and then negotiate to the price and terms you need.</li>
-        <li>Most vendors are willing to work with serious buyers who have completed a thoughtful process and can clearly verbalize why their product is the preferred choice.</li>
-      </ul>
+        <ul>
+          <li>Select the system that best meets your requirements and then negotiate to the price and terms you need.</li>
+          <li>Most vendors are willing to work with serious buyers who have completed a thoughtful process and can clearly verbalize why their product is the preferred choice.</li>
+        </ul>
 
-      <p>TMS solutions ARE NOT commodities. Put in the time and effort to run a fast, efficient, and objective selection process. You will be glad you did.</p>
+        <p>TMS solutions ARE NOT commodities. Put in the time and effort to run a fast, efficient, and objective selection process. You will be glad you did.</p>
+      </div>
 
       <h2>That completes my five common selection errors</h2>
 
-      <ol>
+      <ol class="rt-art-recap">
         <li>Not having clear, written, and prioritized requirements.</li>
         <li>Buying what looks good, including beautiful dashboards and the latest technology buzzwords.</li>
         <li>Buying from the salesperson you like the most.</li>

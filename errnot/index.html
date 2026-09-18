@@ -129,15 +129,16 @@
             text-decoration: none !important;
         }
 
-        /* Hero Background */
+        /* Compact introduction keeps the six-step method close to the top. */
         .hero-bg {
-            background: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+            background: #f8f8f8;
+            padding: 52px 0 36px;
             position: relative;
             overflow: hidden;
         }
 
         .hero-bg::before {
-            content: '';
+            content: none;
             position: absolute;
             top: 0;
             left: 0;
@@ -148,6 +149,15 @@
                 radial-gradient(circle at 80% 80%, rgba(143, 71, 246, 0.06) 0%, transparent 50%);
             pointer-events: none;
         }
+        .hero-bg h1 { font-size: clamp(2.3rem, 5vw, 3.5rem); letter-spacing: -0.035em; color: #281345; }
+        .hero-bg p { margin-bottom: 0; max-width: 38em; color: #393939; }
+        .hero-bg .gradient-text { background: none; -webkit-text-fill-color: #7216f4; color: #7216f4; }
+        .errnot-intro { padding: 32px 0 12px; }
+        .errnot-intro .glass-card { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; backdrop-filter: none; transform: none; }
+        .errnot-intro .glass-card::before { content: none; }
+        .errnot-intro h2 { font-size: 1.5rem; text-align: left; margin-bottom: 18px; line-height: 1.3; }
+        .errnot-intro .gradient-text { background: none; -webkit-text-fill-color: #281345; color: #281345; }
+        .errnot-intro p { font-size: 1rem; line-height: 1.65; color: #393939; margin-bottom: 16px; }
 
         .step-number {
             width: 60px;
@@ -164,17 +174,17 @@
         }
 
         .testimonial-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            border: 1px solid rgba(199, 125, 255, 0.2);
-            box-shadow: 0 4px 20px rgba(114, 22, 244, 0.08);
+            background: #f8f4ff;
+            padding: 36px 40px;
+            border-radius: 0;
+            border: 0;
+            box-shadow: none;
             height: 100%;
             position: relative;
         }
 
         .testimonial-card::before {
-            content: '"';
+            content: none;
             position: absolute;
             top: -10px;
             left: 20px;
@@ -184,8 +194,8 @@
         }
 
         .testimonial-quote {
-            font-size: 1.6rem;
-            font-style: italic;
+            font-size: 1.25rem;
+            font-style: normal;
             margin-bottom: 32px;
             line-height: 1.6;
             font-weight: 500;
@@ -199,15 +209,15 @@
         }
 
         .testimonial-role {
-            opacity: 0.8;
+            opacity: 1;
             margin-top: 8px;
             font-size: 1rem;
-            color: var(--gray-text);
+            color: #393939;
         }
 
         .testimonial-slider {
             position: relative;
-            padding: 0 60px;
+            padding: 0 0 72px;
         }
 
         .testimonial-container {
@@ -225,17 +235,16 @@
 
         .testimonial-nav {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+            top: auto;
+            bottom: 0;
+            transform: none;
             width: 50px;
             height: 50px;
-            border-radius: 9999px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(199, 125, 255, 0.2);
+            border-radius: 50%;
+            background: #ffffff;
+            border: 1px solid #7216f4;
             color: var(--primary-purple);
-            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.15);
+            box-shadow: none;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -245,17 +254,22 @@
         }
 
         .testimonial-nav:hover:not(:disabled) {
-            transform: translateY(-50%) scale(1.1);
-            box-shadow: 0 8px 24px rgba(114, 22, 244, 0.25);
+            transform: none;
+            background: #f0eaf9;
+            box-shadow: none;
         }
 
         .testimonial-nav:disabled {
-            opacity: 0.4;
+            opacity: 1;
+            color: #393939;
+            background: #f8f8f8;
+            border-color: #bebebe;
             cursor: not-allowed;
         }
 
         .testimonial-nav.prev {
-            left: 0;
+            left: auto;
+            right: 64px;
         }
 
         .testimonial-nav.next {
@@ -264,16 +278,19 @@
 
         .testimonial-dots {
             display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 1rem;
+            justify-content: flex-start;
+            gap: 20px;
+            position: absolute;
+            bottom: 18px;
+            left: 0;
+            margin: 0;
         }
 
         .testimonial-dot {
             width: 12px;
             height: 12px;
             border-radius: 9999px;
-            background: rgba(114, 22, 244, 0.3);
+            background: #bebebe;
             cursor: pointer;
             transition: background 0.3s;
         }
@@ -284,7 +301,7 @@
 
         .testimonial-progress {
             position: absolute;
-            bottom: 0;
+            bottom: 72px;
             left: 0;
             height: 4px;
             width: 0;
@@ -293,8 +310,11 @@
 
 
         @media (max-width: 640px) {
-            .testimonial-slider { padding: 0 40px; }
+            .testimonial-slider { padding: 0 0 72px; }
+            .testimonial-card { padding: 26px 22px; }
+            .testimonial-quote { font-size: 1.05rem; line-height: 1.7; }
         }
+        @media (prefers-reduced-motion: reduce) { .testimonial-track { transition: none; } }
 
         .section-padding {
             padding: 80px 0;
@@ -320,6 +340,24 @@
            a rounded box with a shadow reads as a UI element, not as prose. So: a strip
            of six anchors at the top, then each step as a plain section with a letter,
            a hairline rule between them, and one comfortable measure of text. */
+        .errnot-experts { background: #f8f8f8; }
+        .errnot-experts h2 { color: #281345; font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: 24px; }
+        .errnot-experts .gradient-text { background: none; -webkit-text-fill-color: #7216f4; color: #7216f4; }
+        .errnot-experts p, .errnot-experts .text-gray-500 { color: #393939; }
+        .errnot-experts > div > p { font-size: 1.05rem; max-width: 42rem; margin-bottom: 36px; }
+        .errnot-experts .glass-card, .errnot-experts .glass-card:hover { border: 0; border-top: 2px solid #281345; border-radius: 0; padding: 28px 0; background: none; box-shadow: none; backdrop-filter: none; transform: none; text-align: left; }
+        .errnot-experts .glass-card::before { content: none; }
+        .errnot-experts .glass-card > .rounded-full { display: none; }
+        .errnot-experts .glass-card > .text-sm { color: #5b0acd; font-size: 0.72rem; }
+        .errnot-experts h3 { color: #281345; font-size: 1.8rem; }
+        .errnot-experts .glass-card p { font-size: 1rem; }
+        .errnot-experts .items-center { align-items: flex-start; }
+        .errnot-experts .justify-center { justify-content: flex-start; }
+        .errnot-experts a.bg-blue-600 { background: #7216f4; color: #ffffff; }
+        .errnot-experts a.bg-blue-600:hover { background: #5b0acd; }
+        .errnot-experts a.bg-gray-100 { background: #ffffff; color: #393939; border: 1px solid #bebebe; }
+        .errnot-experts a:focus-visible { outline: 2px solid #7216f4; outline-offset: 4px; }
+        @media (max-width: 768px) { .errnot-experts .grid { grid-template-columns: 1fr; gap: 12px; } }
         .errnot-strip {
             display: grid;
             grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -333,9 +371,9 @@
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            padding: 14px 6px;
-            border: 1px solid #e6dcf9;
-            border-radius: 12px;
+            padding: 20px 0;
+            border-top: 2px solid #7216f4;
+            border-radius: 0;
             background: #ffffff;
             text-decoration: none;
             transition: border-color .15s ease, background .15s ease;
@@ -344,11 +382,11 @@
         .errnot-strip a:hover,
         .errnot-strip a:focus-visible {
             border-color: var(--primary-purple);
-            background: #faf7ff;
+            background: #f8f4ff;
         }
 
         .errnot-strip b {
-            font-size: 1.15rem;
+            font-size: 2rem;
             font-weight: 800;
             color: var(--primary-purple);
             line-height: 1;
@@ -358,78 +396,151 @@
             font-size: 0.72rem;
             font-weight: 600;
             letter-spacing: 0.02em;
-            color: #4b5563;
+            color: #393939;
             text-align: center;
             line-height: 1.25;
         }
 
-        /* ERR NOT funnel - HTML text, no image. Bands narrow as the field narrows. */
-        .rt-funnel { margin: 0 auto 4rem; max-width: 48rem; }
-
+        /* Broad funnel silhouette with live HTML labels and stage descriptions. */
+        .rt-funnel {
+            margin: 40px auto;
+            padding: 32px;
+            max-width: 48rem;
+            background: #f8f4ff;
+        }
         .rt-funnel figcaption {
-            font-size: 0.82rem;
+            margin: 0 0 28px;
+            max-width: 24rem;
+            font-size: 1.45rem;
             font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #7e7e7e;
-            margin-bottom: 0.75rem;
+            line-height: 1.25;
+            letter-spacing: -0.025em;
+            color: #281345;
         }
-
         .rt-funnel ol { margin: 0; padding: 0; list-style: none; }
-
         .rt-funnel li {
-            width: var(--w);
-            margin: 0 auto 6px;
-            padding: 14px 22px;
-            border-radius: 8px;
-            color: #ffffff;
-            background: var(--c);
+            display: grid;
+            grid-template-columns: 44% minmax(0, 1fr);
+            gap: 0 28px;
+            align-items: center;
+            min-height: 104px;
+            margin: 0;
+            padding: 0;
+            background: none;
+            position: relative;
         }
-
+        .rt-funnel li::before {
+            content: "";
+            grid-column: 1;
+            grid-row: 1;
+            align-self: stretch;
+            justify-self: center;
+            width: calc(var(--w) * 1.6667 - 66.67%);
+            margin-bottom: 5px;
+            background: #7216f4;
+            clip-path: polygon(0 0, 100% 0, calc(100% - 23px) 100%, 23px 100%);
+        }
+        .rt-funnel li:nth-child(1)::before { background: #e3d4fb; }
+        .rt-funnel li:nth-child(2)::before { background: #c77dff; }
+        .rt-funnel li:nth-child(3)::before { background: #8f47f6; }
+        .rt-funnel li:nth-child(4)::before { background: #7216f4; }
+        .rt-funnel li:nth-child(5)::before { background: #5b0acd; }
         .rt-funnel li b {
-            display: block;
-            font-size: 1.05rem;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        .rt-funnel li span {
-            display: block;
-            margin-top: 3px;
-            font-size: 0.94rem;
-            line-height: 1.45;
-            color: rgba(255, 255, 255, 0.92);
-        }
-
-        .rt-funnel-out {
-            margin: 0.875rem 0 0;
+            grid-column: 1;
+            grid-row: 1;
+            justify-self: center;
+            z-index: 1;
+            width: calc(var(--w) * 1.6667 - 80%);
             text-align: center;
+            font-size: 0.98rem;
             font-weight: 700;
-            color: #7216f4;
+            line-height: 1.2;
+            color: #ffffff;
+        }
+        .rt-funnel li:nth-child(-n+2) b { color: #281345; }
+        .rt-funnel li span {
+            grid-column: 2;
+            grid-row: 1;
+            display: block;
+            margin: 0;
+            padding: 12px 0;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: #393939;
+        }
+        .rt-funnel-out {
+            margin: 26px 0 0;
+            padding: 0;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #5b0acd;
+        }
+        @media (max-width: 640px) {
+            .rt-funnel { padding: 24px 20px; }
+            .rt-funnel figcaption { font-size: 1.3rem; }
+            .rt-funnel li {
+                grid-template-columns: 70px minmax(0, 1fr);
+                gap: 0 20px;
+                min-height: 110px;
+            }
+            .rt-funnel li::before {
+                grid-row: 1 / 3;
+                clip-path: polygon(0 0, 100% 0, calc(100% - 5.2px) 100%, 5.2px 100%);
+            }
+            .rt-funnel li b, .rt-funnel li:nth-child(-n+2) b {
+                grid-column: 2;
+                grid-row: 1;
+                justify-self: start;
+                align-self: end;
+                width: auto;
+                padding-top: 16px;
+                color: #281345;
+                text-align: left;
+            }
+            .rt-funnel li span { grid-row: 2; padding: 6px 0 20px; align-self: start; }
         }
 
-        @media (max-width: 640px) {
-            .rt-funnel li { width: 100%; }
-        }
+        .errnot-actions { background: #f8f4ff; }
+        .errnot-actions h2, .errnot-intro h2 { color: #281345; }
+        .errnot-actions > div > p { color: #393939; opacity: 1; }
+        .errnot-actions .rt-decoration { display: none; }
+        .errnot-actions .max-w-5xl { max-width: 1180px; }
+        .errnot-actions .grid > div { display: flex; flex-direction: column; padding: 26px; border: 1px solid #ebe4f7; border-radius: 8px; box-shadow: none; }
+        .errnot-actions .grid > div > .text-4xl { display: none; }
+        .errnot-actions .grid > div > a { margin-top: auto; font-size: 0.85rem !important; padding: 14px 16px !important; }
+        .errnot-actions h3 { color: #281345; font-size: 1.05rem; }
+        .errnot-actions .text-purple-700, .errnot-actions .text-gray-900 { color: #281345; }
+        .errnot-actions .text-gray-600 { color: #393939; }
+        .errnot-actions .cta-secondary { background: #ffffff !important; color: #5b0acd !important; border-color: #7216f4 !important; }
+        .errnot-actions .cta-secondary:hover { background: #7216f4 !important; color: #ffffff !important; }
+        .errnot-actions .grid > div:first-child { background: #281345; }
+        .errnot-actions .grid > div:first-child h3, .errnot-actions .grid > div:first-child p { color: #ffffff; }
+        .errnot-actions .grid > div:first-child a { border-color: #ffffff !important; }
+        .errnot-actions a:focus-visible { outline: 2px solid #7216f4; outline-offset: 4px; }
+        .errnot-actions .grid > div:first-child a:focus-visible { outline-color: #ffffff; }
+        @media (max-width: 900px) { .errnot-actions .grid { grid-template-columns: 1fr; } }
 
         .errnot-step { scroll-margin-top: 120px; }
 
         .errnot-step + .errnot-step {
             margin-top: 3.5rem;
-            padding-top: 3.5rem;
-            border-top: 1px solid #ebe4f7;
+            padding-top: 2.5rem;
+            border-top: 2px solid #281345;
         }
 
         .errnot-step-head {
-            display: flex;
-            align-items: baseline;
-            gap: 14px;
-            margin-bottom: 0.4rem;
+            display: grid;
+            grid-template-columns: 64px minmax(0, 1fr);
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 12px;
         }
 
         .errnot-letter {
             flex: 0 0 auto;
-            font-size: 2.6rem;
+            font-size: 3.8rem;
             font-weight: 800;
             line-height: 0.9;
             color: var(--primary-purple);
@@ -439,39 +550,64 @@
         .errnot-step-head h3 {
             font-size: 1.75rem;
             font-weight: 700;
-            color: #111827;
+            color: #281345;
             margin: 0;
             line-height: 1.2;
         }
 
         .errnot-tag {
-            margin: 0 0 1.5rem 3.6rem;
-            font-size: 1.02rem;
-            color: #6b7280;
+            margin: 16px 0 28px;
+            padding: 0 0 18px;
+            border-bottom: 1px solid #e3d4fb;
+            font-size: 1.18rem;
+            font-weight: 500;
+            color: #5b0acd;
             line-height: 1.5;
+            max-width: 38em;
         }
 
-        .errnot-body { font-size: 1.08rem; color: #4b5563; line-height: 1.75; }
+        .errnot-step-head h3:only-child { grid-column: 1 / -1; }
+        .errnot-body { font-size: 1.08rem; color: #393939; line-height: 1.75; }
+        .errnot-body p { color: #393939; }
         .errnot-body > * + * { margin-top: 1.15rem; }
         .errnot-body a { color: var(--primary-purple); text-decoration: underline; text-underline-offset: 2px; }
-        .errnot-body a:hover { color: var(--deep-purple); }
-        .errnot-body strong { color: #111827; }
+        .errnot-body a:hover { color: #5b0acd; }
+        .errnot-body strong { color: #281345; }
         .errnot-body ul { padding-left: 1.4rem; list-style: disc; }
         .errnot-body li + li { margin-top: 0.55rem; }
+        .errnot-delivers { margin-top: 32px; padding: 28px; background: #281345; color: #ffffff; }
+        .errnot-delivers h4 { margin: 0 0 22px; font-size: 1.2rem; line-height: 1.3; letter-spacing: -0.02em; color: #ffffff; }
+        .errnot-body .errnot-delivers ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; }
+        .errnot-body .errnot-delivers li { margin: 0; padding: 16px 0; border-top: 1px solid #8f47f6; color: #ffffff; }
+        @media (max-width: 640px) { .errnot-body .errnot-delivers ul { grid-template-columns: 1fr; } }
 
         .errnot-cols {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0;
+            margin: 32px 0;
+            border-top: 2px solid #281345;
+            border-bottom: 1px solid #bebebe;
         }
+
+        .errnot-cols > div { display: flex; flex-direction: column; padding: 28px; background: #f8f8f8; }
+        .errnot-cols > div:last-child { background: #f0eaf9; }
+        .errnot-cols ul { padding: 0; list-style: none; margin: 4px 0 24px; }
+        .errnot-cols li { padding: 14px 0; border-top: 1px solid #bebebe; }
+        .errnot-cols li + li { margin-top: 0; }
+        .errnot-cols ul + p { margin-top: auto; padding-top: 20px; border-top: 2px solid #281345; font-weight: 600; }
+        .errnot-cols p { color: #393939; line-height: 1.7; }
+        .errnot-cols p:last-child:not(:first-of-type) { padding-top: 18px; border-top: 1px solid #bebebe; }
+        .errnot-cols strong { color: #281345; }
 
         .errnot-cols h4 {
             margin: 0 0 0.7rem;
-            font-size: 0.76rem;
+            font-size: 1.05rem;
             font-weight: 700;
-            letter-spacing: 0.09em;
-            text-transform: uppercase;
-            color: #6b7280;
+            letter-spacing: -0.01em;
+            line-height: 1.4;
+            text-wrap: balance;
+            color: #393939;
         }
 
         .errnot-cols > div:last-child h4 { color: var(--primary-purple); }
@@ -479,8 +615,11 @@
         .errnot-cols p { font-size: 1rem; }
 
         .errnot-pull {
-            padding-left: 1.4rem;
-            border-left: 3px solid #d8c9f7;
+            margin: 28px 0;
+            padding: 24px 0;
+            border: 0;
+            border-top: 1px solid #bebebe;
+            border-bottom: 1px solid #bebebe;
             font-size: 1.02rem;
         }
 
@@ -489,14 +628,20 @@
             margin-top: 0.8rem;
             font-style: normal;
             font-size: 0.88rem;
-            color: #6b7280;
+            color: #393939;
         }
 
         @media (max-width: 768px) {
-            .errnot-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 2.5rem; }
-            .errnot-letter { font-size: 2rem; }
+            .errnot-cols { grid-template-columns: 1fr; }
+            .errnot-cols > div { padding: 24px 20px; }
+            .errnot-strip { grid-template-columns: 1fr; gap: 0; margin-bottom: 2.5rem; }
+            .errnot-strip a { flex-direction: row; gap: 24px; padding: 16px 4px; border-top-width: 1px; }
+            .errnot-strip b { width: 32px; }
+            .errnot-strip span { font-size: 0.95rem; text-align: left; }
+            .errnot-step-head { grid-template-columns: 36px minmax(0, 1fr); gap: 14px; }
+            .errnot-letter { font-size: 2.8rem; }
             .errnot-step-head h3 { font-size: 1.4rem; }
-            .errnot-tag { margin-left: 0; }
+            .errnot-tag { margin-left: 0; font-size: 1.05rem; }
             .errnot-step + .errnot-step { margin-top: 2.5rem; padding-top: 2.5rem; }
         }
     </style>
@@ -513,28 +658,11 @@
                 Real Treasury's smarter, faster way to select technology—independent and repeatable.
             </p>
             
-            <!-- Simplified Hero CTAs - Just 2 clear options -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <a href="https://realtreasury.com/treasury-tech-portal/" class="open-video-modal tpa-btn-ready">
-                    🎥 Explore the Treasury Tech Portal
-                </a>
-                <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled"
-                   target="_blank"
-                   class="cta-secondary">
-                    📅 Book 15-Min Call
-                </a>
-            </div>
-
-            <div class="max-w-4xl mx-auto">
-                <img loading="lazy" src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
-                     alt="ERR NOT Method Framework" 
-                     class="w-full rounded-2xl shadow-2xl border-4 border-white">
-            </div>
         </div>
     </section>
 
     <!-- Problem Statement -->
-    <section class="bg-white section-padding">
+    <section class="bg-white section-padding errnot-intro">
         <div class="container mx-auto px-6 max-w-4xl">
             <div class="glass-card rounded-2xl p-8 md:p-12 relative">
                 <h2 class="text-3xl md:text-4xl font-bold mb-6 text-center">
@@ -751,7 +879,7 @@
                             </div>
                         </div>
                         <p>
-                            Real Treasury writes a custom demo script for each client. Every vendor must demo the same
+                            Real Treasury writes a <a href="https://www.youtube.com/watch?v=IFBg6hFB7v4">custom demo script</a> for each client. Every vendor must demo the same
                             scenarios, in the same order, using a subset of your actual data and transactions where
                             possible. You get an apples-to-apples comparison. Without a script, a demo can be nothing
                             but the flashiest, best-looking parts of the product, which are the equivalent of movie
@@ -766,24 +894,6 @@
                             Make sure you have your list of requirements in front of you while you write your script.
                             They should be the basis of the script you produce.
                         </p>
-                        <blockquote class="errnot-pull">
-                            <p>
-                                I spent over 20 years as a solution consultant (the position was called numerous
-                                things over the years, solutions engineer, treasury consultant, product specialist,
-                                etc., even Demo Woman) across multiple TMS platforms. I know how vendors make products
-                                look easy and simple in the controlled environment of a demo. And I know which
-                                questions to ask to pull back the curtain when too much advance work has been done to
-                                really illustrate a realistic workflow for the client. We advocate for our clients
-                                during demos, asking the tough questions that most buyers wouldn't know to ask.
-                            </p>
-                            <p>
-                                This aspect of what we do is hard for a treasury team to replicate without the direct
-                                experience of having delivered many demos. So, my advice is that if you have a
-                                question, ask it. If the answer seems too glib, ask more. Better than just asking for
-                                a verbal answer, ask the demo person to SHOW you the answer in the product.
-                            </p>
-                            <cite>Tracey Knight, Co-Founder and Principal Consultant</cite>
-                        </blockquote>
                         <p>
                             Using a demo script is how you can stop getting distracted by bells and whistles and focus
                             on your requirements. By doing so, you can uncover the weaknesses of a product (not just
@@ -873,8 +983,8 @@
                             technology. That is what a consultant can provide, but not the consultant doing the
                             technical implementation.
                         </p>
-                        <div>
-                            <h4 class="text-xs font-bold uppercase tracking-widest text-purple-600 mb-3">
+                        <div class="errnot-delivers">
+                            <h4>
                                 What Real Treasury's Transformation delivers
                             </h4>
                             <ul>
@@ -922,16 +1032,16 @@
                     <div class="testimonial-track">
                         <div class="testimonial-slide">
                             <div class="testimonial-card">
-                                <div class="testimonial-quote">&ldquo;What I like about this guide is that it&rsquo;s genuinely impartial&hellip; If you need a guide to the treasury technology market, this is it. It&rsquo;s almost like a workbook. It helps you see who&rsquo;s out there, what they offer and where they might fit. It&rsquo;s comprehensive, balanced and, most importantly, it doesn&rsquo;t leave you wondering what you might have missed.&rdquo;</div>
-                                <div class="testimonial-author">Mike Richards</div>
-                                <div class="testimonial-role">CEO &amp; Founder, The Treasury Recruitment Company</div>
+                                <div class="testimonial-quote">If another treasurer at another company asked me whether this process was worth following, I would say absolutely. You certainly need to get help from people who have done this, who have worked in the industry, who know all those providers, and who fully understand how a treasury department works. You can't do this on your own, you need to get help to help you choose the right system for yourselves.</div>
+                                <div class="testimonial-author">Katherine Medley</div>
+                                <div class="testimonial-role">Group Treasurer, NSG Group</div>
                             </div>
                         </div>
                         <div class="testimonial-slide">
                             <div class="testimonial-card">
-                                <div class="testimonial-quote">&ldquo;Most treasury technology guides are written by vendors or consultants and read like sales collateral dressed up as advice. This one was written by practitioners with decades of hands-on systems experience, and it reads that way. You get an unbiased view of the entire landscape, a thorough summary of the systems on the market, and clear, experience-tested advice on the parts of the selection process that actually trip teams up.&rdquo;</div>
-                                <div class="testimonial-author">Zac Nesper</div>
-                                <div class="testimonial-role">Founder and Managing Director, Treasury Outcomes LLC</div>
+                                <div class="testimonial-quote">Selecting the right TMS is critical, and there’s a big universe out there and it’s hard to navigate. We tried it on our own. When we got to the point of demo scripts, we knew it was important but didn’t quite know how to go about it. Until we brought in Real Treasury that had the expertise to drive the project with us and make sure we were looking at the right things.</div>
+                                <div class="testimonial-author">Andrea Leifer</div>
+                                <div class="testimonial-role">Treasurer, Legends Global</div>
                             </div>
                         </div>
                     </div>
@@ -943,32 +1053,11 @@
                 <div class="testimonial-dots"></div>
             </div>
 
-            <!-- Results Stats -->
-            <div class="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl p-8 md:p-12 text-white text-center">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div>
-                        <div class="text-4xl font-bold mb-2">4-6 Weeks</div>
-                        <div class="text-purple-200">Average Selection Time</div>
-                    </div>
-                    <div>
-                        <div class="text-4xl font-bold mb-2">100+</div>
-                        <div class="text-purple-200">Vendors Evaluated</div>
-                    </div>
-                    <div>
-                        <div class="text-4xl font-bold mb-2">100%</div>
-                        <div class="text-purple-200">Independent &amp; Unbiased</div>
-                    </div>
-                    <div>
-                        <div class="text-4xl font-bold mb-2">45+</div>
-                        <div class="text-purple-200">Years Experience</div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
     <!-- Meet the Experts -->
-    <section class="bg-gray-50 section-padding">
+    <section class="bg-gray-50 section-padding errnot-experts">
         <div class="container mx-auto px-6 max-w-5xl">
             <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
                 Meet Your <span class="gradient-text">Experts</span>
@@ -1060,7 +1149,7 @@
     </section>
 
     <!-- Final CTA Section - Three Clear Options -->
-    <section class="bg-gradient-to-r from-purple-50 to-purple-200 section-padding">
+    <section class="bg-gradient-to-r from-purple-50 to-purple-200 section-padding errnot-actions">
         <div class="container mx-auto px-6 text-center text-gray-900">
             <h2 class="text-4xl md:text-5xl font-bold mb-6">
                 Ready to Apply the <span class="text-purple-700">ERR NOT™</span> Method?
@@ -1084,10 +1173,10 @@
                 <!-- Option 2: On-Demand Workshop -->
                 <div class="bg-white rounded-2xl p-8 border border-purple-200 shadow-md">
                     <div class="text-4xl mb-4">▶️</div>
-                    <h3 class="text-xl font-bold mb-4">Watch On-Demand Workshop</h3>
+                    <h3 class="text-xl font-bold mb-4">On-Demand Workshop</h3>
                     <p class="text-gray-600 mb-6 text-sm">Expert-led recording to align your team and apply ERR NOT™ — on your schedule</p>
                     <a href="https://realtreasury.com/on-demand-workshop/" class="w-full text-center block cta-secondary">
-                        Watch Workshop
+                        Workshop
                     </a>
                 </div>
 
@@ -1105,7 +1194,7 @@
             </div>
 
             <p class="text-purple-700 mt-8 text-sm">
-                🕒 All options are free • 📞 No sales pressure • 🎯 Immediate actionable insights
+                <span class="rt-decoration" aria-hidden="true">🕒</span> All options are free • <span class="rt-decoration" aria-hidden="true">📞</span> No sales pressure • <span class="rt-decoration" aria-hidden="true">🎯</span> Immediate actionable insights
             </p>
         </div>
     </section>

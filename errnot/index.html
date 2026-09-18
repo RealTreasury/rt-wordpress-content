@@ -645,6 +645,44 @@
         .errnot-cols ul { font-size: 1rem; }
         .errnot-cols p { font-size: 1rem; }
 
+        .errnot-voice {
+            display: grid;
+            grid-template-columns: 96px minmax(0, 1fr);
+            gap: 28px;
+            align-items: start;
+            margin-top: 2rem;
+            padding-top: 1.75rem;
+            padding-bottom: 1.75rem;
+            border-top: 2px solid #281345;
+            border-bottom: 1px solid #bebebe;
+        }
+
+        .errnot-voice img {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        .errnot-voice-from {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--primary-purple);
+            margin-bottom: 0.9rem;
+        }
+
+        .errnot-voice p:not(.errnot-voice-from) { font-size: 1.12rem; }
+        .errnot-voice p + p { margin-top: 1.15rem; }
+
+        @media (max-width: 700px) {
+            .errnot-voice { grid-template-columns: 64px minmax(0, 1fr); gap: 18px; }
+            .errnot-voice img { width: 64px; height: 64px; }
+            .errnot-voice p:not(.errnot-voice-from) { font-size: 1.05rem; }
+        }
+
         .errnot-pull {
             margin: 28px 0;
             padding: 24px 0;
@@ -906,6 +944,32 @@
                             Make sure you have your list of requirements in front of you while you write your script.
                             They should be the basis of the script you produce.
                         </p>
+                        <div class="errnot-voice">
+                            <img loading="lazy"
+                                 src="https://realtreasury.com/wp-content/uploads/2025/08/TraceyHeadshot-3.webp"
+                                 alt="Tracey Knight, Co-Founder and Principal Consultant at Real Treasury"
+                                 width="96" height="96">
+                            <div>
+                                <p class="errnot-voice-from">From Tracey Knight, Co-Founder and Principal Consultant</p>
+                                <p>
+                                    I spent over 20 years as a solution consultant (the position was called numerous
+                                    things over the years, solutions engineer, treasury consultant, product
+                                    specialist, etc., even Demo Woman) across multiple TMS platforms. I know how
+                                    vendors make products look easy and simple in the controlled environment of a
+                                    demo. And I know which questions to ask to pull back the curtain when too much
+                                    advance work has been done to really illustrate a realistic workflow for the
+                                    client. We advocate for our clients during demos, asking the tough questions that
+                                    most buyers wouldn't know to ask.
+                                </p>
+                                <p>
+                                    This aspect of what we do is hard for a treasury team to replicate without the
+                                    direct experience of having delivered many demos. So, my advice is that if you
+                                    have a question, ask it. If the answer seems too glib, ask more. Better than just
+                                    asking for a verbal answer, ask the demo person to SHOW you the answer in the
+                                    product.
+                                </p>
+                            </div>
+                        </div>
                         <p>
                             Using a demo script is how you can stop getting distracted by bells and whistles and focus
                             on your requirements. By doing so, you can uncover the weaknesses of a product (not just

@@ -30,83 +30,136 @@
         .rt-art h3,
         .rt-art figure { margin: 0; }
 
-        .rt-art-fig { margin: 32px 0 28px; }
+        .rt-art-fig {
+            display: grid;
+            grid-template-columns: 320px minmax(0, 1fr);
+            gap: 32px;
+            align-items: center;
+            margin: 32px 0 28px;
+        }
 
-        /* ERR NOT funnel — HTML text, no image. Bands narrow as the field narrows. */
+        /* Broad funnel silhouette with live HTML labels and stage descriptions. */
         .rt-funnel {
-            margin: 28px 0 32px;
+            margin: 40px auto;
+            padding: 32px;
+            max-width: 48rem;
+            background: #f8f4ff;
         }
-
         .rt-funnel figcaption {
-            font-size: 0.82rem;
+            margin: 0 0 28px;
+            max-width: 24rem;
+            font-size: 1.45rem;
             font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #7e7e7e;
-            margin-bottom: 12px;
+            line-height: 1.25;
+            letter-spacing: -0.025em;
+            color: #281345;
         }
-
-        .rt-funnel ol {
+        .rt-art .rt-funnel ol { margin: 0; padding: 0; list-style: none; }
+        .rt-art .rt-funnel li {
+            display: grid;
+            grid-template-columns: 44% minmax(0, 1fr);
+            gap: 0 28px;
+            align-items: center;
+            min-height: 104px;
             margin: 0;
             padding: 0;
-            list-style: none;
+            background: none;
+            position: relative;
         }
-
-        .rt-funnel li {
-            width: var(--w);
-            margin: 0 auto 6px;
-            padding: 14px 22px;
-            border-radius: 8px;
-            color: #ffffff;
-            background: var(--c);
+        .rt-art .rt-funnel li::before {
+            content: "";
+            grid-column: 1;
+            grid-row: 1;
+            align-self: stretch;
+            justify-self: center;
+            width: calc(var(--w) * 1.6667 - 66.67%);
+            margin-bottom: 5px;
+            background: #7216f4;
+            clip-path: polygon(0 0, 100% 0, calc(100% - 23px) 100%, 23px 100%);
         }
-
+        .rt-art .rt-funnel li:nth-child(1)::before { background: #e3d4fb; }
+        .rt-art .rt-funnel li:nth-child(2)::before { background: #c77dff; }
+        .rt-art .rt-funnel li:nth-child(3)::before { background: #8f47f6; }
+        .rt-art .rt-funnel li:nth-child(4)::before { background: #7216f4; }
+        .rt-art .rt-funnel li:nth-child(5)::before { background: #5b0acd; }
         .rt-funnel li b {
-            display: block;
-            font-size: 1.05rem;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        .rt-funnel li span {
-            display: block;
-            margin-top: 3px;
-            font-size: 0.94rem;
-            line-height: 1.45;
-            color: rgba(255, 255, 255, 0.92);
-        }
-
-        .rt-funnel-out {
-            margin: 14px 0 0;
+            grid-column: 1;
+            grid-row: 1;
+            justify-self: center;
+            z-index: 1;
+            width: calc(var(--w) * 1.6667 - 80%);
             text-align: center;
+            font-size: 0.98rem;
             font-weight: 700;
-            color: #7216f4;
+            line-height: 1.2;
+            color: #ffffff;
         }
-
+        .rt-funnel li:nth-child(-n+2) b { color: #281345; }
+        .rt-funnel li span {
+            grid-column: 2;
+            grid-row: 1;
+            display: block;
+            margin: 0;
+            padding: 12px 0;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: #393939;
+        }
+        .rt-art .rt-funnel-out {
+            margin: 26px 0 0;
+            padding: 0;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #5b0acd;
+        }
         @media (max-width: 640px) {
-            .rt-funnel li { width: 100%; }
+            .rt-funnel { padding: 24px 20px; }
+            .rt-funnel figcaption { font-size: 1.3rem; }
+            .rt-art .rt-funnel li {
+                grid-template-columns: 70px minmax(0, 1fr);
+                gap: 0 20px;
+                min-height: 110px;
+            }
+            .rt-art .rt-funnel li::before {
+                grid-row: 1 / 3;
+                clip-path: polygon(0 0, 100% 0, calc(100% - 5.2px) 100%, 5.2px 100%);
+            }
+            .rt-funnel li b, .rt-funnel li:nth-child(-n+2) b {
+                grid-column: 2;
+                grid-row: 1;
+                justify-self: start;
+                align-self: end;
+                width: auto;
+                padding-top: 16px;
+                color: #281345;
+                text-align: left;
+            }
+            .rt-funnel li span { grid-row: 2; padding: 6px 0 20px; align-self: start; }
         }
 
         .rt-art-fig img {
             display: block;
             width: 100%;
-            max-width: 560px;
+            max-width: 320px;
             margin: 0 auto;
             height: auto;
+            border-radius: 50%;
+            mix-blend-mode: multiply;
         }
 
         .rt-art-fig figcaption {
-            max-width: 560px;
-            margin: 10px auto 0;
-            text-align: center;
+            margin: 0;
+            text-align: left;
             font-size: 0.9rem;
             line-height: 1.5;
-            color: #6b6280;
+            color: #393939;
         }
 
         .rt-art-hero {
-            padding: 72px 0 56px;
-            background: linear-gradient(135deg, #f8f4ff 0%, #ffffff 100%);
+            padding: 64px 0 48px;
+            background: #f8f8f8;
             position: relative;
             overflow: hidden;
         }
@@ -115,9 +168,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background:
-                radial-gradient(circle at 18% 28%, rgba(114, 22, 244, 0.07) 0%, transparent 52%),
-                radial-gradient(circle at 82% 72%, rgba(199, 125, 255, 0.05) 0%, transparent 52%);
+            background: none;
             pointer-events: none;
         }
 
@@ -131,29 +182,88 @@
 
         .rt-art-eyebrow {
             display: inline-block;
-            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
-            color: #ffffff;
-            padding: 7px 18px;
-            border-radius: 30px;
+            background: none;
+            color: #5b0acd;
+            padding: 0;
+            border-radius: 0;
             font-size: 0.82rem;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
             margin-bottom: 22px;
         }
 
         .rt-art-hero h1 {
-            font-size: clamp(2rem, 4.6vw, 3rem);
+            font-size: clamp(2.1rem, 4.8vw, 3.5rem);
             font-weight: 800;
             color: #281345;
             line-height: 1.15;
             margin: 0 0 20px;
-            letter-spacing: -0.015em;
+            letter-spacing: -0.035em;
         }
 
         .rt-art-lede {
             font-size: 1.2rem;
             color: #393939;
             line-height: 1.65;
+        }
+
+
+        /* ---- Contents ---- */
+        .rt-art-toc {
+            margin: 34px 0 0;
+            padding: 22px 0;
+            border-top: 1px solid #bebebe;
+            border-bottom: 0;
+        }
+
+        .rt-art-toc h2 {
+            margin: 0 0 12px !important;
+            padding: 0 !important;
+            border: 0 !important;
+            font-size: 0.76rem !important;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #393939 !important;
+        }
+
+        .rt-art-toc ol {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: toc;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 32px;
+        }
+
+        .rt-art-toc li {
+            counter-increment: toc;
+            display: flex;
+            align-items: baseline;
+            margin: 0;
+            padding: 12px 0;
+            border-bottom: 1px solid #ebe4f7;
+            font-size: 0.97rem;
+            break-inside: avoid;
+        }
+
+        .rt-art-toc li::before {
+            content: counter(toc, decimal-leading-zero);
+            margin-right: 10px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 700;
+            color: #5b0acd;
+        }
+
+        .rt-art-toc a { color: #393939 !important; text-decoration: none !important; }
+        .rt-art-toc a:hover { color: #7216f4 !important; text-decoration: underline !important; }
+
+        @media (max-width: 640px) {
+            .rt-art-wrap { padding: 0 20px; }
+            .rt-art-hero { padding: 44px 0 36px; }
+            .rt-art-toc ol { grid-template-columns: 1fr; }
         }
 
 
@@ -213,44 +323,53 @@
 
         /* ---- Outcome pie (page 8 of the guide) ---- */
         .rt-pie {
-            display: flex;
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
             align-items: center;
-            gap: 36px;
-            flex-wrap: wrap;
-            margin: 28px 0 10px;
-            padding: 26px 0;
-            border-top: 1px solid #ebe4f7;
-            border-bottom: 1px solid #ebe4f7;
+            gap: 40px;
+            margin: 36px 0 10px;
+            padding: 36px;
+            background: #f8f4ff;
+            border: 0;
+        }
+        .rt-pie > figcaption {
+            grid-column: 1 / -1;
+            color: #281345;
+            font-size: 1.45rem;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: -0.025em;
         }
 
-        .rt-pie-svg { flex: 0 0 auto; width: 210px; height: 210px; }
+        .rt-pie-svg { width: 250px; height: 250px; max-width: 100%; }
 
-        .rt-pie-key { flex: 1 1 250px; margin: 0; padding: 0; list-style: none; }
+        .rt-art .rt-pie-key { margin: 0; padding: 0; list-style: none; }
 
         .rt-pie-key li {
             display: flex;
-            align-items: baseline;
+            align-items: center;
             gap: 12px;
-            padding: 9px 0;
-            border-bottom: 1px solid #f0eaf9;
+            margin: 0;
+            padding: 16px 0;
+            border-bottom: 1px solid #e3d4fb;
         }
 
         .rt-pie-key li:last-child { border-bottom: 0; }
 
         .rt-pie-key i {
             flex: 0 0 auto;
-            width: 13px;
-            height: 13px;
-            border-radius: 3px;
+            width: 8px;
+            height: 34px;
+            border-radius: 0;
             background: var(--c);
             transform: translateY(1px);
         }
 
         .rt-pie-key b {
-            flex: 0 0 3.2rem;
-            font-size: 1.35rem;
+            flex: 0 0 4rem;
+            font-size: 1.9rem;
             font-weight: 800;
-            color: #131313;
+            color: #281345;
             line-height: 1;
             font-variant-numeric: tabular-nums;
         }
@@ -262,26 +381,28 @@
         /* ---- Shown vs. not shown ---- */
         .rt-art-split {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 16px;
             margin: 28px 0;
         }
 
-        .rt-art-split > div { padding: 22px 24px; border-radius: 14px; }
+        .rt-art-split > div { padding: 28px; border-radius: 4px; }
 
         .rt-art-split > div:first-child { background: #5b0acd; color: #ffffff; }
 
-        .rt-art-split > div:last-child { background: #ffffff; border: 1px dashed #c77dff; }
+        .rt-art-split > div:last-child { background: #f8f8f8; border: 1px solid #ebe4f7; }
 
         .rt-art-split h4 {
-            margin: 0 0 14px;
-            font-size: 0.8rem;
+            margin: 0 0 22px;
+            font-size: 1.05rem;
             font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
+            letter-spacing: -0.01em;
+            line-height: 1.4;
+            text-wrap: balance;
         }
+        .rt-art-split h4 span { display: block; }
 
-        .rt-art-split > div:first-child h4 { color: rgba(255, 255, 255, 0.72); }
+        .rt-art-split > div:first-child h4 { color: #ffffff; }
         .rt-art-split > div:last-child h4 { color: #7216f4; }
 
         .rt-art-split ul { margin: 0; padding: 0; list-style: none; font-size: 1rem; }
@@ -289,56 +410,71 @@
         .rt-art-split li { padding: 9px 0; }
 
         .rt-art-split > div:first-child li { color: #ffffff; }
-        .rt-art-split > div:last-child li { color: #7e7e7e; }
+        .rt-art-split > div:last-child li { color: #393939; }
 
         .rt-art-split > div:first-child li + li { border-top: 1px solid rgba(255, 255, 255, 0.18); }
         .rt-art-split > div:last-child li + li { border-top: 1px solid #f0eaf9; }
 
         /* ---- Market segments ---- */
-        .rt-art-segs { display: grid; gap: 14px; }
+        .rt-art-segs {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+            width: calc(100vw - 80px);
+            max-width: 1080px;
+            margin-left: 50%;
+            transform: translateX(-50%);
+            background: none;
+        }
 
         .rt-art-segs > div {
-            display: grid;
-            grid-template-columns: 210px 1fr;
-            gap: 28px;
-            align-items: start;
-            padding: 24px 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            padding: 32px;
             border: 1px solid #ebe4f7;
-            border-radius: 14px;
+            border-radius: 12px;
             background: #ffffff;
+            box-shadow: 0 8px 24px #2813450d;
         }
 
         .rt-art-segs h3 {
             margin: 0 !important;
-            font-size: 1.15rem;
-            color: #5b0acd;
+            min-height: 110px;
+            padding-bottom: 22px;
+            border-bottom: 2px solid #7216f4;
+            font-size: 1.65rem;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            color: #281345;
         }
-
-        .rt-art-segs h3 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 
         .rt-art-segs .rt-art-segs-sub {
             display: block;
             margin-top: 5px;
             font-size: 0.84rem;
             line-height: 1.4;
-            color: #7e7e7e;
+            color: #393939;
+            letter-spacing: 0;
         }
 
         .rt-art-segs p { font-size: 0.99rem !important; margin: 0; }
 
         .rt-art-segs .rt-art-segs-fit {
             display: block;
-            margin-top: 12px;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid #bebebe;
             font-size: 0.8rem;
             font-weight: 600;
-            color: #7216f4;
+            color: #5b0acd;
         }
 
         /* ---- ERR NOT strip ---- */
-        .rt-art-steps {
+        .rt-art .rt-art-steps {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
+            gap: 0 28px;
             margin: 0;
             padding: 0;
             list-style: none;
@@ -347,15 +483,16 @@
 
         .rt-art-steps li {
             margin: 0;
-            padding: 16px 14px;
-            border: 1px solid #ebe4f7;
-            border-radius: 12px;
+            padding: 24px 0;
+            border: 0;
+            border-top: 2px solid #7216f4;
+            border-radius: 0;
             background: #ffffff;
         }
 
         .rt-art-steps b {
             display: block;
-            font-size: 1.5rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: #7216f4;
             line-height: 1;
@@ -372,8 +509,62 @@
         .rt-art-steps span {
             display: block;
             font-size: 0.85rem;
-            color: #7e7e7e;
+            color: #393939;
             line-height: 1.45;
+        }
+
+        .rt-art-faq { margin: 24px 0 0; }
+        .rt-art-faq dt {
+            margin: 26px 0 0;
+            padding-top: 24px;
+            border-top: 1px solid #bebebe;
+            font-size: 1.14rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #281345;
+        }
+        .rt-art-faq dd { margin: 12px 0 0; font-size: 1.05rem; line-height: 1.7; color: #393939; }
+
+        /* The article culminates in one clear guide download action. */
+        .rt-art .rt-art-cta {
+            margin-top: 56px;
+            padding: 44px;
+            background: #281345;
+            border-radius: 6px;
+            color: #ffffff;
+        }
+        .rt-art .rt-art-cta h2 {
+            margin: 0 !important;
+            padding: 0;
+            border: 0;
+            max-width: 22ch;
+            font-size: clamp(1.65rem, 3.6vw, 2.35rem);
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+        }
+        .rt-art .rt-art-cta p { margin-top: 20px; max-width: 36em; color: #ffffff; }
+        .rt-art .rt-art-cta .rt-art-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            min-height: 54px;
+            margin-top: 28px;
+            padding: 16px 24px;
+            background: #ffffff;
+            color: #5b0acd;
+            border-radius: 4px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .rt-art-btn::after { content: ""; width: 9px; height: 9px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); }
+        .rt-art .rt-art-cta .rt-art-btn:hover { background: #f0eaf9; color: #281345; }
+        .rt-art a:focus-visible { outline: 2px solid #7216f4; outline-offset: 5px; }
+        .rt-art .rt-art-cta .rt-art-btn:focus-visible { outline-color: #ffffff; }
+        @media (max-width: 640px) {
+            .rt-art .rt-art-cta { padding: 28px 24px; }
+            .rt-art .rt-art-cta .rt-art-btn { width: 100%; }
         }
 
         /* ---- Mistake headers ---- */
@@ -429,7 +620,7 @@
         .rt-art-body .rt-art-avoid > * + * { margin-top: 16px; }
 
         /* ---- Recap ---- */
-        .rt-art-recap {
+        .rt-art .rt-art-recap {
             margin: 0;
             padding: 0;
             list-style: none;
@@ -439,26 +630,44 @@
         .rt-art-recap li {
             counter-increment: recap;
             display: flex;
-            gap: 14px;
-            padding: 14px 0;
-            border-bottom: 1px solid #f0eaf9;
+            gap: 22px;
+            align-items: baseline;
+            margin: 0;
+            padding: 22px 0;
+            border-bottom: 1px solid #bebebe;
             font-size: 1.02rem;
         }
 
         .rt-art-recap li::before {
             content: counter(recap);
-            flex: 0 0 1.6rem;
+            flex: 0 0 2rem;
+            font-size: 1.5rem;
+            line-height: 1;
             font-weight: 800;
             color: #7216f4;
             font-variant-numeric: tabular-nums;
         }
 
+        @media (max-width: 900px) {
+            .rt-art-segs { grid-template-columns: 1fr; width: 100%; margin-left: 0; transform: none; }
+            .rt-art-segs h3 { min-height: 0; }
+        }
         @media (max-width: 640px) {
+            .rt-art-fig { grid-template-columns: 1fr; gap: 18px; }
+            .rt-art-fig img { max-width: 240px; }
+            .rt-art-fig figcaption { text-align: center; }
+            .rt-art-split { grid-template-columns: 1fr; }
             .rt-art-toc ol { columns: 1; }
-            .rt-art-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .rt-art-segs > div { grid-template-columns: 1fr; gap: 12px; }
-            .rt-pie { gap: 22px; }
-            .rt-pie-svg { width: 180px; height: 180px; }
+            .rt-art .rt-art-steps { grid-template-columns: 1fr; }
+            .rt-art-steps li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 6px 18px; }
+            .rt-art-steps b { grid-row: 1 / 3; }
+            .rt-art-steps strong, .rt-art-steps span { grid-column: 2; margin: 0; }
+            .rt-art-segs { grid-template-columns: 1fr; }
+            .rt-art-segs > div { gap: 18px; }
+            .rt-art-segs h3 { min-height: 0; }
+            .rt-art-segs > div { padding: 26px; }
+            .rt-pie { grid-template-columns: 1fr; gap: 12px; padding: 24px; }
+            .rt-pie-svg { width: 220px; height: 220px; justify-self: center; }
             .rt-art-mistake { gap: 12px; margin-top: 42px !important; }
             .rt-art-mistake .rt-art-num { font-size: 2.1rem; }
             .rt-art-eq { margin-left: 0; }
@@ -526,22 +735,21 @@
 
       <p>Before we walk through the ERR NOT&trade; method, let&rsquo;s talk about why the traditional approach doesn&rsquo;t work. Roughly 50% of TMS selection projects end in &ldquo;no decision.&rdquo; That means treasury teams spend months talking to vendors, sitting through demos, writing and issuing an RFP, reading and scoring responses, and then making no decision at all. And for those that do make a decision, there is no guarantee that they&rsquo;ve selected the right one, the one that best fits their requirements. Not only that, but of those that make a decision, most are surprised during the implementation by what the system can&rsquo;t do that they thought it could. Surprised by needed workarounds or the need to subscribe to even more modules. Only 5% are truly happy from beginning to end.</p>
 
-      <div class="rt-pie">
+      <figure class="rt-pie">
+        <figcaption>TMS project outcomes.</figcaption>
         <svg class="rt-pie-svg" viewBox="0 0 220 220" role="img" aria-label="TMS project outcomes: 50% no decision, 30% happy but surprised, 15% unhappy, 5% happy from beginning to end." xmlns="http://www.w3.org/2000/svg">
-          <path d="M 110 110 L 110 6 A 104 104 0 0 1 110 214 Z" fill="#5b0acd" stroke="#ffffff" stroke-width="2"/>
-          <path d="M 110 110 L 110 214 A 104 104 0 0 1 11.09 77.862 Z" fill="#7216f4" stroke="#ffffff" stroke-width="2"/>
-          <path d="M 110 110 L 11.09 77.862 A 104 104 0 0 1 77.862 11.09 Z" fill="#9d4edd" stroke="#ffffff" stroke-width="2"/>
-          <path d="M 110 110 L 77.862 11.09 A 104 104 0 0 1 110 6 Z" fill="#c77dff" stroke="#ffffff" stroke-width="2"/>
+          <path d="M 110 110 L 110 6 A 104 104 0 0 1 110 214 Z" fill="#281345" stroke="#f8f4ff" stroke-width="4"/>
+          <path d="M 110 110 L 110 214 A 104 104 0 0 1 11.09 77.862 Z" fill="#8f47f6" stroke="#f8f4ff" stroke-width="4"/>
+          <path d="M 110 110 L 11.09 77.862 A 104 104 0 0 1 77.862 11.09 Z" fill="#c77dff" stroke="#f8f4ff" stroke-width="4"/>
+          <path d="M 110 110 L 77.862 11.09 A 104 104 0 0 1 110 6 Z" fill="#e3d4fb" stroke="#f8f4ff" stroke-width="4"/>
         </svg>
         <ul class="rt-pie-key">
-          <li><i style="--c:#5b0acd"></i><b>50%</b><span>No decision</span></li>
-          <li><i style="--c:#7216f4"></i><b>30%</b><span>Happy, surprised</span></li>
-          <li><i style="--c:#9d4edd"></i><b>15%</b><span>Unhappy</span></li>
-          <li><i style="--c:#c77dff"></i><b>5%</b><span>Happy</span></li>
+          <li><i style="--c:#281345"></i><b>50%</b><span>No decision</span></li>
+          <li><i style="--c:#8f47f6"></i><b>30%</b><span>Happy, surprised</span></li>
+          <li><i style="--c:#c77dff"></i><b>15%</b><span>Unhappy</span></li>
+          <li><i style="--c:#e3d4fb"></i><b>5%</b><span>Happy</span></li>
         </ul>
-      </div>
-
-      <p class="rt-art-statcap">TMS project outcomes.</p>
+      </figure>
 
       <h3>RFP fails</h3>
 
@@ -569,7 +777,7 @@
 
       <div class="rt-art-split">
         <div>
-          <h4>The vendor-controlled demo shows you</h4>
+          <h4><span>The vendor-controlled demo</span> shows you</h4>
           <ul>
             <li>Beautiful dashboards and reports</li>
             <li>AI and latest features</li>
@@ -604,17 +812,17 @@
 
       <div class="rt-art-segs">
         <div>
-          <h3><a href="/treasury-tech-market/">Cash Tools</a></h3>
+          <h3>Cash Tools</h3>
           <p>Bank connectivity. Cash visibility. Cash forecasting. Tools to help categorize and manage bank balance and transaction information. Cash Tools must do these four things, at a minimum, to be included in the Real Treasury North American chart.</p>
           <span class="rt-art-segs-fit">Fit: simple treasuries</span>
         </div>
         <div>
-          <h3><a href="/treasury-tech-market/">TMS-Lite</a></h3>
+          <h3>TMS-Lite</h3>
           <p>Everything in Cash Tools, plus treasury payment initiation and processing. TMS-Lite products may have a variety of other modules, but the addition of payments led to inclusion in this segment.</p>
           <span class="rt-art-segs-fit">Fit: growing or mid-complexity treasuries</span>
         </div>
         <div>
-          <h3><a href="/treasury-tech-market/">TRMS</a><span class="rt-art-segs-sub">Treasury and Risk Management Systems</span></h3>
+          <h3>TRMS<span class="rt-art-segs-sub">Treasury and Risk Management Systems</span></h3>
           <p>Everything in TMS-Lite, plus full support for FX, debt, and investments (tracking, valuing, accounting, and reporting). The TRMS products may have other modules, but the addition of full support for FX, debt, and investments led to inclusion in this segment.</p>
           <span class="rt-art-segs-fit">Fit: complex, global treasuries</span>
         </div>

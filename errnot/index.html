@@ -130,9 +130,9 @@
         }
 
         /* Compact introduction keeps the six-step method close to the top. */
-        .hero-bg {
+        .hero-bg.section-padding {
             background: #f8f8f8;
-            padding: 52px 0 36px;
+            padding: 40px 0 28px;
             position: relative;
             overflow: hidden;
         }
@@ -152,7 +152,11 @@
         .hero-bg h1 { font-size: clamp(2.3rem, 5vw, 3.5rem); letter-spacing: -0.035em; color: #281345; }
         .hero-bg p { margin-bottom: 0; max-width: 38em; color: #393939; }
         .hero-bg .gradient-text { background: none; -webkit-text-fill-color: #7216f4; color: #7216f4; }
-        .errnot-intro { padding: 32px 0 12px; }
+        .errnot-intro.section-padding { padding: 28px 0 8px; }
+        .errnot-method.section-padding { padding: 28px 0; }
+        .errnot-proof.section-padding { padding: 28px 0 48px; }
+        .errnot-proof h2 { margin-bottom: 28px; color: #281345; font-size: clamp(1.8rem, 4vw, 2.4rem); }
+        .errnot-proof .testimonial-slider { margin-bottom: 0; }
         .errnot-intro .glass-card { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; backdrop-filter: none; transform: none; }
         .errnot-intro .glass-card::before { content: none; }
         .errnot-intro h2 { font-size: 1.5rem; text-align: left; margin-bottom: 18px; line-height: 1.3; }
@@ -347,7 +351,8 @@
         .errnot-experts > div > p { font-size: 1.05rem; max-width: 42rem; margin-bottom: 36px; }
         .errnot-experts .glass-card, .errnot-experts .glass-card:hover { border: 0; border-top: 2px solid #281345; border-radius: 0; padding: 28px 0; background: none; box-shadow: none; backdrop-filter: none; transform: none; text-align: left; }
         .errnot-experts .glass-card::before { content: none; }
-        .errnot-experts .glass-card > .rounded-full { display: none; }
+        .errnot-experts .glass-card > .rounded-full { display: block; width: 128px; height: 128px; margin: 0 0 24px; border: 0; box-shadow: none; transform: none; }
+        .errnot-experts .glass-card > .rounded-full img { display: block; width: 100%; height: 100%; object-fit: cover; }
         .errnot-experts .glass-card > .text-sm { color: #5b0acd; font-size: 0.72rem; }
         .errnot-experts h3 { color: #281345; font-size: 1.8rem; }
         .errnot-experts .glass-card p { font-size: 1rem; }
@@ -575,11 +580,14 @@
         .errnot-body strong { color: #281345; }
         .errnot-body ul { padding-left: 1.4rem; list-style: disc; }
         .errnot-body li + li { margin-top: 0.55rem; }
-        .errnot-delivers { margin-top: 32px; padding: 28px; background: #281345; color: #ffffff; }
-        .errnot-delivers h4 { margin: 0 0 22px; font-size: 1.2rem; line-height: 1.3; letter-spacing: -0.02em; color: #ffffff; }
-        .errnot-body .errnot-delivers ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; }
-        .errnot-body .errnot-delivers li { margin: 0; padding: 16px 0; border-top: 1px solid #8f47f6; color: #ffffff; }
-        @media (max-width: 640px) { .errnot-body .errnot-delivers ul { grid-template-columns: 1fr; } }
+        .errnot-delivers { margin-top: 32px; padding: 24px 0 0; border-top: 1px solid #bebebe; background: none; color: #281345; }
+        .errnot-delivers h4 { margin: 0 0 24px; font-size: 1.2rem; line-height: 1.35; letter-spacing: -0.02em; color: #281345; }
+        .errnot-body .errnot-delivers ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+        .errnot-body .errnot-delivers li { margin: 0; padding: 14px 0 0; border-top: 2px solid #7216f4; color: #281345; font-size: 0.95rem; font-weight: 600; line-height: 1.45; }
+        @media (max-width: 768px) {
+            .errnot-body .errnot-delivers ul { grid-template-columns: 1fr; gap: 0; }
+            .errnot-body .errnot-delivers li { padding: 14px 0; border-top: 1px solid #ebe4f7; }
+        }
 
         .errnot-cols {
             display: grid;
@@ -679,7 +687,7 @@
     </section>
 
     <!-- Method Steps -->
-    <section class="bg-white section-padding">
+    <section class="bg-white section-padding errnot-method">
         <div class="container mx-auto px-6">
             <h2 class="text-4xl md:text-5xl font-bold text-center mb-4">
                 The <span class="gradient-text">ERR NOT™</span> Method
@@ -1021,10 +1029,10 @@
     </section>
 
     <!-- Social Proof / Results -->
-    <section class="bg-white section-padding">
+    <section class="bg-white section-padding errnot-proof">
         <div class="container mx-auto px-6">
             <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">
-                What Others <span class="gradient-text">Say</span>
+                What Clients <span class="gradient-text">Say</span>
             </h2>
             
             <div class="testimonial-slider mb-16 relative max-w-3xl mx-auto" tabindex="0">

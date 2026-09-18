@@ -29,3 +29,21 @@ guide-waitlist-confirmed	4809	treasury-tech-selection/waitlist/confirmed/wordpre
 guide-thank-you	4585	treasury-tech-selection/guidebook/thank-you/wordpress-page.html	native
 guide-download-staging	4587	treasury-tech-selection/guidebook/wordpress-page.html	native
 guide-download	4202	treasury-tech-selection/guidebook/wordpress-page.html	native
+#
+# mode `verbatim`: the post's content IS the whole standalone document, spliced into the
+# wrapper and pattern refs the post already carries. For pages hand-pasted as a full
+# document that already render natively. /errnot/ loads Tailwind from a CDN in its <head>,
+# which mode `page` would drop, and its group wrapper is full-bleed zero-padding, which
+# mode `native` would replace with a constrained one.
+errnot	157	errnot/index.html	verbatim
+#
+# The two 2026 guide articles. Post 1519 was /2024-tms-selection-guide/ — an iframe to
+# github.io, 673 bytes, no h1, 869 GSC impressions and 0 clicks. It is rewritten from the
+# 2026 guide and its slug moves to /how-to-select-a-tms/; WP writes _wp_old_slug and 301s
+# the old URL. Change the slug WITH the content, never before it.
+how-to-select-a-tms	1519	insights/2026/how-to-select-a-tms/index.html	page
+#
+# STAGING ID. 4799 is the post created on the staging site. Production has no such post
+# yet; create it there (same title, slug, category, tags and author as 1519) and put the
+# production id here before publishing to production.
+tms-selection-mistakes	4799	insights/2026/tms-selection-mistakes/index.html	page

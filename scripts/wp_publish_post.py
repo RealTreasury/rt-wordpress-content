@@ -145,8 +145,9 @@ def manifest() -> dict[str, tuple[int, Path, str]]:
         if len(parts) != 4:
             die(f"{MANIFEST}:{n}: expected 'slug<TAB>post_id<TAB>source[<TAB>mode]'")
         slug, post_id, src, mode = parts
-        if mode not in ("page", "raw", "native"):
-            die(f"{MANIFEST}:{n}: mode must be 'page', 'raw' or 'native', got {mode!r}")
+        if mode not in ("page", "raw", "native", "verbatim"):
+            die(f"{MANIFEST}:{n}: mode must be 'page', 'raw', 'native' or 'verbatim', "
+                f"got {mode!r}")
         out[slug] = (int(post_id), ROOT / src, mode)
     return out
 
@@ -164,7 +165,7 @@ def shell_quote(s: str) -> str:
     return "'" + s.replace("'", "'\\''") + "'"
 
 
-def splice(current: str, block: str, slug: str) -> str:
+def splice(current: str, block: str, slug: str, mode: str = "page") -> str:
     """Put `block` where the iframe (or a previous run's region) is.
 
     Everything outside that one region is preserved exactly -- the header and
@@ -180,9 +181,19 @@ def splice(current: str, block: str, slug: str) -> str:
         return current[:m.start()] + block + current[end + len(END_MARK):]
 
     # First run: replace the core/html block that holds the github.io iframe.
-    for hm in re.finditer(r"<!--\s*wp:html\s*-->([\s\S]*?)<!--\s*/wp:html\s*-->", current):
+    blocks = list(re.finditer(r"<!--\s*wp:html\s*-->([\s\S]*?)<!--\s*/wp:html\s*-->", current))
+    for hm in blocks:
         if "realtreasury.github.io" in hm.group(1):
             return current[:hm.start()] + block + current[hm.end():]
+    if mode == "verbatim":
+        # A page that was ALREADY hand-pasted as a native document has no iframe to aim
+        # at. Its single Custom HTML block is the page, so that is the region -- but only
+        # if there is exactly one. Two blocks means guessing which one is the body, and
+        # guessing here overwrites whichever half is not the page.
+        if len(blocks) == 1:
+            return current[:blocks[0].start()] + block + current[blocks[0].end():]
+        die(f"verbatim first run needs exactly one wp:html block to claim; found "
+            f"{len(blocks)}. Add the rt:page-content markers by hand first.")
     die("no rt:page-content region and no wp:html block containing a github.io iframe")
 
 
@@ -260,6 +271,30 @@ def render_native(text: str, rel: str) -> str:
     ) % (HEADER_REF, NATIVE_NOTE.format(rel=rel), body.rstrip("\n"), FOOTER_REF)
 
 
+def render_verbatim(text: str, slug: str) -> str:
+    """The repo file as ONE Custom HTML block, byte for byte, inside the post's existing
+    group wrapper.
+
+    For pages that were hand-pasted as a whole standalone document and already render
+    natively -- /errnot/ is the case this was written for. Mode `page` is wrong for them
+    twice over: it keeps only the <body> inner HTML, so a <head> that loads Tailwind from
+    a CDN is silently dropped and every utility class goes unstyled; and it rewrites every
+    selector under a per-page wrapper, which is a visual change to a page nobody asked to
+    restyle. Mode `native` is wrong too -- it emits its own group wrapper, and /errnot/'s
+    is a zero-padding full-bleed one, not the constrained wrapper native builds.
+
+    So: the file unchanged, and the splice keeps the wrapper and the pattern refs that are
+    already on the post.
+    """
+    return "\n".join([
+        page_to_block.START.format(slug=slug),
+        "<!-- wp:html -->",
+        text.rstrip("\n"),
+        "<!-- /wp:html -->",
+        page_to_block.END,
+    ])
+
+
 def rel_to_root(path: Path) -> str:
     """The repo-relative path, for labelling a diff and for the source-of-record note.
 
@@ -281,6 +316,8 @@ def build(slug: str, source: Path, mode: str) -> str:
         return text
     if mode == "native":
         return render_native(text, rel_to_root(source))
+    if mode == "verbatim":
+        return render_verbatim(text, slug)
     return page_to_block.render(text, slug)
 
 
@@ -288,7 +325,7 @@ def cmd_plan(env, slug, post_id, source, mode) -> int:
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
     block = build(slug, source, mode)
-    new = block if mode in ("raw", "native") else splice(current, block, slug)
+    new = block if mode in ("raw", "native") else splice(current, block, slug, mode)
     print(f"-- post {post_id} ({slug}), post_status {status}")
     print(f"-- live now : {len(current):>7} bytes, {words(current):>5} words, "
           f"h1={'yes' if re.search(r'<h1', current, re.I) else 'NO'}, "
@@ -322,7 +359,7 @@ def cmd_plan(env, slug, post_id, source, mode) -> int:
                 print("   " + line)
             if len(d) > 40:
                 print(f"   ... {len(d) - 40} more diff lines")
-    if mode in ("page", "native"):
+    if mode in ("page", "native", "verbatim"):
         preserved = re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)
         kept = re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)
         dropped = [r for r in preserved if r not in kept]
@@ -337,14 +374,14 @@ def cmd_publish(env, slug, post_id, source, mode) -> int:
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
     block = build(slug, source, mode)
-    new = block if mode in ("raw", "native") else splice(current, block, slug)
+    new = block if mode in ("raw", "native") else splice(current, block, slug, mode)
     if norm(new) == norm(current):
         if new != current:
             print("-- content matches; only line endings differ. Publishing to normalise them.")
         else:
             print("-- already published: nothing to do")
             return 0
-    if mode in ("page", "native"):
+    if mode in ("page", "native", "verbatim"):
         # A DROP is the failure that matters: the page silently loses its nav or footer.
         # Gaining a ref is how a native page that was published without them gets repaired,
         # so allow that rather than forcing a hand-edit in WP Admin.

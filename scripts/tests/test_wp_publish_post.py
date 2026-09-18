@@ -260,6 +260,61 @@ finally:
     wpp.render_native = saved_render
 check("11b nothing was written when refs would be dropped", "bare" not in r2.body[4585])
 
+# --- 11c. verbatim mode: the whole document, the existing wrapper, no CSS scoping -------------
+# /errnot/ was hand-pasted as a full standalone document and already renders natively. Mode
+# `page` keeps only the <body> inner HTML, so the <head> that loads Tailwind from a CDN would
+# be dropped and every utility class would go unstyled; it also rewrites every selector under
+# a per-page wrapper, restyling a page nobody asked to restyle. Mode `native` emits its OWN
+# group wrapper, and /errnot/'s is a zero-padding full-bleed one. Hence verbatim.
+vb_src = tmp / "errnot.html"
+vb_src.write_text(
+    '<!DOCTYPE html>\n<html><head><script src="https://cdn.tailwindcss.com"></script>'
+    '<style>.hero { color: red; }</style></head>'
+    '<body class="rt-no-body-padding"><h1>The Method</h1></body></html>', encoding="utf-8")
+r3 = Remote()
+env3 = env_for(r3)
+r3.status[157] = "publish"
+WRAP_OPEN = ('<!-- wp:block {"ref":183} /-->\n\n'
+             '<!-- wp:group {"align":"full","layout":{"type":"default"}} -->\n'
+             '<div class="wp-block-group alignfull" style="padding-top:0">')
+WRAP_CLOSE = ('</div>\n<!-- /wp:group -->\n\n<!-- wp:block {"ref":398} /-->\n\n'
+              '<!-- wp:paragraph -->\n<p></p>\n<!-- /wp:paragraph -->')
+r3.body[157] = WRAP_OPEN + "<!-- wp:html -->\nold pasted page\n<!-- /wp:html -->" + WRAP_CLOSE
+wpp.cmd_publish(env3, "errnot", 157, vb_src, "verbatim")
+after = r3.body[157]
+check("11c verbatim claims the one wp:html block on the first run",
+      "old pasted page" not in after)
+check("11c verbatim keeps the head, so the Tailwind CDN survives",
+      "cdn.tailwindcss.com" in after)
+check("11c verbatim does not scope the CSS", ".hero { color: red; }" in after
+      and "rt-page--errnot .hero" not in after)
+check("11c verbatim keeps the post's own group wrapper and trailing block",
+      after.startswith(WRAP_OPEN) and after.endswith(WRAP_CLOSE))
+check("11c verbatim keeps the pattern refs",
+      re.findall(r'wp:block\s+\{"ref":(\d+)\}', after) == ["183", "398"])
+check("11c verbatim leaves markers so the next run splices them",
+      "<!-- rt:page-content errnot -->" in after and "<!-- /rt:page-content -->" in after)
+# second run: the markers, not the wp:html block, define the region
+r3.body[157] = after
+wpp.cmd_publish(env3, "errnot", 157, vb_src, "verbatim")
+check("11c a second verbatim run is a no-op", r3.body[157] == after)
+
+# --- 11d. verbatim refuses to guess between two wp:html blocks --------------------------------
+r4 = Remote()
+env4 = env_for(r4)
+r4.status[157] = "publish"
+r4.body[157] = ('<!-- wp:block {"ref":183} /-->\n'
+                '<!-- wp:html -->\nfirst\n<!-- /wp:html -->\n'
+                '<!-- wp:html -->\nsecond\n<!-- /wp:html -->\n'
+                '<!-- wp:block {"ref":398} /-->')
+try:
+    wpp.cmd_publish(env4, "errnot", 157, vb_src, "verbatim")
+    check("11d verbatim refuses two candidate blocks", False)
+except SystemExit:
+    check("11d verbatim refuses two candidate blocks", True)
+check("11d nothing was written when it refused",
+      "first" in r4.body[157] and "second" in r4.body[157])
+
 # --- 12. the manifest rejects an unknown mode ---------------------------------------------------------
 bad = tmp / "pages.tsv"
 bad.write_text("slug\t123\tsome/file.html\tsideways\n", encoding="utf-8")

@@ -54,3 +54,26 @@ how-to-select-a-tms	1519	insights/2026/how-to-select-a-tms/index.html	page
 # yet; create it there (same title, slug, category, tags and author as 1519) and put the
 # production id here before publishing to production.
 tms-selection-mistakes	4799	insights/2026/tms-selection-mistakes/index.html	page
+#
+# PRODUCTION ROWS. The two article rows above carry STAGING ids. Production drifted:
+# production 1519 is the live /2024-tms-selection-guide/ post — the one holding 869 GSC
+# impressions — and production has no mistakes post at all. The decision on record is to
+# REBUILD 1519 in place and move its slug, not to create a second post: a new post would
+# abandon that equity and leave the old iframe page live beside it. WP writes _wp_old_slug
+# on the rename and 301s the old URL.
+#
+# Order for 1519: publish the CONTENT first, while column 5 still reads the old slug, then
+# rename post_name and post_title. That way the old URL never serves the new slug with old
+# content, and the new URL never appears before the article does. After the rename, column 5
+# below becomes `how-to-select-a-tms` — change it in the same commit that records the rename.
+how-to-select-a-tms-prod	1519	insights/2026/how-to-select-a-tms/index.html	page	2024-tms-selection-guide
+#
+# tms-selection-mistakes-prod has NO id yet. Create the post on production first —
+#   wp post create --post_type=post --post_status=draft --post_author=240264699 \
+#     --post_title='The 5 Most Common Selection Failures and How to Avoid Them' \
+#     --post_name=tms-selection-mistakes --post_category=10096769 \
+#     --tags_input='Cash Forecasting,Cash Visibility,ERP Connectivity,Explainer,Liquidity Management,TMS,Vendor Selection' \
+#     --porcelain
+# — then put the id it returns in the row below and uncomment it. Terms and author copied
+# from staging 4799, read live on September 18, 2026.
+#tms-selection-mistakes-prod	NNNN	insights/2026/tms-selection-mistakes/index.html	page	tms-selection-mistakes

@@ -32,16 +32,73 @@
 
         .rt-art-fig { margin: 32px 0 28px; }
 
+        /* ERR NOT funnel — HTML text, no image. Bands narrow as the field narrows. */
+        .rt-funnel {
+            margin: 28px 0 32px;
+        }
+
+        .rt-funnel figcaption {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #7e7e7e;
+            margin-bottom: 12px;
+        }
+
+        .rt-funnel ol {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .rt-funnel li {
+            width: var(--w);
+            margin: 0 auto 6px;
+            padding: 14px 22px;
+            border-radius: 8px;
+            color: #ffffff;
+            background: var(--c);
+        }
+
+        .rt-funnel li b {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .rt-funnel li span {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.94rem;
+            line-height: 1.45;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        .rt-funnel-out {
+            margin: 14px 0 0;
+            text-align: center;
+            font-weight: 700;
+            color: #7216f4;
+        }
+
+        @media (max-width: 640px) {
+            .rt-funnel li { width: 100%; }
+        }
+
         .rt-art-fig img {
             display: block;
             width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
             height: auto;
-            border: 1px solid #ece7f5;
-            border-radius: 10px;
         }
 
         .rt-art-fig figcaption {
-            margin-top: 10px;
+            max-width: 560px;
+            margin: 10px auto 0;
+            text-align: center;
             font-size: 0.9rem;
             line-height: 1.5;
             color: #6b6280;
@@ -99,11 +156,6 @@
             line-height: 1.65;
         }
 
-        .rt-art-byline {
-            margin-top: 26px;
-            font-size: 0.88rem;
-            color: #7e7e7e;
-        }
 
         .rt-art-body {
             padding: 56px 0 72px;
@@ -159,213 +211,127 @@
 
         .rt-art-body strong { color: #131313; }
 
-        .rt-art-statrow {
+        /* ---- Outcome pie (page 8 of the guide) ---- */
+        .rt-pie {
             display: flex;
+            align-items: center;
+            gap: 36px;
             flex-wrap: wrap;
-            gap: 14px;
+            margin: 28px 0 10px;
             padding: 26px 0;
             border-top: 1px solid #ebe4f7;
             border-bottom: 1px solid #ebe4f7;
         }
 
-        .rt-art-stat { flex: 1 1 140px; }
+        .rt-pie-svg { flex: 0 0 auto; width: 210px; height: 210px; }
 
-        .rt-art-stat b {
-            display: block;
-            font-size: 1.9rem;
+        .rt-pie-key { flex: 1 1 250px; margin: 0; padding: 0; list-style: none; }
+
+        .rt-pie-key li {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            padding: 9px 0;
+            border-bottom: 1px solid #f0eaf9;
+        }
+
+        .rt-pie-key li:last-child { border-bottom: 0; }
+
+        .rt-pie-key i {
+            flex: 0 0 auto;
+            width: 13px;
+            height: 13px;
+            border-radius: 3px;
+            background: var(--c);
+            transform: translateY(1px);
+        }
+
+        .rt-pie-key b {
+            flex: 0 0 3.2rem;
+            font-size: 1.35rem;
             font-weight: 800;
-            color: #7216f4;
+            color: #131313;
             line-height: 1;
+            font-variant-numeric: tabular-nums;
         }
 
-        .rt-art-stat span {
-            display: block;
-            margin-top: 7px;
-            font-size: 0.86rem;
-            color: #7e7e7e;
-            font-weight: 500;
-        }
+        .rt-pie-key span { font-size: 0.98rem; color: #393939; }
 
-        .rt-art-statcap {
-            font-size: 0.86rem;
-            color: #7e7e7e;
-        }
+        .rt-art-statcap { font-size: 0.86rem; color: #7e7e7e; }
 
+        /* ---- Shown vs. not shown ---- */
         .rt-art-split {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 16px;
+            margin: 28px 0;
         }
 
+        .rt-art-split > div { padding: 22px 24px; border-radius: 14px; }
+
+        .rt-art-split > div:first-child { background: #5b0acd; color: #ffffff; }
+
+        .rt-art-split > div:last-child { background: #ffffff; border: 1px dashed #c77dff; }
+
         .rt-art-split h4 {
-            margin: 0 0 10px;
-            font-size: 0.82rem;
+            margin: 0 0 14px;
+            font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: #7216f4;
         }
 
-        .rt-art-split > div:last-child h4 { color: #7e7e7e; }
+        .rt-art-split > div:first-child h4 { color: rgba(255, 255, 255, 0.72); }
+        .rt-art-split > div:last-child h4 { color: #7216f4; }
 
-        .rt-art-split ul {
-            margin: 0;
-            padding-left: 22px;
-            font-size: 1rem;
-        }
+        .rt-art-split ul { margin: 0; padding: 0; list-style: none; font-size: 1rem; }
 
-        .rt-art-seg h3 {
-            color: #5b0acd;
-        }
+        .rt-art-split li { padding: 9px 0; }
 
-        .rt-art-faq dt {
-            font-weight: 600;
-            color: #131313;
-            font-size: 1.05rem;
-            margin-top: 24px;
-        }
+        .rt-art-split > div:first-child li { color: #ffffff; }
+        .rt-art-split > div:last-child li { color: #7e7e7e; }
 
-        .rt-art-faq dd {
-            margin: 7px 0 0;
-            color: #393939;
-            font-size: 1.05rem;
-        }
+        .rt-art-split > div:first-child li + li { border-top: 1px solid rgba(255, 255, 255, 0.18); }
+        .rt-art-split > div:last-child li + li { border-top: 1px solid #f0eaf9; }
 
-        .rt-art-cta {
-            margin-top: 56px !important;
-            padding: 34px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #281345 0%, #5b0acd 100%);
-            color: #ffffff;
-        }
-
-        .rt-art-cta h2 {
-            border-top: 0 !important;
-            padding-top: 0 !important;
-            margin-top: 0 !important;
-            color: #ffffff !important;
-            font-size: 1.5rem;
-        }
-
-        .rt-art-cta p {
-            color: rgba(255, 255, 255, 0.86) !important;
-            margin-top: 12px;
-        }
-
-        .rt-art-cta a.rt-art-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 13px 26px;
-            border-radius: 9px;
-            background: #ffffff;
-            color: #5b0acd !important;
-            font-weight: 600;
-            text-decoration: none !important;
-        }
-
-        .rt-art-cta a.rt-art-btn:hover {
-            background: #f8f8f8;
-            color: #281345 !important;
-        }
-
-        .rt-art-quote {
-            margin-top: 30px !important;
-            padding-left: 22px;
-            border-left: 3px solid #7216f4;
-        }
-
-        .rt-art-quote cite {
-            display: block;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            font-style: normal;
-            color: #7e7e7e;
-        }
-
-        @media (max-width: 640px) {
-            .rt-art-wrap { padding: 0 20px; }
-            .rt-art-hero { padding: 48px 0 40px; }
-            .rt-art-body { padding: 40px 0 56px; }
-        }
-
-        /* ---- Contents ---- */
-        .rt-art-toc {
-            margin: 34px 0 0;
-            padding: 22px 0;
-            border-top: 1px solid #ebe4f7;
-            border-bottom: 1px solid #ebe4f7;
-        }
-
-        .rt-art-toc h2 {
-            margin: 0 0 12px !important;
-            padding: 0 !important;
-            border: 0 !important;
-            font-size: 0.76rem !important;
-            font-weight: 700;
-            letter-spacing: 0.09em;
-            text-transform: uppercase;
-            color: #7e7e7e !important;
-        }
-
-        .rt-art-toc ol {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            counter-reset: toc;
-            columns: 2;
-            column-gap: 36px;
-        }
-
-        .rt-art-toc li {
-            counter-increment: toc;
-            margin: 0 0 8px;
-            font-size: 0.97rem;
-            break-inside: avoid;
-        }
-
-        .rt-art-toc li::before {
-            content: counter(toc, decimal-leading-zero);
-            margin-right: 10px;
-            font-variant-numeric: tabular-nums;
-            font-weight: 700;
-            color: #c8a7ff;
-        }
-
-        .rt-art-toc a { color: #393939 !important; text-decoration: none !important; }
-        .rt-art-toc a:hover { color: #7216f4 !important; text-decoration: underline !important; }
-
-        /* ---- Segment cards ---- */
-        .rt-art-segs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 18px;
-        }
+        /* ---- Market segments ---- */
+        .rt-art-segs { display: grid; gap: 14px; }
 
         .rt-art-segs > div {
-            display: flex;
-            flex-direction: column;
-            padding: 22px 20px;
+            display: grid;
+            grid-template-columns: 210px 1fr;
+            gap: 28px;
+            align-items: start;
+            padding: 24px 26px;
             border: 1px solid #ebe4f7;
             border-radius: 14px;
             background: #ffffff;
         }
 
         .rt-art-segs h3 {
-            margin: 0 0 10px !important;
-            font-size: 1.05rem;
+            margin: 0 !important;
+            font-size: 1.15rem;
             color: #5b0acd;
         }
 
-        .rt-art-segs p { font-size: 0.97rem !important; margin: 0; }
+        .rt-art-segs h3 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+        .rt-art-segs .rt-art-segs-sub {
+            display: block;
+            margin-top: 5px;
+            font-size: 0.84rem;
+            line-height: 1.4;
+            color: #7e7e7e;
+        }
+
+        .rt-art-segs p { font-size: 0.99rem !important; margin: 0; }
 
         .rt-art-segs .rt-art-segs-fit {
             display: block;
-            margin-top: auto;
-            padding-top: 16px;
+            margin-top: 12px;
             font-size: 0.8rem;
             font-weight: 600;
-            letter-spacing: 0.02em;
-            color: #7e7e7e;
+            color: #7216f4;
         }
 
         /* ---- ERR NOT strip ---- */
@@ -490,6 +456,9 @@
         @media (max-width: 640px) {
             .rt-art-toc ol { columns: 1; }
             .rt-art-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .rt-art-segs > div { grid-template-columns: 1fr; gap: 12px; }
+            .rt-pie { gap: 22px; }
+            .rt-pie-svg { width: 180px; height: 180px; }
             .rt-art-mistake { gap: 12px; margin-top: 42px !important; }
             .rt-art-mistake .rt-art-num { font-size: 2.1rem; }
             .rt-art-eq { margin-left: 0; }
@@ -504,7 +473,6 @@
       <span class="rt-art-eyebrow">TMS Selection</span>
       <h1>How to Select a Treasury Management System</h1>
       <p class="rt-art-lede">Have you ever sat through three or four TMS demos and by the last one thought, &ldquo;They all seem about the same?&rdquo;</p>
-      <p class="rt-art-byline">By Tracey Knight, Co-Founder &amp; Principal Consultant, Real Treasury</p>
       <nav class="rt-art-toc" aria-label="Contents">
         <h2>On this page</h2>
         <ol>
@@ -558,11 +526,19 @@
 
       <p>Before we walk through the ERR NOT&trade; method, let&rsquo;s talk about why the traditional approach doesn&rsquo;t work. Roughly 50% of TMS selection projects end in &ldquo;no decision.&rdquo; That means treasury teams spend months talking to vendors, sitting through demos, writing and issuing an RFP, reading and scoring responses, and then making no decision at all. And for those that do make a decision, there is no guarantee that they&rsquo;ve selected the right one, the one that best fits their requirements. Not only that, but of those that make a decision, most are surprised during the implementation by what the system can&rsquo;t do that they thought it could. Surprised by needed workarounds or the need to subscribe to even more modules. Only 5% are truly happy from beginning to end.</p>
 
-      <div class="rt-art-statrow">
-        <div class="rt-art-stat"><b>50%</b><span>No decision</span></div>
-        <div class="rt-art-stat"><b>30%</b><span>Happy, surprised</span></div>
-        <div class="rt-art-stat"><b>15%</b><span>Unhappy</span></div>
-        <div class="rt-art-stat"><b>5%</b><span>Happy</span></div>
+      <div class="rt-pie">
+        <svg class="rt-pie-svg" viewBox="0 0 220 220" role="img" aria-label="TMS project outcomes: 50% no decision, 30% happy but surprised, 15% unhappy, 5% happy from beginning to end." xmlns="http://www.w3.org/2000/svg">
+          <path d="M 110 110 L 110 6 A 104 104 0 0 1 110 214 Z" fill="#5b0acd" stroke="#ffffff" stroke-width="2"/>
+          <path d="M 110 110 L 110 214 A 104 104 0 0 1 11.09 77.862 Z" fill="#7216f4" stroke="#ffffff" stroke-width="2"/>
+          <path d="M 110 110 L 11.09 77.862 A 104 104 0 0 1 77.862 11.09 Z" fill="#9d4edd" stroke="#ffffff" stroke-width="2"/>
+          <path d="M 110 110 L 77.862 11.09 A 104 104 0 0 1 110 6 Z" fill="#c77dff" stroke="#ffffff" stroke-width="2"/>
+        </svg>
+        <ul class="rt-pie-key">
+          <li><i style="--c:#5b0acd"></i><b>50%</b><span>No decision</span></li>
+          <li><i style="--c:#7216f4"></i><b>30%</b><span>Happy, surprised</span></li>
+          <li><i style="--c:#9d4edd"></i><b>15%</b><span>Unhappy</span></li>
+          <li><i style="--c:#c77dff"></i><b>5%</b><span>Happy</span></li>
+        </ul>
       </div>
 
       <p class="rt-art-statcap">TMS project outcomes.</p>
@@ -628,17 +604,17 @@
 
       <div class="rt-art-segs">
         <div>
-          <h3>Cash Tools</h3>
+          <h3><a href="/treasury-tech-market/">Cash Tools</a></h3>
           <p>Bank connectivity. Cash visibility. Cash forecasting. Tools to help categorize and manage bank balance and transaction information. Cash Tools must do these four things, at a minimum, to be included in the Real Treasury North American chart.</p>
           <span class="rt-art-segs-fit">Fit: simple treasuries</span>
         </div>
         <div>
-          <h3>TMS-Lite</h3>
+          <h3><a href="/treasury-tech-market/">TMS-Lite</a></h3>
           <p>Everything in Cash Tools, plus treasury payment initiation and processing. TMS-Lite products may have a variety of other modules, but the addition of payments led to inclusion in this segment.</p>
           <span class="rt-art-segs-fit">Fit: growing or mid-complexity treasuries</span>
         </div>
         <div>
-          <h3>TRMS (Treasury and Risk Management Systems)</h3>
+          <h3><a href="/treasury-tech-market/">TRMS</a><span class="rt-art-segs-sub">Treasury and Risk Management Systems</span></h3>
           <p>Everything in TMS-Lite, plus full support for FX, debt, and investments (tracking, valuing, accounting, and reporting). The TRMS products may have other modules, but the addition of full support for FX, debt, and investments led to inclusion in this segment.</p>
           <span class="rt-art-segs-fit">Fit: complex, global treasuries</span>
         </div>
@@ -650,9 +626,9 @@
 
       <figure class="rt-art-fig">
         <img src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png"
-             alt="Real Treasury Treasury Tech Market Map, North America, September 2026, with products sorted into the Cash Tools, TMS-Lite and TRMS segments."
+             alt="Real Treasury treasury tech market chart, North America, September 2026, with products sorted into the Cash Tools, TMS-Lite and TRMS segments."
              loading="lazy" decoding="async">
-        <figcaption>The Real Treasury North American market map, September 2026 edition. Every vendor that meets a segment definition is on it, and no vendor pays for inclusion.</figcaption>
+        <figcaption>The Real Treasury North American market chart, September 2026 edition. Every vendor that meets a segment definition is on it, and no vendor pays for inclusion.</figcaption>
       </figure>
 
       <p><a href="/treasury-tech-market/">See the Real Treasury market chart and what defines each segment.</a></p>
@@ -672,17 +648,17 @@
         <li><b>T</b><strong>Transformation</strong><span>Because the goal was never just to &lsquo;Go Live&rsquo;</span></li>
       </ul>
 
-      <p>How the method narrows the field:</p>
-
-      <ul>
-        <li><strong>Education.</strong> Start with a current view of the market.</li>
-        <li><strong>Requirements.</strong> Write and prioritize your requirements.</li>
-        <li><strong>RFI.</strong> Issue a short RFI to gather needed information about the vendor, support, and estimated pricing to meet your requirements.</li>
-        <li><strong>uNique Demo.</strong> Conduct scripted demos focused on your requirements.</li>
-        <li><strong>Obvious Winner.</strong> Choose the winner based on best fit to your requirements.</li>
-      </ul>
-
-      <p>ERR NOT&trade; = smarter decisions.</p>
+      <figure class="rt-funnel">
+        <figcaption>How the method narrows the field</figcaption>
+        <ol>
+          <li style="--w:100%; --c:#9d4edd"><b>Education</b><span>Start with a current view of the market.</span></li>
+          <li style="--w:91%; --c:#8f47f6"><b>Requirements</b><span>Write and prioritize your requirements.</span></li>
+          <li style="--w:82%; --c:#7216f4"><b>RFI</b><span>Issue a short RFI to gather needed information about the vendor, support, and estimated pricing to meet your requirements.</span></li>
+          <li style="--w:73%; --c:#5b0acd"><b>uNique Demo</b><span>Conduct scripted demos focused on your requirements.</span></li>
+          <li style="--w:64%; --c:#281345"><b>Obvious Winner</b><span>Choose the winner based on best fit to your requirements.</span></li>
+        </ol>
+        <p class="rt-funnel-out">ERR NOT&trade; = smarter decisions</p>
+      </figure>
 
       <p><a href="/errnot/">Read the full walkthrough of the ERR NOT&trade; method.</a></p>
 

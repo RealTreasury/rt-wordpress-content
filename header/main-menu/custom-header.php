@@ -196,10 +196,10 @@ function add_my_custom_header_html() {
                         </div>
                     </div>
                 </div>
-                <!-- Webinars -->
+                <!-- Selection -->
                 <div class="rt-nav-item">
-                    <a href="https://realtreasury.com/webinars/" class="rt-nav-link">
-                        WEBINARS
+                    <a href="https://realtreasury.com/how-to-select-a-tms/" class="rt-nav-link">
+                        SELECTION
                     </a>
                 </div>
                 <!-- About -->

@@ -363,6 +363,55 @@
             line-height: 1.25;
         }
 
+        /* ERR NOT funnel - HTML text, no image. Bands narrow as the field narrows. */
+        .rt-funnel { margin: 0 auto 4rem; max-width: 48rem; }
+
+        .rt-funnel figcaption {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #7e7e7e;
+            margin-bottom: 0.75rem;
+        }
+
+        .rt-funnel ol { margin: 0; padding: 0; list-style: none; }
+
+        .rt-funnel li {
+            width: var(--w);
+            margin: 0 auto 6px;
+            padding: 14px 22px;
+            border-radius: 8px;
+            color: #ffffff;
+            background: var(--c);
+        }
+
+        .rt-funnel li b {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .rt-funnel li span {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.94rem;
+            line-height: 1.45;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        .rt-funnel-out {
+            margin: 0.875rem 0 0;
+            text-align: center;
+            font-weight: 700;
+            color: #7216f4;
+        }
+
+        @media (max-width: 640px) {
+            .rt-funnel li { width: 100%; }
+        }
+
         .errnot-step { scroll-margin-top: 120px; }
 
         .errnot-step + .errnot-step {
@@ -531,6 +580,18 @@
                     Transformation.
                 </p>
             </div>
+
+            <figure class="rt-funnel">
+                <figcaption>How the method narrows the field</figcaption>
+                <ol>
+                    <li style="--w:100%; --c:#9d4edd"><b>Education</b><span>Start with a current view of the market.</span></li>
+                    <li style="--w:91%; --c:#8f47f6"><b>Requirements</b><span>Write and prioritize your requirements.</span></li>
+                    <li style="--w:82%; --c:#7216f4"><b>RFI</b><span>Issue a short RFI to gather needed information about the vendor, support, and estimated pricing to meet your requirements.</span></li>
+                    <li style="--w:73%; --c:#5b0acd"><b>uNique Demo</b><span>Conduct scripted demos focused on your requirements.</span></li>
+                    <li style="--w:64%; --c:#281345"><b>Obvious Winner</b><span>Choose the winner based on best fit to your requirements.</span></li>
+                </ol>
+                <p class="rt-funnel-out">ERR NOT™ = smarter decisions</p>
+            </figure>
 
             <div class="max-w-3xl mx-auto">
 

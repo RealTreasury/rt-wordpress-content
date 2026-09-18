@@ -53,6 +53,8 @@ BACKUPS = Path(os.environ.get("WP_POST_BACKUPS", Path.home() / "wp-post-backups"
 ENV_FILE = Path(os.environ.get("WPCOM_SSH_ENV", "/opt/rt-ai/secrets/wpcom-ssh.env"))
 KNOWN_HOSTS = ROOT / "scripts" / "wpcom_known_hosts"
 
+WPCODE_OPTION = "wpcode_snippets"
+
 START_RE = re.compile(r"<!--\s*rt:page-content\s+([\w-]+)\s*-->")
 END_MARK = "<!-- /rt:page-content -->"
 
@@ -165,8 +167,47 @@ def fetch_status(env, post_id: int) -> str:
     return ssh(env, f"wp --quiet post get {post_id} --field=post_status").strip()
 
 
+def fetch_type(env, post_id: int) -> str:
+    return ssh(env, f"wp --quiet post get {post_id} --field=post_type").strip()
+
+
+def eval_php(env, php: str) -> str:
+    return ssh(env, "wp --quiet eval-file -", stdin=php.encode("utf-8")).strip()
+
+
+def wpcode_cache(env, post_id: int) -> tuple[int, str]:
+    """The snippet's CACHED code, and how many copies of it the option holds.
+
+    WPCode renders from the `wpcode_snippets` OPTION, not from the snippet post.
+    The post is the editable source; the option is a separate ~44 KB copy keyed by
+    snippet id. Writing the post alone changes nothing on the front end -- verified
+    on staging September 18, 2026, where the post said TMS SELECTION and every
+    served page still said WEBINARS, with nothing in any log.
+    """
+    php = "\n".join([
+        "<?php",
+        f'$o = get_option({php_str(WPCODE_OPTION)});',
+        'if (!is_array($o)) { fwrite(STDERR, "wpcode_snippets is not an array\\n"); exit(1); }',
+        '$found = [];',
+        '$walk = function ($node) use (&$walk, &$found) {',
+        '    if (!is_array($node)) { return; }',
+        f'    if (isset($node["id"]) && (int) $node["id"] === {post_id} && isset($node["code"])) {{',
+        '        $found[] = (string) $node["code"];',
+        '    }',
+        '    foreach ($node as $child) { $walk($child); }',
+        '};',
+        '$walk($o);',
+        'echo count($found) . "\\n";',
+        'if ($found) { echo base64_encode($found[0]); }',
+    ])
+    out = eval_php(env, php).split("\n", 1)
+    count = int(out[0].strip())
+    code = base64.b64decode(out[1].strip()).decode("utf-8") if count and len(out) > 1 else ""
+    return count, code
+
+
 def check_identity(env, slug: str, post_id: int, mode: str,
-                   post_name: str | None = None) -> None:
+                   post_name: str | None = None) -> str:
     """Refuse if post_id is not the post this slug names ON THIS TARGET.
 
     pages.tsv carries ONE id per slug, but ids are per-site. Staging was cloned
@@ -185,7 +226,7 @@ def check_identity(env, slug: str, post_id: int, mode: str,
         # (custom-header-html), not the manifest label. What matters there is that the
         # id still points at a snippet and not at a page that happens to share the id.
         if kind == "wpcode":
-            return
+            return kind
         die(f"refusing: post {post_id} on this target is a '{kind}' named '{name}', "
             f"not the wpcode snippet '{slug}' expects.")
     if name != post_name:
@@ -193,10 +234,15 @@ def check_identity(env, slug: str, post_id: int, mode: str,
             f"'{post_name}' as row '{slug}' declares. "
             f"pages.tsv holds one id per row and ids are per-site; resolve the id for "
             f"this target (wp post list --name={post_name}) before writing.")
+    return kind
 
 
 def shell_quote(s: str) -> str:
     return "'" + s.replace("'", "'\\''") + "'"
+
+
+def php_str(s: str) -> str:
+    return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("$", "\\$") + '"'
 
 
 def splice(current: str, block: str, slug: str, mode: str = "page") -> str:
@@ -370,13 +416,25 @@ def page_slug_for(slug: str, post_name: str | None) -> str:
 
 
 def cmd_plan(env, slug, post_id, source, mode, post_name=None) -> int:
-    check_identity(env, slug, post_id, mode, post_name)
+    kind = check_identity(env, slug, post_id, mode, post_name)
     page_slug = page_slug_for(slug, post_name)
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
     block = build(page_slug, source, mode)
     new = block if mode in ("raw", "native") else splice(current, block, page_slug, mode)
     print(f"-- post {post_id} ({slug}), post_status {status}")
+    if kind == "wpcode":
+        # The post is the editable source; the option is what renders. Say so here,
+        # because a plan that only diffs the post reads as if the post were the deploy.
+        count, cached = wpcode_cache(env, post_id)
+        if count == 0:
+            print(f"-- {WPCODE_OPTION}: NO cached copy of snippet {post_id}. That option is "
+                  f"what renders; a publish would refuse.", file=sys.stderr)
+        else:
+            state = "in sync with the post" if norm(cached) == norm(current) else "DRIFTED"
+            print(f"-- {WPCODE_OPTION}: {count} cached cop{'y' if count == 1 else 'ies'}, "
+                  f"{len(cached)} bytes, {state}. This is what the front end serves; "
+                  f"a publish rewrites it too.")
     print(f"-- live now : {len(current):>7} bytes, {words(current):>5} words, "
           f"h1={'yes' if re.search(r'<h1', current, re.I) else 'NO'}, "
           f"iframe={'yes' if 'github.io' in current else 'no'}")
@@ -420,8 +478,87 @@ def cmd_plan(env, slug, post_id, source, mode, post_name=None) -> int:
     return 0
 
 
+def write_wpcode(env, post_id: int, current: str, new: str, backup: Path) -> None:
+    """Write a WPCode snippet -- which takes TWO writes, and not wp_update_post().
+
+    1. `wp_update_post()` REFUSES this post type: something on `wpcode` hooks
+       wp_insert_post_empty_content and the call comes back WP_Error "Content, title,
+       and excerpt are empty" even with correct non-empty content. It refuses rather
+       than corrupting, so nothing breaks -- the publish just dies with the remote's
+       exit 1. That is the `ssh failed (1)` that stopped the September 18 nav release.
+       $wpdb->update() on post_content plus clean_post_cache() is the way in.
+
+    2. The post is not what renders. WPCode serves the `wpcode_snippets` option, a
+       separate cached copy of every active snippet's code keyed by snippet id. Patch
+       only the post and the front end keeps serving the old nav, silently. Patch the
+       option through get_option/update_option so WordPress handles serialization --
+       never string-replace the serialized form, whose byte-length prefixes any change
+       in length would corrupt. Do not reach for wpcode()->cache->delete_cache(): it
+       empties the option and does not rebuild it, which takes the nav off every page.
+    """
+    count, cached = wpcode_cache(env, post_id)
+    if count == 0:
+        die(f"no snippet with id {post_id} in the {WPCODE_OPTION} option. That option is "
+            f"what renders; refusing to write a post the front end will ignore.")
+    if count > 1:
+        die(f"{count} cached copies of snippet {post_id} in {WPCODE_OPTION}; expected 1. "
+            f"Refusing rather than guessing which one renders.")
+    cache_backup = backup.with_suffix(".wpcode-option.txt")
+    cache_backup.write_text(cached, encoding="utf-8")
+    print(f"-- backed up {len(cached)} bytes of cached snippet code to {cache_backup}")
+    if norm(cached) != norm(current):
+        print(f"-- note: the cached copy ({len(cached)} bytes) and post {post_id} "
+              f"({len(current)} bytes) had DRIFTED. Both are being set to the repo file.",
+              file=sys.stderr)
+
+    payload = base64.b64encode(new.encode("utf-8")).decode("ascii")
+    digest = hashlib.sha256(new.encode("utf-8")).hexdigest()
+    php = "\n".join([
+        "<?php",
+        "kses_remove_filters();",
+        "global $wpdb;",
+        f'$c = base64_decode("{payload}");',
+        f'if (hash("sha256", $c) !== "{digest}") {{ fwrite(STDERR, "payload hash mismatch\\n"); exit(1); }}',
+        # $wpdb->update() prepares its own values, so this takes the content RAW --
+        # wp_slash() here would write literal backslashes into the snippet.
+        f'$n = $wpdb->update($wpdb->posts, ["post_content" => $c], ["ID" => {post_id}]);',
+        'if ($n === false) { fwrite(STDERR, "wpdb update failed: " . $wpdb->last_error . "\\n"); exit(1); }',
+        f"clean_post_cache({post_id});",
+        f'$o = get_option({php_str(WPCODE_OPTION)});',
+        '$hits = 0;',
+        '$patch = function (&$node) use (&$patch, $c, &$hits) {',
+        '    if (!is_array($node)) { return; }',
+        f'    if (isset($node["id"]) && (int) $node["id"] === {post_id} && isset($node["code"])) {{',
+        '        $node["code"] = $c;',
+        '        $hits++;',
+        '    }',
+        '    foreach ($node as &$child) { $patch($child); }',
+        '    unset($child);',
+        '};',
+        '$patch($o);',
+        'if ($hits !== 1) { fwrite(STDERR, "patched $hits cached copies, expected 1\\n"); exit(1); }',
+        f'update_option({php_str(WPCODE_OPTION)}, $o);',
+        'echo "$n $hits";',
+    ])
+    if not probe_stdin(env):
+        die("the remote did not return the STDIN probe token: 'wp eval-file -' is not reading "
+            "the script this end sends. Refusing to attempt the write.")
+    out = eval_php(env, php)
+    if not re.fullmatch(r"\d+ 1", out):
+        die(f"unexpected write result {out!r}; "
+            f"restore with: {sys.argv[0]} restore <slug> {backup}")
+    print(f"-- wrote post {post_id} and 1 cached copy in {WPCODE_OPTION}")
+
+    # The option is the thing that renders, so read IT back, not just the post.
+    _, after = wpcode_cache(env, post_id)
+    if norm(after) != norm(new):
+        die(f"cached snippet read-back mismatch: live {len(after)} bytes != sent {len(new)}. "
+            f"restore with: {sys.argv[0]} restore <slug> {backup}")
+    print(f"-- cache read-back OK: {len(after)} bytes")
+
+
 def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
-    check_identity(env, slug, post_id, mode, post_name)
+    kind = check_identity(env, slug, post_id, mode, post_name)
     page_slug = page_slug_for(slug, post_name)
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
@@ -450,24 +587,27 @@ def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
     backup.write_text(current, encoding="utf-8")
     print(f"-- backed up {len(current)} bytes to {backup}")
 
-    payload = base64.b64encode(new.encode("utf-8")).decode("ascii")
-    digest = hashlib.sha256(new.encode("utf-8")).hexdigest()
-    php = "\n".join([
-        "<?php",
-        "kses_remove_filters();",
-        f'$c = base64_decode("{payload}");',
-        f'if (hash("sha256", $c) !== "{digest}") {{ fwrite(STDERR, "payload hash mismatch\\n"); exit(1); }}',
-        f'$r = wp_update_post(["ID" => {post_id}, "post_content" => wp_slash($c)], true);',
-        'if (is_wp_error($r)) { fwrite(STDERR, $r->get_error_message() . "\\n"); exit(1); }',
-        'echo $r;',
-    ])
-    if not probe_stdin(env):
-        die("the remote did not return the STDIN probe token: 'wp eval-file -' is not reading "
-            "the script this end sends. Refusing to attempt the write.")
-    out = ssh(env, "wp --quiet eval-file -", stdin=php.encode("utf-8")).strip()
-    if not out.isdigit():
-        die(f"write returned no post ID: {out!r}")
-    print(f"-- wrote post {out}")
+    if kind == "wpcode":
+        write_wpcode(env, post_id, current, new, backup)
+    else:
+        payload = base64.b64encode(new.encode("utf-8")).decode("ascii")
+        digest = hashlib.sha256(new.encode("utf-8")).hexdigest()
+        php = "\n".join([
+            "<?php",
+            "kses_remove_filters();",
+            f'$c = base64_decode("{payload}");',
+            f'if (hash("sha256", $c) !== "{digest}") {{ fwrite(STDERR, "payload hash mismatch\\n"); exit(1); }}',
+            f'$r = wp_update_post(["ID" => {post_id}, "post_content" => wp_slash($c)], true);',
+            'if (is_wp_error($r)) { fwrite(STDERR, $r->get_error_message() . "\\n"); exit(1); }',
+            'echo $r;',
+        ])
+        if not probe_stdin(env):
+            die("the remote did not return the STDIN probe token: 'wp eval-file -' is not "
+                "reading the script this end sends. Refusing to attempt the write.")
+        out = ssh(env, "wp --quiet eval-file -", stdin=php.encode("utf-8")).strip()
+        if not out.isdigit():
+            die(f"write returned no post ID: {out!r}")
+        print(f"-- wrote post {out}")
 
     back = fetch_content(env, post_id)
     if norm(back) != norm(new):
@@ -486,6 +626,14 @@ def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
 
 def cmd_restore(env, slug, post_id, backup_path: str) -> int:
     content = Path(backup_path).read_text(encoding="utf-8")
+    if fetch_type(env, post_id) == "wpcode":
+        # Restoring the post alone would leave the live nav on the rolled-forward code,
+        # because the option is what renders. write_wpcode puts both back.
+        write_wpcode(env, post_id, fetch_content(env, post_id), content,
+                     Path(backup_path).with_suffix(".rollback"))
+        print(f"-- restored post {post_id} and its cached copy from {backup_path} "
+              f"({len(content)} bytes)")
+        return 0
     payload = base64.b64encode(content.encode("utf-8")).decode("ascii")
     digest = hashlib.sha256(content.encode("utf-8")).hexdigest()
     php = "\n".join([

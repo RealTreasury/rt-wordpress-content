@@ -71,8 +71,12 @@ class Remote:
         self.corrupt = kw.get("corrupt", False)
         self.flip = kw.get("flip", False)
         self.nostdin = kw.get("nostdin", False)
+        # The wpcode_snippets OPTION: snippet id -> cached code. This, not the post, is
+        # what WPCode renders. Absent from this dict means the option has no copy.
+        self.snippets: dict[int, str] = dict(kw.get("snippets", {}))
         self.writes = 0
         self.commands: list[str] = []
+        self.stdins: list[str] = []
 
     def __call__(self, env, remote_cmd, stdin=None):
         self.commands.append(remote_cmd)
@@ -95,11 +99,46 @@ class Remote:
             return self.body.get(int(m.group(1)), "")
         if "eval-file -" in remote_cmd:
             php = (stdin or b"").decode("utf-8")
+            self.stdins.append(php)
             if self.nostdin:
                 return ""
             if wpp.STDIN_PROBE_TOKEN in php:
                 return wpp.STDIN_PROBE_TOKEN
+            # Read-only probe of the snippet cache.
+            if "get_option(" in php and "update_option(" not in php:
+                pid = int(re.search(r'=== (\d+)', php).group(1))
+                if pid not in self.snippets:
+                    return "0\n"
+                blob = base64.b64encode(self.snippets[pid].encode("utf-8")).decode("ascii")
+                return "1\n" + blob
+            # The WPCode two-write path: $wpdb->update() on the post, then the option.
+            if "$wpdb->update(" in php:
+                pid = int(re.search(r'"ID" => (\d+)', php).group(1))
+                payload = re.search(r'base64_decode\("([^"]*)"\)', php).group(1)
+                content = base64.b64decode(payload).decode("utf-8")
+                # $wpdb->update() prepares its own values and does NOT wp_unslash them,
+                # so backslashes survive without wp_slash() -- and wp_slash() here would
+                # write literal extra ones. Model that, so the test would catch either.
+                if "wp_slash(" in php:
+                    content = content.replace("\\", "\\\\")
+                if self.corrupt:
+                    content += "X"
+                self.body[pid] = content
+                hits = 1 if pid in self.snippets else 0
+                if hits:
+                    self.snippets[pid] = content
+                if self.flip:
+                    self.status[pid] = "publish"
+                self.writes += 1
+                return f"1 {hits}"
             pid = int(re.search(r'"ID" => (\d+)', php).group(1))
+            # wp_update_post() REFUSES post_type=wpcode: something on that type hooks
+            # wp_insert_post_empty_content and returns WP_Error "Content, title, and
+            # excerpt are empty" for correct non-empty content. The remote then exits 1
+            # and the operator sees a bare `ssh failed (1)`. That is the wall the
+            # September 18 nav release hit; keep the fake honest about it.
+            if self.kind.get(pid, DEFAULT_KINDS.get(pid, "page")) == "wpcode":
+                wpp.die("ssh failed (1): ")
             payload = re.search(r'base64_decode\("([^"]*)"\)', php).group(1)
             content = base64.b64decode(payload).decode("utf-8")
             if self.unslash and "wp_slash(" not in php:
@@ -389,12 +428,60 @@ check("14 the guard passes when the id is the right post", r14b.writes == 1)
 raw_src = tmp / "snippet.php"
 raw_src.write_text("<?php // nav snippet\n<nav class=\"rt-nav-link\">TMS SELECTION</nav>\n",
                    encoding="utf-8")
-r14c = Remote(name={1885: "custom-header-html"}, kind={1885: "wpcode"})
+r14c = Remote(name={1885: "custom-header-html"}, kind={1885: "wpcode"},
+              snippets={1885: "old snippet"})
 r14c.body[1885] = "old snippet"
 r14c.status[1885] = "publish"
 wpp.cmd_publish(env_for(r14c), "site-header-snippet", 1885, raw_src, "raw",
                 "site-header-snippet")
 check("14 a raw row is checked by post_type, not by name", r14c.writes == 1)
+
+# --- 15. the WPCode snippet needs BOTH writes, and not wp_update_post() -------------------
+# The post is the editable source; the wpcode_snippets option is what renders. Publishing
+# the post alone is the failure that left the live nav saying WEBINARS after a green PR.
+check("15 the snippet post was written", r14c.body[1885] == raw_src.read_text())
+check("15 the CACHED copy was written too -- this is what the front end serves",
+      r14c.snippets[1885] == raw_src.read_text())
+check("15 the write went through $wpdb->update, not wp_update_post",
+      any("$wpdb->update(" in c for c in r14c.stdins)
+      and not any("wp_update_post(" in c for c in r14c.stdins))
+check("15 it never calls delete_cache(), which empties the nav site-wide",
+      not any("delete_cache" in c for c in r14c.stdins))
+
+# Backslashes: $wpdb->update() prepares its values and does not wp_unslash them, so the
+# wpcode path must NOT wp_slash() -- that is the opposite of the wp_update_post() path.
+slash_src = tmp / "snippet-slash.php"
+slash_src.write_text('<?php $re = "/^[^\\s@]+@[^\\s@]+$/";\n', encoding="utf-8")
+r15 = Remote(name={1885: "custom-header-html"}, kind={1885: "wpcode"},
+             snippets={1885: "old"}, unslash=True)
+r15.body[1885] = "old"
+r15.status[1885] = "publish"
+wpp.cmd_publish(env_for(r15), "site-header-snippet", 1885, slash_src, "raw",
+                "site-header-snippet")
+check("15 backslashes survive the wpcode write path",
+      r15.snippets[1885] == slash_src.read_text())
+
+# --- 16. no cached copy means the write would not reach the front end --------------------
+r16 = Remote(name={1885: "custom-header-html"}, kind={1885: "wpcode"})
+r16.body[1885] = "old snippet"
+r16.status[1885] = "publish"
+try:
+    wpp.cmd_publish(env_for(r16), "site-header-snippet", 1885, raw_src, "raw",
+                    "site-header-snippet")
+    check("16 refuses when the option holds no copy of the snippet", False)
+except SystemExit:
+    check("16 refuses when the option holds no copy of the snippet", True)
+check("16 nothing was written when it refused", r16.writes == 0)
+
+# --- 17. plan on a wpcode row reports the cache, and writes nothing ----------------------
+r17 = Remote(name={1885: "custom-header-html"}, kind={1885: "wpcode"},
+             snippets={1885: "old snippet"})
+r17.body[1885] = "old snippet"
+r17.status[1885] = "publish"
+wpp.cmd_plan(env_for(r17), "site-header-snippet", 1885, raw_src, "raw",
+             "site-header-snippet")
+check("17 plan reads the snippet cache", any("get_option(" in c for c in r17.stdins))
+check("17 plan writes nothing", r17.writes == 0)
 
 if failures:
     print(f"\n{len(failures)} check(s) failed", file=sys.stderr)

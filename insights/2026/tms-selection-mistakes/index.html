@@ -31,8 +31,8 @@
         .rt-art figure { margin: 0; }
 
         .rt-art-hero {
-            padding: 72px 0 56px;
-            background: linear-gradient(135deg, #f8f4ff 0%, #ffffff 100%);
+            padding: 64px 0 48px;
+            background: #f8f8f8;
             position: relative;
             overflow: hidden;
         }
@@ -41,9 +41,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background:
-                radial-gradient(circle at 18% 28%, rgba(114, 22, 244, 0.07) 0%, transparent 52%),
-                radial-gradient(circle at 82% 72%, rgba(199, 125, 255, 0.05) 0%, transparent 52%);
+            background: none;
             pointer-events: none;
         }
 
@@ -57,23 +55,24 @@
 
         .rt-art-eyebrow {
             display: inline-block;
-            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
-            color: #ffffff;
-            padding: 7px 18px;
-            border-radius: 30px;
+            background: none;
+            color: #5b0acd;
+            padding: 0;
+            border-radius: 0;
             font-size: 0.82rem;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
             margin-bottom: 22px;
         }
 
         .rt-art-hero h1 {
-            font-size: clamp(2rem, 4.6vw, 3rem);
+            font-size: clamp(2.1rem, 4.8vw, 3.5rem);
             font-weight: 800;
             color: #281345;
             line-height: 1.15;
             margin: 0 0 20px;
-            letter-spacing: -0.015em;
+            letter-spacing: -0.035em;
         }
 
         .rt-art-lede {
@@ -142,8 +141,8 @@
             flex-wrap: wrap;
             gap: 14px;
             padding: 26px 0;
-            border-top: 1px solid #ebe4f7;
-            border-bottom: 1px solid #ebe4f7;
+            border-top: 1px solid #bebebe;
+            border-bottom: 1px solid #bebebe;
         }
 
         .rt-art-stat { flex: 1 1 140px; }
@@ -248,8 +247,9 @@
 
         .rt-art-quote {
             margin-top: 30px !important;
-            padding-left: 22px;
-            border-left: 3px solid #7216f4;
+            padding-top: 24px;
+            border-top: 1px solid #bebebe;
+            color: #393939;
         }
 
         .rt-art-quote cite {
@@ -270,8 +270,8 @@
         .rt-art-toc {
             margin: 34px 0 0;
             padding: 22px 0;
-            border-top: 1px solid #ebe4f7;
-            border-bottom: 1px solid #ebe4f7;
+            border-top: 1px solid #bebebe;
+            border-bottom: 0;
         }
 
         .rt-art-toc h2 {
@@ -282,7 +282,7 @@
             font-weight: 700;
             letter-spacing: 0.09em;
             text-transform: uppercase;
-            color: #7e7e7e !important;
+            color: #393939 !important;
         }
 
         .rt-art-toc ol {
@@ -290,13 +290,18 @@
             padding: 0;
             list-style: none;
             counter-reset: toc;
-            columns: 2;
-            column-gap: 36px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 32px;
         }
 
         .rt-art-toc li {
             counter-increment: toc;
-            margin: 0 0 8px;
+            display: flex;
+            align-items: baseline;
+            margin: 0;
+            padding: 12px 0;
+            border-bottom: 1px solid #ebe4f7;
             font-size: 0.97rem;
             break-inside: avoid;
         }
@@ -306,7 +311,7 @@
             margin-right: 10px;
             font-variant-numeric: tabular-nums;
             font-weight: 700;
-            color: #c8a7ff;
+            color: #5b0acd;
         }
 
         .rt-art-toc a { color: #393939 !important; text-decoration: none !important; }
@@ -390,20 +395,21 @@
 
         /* ---- Mistake headers ---- */
         .rt-art-mistake {
-            display: flex;
-            align-items: baseline;
-            gap: 16px;
+            display: grid;
+            grid-template-columns: 64px minmax(0, 1fr);
+            align-items: start;
+            gap: 24px;
             margin-top: 58px !important;
             padding-top: 28px;
-            border-top: 1px solid #ebe4f7;
+            border-top: 2px solid #281345;
         }
 
         .rt-art-mistake .rt-art-num {
             flex: 0 0 auto;
-            font-size: 2.9rem;
+            font-size: 3.8rem;
             font-weight: 800;
-            line-height: 0.82;
-            color: #e3d4fb;
+            line-height: 1;
+            color: #7216f4;
             font-variant-numeric: tabular-nums;
         }
 
@@ -413,35 +419,54 @@
             border: 0 !important;
         }
 
-        .rt-art-eq {
-            margin-top: 6px !important;
-            margin-left: 4.3rem;
-            font-size: 1.1rem !important;
+        .rt-art-body .rt-art-eq {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 60px minmax(0, 1fr);
+            align-items: center;
+            gap: 16px;
+            margin: 26px 0 !important;
+            padding: 26px 28px;
+            background: #f8f4ff;
+            font-size: 1.25rem !important;
+            font-weight: 600;
+            line-height: 1.35;
+            color: #281345 !important;
+            letter-spacing: -0.02em;
+        }
+        .rt-art-eq > span:first-child { color: #393939; }
+        .rt-art-eq > span:last-child { font-weight: 800; overflow-wrap: anywhere; }
+        .rt-art-eq .rt-art-ne { color: #7216f4; font-size: 2.8rem; text-align: center; line-height: 1; font-weight: 400; }
+
+        /* Advice is an editorial inset with a distinct reading rhythm. */
+        .rt-art .rt-art-avoid {
+            display: grid;
+            grid-template-columns: 160px minmax(0, 1fr);
+            gap: 32px;
+            margin-top: 36px !important;
+            padding: 32px;
+            background: #f8f8f8;
+            border: 0;
+            border-top: 2px solid #281345;
+        }
+        .rt-art .rt-art-avoid > h3 {
+            margin: 0 !important;
+            font-size: 1.15rem;
+            line-height: 1.35;
             font-weight: 700;
-            color: #5b0acd !important;
-            letter-spacing: 0.01em;
+            letter-spacing: -0.02em;
+            color: #281345;
         }
-
-        /* ---- How to avoid ---- */
-        .rt-art-avoid {
-            margin-top: 34px !important;
-            padding-top: 22px;
-            border-top: 1px dashed #ddd0f5;
+        .rt-art .rt-art-avoid-copy { margin: 0; }
+        .rt-art .rt-art-avoid-copy > * + * { margin-top: 18px; }
+        .rt-art .rt-art-avoid-copy ul { padding: 0; list-style: none; }
+        .rt-art .rt-art-avoid-copy li { margin: 0; padding: 14px 0; border-top: 1px solid #bebebe; }
+        .rt-art .rt-art-avoid-copy li strong { display: block; margin-bottom: 5px; color: #5b0acd; }
+        @media (max-width: 640px) {
+            .rt-art .rt-art-avoid { grid-template-columns: 1fr; padding: 26px 22px; gap: 20px; }
         }
-
-        .rt-art-avoid > h3 {
-            margin-top: 0 !important;
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.09em;
-            text-transform: uppercase;
-            color: #7216f4;
-        }
-
-        .rt-art-body .rt-art-avoid > * + * { margin-top: 16px; }
 
         /* ---- Recap ---- */
-        .rt-art-recap {
+        .rt-art .rt-art-recap {
             margin: 0;
             padding: 0;
             list-style: none;
@@ -451,26 +476,30 @@
         .rt-art-recap li {
             counter-increment: recap;
             display: flex;
-            gap: 14px;
-            padding: 14px 0;
-            border-bottom: 1px solid #f0eaf9;
+            gap: 22px;
+            align-items: baseline;
+            margin: 0;
+            padding: 22px 0;
+            border-bottom: 1px solid #bebebe;
             font-size: 1.02rem;
         }
 
         .rt-art-recap li::before {
             content: counter(recap);
-            flex: 0 0 1.6rem;
+            flex: 0 0 2rem;
+            font-size: 1.5rem;
+            line-height: 1;
             font-weight: 800;
             color: #7216f4;
             font-variant-numeric: tabular-nums;
         }
 
         @media (max-width: 640px) {
-            .rt-art-toc ol { columns: 1; }
+            .rt-art-toc ol { grid-template-columns: 1fr; }
             .rt-art-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .rt-art-mistake { gap: 12px; margin-top: 42px !important; }
-            .rt-art-mistake .rt-art-num { font-size: 2.1rem; }
-            .rt-art-eq { margin-left: 0; }
+            .rt-art-mistake { grid-template-columns: 36px minmax(0, 1fr); gap: 14px; margin-top: 42px !important; }
+            .rt-art-mistake .rt-art-num { font-size: 2.8rem; }
+            .rt-art-body .rt-art-eq { grid-template-columns: 1fr; text-align: center; gap: 10px; padding: 24px; }
         }
     </style>
 </head>
@@ -521,7 +550,7 @@
         <h2>Not Having Written, Prioritized Requirements</h2>
       </div>
 
-      <p class="rt-art-eq">Want &ne; Need.</p>
+      <p class="rt-art-eq"><span>Want</span> <span class="rt-art-ne">&ne;</span> <span>Need.</span></p>
 
       <p>Many companies begin serious demos without having a written, prioritized list of requirements. They rely on general ideas like:</p>
 
@@ -556,8 +585,9 @@
 
       <p>Do this before serious demos begin.</p>
 
-      <div class="rt-art-avoid">
+<div class="rt-art-avoid">
         <h3>How to avoid mistake #1</h3>
+        <div class="rt-art-avoid-copy">
 
         <p>The key is to create clear, prioritized requirements. Start by separating requirements into categories:</p>
 
@@ -570,6 +600,7 @@
         <p>You can share these with vendors and ask them how they support your requirements.</p>
 
         <p>Place the greatest weight on your must-have items. Must-have requirements should be just that: MUST HAVE. If a system can&rsquo;t meet them, move on to the next system.</p>
+        </div>
       </div>
 
       <div class="rt-art-mistake" id="mistake-2">
@@ -577,7 +608,7 @@
         <h2>Falling in Love with the Demo</h2>
       </div>
 
-      <p class="rt-art-eq">Great Pitch &ne; Great Product.</p>
+      <p class="rt-art-eq"><span>Great Pitch</span> <span class="rt-art-ne">&ne;</span> <span>Great Product.</span></p>
 
       <p>The second mistake treasury teams commonly make when selecting treasury technology is buying what &ldquo;looks good.&rdquo;</p>
 
@@ -604,8 +635,9 @@
 
       <p>A strong demo can tell you a lot, but only if you are focused on your requirements.</p>
 
-      <div class="rt-art-avoid">
+<div class="rt-art-avoid">
         <h3>How to avoid mistake #2</h3>
+        <div class="rt-art-avoid-copy">
 
         <p>Instead of letting vendors control the demo, treasury teams should control it themselves. A better approach to a deep dive demo (not the initial short overview demo) is to create a custom demo script that requires each vendor to demonstrate how they handle your specific requirements.</p>
 
@@ -620,6 +652,7 @@
         <p>When every vendor follows the same script, you get a true apples-to-apples comparison of how the systems actually perform.</p>
 
         <p>Suddenly the differences become obvious.</p>
+        </div>
       </div>
 
       <div class="rt-art-mistake" id="mistake-3">
@@ -627,7 +660,7 @@
         <h2>Buying because you like the salesperson</h2>
       </div>
 
-      <p class="rt-art-eq">Great Salesperson &ne; Great Support/Great Product.</p>
+      <p class="rt-art-eq"><span>Great Salesperson</span> <span class="rt-art-ne">&ne;</span> <span>Great Support/Great Product.</span></p>
 
       <p>The next common mistake treasury teams make is choosing the winning vendor based on the salesperson they like the most. There is an old sales adage that people buy from people they like. And that&rsquo;s true, but should it be?</p>
 
@@ -639,8 +672,9 @@
 
       <p>And do not let the salesperson&rsquo;s use of the latest buzzwords pull you away from what your treasury team actually needs. The only technologies that truly matter are the ones that help you achieve your goals and solve your problems.</p>
 
-      <div class="rt-art-avoid">
+<div class="rt-art-avoid">
         <h3>How to avoid mistake #3</h3>
+        <div class="rt-art-avoid-copy">
 
         <p>Separate the person from the product. Imagine that you will never see them again after the sale (unlikely, but imagine it). Now, how do you like the product?</p>
 
@@ -659,6 +693,7 @@
         <p>It&rsquo;s very easy to get off track and choose a system that is &ldquo;okay.&rdquo; But when you stay focused on your requirements, your goals, and the value you need to create, selection will become the start of real success.</p>
 
         <p>And, you can do much better than just &ldquo;okay.&rdquo; Don&rsquo;t let these things distract you from your requirements.</p>
+        </div>
       </div>
 
       <div class="rt-art-mistake" id="mistake-4">
@@ -666,7 +701,7 @@
         <h2>Choosing the Familiar Option Instead of the Best One</h2>
       </div>
 
-      <p class="rt-art-eq">Familiar &ne; Best Fit.</p>
+      <p class="rt-art-eq"><span>Familiar</span> <span class="rt-art-ne">&ne;</span> <span>Best Fit.</span></p>
 
       <p>The fourth common reason companies often select a system that isn&rsquo;t the very best one for them is that they opt for the &ldquo;easy button&rdquo; and choose:</p>
 
@@ -682,8 +717,9 @@
 
       <p>Run a serious, objective selection process. It should include at least 3-5 vendors from the correct segment(s) that most closely align with your requirements. Don&rsquo;t let the promise of a quarter-end &lsquo;special discount&rsquo; or &ldquo;signing by the end of the month&rdquo; cause you to rush the process to only look at 1 or 2 vendors.</p>
 
-      <div class="rt-art-avoid">
+<div class="rt-art-avoid">
         <h3>How to avoid mistake #4</h3>
+        <div class="rt-art-avoid-copy">
 
         <p>The solution is simple: evaluate the current marketplace, not your past experience. Start by:</p>
 
@@ -694,6 +730,7 @@
         </ul>
 
         <p>Treasury teams are always surprised by how many new and innovative solutions now exist. Expanding your view of the market greatly increases the chance that you&rsquo;ll find the system that truly fits your needs.</p>
+        </div>
       </div>
 
       <div class="rt-art-mistake" id="mistake-5">
@@ -701,7 +738,7 @@
         <h2>Buying Based on Price Alone</h2>
       </div>
 
-      <p class="rt-art-eq">Price &ne; Value.</p>
+      <p class="rt-art-eq"><span>Price</span> <span class="rt-art-ne">&ne;</span> <span>Value.</span></p>
 
       <p>The fifth and final common reason treasury teams don&rsquo;t select the technology that is the best fit for their operations is simple: They buy on price.</p>
 
@@ -717,8 +754,9 @@
 
       <p>Now don&rsquo;t get me wrong; price does matter. Your company has a budget, and the system needs to deliver enough value to justify the cost. But the lowest subscription or implementation cost doesn&rsquo;t automatically mean the lowest total cost of ownership nor the best value.</p>
 
-      <div class="rt-art-avoid">
+<div class="rt-art-avoid">
         <h3>How to avoid mistake #5</h3>
+        <div class="rt-art-avoid-copy">
 
         <p>Instead of focusing on price alone, evaluate:</p>
 
@@ -740,6 +778,7 @@
         </ul>
 
         <p>TMS solutions ARE NOT commodities. Put in the time and effort to run a fast, efficient, and objective selection process. You will be glad you did.</p>
+        </div>
       </div>
 
       <h2>That completes my five common selection errors</h2>

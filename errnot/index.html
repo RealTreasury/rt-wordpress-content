@@ -414,15 +414,16 @@
             background: #f8f4ff;
         }
         .rt-funnel figcaption {
-            margin: 0 0 28px;
-            max-width: 24rem;
+            margin: 0 auto 28px;
+            max-width: 32rem;
+            text-align: center;
             font-size: 1.45rem;
             font-weight: 700;
             line-height: 1.25;
             letter-spacing: -0.025em;
             color: #281345;
         }
-        .rt-funnel ol { margin: 0; padding: 0; list-style: none; }
+        .rt-funnel ol { margin: 0 auto; padding: 0; max-width: 40rem; list-style: none; }
         .rt-funnel li {
             display: grid;
             grid-template-columns: 44% minmax(0, 1fr);
@@ -580,13 +581,34 @@
         .errnot-body strong { color: #281345; }
         .errnot-body ul { padding-left: 1.4rem; list-style: disc; }
         .errnot-body li + li { margin-top: 0.55rem; }
-        .errnot-delivers { margin-top: 32px; padding: 24px 0 0; border-top: 1px solid #bebebe; background: none; color: #281345; }
-        .errnot-delivers h4 { margin: 0 0 24px; font-size: 1.2rem; line-height: 1.35; letter-spacing: -0.02em; color: #281345; }
-        .errnot-body .errnot-delivers ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
-        .errnot-body .errnot-delivers li { margin: 0; padding: 14px 0 0; border-top: 2px solid #7216f4; color: #281345; font-size: 0.95rem; font-weight: 600; line-height: 1.45; }
+        .errnot-delivers { margin-top: 40px; padding: 26px 0 0; border-top: 2px solid #281345; background: none; color: #281345; }
+        .errnot-delivers h4 { margin: 0 0 6px; font-size: 1.2rem; font-weight: 700; line-height: 1.35; letter-spacing: -0.02em; color: #281345; }
+        .errnot-delivers-sub { margin: 0 0 18px; font-size: 0.98rem; color: #7e7e7e; line-height: 1.5; }
+        .errnot-body .errnot-delivers ul { list-style: none; margin: 0; padding: 0; display: block; counter-reset: delivers; }
+        .errnot-body .errnot-delivers li {
+            counter-increment: delivers;
+            margin: 0;
+            padding: 15px 0;
+            border-top: 1px solid #ebe4f7;
+            display: grid;
+            grid-template-columns: 2.1rem minmax(0, 12.5em) minmax(0, 1fr);
+            align-items: baseline;
+            column-gap: 16px;
+            color: #281345;
+            line-height: 1.5;
+        }
+        .errnot-body .errnot-delivers li::before {
+            content: counter(delivers, decimal-leading-zero);
+            color: var(--primary-purple);
+            font-weight: 700;
+            font-size: 0.9rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .errnot-delivers li b { font-weight: 700; font-size: 1.02rem; color: #281345; }
+        .errnot-delivers li span { font-size: 0.98rem; color: #5b5b5b; }
         @media (max-width: 768px) {
-            .errnot-body .errnot-delivers ul { grid-template-columns: 1fr; gap: 0; }
-            .errnot-body .errnot-delivers li { padding: 14px 0; border-top: 1px solid #ebe4f7; }
+            .errnot-body .errnot-delivers li { grid-template-columns: 2.1rem minmax(0, 1fr); row-gap: 4px; }
+            .errnot-body .errnot-delivers li span { grid-column: 2; }
         }
 
         .errnot-cols {
@@ -680,7 +702,7 @@
                     Outdated selection methods can lead to disjointed, lengthy processes, misaligned values with vendors, and unmet expectations. This often results in locked-in subscriptions that provide little to no value.
                 </p>
                 <p class="text-lg text-gray-600 mb-8">
-                    At Real Treasury, we've seen how the right technology can positively impact scalability, growth, and profitability. That's why we developed the <strong>ERR NOT™</strong> method—a proven selection process to help you select the ideal tools for your unique business needs and avoid costly mistakes.
+                    At Real Treasury, we've seen how the right technology can positively impact scalability, growth, and profitability. That's why we developed <strong>ERR NOT™</strong>. Every step in it was designed to correct a specific failure in the traditional process—to cut through the noise, avoid the common pitfalls, and get treasury teams to a confident, well-reasoned decision faster.
                 </p>
             </div>
         </div>
@@ -690,10 +712,10 @@
     <section class="bg-white section-padding errnot-method">
         <div class="container mx-auto px-6">
             <h2 class="text-4xl md:text-5xl font-bold text-center mb-4">
-                The <span class="gradient-text">ERR NOT™</span> Method
+                The <span class="gradient-text">Six Steps</span>
             </h2>
             <p class="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-                Six proven steps to transform your technology selection process
+                Education, Requirements, RFI, uNique Demo Script, Obvious Winner, Transformation
             </p>
 
             <nav class="errnot-strip" aria-label="The six steps">
@@ -705,20 +727,8 @@
                 <a href="#errnot-transformation"><b>T</b><span>Transformation</span></a>
             </nav>
 
-            <div class="max-w-3xl mx-auto errnot-body mb-16">
-                <p>
-                    ERR NOT™ is Real Treasury's proprietary selection methodology. Every step was designed to
-                    correct specific failures in the traditional process, to cut through the noise, avoid the
-                    common pitfalls, and get treasury teams to a confident, well-reasoned decision faster.
-                </p>
-                <p>
-                    ERR NOT™ stands for Education, Requirements, RFI, uNique Demo Script, Obvious Winner,
-                    Transformation.
-                </p>
-            </div>
-
             <figure class="rt-funnel">
-                <figcaption>How the method narrows the field</figcaption>
+                <figcaption>How ERR NOT&trade; narrows the field</figcaption>
                 <ol>
                     <li style="--w:100%; --c:#9d4edd"><b>Education</b><span>Start with a current view of the market.</span></li>
                     <li style="--w:91%; --c:#8f47f6"><b>Requirements</b><span>Write and prioritize your requirements.</span></li>
@@ -995,12 +1005,31 @@
                             <h4>
                                 What Real Treasury's Transformation delivers
                             </h4>
+                            <p class="errnot-delivers-sub">
+                                Five things an independent reviewer can do that the team doing the technical
+                                implementation cannot.
+                            </p>
                             <ul>
-                                <li>Unbiased audit</li>
-                                <li>Early risk mitigation</li>
-                                <li>Vendor accountability</li>
-                                <li>Go-Live validation</li>
-                                <li>Process optimization</li>
+                                <li>
+                                    <b>Unbiased audit</b>
+                                    <span>Configuration checked against the requirements you ratified, not against the statement of work.</span>
+                                </li>
+                                <li>
+                                    <b>Early risk mitigation</b>
+                                    <span>Gaps raised while there is still budget and schedule left to close them.</span>
+                                </li>
+                                <li>
+                                    <b>Vendor accountability</b>
+                                    <span>What was promised in the demo, tracked through to what is actually delivered.</span>
+                                </li>
+                                <li>
+                                    <b>Go-Live validation</b>
+                                    <span>Acceptance testing written from your requirements, so "live" has to mean working.</span>
+                                </li>
+                                <li>
+                                    <b>Process optimization</b>
+                                    <span>Manual-era steps eliminated or redesigned instead of automated as they are.</span>
+                                </li>
                             </ul>
                         </div>
                     </div>

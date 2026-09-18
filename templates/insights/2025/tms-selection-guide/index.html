@@ -689,6 +689,13 @@
             }
         }
     </script>
+    <%- include('/partials/iframe-height-script.html', { iframeId: "insights-2025-tms-selection-guide" }) %>
 
+<script>
+window.addEventListener('load', function() {
+    var height = document.documentElement.scrollHeight;
+    window.parent.postMessage({height: height}, '*');
+});
+</script>
 </body>
 </html>

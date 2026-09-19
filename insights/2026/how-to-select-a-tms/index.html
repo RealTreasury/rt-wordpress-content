@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Select a Treasury Management System | Real Treasury</title>
+    <meta name="description" content="A practitioner walkthrough of TMS selection: the three market segments, the ERR NOT method, and the five mistakes that produce the wrong system.">
+    <meta property="og:title" content="How to Select a Treasury Management System">
+    <meta property="og:description" content="A practitioner walkthrough of TMS selection: the three market segments, the ERR NOT method, and the five mistakes that produce the wrong system.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://realtreasury.com/how-to-select-a-tms/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .rt-art {
+            font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #131313;
+            line-height: 1.7;
+        }
+
+        .rt-art *,
+        .rt-art *::before,
+        .rt-art *::after { box-sizing: border-box; }
+
+        .rt-art p,
+        .rt-art ul,
+        .rt-art ol,
+        .rt-art h2,
+        .rt-art h3,
+        .rt-art figure { margin: 0; }
+
+        .rt-art-fig {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            align-items: center;
+            max-width: 100%;
+            margin: 36px auto 32px !important;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        /* Broad funnel silhouette with live HTML labels and stage descriptions. */
+        .rt-funnel {
+            margin: 40px auto;
+            padding: 32px;
+            max-width: 48rem;
+            background: #f8f4ff;
+        }
+        .rt-funnel figcaption {
+            margin: 0 auto 28px;
+            max-width: 32rem;
+            text-align: center;
+            font-size: 1.45rem;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: -0.025em;
+            color: #281345;
+        }
+        .rt-art .rt-funnel ol { margin: 0 auto; padding: 0; max-width: 40rem; list-style: none; }
+        .rt-art .rt-funnel li {
+            display: grid;
+            grid-template-columns: 44% minmax(0, 1fr);
+            gap: 0 28px;
+            align-items: center;
+            min-height: 104px;
+            margin: 0;
+            padding: 0;
+            background: none;
+            position: relative;
+        }
+        .rt-art .rt-funnel li::before {
+            content: "";
+            grid-column: 1;
+            grid-row: 1;
+            align-self: stretch;
+            justify-self: center;
+            width: calc(var(--w) * 1.6667 - 66.67%);
+            margin-bottom: 5px;
+            background: #7216f4;
+            clip-path: polygon(0 0, 100% 0, calc(100% - 23px) 100%, 23px 100%);
+        }
+        .rt-art .rt-funnel li:nth-child(1)::before { background: #e3d4fb; }
+        .rt-art .rt-funnel li:nth-child(2)::before { background: #c77dff; }
+        .rt-art .rt-funnel li:nth-child(3)::before { background: #8f47f6; }
+        .rt-art .rt-funnel li:nth-child(4)::before { background: #7216f4; }
+        .rt-art .rt-funnel li:nth-child(5)::before { background: #5b0acd; }
+        .rt-funnel li b {
+            grid-column: 1;
+            grid-row: 1;
+            justify-self: center;
+            z-index: 1;
+            width: calc(var(--w) * 1.6667 - 80%);
+            text-align: center;
+            font-size: 0.98rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #ffffff;
+        }
+        .rt-funnel li:nth-child(-n+2) b { color: #281345; }
+        .rt-funnel li span {
+            grid-column: 2;
+            grid-row: 1;
+            display: block;
+            margin: 0;
+            padding: 12px 0;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: #393939;
+        }
+        .rt-art .rt-funnel-out {
+            margin: 26px 0 0;
+            padding: 0;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #5b0acd;
+        }
+        @media (max-width: 640px) {
+            .rt-funnel { padding: 24px 20px; }
+            .rt-funnel figcaption { font-size: 1.3rem; }
+            .rt-art .rt-funnel li {
+                grid-template-columns: 70px minmax(0, 1fr);
+                gap: 0 20px;
+                min-height: 110px;
+            }
+            .rt-art .rt-funnel li::before {
+                grid-row: 1 / 3;
+                clip-path: polygon(0 0, 100% 0, calc(100% - 5.2px) 100%, 5.2px 100%);
+            }
+            .rt-funnel li b, .rt-funnel li:nth-child(-n+2) b {
+                grid-column: 2;
+                grid-row: 1;
+                justify-self: start;
+                align-self: end;
+                width: auto;
+                padding-top: 16px;
+                color: #281345;
+                text-align: left;
+            }
+            .rt-funnel li span { grid-row: 2; padding: 6px 0 20px; align-self: start; }
+        }
+
+        .rt-art-fig img {
+            display: block;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: auto;
+            border-radius: 0;
+            clip-path: circle(46% at 50% 50%);
+            background: transparent;
+            box-shadow: none;
+            mix-blend-mode: multiply;
+        }
+
+        .rt-art-fig figcaption {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding-top: 14px;
+            border-top: 1px solid #ebe4f7;
+            text-align: left;
+            font-size: 0.88rem;
+            line-height: 1.55;
+            color: #6b6b6b;
+        }
+
+        .rt-art-fig figcaption b { color: #281345; font-weight: 700; }
+
+        .rt-art-hero {
+            padding: 64px 0 48px;
+            background: #f8f8f8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rt-art-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: none;
+            pointer-events: none;
+        }
+
+        .rt-art-wrap {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .rt-art-eyebrow {
+            display: inline-block;
+            background: none;
+            color: #5b0acd;
+            padding: 0;
+            border-radius: 0;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+
+        .rt-art-hero h1 {
+            font-size: clamp(2.1rem, 4.8vw, 3.5rem);
+            font-weight: 800;
+            color: #281345;
+            line-height: 1.15;
+            margin: 0 0 20px;
+            letter-spacing: -0.035em;
+        }
+
+        .rt-art-lede {
+            font-size: 1.2rem;
+            color: #393939;
+            line-height: 1.65;
+        }
+
+
+        /* ---- Contents ---- */
+        .rt-art-toc {
+            margin: 34px 0 0;
+            padding: 22px 0;
+            border-top: 1px solid #bebebe;
+            border-bottom: 0;
+        }
+
+        .rt-art-toc h2 {
+            margin: 0 0 12px !important;
+            padding: 0 !important;
+            border: 0 !important;
+            font-size: 0.76rem !important;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #393939 !important;
+        }
+
+        .rt-art-toc ol {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: toc;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 32px;
+        }
+
+        .rt-art-toc li {
+            counter-increment: toc;
+            display: flex;
+            align-items: baseline;
+            margin: 0;
+            padding: 12px 0;
+            border-bottom: 1px solid #ebe4f7;
+            font-size: 0.97rem;
+            break-inside: avoid;
+        }
+
+        .rt-art-toc li::before {
+            content: counter(toc, decimal-leading-zero);
+            margin-right: 10px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 700;
+            color: #5b0acd;
+        }
+
+        .rt-art-toc a { color: #393939 !important; text-decoration: none !important; }
+        .rt-art-toc a:hover { color: #7216f4 !important; text-decoration: underline !important; }
+
+        @media (max-width: 640px) {
+            .rt-art-wrap { padding: 0 20px; }
+            .rt-art-hero { padding: 44px 0 36px; }
+            .rt-art-toc ol { grid-template-columns: 1fr; }
+        }
+
+
+        .rt-art-body {
+            padding: 56px 0 72px;
+            background: #ffffff;
+        }
+
+        .rt-art-body > .rt-art-wrap > * + * { margin-top: 22px; }
+
+        .rt-art-body h2 {
+            font-size: clamp(1.5rem, 2.8vw, 2rem);
+            font-weight: 700;
+            color: #393939;
+            line-height: 1.25;
+            margin-top: 56px !important;
+            padding-top: 26px;
+            border-top: 1px solid #ebe4f7;
+        }
+
+        .rt-art-body h2:first-child {
+            margin-top: 0 !important;
+            padding-top: 0;
+            border-top: 0;
+        }
+
+        .rt-art-body h3 {
+            font-size: 1.16rem;
+            font-weight: 600;
+            color: #131313;
+            margin-top: 38px !important;
+        }
+
+        .rt-art-body p {
+            font-size: 1.05rem;
+            color: #393939;
+        }
+
+        .rt-art-body ul,
+        .rt-art-body ol {
+            padding-left: 26px;
+            color: #393939;
+            font-size: 1.05rem;
+        }
+
+        .rt-art-body li { margin-bottom: 9px; }
+
+        .rt-art-body a {
+            color: #7216f4;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .rt-art-body a:hover { color: #5b0acd; }
+
+        .rt-art-body strong { color: #131313; }
+
+        /* ---- Outcome pie (page 8 of the guide) ---- */
+        .rt-pie {
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
+            align-items: center;
+            gap: 40px;
+            margin: 36px 0 10px;
+            padding: 36px;
+            background: #f8f4ff;
+            border: 0;
+        }
+        .rt-pie > figcaption {
+            grid-column: 1 / -1;
+            color: #281345;
+            font-size: 1.45rem;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: -0.025em;
+        }
+
+        .rt-pie-svg { width: 250px; height: 250px; max-width: 100%; }
+
+        .rt-art .rt-pie-key { margin: 0; padding: 0; list-style: none; }
+
+        .rt-pie-key li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+            padding: 16px 0;
+            border-bottom: 1px solid #e3d4fb;
+        }
+
+        .rt-pie-key li:last-child { border-bottom: 0; }
+
+        .rt-pie-key i {
+            flex: 0 0 auto;
+            width: 8px;
+            height: 34px;
+            border-radius: 0;
+            background: var(--c);
+            transform: translateY(1px);
+        }
+
+        .rt-pie-key b {
+            flex: 0 0 4rem;
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #281345;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rt-pie-key span { font-size: 0.98rem; color: #393939; }
+
+        .rt-art-statcap { font-size: 0.86rem; color: #7e7e7e; }
+
+        /* ---- Shown vs. not shown ---- */
+        .rt-art-split {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin: 28px 0;
+        }
+
+        .rt-art-split > div { padding: 28px; border-radius: 4px; }
+
+        .rt-art-split > div:first-child { background: #5b0acd; color: #ffffff; }
+
+        .rt-art-split > div:last-child { background: #f8f8f8; border: 1px solid #ebe4f7; }
+
+        .rt-art-split h4 {
+            margin: 0 0 22px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            line-height: 1.4;
+            text-wrap: balance;
+        }
+        .rt-art-split h4 span { display: block; }
+
+        .rt-art-split > div:first-child h4 { color: #ffffff; }
+        .rt-art-split > div:last-child h4 { color: #7216f4; }
+
+        .rt-art-split ul { margin: 0; padding: 0; list-style: none; font-size: 1rem; }
+
+        .rt-art-split li { padding: 9px 0; }
+
+        .rt-art-split > div:first-child li { color: #ffffff; }
+        .rt-art-split > div:last-child li { color: #393939; }
+
+        .rt-art-split > div:first-child li + li { border-top: 1px solid rgba(255, 255, 255, 0.18); }
+        .rt-art-split > div:last-child li + li { border-top: 1px solid #f0eaf9; }
+
+        /* ---- Market segments ---- */
+        .rt-art-segs {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            width: calc(100vw - 80px);
+            max-width: 1080px;
+            margin-left: 50%;
+            transform: translateX(-50%);
+            background: none;
+        }
+
+        .rt-art-segs > div {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            padding: 24px;
+            border: 1px solid #ebe4f7;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 4px 16px rgba(19, 19, 19, 0.05);
+        }
+
+        .rt-art-segs h3 {
+            margin: 0 !important;
+            min-height: 0;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #ebe4f7;
+            font-size: 20px;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            color: #281345;
+        }
+
+        .rt-art-segs .rt-art-segs-sub {
+            display: block;
+            margin-top: 5px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #393939;
+            letter-spacing: 0;
+        }
+
+        .rt-art-segs p { font-size: 15px !important; line-height: 1.6; margin: 0; }
+        .rt-art .rt-art-segs ul { padding: 0; margin: 0; list-style: none; font-size: 15px; line-height: 1.6; }
+        .rt-art-segs li { position: relative; padding-left: 20px; margin: 0 0 10px; }
+        .rt-art-segs li::before { content: "✓"; position: absolute; left: 0; color: #7216f4; font-weight: 700; }
+
+        .rt-art-segs .rt-art-segs-fit {
+            display: block;
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid #ebe4f7;
+            font-size: 13px;
+            font-weight: 600;
+            color: #5b0acd;
+        }
+
+        /* ---- ERR NOT strip ---- */
+        .rt-art .rt-art-steps {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0 28px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: none;
+        }
+
+        .rt-art-steps li {
+            margin: 0;
+            padding: 24px 0;
+            border: 0;
+            border-top: 2px solid #7216f4;
+            border-radius: 0;
+            background: #ffffff;
+        }
+
+        .rt-art-steps b {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #7216f4;
+            line-height: 1;
+        }
+
+        .rt-art-steps strong {
+            display: block;
+            hyphens: none;
+            margin: 8px 0 4px;
+            font-size: 0.95rem;
+            color: #131313;
+        }
+
+        .rt-art-steps span {
+            display: block;
+            font-size: 0.85rem;
+            color: #393939;
+            line-height: 1.45;
+        }
+
+        .rt-art-faq { margin: 24px 0 0; }
+        .rt-art-faq dt {
+            margin: 26px 0 0;
+            padding-top: 24px;
+            border-top: 1px solid #bebebe;
+            font-size: 1.14rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #281345;
+        }
+        .rt-art-faq dd { margin: 12px 0 0; font-size: 1.05rem; line-height: 1.7; color: #393939; }
+
+        /* The article culminates in one clear guide download action. */
+        .rt-art .rt-art-cta {
+            margin-top: 56px;
+            padding: 44px;
+            background: #281345;
+            border-radius: 6px;
+            color: #ffffff;
+        }
+        .rt-art .rt-art-cta h2 {
+            margin: 0 !important;
+            padding: 0;
+            border: 0;
+            max-width: 22ch;
+            font-size: clamp(1.65rem, 3.6vw, 2.35rem);
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            color: #ffffff;
+        }
+        .rt-art .rt-art-cta p { margin-top: 20px; max-width: 36em; color: #ffffff; }
+        .rt-art .rt-art-cta .rt-art-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            min-height: 54px;
+            margin-top: 28px;
+            padding: 16px 24px;
+            background: #ffffff;
+            color: #5b0acd;
+            border-radius: 4px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .rt-art-btn::after { content: ""; width: 9px; height: 9px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); }
+        .rt-art .rt-art-cta .rt-art-btn:hover { background: #f0eaf9; color: #281345; }
+        .rt-art a:focus-visible { outline: 2px solid #7216f4; outline-offset: 5px; }
+        .rt-art .rt-art-cta .rt-art-btn:focus-visible { outline-color: #ffffff; }
+        @media (max-width: 640px) {
+            .rt-art .rt-art-cta { padding: 28px 24px; }
+            .rt-art .rt-art-cta .rt-art-btn { width: 100%; }
+        }
+
+        /* ---- Mistake headers ---- */
+        .rt-art-mistake {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-top: 58px !important;
+            padding-top: 28px;
+            border-top: 1px solid #ebe4f7;
+        }
+
+        .rt-art-mistake .rt-art-num {
+            flex: 0 0 auto;
+            font-size: 2.9rem;
+            font-weight: 800;
+            line-height: 0.82;
+            color: #e3d4fb;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rt-art-mistake h2 {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+        }
+
+        .rt-art-eq {
+            margin-top: 6px !important;
+            margin-left: 4.3rem;
+            font-size: 1.1rem !important;
+            font-weight: 700;
+            color: #5b0acd !important;
+            letter-spacing: 0.01em;
+        }
+
+        /* ---- How to avoid ---- */
+        .rt-art-avoid {
+            margin-top: 34px !important;
+            padding-top: 22px;
+            border-top: 1px dashed #ddd0f5;
+        }
+
+        .rt-art-avoid > h3 {
+            margin-top: 0 !important;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #7216f4;
+        }
+
+        .rt-art-body .rt-art-avoid > * + * { margin-top: 16px; }
+
+        /* ---- Recap ---- */
+        .rt-art .rt-art-recap {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: recap;
+        }
+
+        .rt-art-recap li {
+            counter-increment: recap;
+            display: flex;
+            gap: 22px;
+            align-items: baseline;
+            margin: 0;
+            padding: 22px 0;
+            border-bottom: 1px solid #bebebe;
+            font-size: 1.02rem;
+        }
+
+        .rt-art-recap li::before {
+            content: counter(recap);
+            flex: 0 0 2rem;
+            font-size: 1.5rem;
+            line-height: 1;
+            font-weight: 800;
+            color: #7216f4;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (max-width: 900px) {
+            .rt-art-segs { grid-template-columns: 1fr; width: 100%; margin-left: 0; transform: none; }
+            .rt-art-segs h3 { min-height: 0; }
+        }
+        @media (max-width: 640px) {
+            .rt-art-fig { gap: 16px; }
+            .rt-art-fig img { max-width: 100%; }
+            .rt-art-split { grid-template-columns: 1fr; }
+            .rt-art-toc ol { columns: 1; }
+            .rt-art .rt-art-steps { grid-template-columns: 1fr; }
+            .rt-art-steps li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 6px 18px; }
+            .rt-art-steps b { grid-row: 1 / 3; }
+            .rt-art-steps strong, .rt-art-steps span { grid-column: 2; margin: 0; }
+            .rt-art-segs { grid-template-columns: 1fr; }
+            .rt-art-segs > div { gap: 18px; }
+            .rt-art-segs h3 { min-height: 0; }
+            .rt-art-segs > div { padding: 26px; }
+            .rt-pie { grid-template-columns: 1fr; gap: 12px; padding: 24px; }
+            .rt-pie-svg { width: 220px; height: 220px; justify-self: center; }
+            .rt-art-mistake { gap: 12px; margin-top: 42px !important; }
+            .rt-art-mistake .rt-art-num { font-size: 2.1rem; }
+            .rt-art-eq { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="rt-art">
+
+  <section class="rt-art-hero">
+    <div class="rt-art-wrap">
+      <span class="rt-art-eyebrow">TMS Selection</span>
+      <h1>How to Select a Treasury Management System</h1>
+      <p class="rt-art-lede">Have you ever sat through three or four TMS demos and by the last one thought, &ldquo;They all seem about the same?&rdquo;</p>
+      <nav class="rt-art-toc" aria-label="Contents">
+        <h2>On this page</h2>
+        <ol>
+          <li><a href="#what-is-a-tms">What is a treasury management system?</a></li>
+          <li><a href="#when-do-you-need-one">When does a treasury team need a TMS?</a></li>
+          <li><a href="#why-the-traditional-approach-fails">The traditional TMS selection approach doesn&rsquo;t work</a></li>
+          <li><a href="#market-segments">What are the segments of the TMS market?</a></li>
+          <li><a href="#err-not">What should you evaluate when assessing a treasury management system?</a></li>
+          <li><a href="#five-failures">The five most common selection failures</a></li>
+          <li><a href="#faq">Frequently asked questions</a></li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <article class="rt-art-body">
+    <div class="rt-art-wrap">
+
+      <p>That&rsquo;s because every vendor is focused on the same technology advances and the same buzzwords right now. These include AI agents, LLMs, MCP servers, chatbots, and using AI as your assistant. When every vendor gets to control their own demo and show you what they want you to see, everything looks good, easy, and &ldquo;sexy.&rdquo; Every demo person seeks to show their product in its best light; that is what they are paid to do. And after several demos, you&rsquo;re left with a team full of opinions, scorecards that have several products around the same average, and uncertainty regarding which system is best for you.</p>
+
+      <p>In fact, you may ask yourself: Did we actually see the right vendors? Did we ask the right questions? Do we even know what we need?</p>
+
+      <p>Does that resonate with you? Because you aren&rsquo;t going about the selection process &ldquo;wrong&rdquo; by industry standards. You are likely taking a very common approach, one that was designed for a different era of software buying but not really designed to help you make a confident decision given the state of treasury technology today.</p>
+
+      <p>That&rsquo;s why we developed ERR NOT&trade;.</p>
+
+      <h2 id="what-is-a-tms">What is a treasury management system?</h2>
+
+      <p>A treasury management system (TMS) is the system of record for a corporate treasury function. It supports key treasury functions such as cash positioning and forecasting, balance and transaction reporting, payments, in-house banking and intercompany loans, financial instruments (FX, debt, investments, commodities), hedging, bank account management and more.</p>
+
+      <p>A treasury management system can provide great value by providing:</p>
+
+      <ul>
+        <li>Automation of manual processes,</li>
+        <li>greater data visibility for identification of idle cash to invest or pay down debt,</li>
+        <li>visibility into strategic opportunities with intercompany loans, pooling or netting, and</li>
+        <li>automated reporting for other teams or executives.</li>
+      </ul>
+
+      <p>The treasury management system market covers a wide range of products. Some are all-in-one systems covering many modules and functions, while others are best-of-breed solutions that focus on one core area.</p>
+
+      <h2 id="when-do-you-need-one">When does a treasury team need a TMS?</h2>
+
+      <p>Treasury functions exist even before companies have a defined internal treasury team; however, the accounting and finance groups often bear the responsibilities. Treasury teams typically take shape as a company grows and the treasury functions become too much for a &ldquo;pre-treasury&rdquo; finance department.</p>
+
+      <p>Implementing a TMS is the next step in a treasury department&rsquo;s evolution and the tipping point is rarely a single event, but some common signals are:</p>
+
+      <ul>
+        <li>Setting your daily cash position is manual and time-consuming.</li>
+        <li>Cash forecasting lives in a spreadsheet that only one person understands and can maintain.</li>
+        <li>The questions: &ldquo;How much? Where is it? What is it earning?&rdquo; can&rsquo;t be easily answered</li>
+        <li>The number of entities or bank accounts has grown beyond what manual processes can handle.</li>
+        <li>Payments are initiated from several portals with inconsistent controls and approvals.</li>
+        <li>Internal audit or a new CFO has asked for controls the current processes cannot produce.</li>
+      </ul>
+
+      <h2 id="why-the-traditional-approach-fails">The traditional TMS selection approach doesn&rsquo;t work</h2>
+
+      <p>Before we walk through the ERR NOT&trade; method, let&rsquo;s talk about why the traditional approach doesn&rsquo;t work.</p>
+
+      <p>Roughly 50% of TMS selection projects end in &ldquo;no decision.&rdquo; That means treasury teams spend months talking to vendors, sitting through demos, writing and issuing an RFP, reading and scoring responses, and then making no decision at all.</p>
+
+      <p>And for those that do make a decision, there is no guarantee that they&rsquo;ve selected the right one, the one that best fits their requirements.</p>
+
+      <p>Not only that, but of those that make a decision, most are surprised during the implementation by what the system can&rsquo;t do that they thought it could. Surprised by needed workarounds or the need to subscribe to even more modules.</p>
+
+      <p>Only 5% are truly happy from beginning to end.</p>
+
+      <figure class="rt-pie">
+        <figcaption>TMS project outcomes.</figcaption>
+        <svg class="rt-pie-svg" viewBox="0 0 220 220" stroke-linejoin="round" role="img" aria-label="TMS project outcomes: 50% no decision, 30% happy but surprised, 15% unhappy, 5% happy from beginning to end." xmlns="http://www.w3.org/2000/svg">
+          <path d="M 110 110 L 110 6 A 104 104 0 0 1 110 214 Z" fill="#281345" stroke="#f8f4ff" stroke-width="4"/>
+          <path d="M 110 110 L 110 214 A 104 104 0 0 1 11.09 77.862 Z" fill="#8f47f6" stroke="#f8f4ff" stroke-width="4"/>
+          <path d="M 110 110 L 11.09 77.862 A 104 104 0 0 1 77.862 11.09 Z" fill="#c77dff" stroke="#f8f4ff" stroke-width="4"/>
+          <path d="M 110 110 L 77.862 11.09 A 104 104 0 0 1 110 6 Z" fill="#e3d4fb" stroke="#f8f4ff" stroke-width="4"/>
+        </svg>
+        <ul class="rt-pie-key">
+          <li><i style="--c:#281345"></i><b>50%</b><span>No decision</span></li>
+          <li><i style="--c:#8f47f6"></i><b>30%</b><span>Happy, surprised</span></li>
+          <li><i style="--c:#c77dff"></i><b>15%</b><span>Unhappy</span></li>
+          <li><i style="--c:#e3d4fb"></i><b>5%</b><span>Happy</span></li>
+        </ul>
+      </figure>
+
+      <h3>RFP fails</h3>
+
+      <p>Ask most treasury teams (or consultants) how they start a TMS selection, and the answer is usually the same, &ldquo;We issue an RFP.&rdquo; It&rsquo;s the tried-and-true preferred method because procurement loves it, and it gives the appearance of objectivity.</p>
+
+      <p>But the problem is that vendors are very good at answering RFP questions in ways that sound positive without ever clearly saying &ldquo;no.&rdquo; It&rsquo;s a skill taught to everyone who answers RFPs.</p>
+
+      <p>Common responses like:</p>
+
+      <ul>
+        <li>&ldquo;Yes, with configuration&rdquo;</li>
+        <li>&ldquo;Yes, with services&rdquo;</li>
+        <li>&ldquo;Yes, on the roadmap&rdquo;</li>
+        <li>&ldquo;Yes, with a workaround&rdquo; (though they&rsquo;ll never use that word)</li>
+        <li>OR, just plain &ldquo;Yes.&rdquo;</li>
+      </ul>
+
+      <p>If five vendors respond and 99% of the answers are some version of &ldquo;yes,&rdquo; what exactly did you learn? Nothing. What you did was spend an enormous amount of time on something that gave little value, if any, toward understanding the functional differences between vendors.</p>
+
+      <p>And it&rsquo;s worth noting that the traditional TMS RFP was built for a different period in software development. When companies were buying installed software, worrying about hardware and infrastructure and major upgrade cycles, long and detailed technical checklists made sense.</p>
+
+      <p>But treasury technology today is SaaS; you are subscribing to a platform served from the cloud, not installing software. The questions that matter most, functional fit, ability to meet the requirements, and ease of setup, don&rsquo;t get answered by a 400-question RFP. They are best answered by seeing the product in action.</p>
+
+      <h3>Demo fails</h3>
+
+      <p>Even when teams get to the demo stage, the traditional approach leaves the demo in the hands of the vendor. That doesn&rsquo;t work because a vendor demo can be like a cooking show where everything is prepped in advance so that it goes fast and every dish looks easy to make.</p>
+
+      <p>You should understand that a demo person&rsquo;s job is to show the product in its best light; they are not going to volunteer anything negative about the product. So, if you don&rsquo;t ask the right questions, you won&rsquo;t get the information you desire.</p>
+
+      <div class="rt-art-split">
+        <div>
+          <h4><span>The vendor-controlled demo</span> shows you</h4>
+          <ul>
+            <li>Beautiful dashboards and reports</li>
+            <li>AI and latest features</li>
+            <li>Perfect workflows</li>
+            <li>Everything looks easy</li>
+          </ul>
+        </div>
+        <div>
+          <h4>What you do not see</h4>
+          <ul>
+            <li>Your pain points</li>
+            <li>Your processes</li>
+            <li>Your exceptions</li>
+            <li>Your data</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Buying guide fails</h3>
+
+      <p>Many teams start their search by reading an analyst market report, a quadrant, a ranking, a &ldquo;magic&rdquo; chart of some kind, or a TMS buying guide, and treating it as the authoritative view of the market. Did you know that most of those reports are pay-to-play? Vendors pay for inclusion. That means the chart or guide you&rsquo;re using as your starting point may reflect a narrow, outdated slice of the market that&rsquo;s tilted toward large legacy systems, not the full landscape of the current marketplace.</p>
+
+      <p>The most visible vendors aren&rsquo;t always the best-fit vendors. Legacy and large vendors are highly visible. Emerging and innovative vendors are underrepresented.</p>
+
+      <p>At Real Treasury, vendors do not pay for inclusion in our market charts, our Treasury Tech Portal, or this guide. Every vendor on our marketplace chart is included in the segment listings and in the matrix. It&rsquo;s entirely free.</p>
+
+      <p>We believe that knowledge of the segments, and the products within each segment, gives you a better view of your available options so that you can find the best-fit product to meet your unique requirements.</p>
+
+      <h2 id="market-segments">What are the segments of the TMS market?</h2>
+
+      <p>Real Treasury divides the cash and treasury management system marketplace into three segments:</p>
+
+      <div class="rt-art-segs">
+        <div>
+          <h3>Cash Tools</h3>
+          <ul><li>Bank connectivity.</li><li>Cash visibility.</li><li>Cash forecasting.</li><li>Tools to help categorize and manage bank balance and transaction information.</li></ul>
+          <p>Cash Tools must do these four things, at a minimum, to be included in the Real Treasury North American chart.</p>
+          <span class="rt-art-segs-fit">Fit: simple treasuries</span>
+        </div>
+        <div>
+          <h3>TMS-Lite</h3>
+          <ul><li>Everything in Cash Tools, plus treasury payment initiation and processing.</li></ul>
+          <p>TMS-Lite products may have a variety of other modules, but the addition of payments led to inclusion in this segment.</p>
+          <span class="rt-art-segs-fit">Fit: growing or mid-complexity treasuries</span>
+        </div>
+        <div>
+          <h3>TRMS<span class="rt-art-segs-sub">Treasury and Risk Management Systems</span></h3>
+          <ul><li>Everything in TMS-Lite, plus full support for FX, debt, and investments (tracking, valuing, accounting, and reporting).</li></ul>
+          <p>The TRMS products may have other modules, but the addition of full support for FX, debt, and investments led to inclusion in this segment.</p>
+          <span class="rt-art-segs-fit">Fit: complex, global treasuries</span>
+        </div>
+      </div>
+
+      <p>Large multibillion-dollar companies can have fairly simple treasuries. Conversely, small &ldquo;mid-market&rdquo; companies can have very complex operations. So, complexity isn&rsquo;t about size nor revenue.</p>
+
+      <p>Are you mainly focused on cash? Do you trade in several different asset classes (investments, debt, FX, derivatives, commodities)? Do you have many different banking partners and counterparties? Do you have multiple ERPs and many different entities? All these things add complexity. A &lsquo;simple&rsquo; tool won&rsquo;t handle complexity well, and a complex tool can make what should be easy more difficult.</p>
+
+      <figure class="rt-art-fig">
+        <img src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png"
+             alt="Real Treasury treasury tech market chart, North America, September 2026, with products sorted into the Cash Tools, TMS-Lite and TRMS segments."
+             loading="lazy" decoding="async">
+        <figcaption><b>The Real Treasury North American market chart, September 2026 edition.</b> Every vendor that meets a segment definition is on it, and no vendor pays for inclusion.</figcaption>
+      </figure>
+
+      <p><a href="/treasury-tech-market/">See the Real Treasury market chart and what defines each segment.</a></p>
+
+      <h2 id="err-not">What should you evaluate when assessing a treasury management system?</h2>
+
+      <p>ERR NOT&trade; is Real Treasury&rsquo;s proprietary selection methodology. Every step was designed to correct specific failures in the traditional process, to cut through the noise, avoid the common pitfalls, and get treasury teams to a confident, well-reasoned decision faster.</p>
+
+      <figure class="rt-funnel">
+        <figcaption>How ERR NOT&trade; narrows the field</figcaption>
+        <ol>
+          <li style="--w:100%; --c:#9d4edd"><b>Education</b><span>Start with a current view of the market.</span></li>
+          <li style="--w:91%; --c:#8f47f6"><b>Requirements</b><span>Write and prioritize your requirements.</span></li>
+          <li style="--w:82%; --c:#7216f4"><b>RFI</b><span>Issue a short RFI to gather needed information about the vendor, support, and estimated pricing to meet your requirements.</span></li>
+          <li style="--w:73%; --c:#5b0acd"><b>uNique Demo</b><span>Conduct scripted demos focused on your requirements.</span></li>
+          <li style="--w:64%; --c:#281345"><b>Obvious Winner</b><span>Choose the winner based on best fit to your requirements.</span></li>
+        </ol>
+        <p class="rt-funnel-out">ERR NOT&trade; = smarter decisions</p>
+      </figure>
+
+      <p><a href="/errnot/">Read the full walkthrough of the ERR NOT&trade; method.</a></p>
+
+      <h2 id="five-failures">The five most common selection failures</h2>
+
+      <p>You have likely heard of companies that love their TMS and others that definitely do not. The ones that feel like they aren&rsquo;t getting &ldquo;value,&rdquo; or just outright hate their TMS usually made a less than ideal selection. And that poor selection was compounded by an implementation that was doomed before it began. You can&rsquo;t &ldquo;out-implement&rdquo; a poor selection.</p>
+
+      <p>Because treasury teams frequently make the same avoidable mistakes during the selection process. Once you know what these mistakes are, they&rsquo;re surprisingly easy to avoid.</p>
+
+      <ol class="rt-art-recap">
+        <li>Not having clear, written, and prioritized requirements.</li>
+        <li>Buying what looks good, including beautiful dashboards and the latest technology buzzwords.</li>
+        <li>Buying from the salesperson you like the most.</li>
+        <li>Hitting the &ldquo;easy button&rdquo; and choosing the most familiar name or the system someone used at a previous company.</li>
+        <li>Buying the cheapest option because the systems mistakenly appear to be the same.</li>
+      </ol>
+
+      <p>A structured, objective process leads to a confident decision and greater ROI.</p>
+
+      <p><a href="/tms-selection-mistakes/">Read each mistake and how to avoid it.</a></p>
+
+      <h2 id="conclusion">Conclusion</h2>
+
+      <p>Selecting a TMS should not come down to the best demo, the best-known name, or the vendor that checks the most boxes on an RFP. From education through transformation, ERR NOT&trade; is designed to help you understand the market, define what you truly need, compare the right vendors on a level playing field, and make a decision you can clearly defend.</p>
+
+      <p>With a better selection process, you can dramatically improve the odds that the technology you choose will deliver the results you expect.</p>
+
+      <h2 id="faq">Frequently asked questions</h2>
+
+      <dl class="rt-art-faq">
+        <dt>How long should a TMS selection take?</dt>
+        <dd>The selection process generally scales to the requirements and complexity of the project. For a treasury with simple requirements, it may only take four to six weeks to make a final decision. A complex global treasury operation may take three to four months.</dd>
+
+        <dt>Do we need a full RFP?</dt>
+        <dd>Not unless your company requires it. A better way to understand if a company can meet your requirements is through a short non-functional RFI and a demo script for apple-to-apple demos.</dd>
+
+        <dt>How many vendors should we shortlist?</dt>
+        <dd>The market is changing rapidly as technology development cycles are compressed. Three to five products allow for a better evaluation and comparison of what is currently available.</dd>
+      </dl>
+
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How long should a TMS selection take?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The selection process generally scales to the requirements and complexity of the project. For a treasury with simple requirements, it may only take four to six weeks to make a final decision. A complex global treasury operation may take three to four months."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do we need a full RFP?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Not unless your company requires it. A better way to understand if a company can meet your requirements is through a short non-functional RFI and a demo script for apple-to-apple demos."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How many vendors should we shortlist?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The market is changing rapidly as technology development cycles are compressed. Three to five products allow for a better evaluation and comparison of what is currently available."
+            }
+          }
+        ]
+      }
+      </script>
+
+      <div class="rt-art-cta">
+        <h2>Get the 2026 Real Treasury Tech Selection Guide</h2>
+        <p>The segments, the products in each, a functionality matrix for each segment, and the selection method explained completely.</p>
+        <a class="rt-art-btn" href="/treasury-tech-selection-guide/">Get the guide</a>
+      </div>
+
+    </div>
+  </article>
+
+</div>
+</body>
+</html>

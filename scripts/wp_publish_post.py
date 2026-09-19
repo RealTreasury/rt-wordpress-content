@@ -363,8 +363,7 @@ def render_native(text: str, rel: str) -> str:
 
 
 def render_verbatim(text: str, slug: str) -> str:
-    """The repo file as ONE Custom HTML block, byte for byte, inside the post's existing
-    group wrapper.
+    """Keep the page's assets and styles inside its existing group wrapper.
 
     For pages that were hand-pasted as a whole standalone document and already render
     natively -- /errnot/ is the case this was written for. Mode `page` is wrong for them
@@ -374,9 +373,18 @@ def render_verbatim(text: str, slug: str) -> str:
     restyle. Mode `native` is wrong too -- it emits its own group wrapper, and /errnot/'s
     is a zero-padding full-bleed one, not the constrained wrapper native builds.
 
-    So: the file unchanged, and the splice keeps the wrapper and the pattern refs that are
-    already on the post.
+    WordPress/Yoast owns document metadata. Remove the embedded document's title,
+    meta tags and canonical link so they cannot compete with the real page head.
+    Restrict this to the source head: SVG titles and body content must survive.
+    Styles, font links and scripts (including Tailwind) remain unchanged.
     """
+    def without_metadata(match: re.Match) -> str:
+        head = re.sub(r"<title\b[^>]*>[\s\S]*?</title\s*>", "", match.group(1), flags=re.I)
+        head = re.sub(r"<meta\b[^>]*>", "", head, flags=re.I)
+        head = re.sub(r'''<link\b(?=[^>]*\brel\s*=\s*["']canonical["'])[^>]*>''', "", head, flags=re.I)
+        return "<head>" + head + "</head>"
+
+    text = re.sub(r"<head\b[^>]*>([\s\S]*?)</head\s*>", without_metadata, text, count=1, flags=re.I)
     return "\n".join([
         page_to_block.START.format(slug=slug),
         "<!-- wp:html -->",

@@ -199,10 +199,9 @@ window.RTG_CONFIG = {
     .rt-gb-prose strong { color: var(--dark-text); }
     .rt-gb-prose-note { font-size: 0.92rem; color: var(--gray-text); }
 
-    .rt-gb-intro { padding: 0 0 8px; }
-    .rt-gb-intro .rt-gb-prose { text-align: left; }
-    .rt-gb-intro .rt-gb-prose ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; padding: 0; list-style: none; margin: 24px 0 0; }
-    .rt-gb-intro .rt-gb-prose li { padding: 12px 0; border-top: 1px solid #bebebe; margin: 0; }
+    .rt-gb-showcase .rt-gb-prose { text-align: left; }
+    .rt-gb-showcase .rt-gb-prose ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; padding: 0; list-style: none; margin: 24px 0 0; }
+    .rt-gb-showcase .rt-gb-prose li { padding: 12px 0; border-top: 1px solid #bebebe; margin: 0; }
     .rt-gb-more { padding: 8px 0 72px; }
     .rt-gb-more .rt-gb-prose > h2 { margin-top: 44px; padding-top: 28px; border-top: 1px solid rgba(114, 22, 244, 0.14); }
     .rt-gb-more .rt-gb-prose > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
@@ -221,7 +220,7 @@ window.RTG_CONFIG = {
     .rt-gb-quote cite b { color: var(--dark-text); font-weight: 600; }
     @media (max-width: 768px) {
         .rt-guidebook .rt-gb-quote blockquote { font-size: 1.05rem; }
-        .rt-gb-intro .rt-gb-prose ul { grid-template-columns: 1fr; }
+        .rt-gb-showcase .rt-gb-prose ul { grid-template-columns: 1fr; }
     }
     /* Native disclosures keep the complete supporting copy in the HTML. */
     .rt-gb-detail { border-top: 1px solid #bebebe; }

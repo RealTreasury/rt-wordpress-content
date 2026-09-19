@@ -190,7 +190,7 @@ window.RTG_CONFIG = {
        its sentence underneath. Numbers are a counter so the order survives an
        edit. Qualified past `.rt-gb-prose li`, which is the same specificity. */
     .rt-gb-prose .rt-gb-includes { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 44px; padding: 0; margin: 26px 0 0; counter-reset: rt-gb-inc; }
-    .rt-gb-prose .rt-gb-includes li { counter-increment: rt-gb-inc; border-top: 1px solid #bebebe; padding: 18px 0 22px; margin: 0; font-size: inherit; }
+    .rt-gb-prose .rt-gb-includes li { counter-increment: rt-gb-inc; border-top: 1px solid #bebebe; padding: 18px 0 30px; margin: 0; font-size: inherit; }
     .rt-gb-prose .rt-gb-includes li::before { content: counter(rt-gb-inc, decimal-leading-zero); display: block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; color: var(--primary-purple); margin-bottom: 9px; }
     .rt-gb-prose .rt-gb-includes h4 { font-size: 1.05rem; font-weight: 700; color: var(--dark-text); margin: 0 0 7px; line-height: 1.35; }
     .rt-gb-prose .rt-gb-includes p { font-size: 0.97rem; color: #393939; line-height: 1.62; margin: 0; }
@@ -214,13 +214,13 @@ window.RTG_CONFIG = {
        the attribution is given room at the bottom. */
     .rt-gb-quote { max-width: 820px; margin: 48px auto 0; padding: 30px 0 0; border: 0; border-top: 1px solid #bebebe; }
     .rt-gb-quote-label { margin: 0 0 14px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary-purple); }
-    .rt-guidebook .rt-gb-quote blockquote { margin: 0; padding: 0; border: 0; font-style: normal; font-size: 1.3rem; line-height: 1.62; color: var(--dark-text); }
-    .rt-guidebook .rt-gb-quote blockquote::before { content: "\201C"; display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 3.6rem; line-height: 0.72; color: rgba(114, 22, 244, 0.28); margin-bottom: 4px; }
+    .rt-guidebook .rt-gb-quote blockquote { margin: 0; padding: 0; border: 0; font-style: normal; font-size: 1.1rem; line-height: 1.68; color: var(--dark-text); max-width: 66ch; }
+    .rt-guidebook .rt-gb-quote blockquote::before { content: "\201C"; display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 2.6rem; line-height: 0.62; color: rgba(114, 22, 244, 0.28); margin-bottom: 0; }
     .rt-gb-quote cite { display: block; margin-top: 24px; padding-top: 18px; border-top: 1px solid #e4e4ea; font-style: normal; font-size: 0.9rem; line-height: 1.5; color: var(--gray-text); }
-    .rt-gb-quote cite b { display: block; font-size: 1rem; color: var(--dark-text); font-weight: 700; }
+    .rt-gb-quote cite b { display: block; font-size: 1rem; color: var(--dark-text); font-weight: 700; margin-bottom: 5px; }
     @media (max-width: 768px) {
-        .rt-guidebook .rt-gb-quote blockquote { font-size: 1.12rem; }
-        .rt-guidebook .rt-gb-quote blockquote::before { font-size: 2.9rem; }
+        .rt-guidebook .rt-gb-quote blockquote { font-size: 1.02rem; }
+        .rt-guidebook .rt-gb-quote blockquote::before { font-size: 2.2rem; }
         .rt-gb-intro .rt-gb-prose ul { grid-template-columns: 1fr; }
         .rt-gb-prose .rt-gb-includes { grid-template-columns: 1fr; gap: 0; }
     }
@@ -239,8 +239,8 @@ window.RTG_CONFIG = {
 
   <section class="rt-gb-hero" aria-labelledby="rt-gb-hero-heading">
     <div class="rt-gb-container">
-      <span class="rt-gb-badge">2026 Edition</span>
-      <h1 id="rt-gb-hero-heading" class="rt-gb-title">The Real Treasury Tech Selection Guide</h1>
+      <span class="rt-gb-badge">North America Edition</span>
+      <h1 id="rt-gb-hero-heading" class="rt-gb-title">The 2026 Real Treasury Tech Selection Guide</h1>
       <p class="rt-gb-subtitle">The practitioner-led guide to evaluating and selecting treasury technology — enter your details below and we'll email you the download link.</p>
     </div>
   </section>

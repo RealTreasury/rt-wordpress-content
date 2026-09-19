@@ -90,3 +90,47 @@ the corresponding `restore` commands for rollback; revert source through a PR.
 Guidance used: Google Search Central's title-link documentation,
 `https://developers.google.com/search/docs/appearance/title-link`, and crawlable
 links guidance, `https://developers.google.com/search/docs/crawling-indexing/links-crawlable`.
+
+## Guide mobile follow-up (rtai-1m3l)
+
+The guide's form was 3,114 CSS pixels down at a 390px viewport. WordPress group
+and article padding plus the theme's blockquote padding squeezed the quote text
+into about 213px. The revised page puts the form immediately after the hero,
+uses a single column on mobile, removes the nested gutters only on the guide,
+and gives the quote the full reading width. Supporting sections and FAQs use
+native `details` elements: all copy remains server-rendered, including closed
+answers. All 1,038 source text tokens, all scripts and FAQ JSON-LD are preserved.
+
+This follows Google's guidance to retain mobile content and use expandable
+sections when needed: https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing
+
+Measured in Chromium with the production theme and live, read-only gate schema:
+
+| Viewport | Form top before → after | Guide height before → after | Horizontal overflow |
+| --- | --- | --- | --- |
+| 320px | 3,889 → 503px | 14,323 → 4,583px | None |
+| 390px | 3,114 → 475px | 11,300 → 4,172px | None |
+| 768px | 1,847 → 392px | 6,742 → 3,299px | None |
+| 1100px | 2,002 → 587px | 6,230 → 3,086px | None |
+| 1440px | 2,037 → 622px | 6,139 → 3,111px | None |
+
+At 390px, the quote box is 358px wide with zero nested padding, and its height
+falls from 890px to 469px. Required fields and dropdown options are unchanged;
+inputs remain at least 16px. Empty-form validity and keyboard toggling of the
+native disclosures pass. Expanded disclosures also have no horizontal overflow.
+No lead submission or delivery email was sent. These are layout measurements,
+not field Core Web Vitals or a guarantee of search ranking.
+
+Evidence on rt-ai-02: `~/guide-mobile-evidence/`, including before/after JSON,
+phone/desktop screenshots, `check.py`, and `seo-live.json`. `check.py` intercepts
+only the guide document in the test browser to substitute the source HTML; it
+does not write production. The actual staging page also contains this change,
+but its pre-existing call to the production gate is blocked by production CORS.
+Do not change access policy just to make a staging form work. Use the screenshots
+and production-context browser preview for review; verify the real form again
+after the owner merges and the guide is published.
+
+Fresh live checks of the four scoped selection pages found HTTP 200, descriptive
+head titles/descriptions, one self-canonical, index/follow, one H1, parseable
+JSON-LD, a mobile viewport and no horizontal overflow at 390px. This is not a
+site-wide SEO audit. The publication and rollback commands above still apply.

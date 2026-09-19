@@ -73,6 +73,7 @@ REST API at `/wp-json/rtg/v1/` and is configured via the WP Admin
   this is the reference implementation. New gated pages should mirror its
   `window.RTG_CONFIG` block and its form-rendering / submission script.
 - **Full integration guide:** `docs/rt-gate.md`.
+- **2026 selection-guide release sequence:** `docs/guide-release-runbook.md`.
 - **Existing RT Gate pages** all live under `webinars/` (plural) and
   `treasury-tech-selection/waitlist/`. There are no RT Gate pages under
   `webinar/` (singular) — that directory is deprecated redirect stubs.

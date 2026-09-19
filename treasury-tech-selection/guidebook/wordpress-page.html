@@ -182,6 +182,18 @@ window.RTG_CONFIG = {
     .rt-gb-intro .rt-gb-prose { text-align: left; }
     .rt-gb-intro .rt-gb-prose ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; padding: 0; list-style: none; margin: 24px 0 0; }
     .rt-gb-intro .rt-gb-prose li { padding: 12px 0; border-top: 1px solid #bebebe; margin: 0; }
+
+    /* "What's in the guide". The four items used to be one run-on clause each,
+       chained with semicolons and a trailing "and" — punctuation that only works
+       in a single column, and which forces you to read to the end of a bullet to
+       find out what it is. Same four things, each given a short title to scan and
+       its sentence underneath. Numbers are a counter so the order survives an
+       edit. Qualified past `.rt-gb-prose li`, which is the same specificity. */
+    .rt-gb-prose .rt-gb-includes { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 44px; padding: 0; margin: 26px 0 0; counter-reset: rt-gb-inc; }
+    .rt-gb-prose .rt-gb-includes li { counter-increment: rt-gb-inc; border-top: 1px solid #bebebe; padding: 18px 0 22px; margin: 0; font-size: inherit; }
+    .rt-gb-prose .rt-gb-includes li::before { content: counter(rt-gb-inc, decimal-leading-zero); display: block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; color: var(--primary-purple); margin-bottom: 9px; }
+    .rt-gb-prose .rt-gb-includes h4 { font-size: 1.05rem; font-weight: 700; color: var(--dark-text); margin: 0 0 7px; line-height: 1.35; }
+    .rt-gb-prose .rt-gb-includes p { font-size: 0.97rem; color: #393939; line-height: 1.62; margin: 0; }
     .rt-gb-more { padding: 8px 0 72px; }
     .rt-gb-more .rt-gb-prose > h2 { margin-top: 44px; padding-top: 28px; border-top: 1px solid rgba(114, 22, 244, 0.14); }
     .rt-gb-more .rt-gb-prose > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
@@ -201,6 +213,7 @@ window.RTG_CONFIG = {
     @media (max-width: 768px) {
         .rt-guidebook .rt-gb-quote blockquote { font-size: 1.05rem; }
         .rt-gb-intro .rt-gb-prose ul { grid-template-columns: 1fr; }
+        .rt-gb-prose .rt-gb-includes { grid-template-columns: 1fr; gap: 0; }
     }
     /* Native disclosures keep the complete supporting copy in the HTML. */
     .rt-gb-detail { border-top: 1px solid #bebebe; }
@@ -284,12 +297,24 @@ window.RTG_CONFIG = {
 
         <h3>What&rsquo;s in the guide</h3>
         <p>This guide is designed to help you understand the TMS marketplace better and includes:</p>
-        <ul>
-          <li>An article about our proprietary <a href="/errnot/">ERR NOT&trade; selection methodology</a> with tips you can use to improve your selection process;</li>
-          <li>Information about the three segments and the products in each;</li>
-          <li>A matrix of each segment that highlights each product&rsquo;s functionality; and</li>
-          <li>Several articles which are designed to give you information about changing technology and to help you <a href="/tms-selection-mistakes/">make better selection decisions</a>.</li>
-        </ul>
+        <ol class="rt-gb-includes">
+          <li>
+            <h4>The ERR NOT&trade; method</h4>
+            <p>An article about our proprietary <a href="/errnot/">ERR NOT&trade; selection methodology</a> with tips you can use to improve your selection process.</p>
+          </li>
+          <li>
+            <h4>The three segments</h4>
+            <p>Information about the three segments and the products in each.</p>
+          </li>
+          <li>
+            <h4>A functionality matrix</h4>
+            <p>A matrix of each segment that highlights each product&rsquo;s functionality.</p>
+          </li>
+          <li>
+            <h4>Articles on a changing market</h4>
+            <p>Several articles which are designed to give you information about changing technology and to help you <a href="/tms-selection-mistakes/">make better selection decisions</a>.</p>
+          </li>
+        </ol>
       </div>
 
       <figure class="rt-gb-quote">

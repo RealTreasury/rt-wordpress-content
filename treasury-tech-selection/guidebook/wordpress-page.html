@@ -95,16 +95,27 @@ window.RTG_CONFIG = {
     /* ---- Embedded Form ---- */
     .rt-gb-form-wrap .rtg-field-group { margin-bottom: 14px; }
     .rt-gb-form-wrap label { display:block; font-size:0.9rem; font-weight:600; color: var(--dark-text); margin-bottom: 6px; }
-    .rt-gb-form-wrap input, .rt-gb-form-wrap select, .rt-gb-form-wrap textarea { width:100%; min-width: 0; padding:12px 14px; border:1px solid #7e7e7e; border-radius:4px; font: inherit; font-size: max(16px, 1rem); background: #ffffff; color: var(--dark-text); }
+    /* height:auto + an explicit line-height are load-bearing: the theme pins
+       input/select to height:40px, and `font: inherit` pulls in a 1.6
+       line-height, so a 24px-padded select had 14px of box for a 26px line and
+       clipped "Select..." in half. Inputs survived it because the UA centres
+       their text; a select does not. */
+    .rt-gb-form-wrap input, .rt-gb-form-wrap select, .rt-gb-form-wrap textarea { width:100%; min-width: 0; padding:12px 14px; border:1px solid #7e7e7e; border-radius:4px; font: inherit; font-size: max(16px, 1rem); line-height: 1.4; height: auto; min-height: 48px; background: #ffffff; color: var(--dark-text); }
+    .rt-gb-form-wrap textarea { min-height: 104px; }
     .rt-gb-form-wrap input::placeholder, .rt-gb-form-wrap textarea::placeholder { color: #393939; opacity: 1; }
     .rt-gb-form-wrap label { overflow-wrap: anywhere; }
-    .rt-gb-form-wrap select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--primary-purple) 50%), linear-gradient(135deg, var(--primary-purple) 50%, transparent 50%); background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
+    .rt-gb-form-wrap select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--primary-purple) 50%), linear-gradient(135deg, var(--primary-purple) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
     .rt-gb-form-wrap .rtg-option-group { display: flex; flex-wrap: wrap; gap: 8px 16px; }
     .rt-gb-form-wrap .rtg-option-group label { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; margin: 0; }
     .rt-gb-form-wrap .rtg-option-group input { width: auto; padding: 0; }
-    .rt-gb-form-wrap .rtg-consent-group { margin: 14px 0 8px; font-size: 0.85rem; color: var(--gray-text); }
-    .rt-gb-form-wrap .rtg-consent-group label { display: flex; gap: 8px; align-items: flex-start; font-weight: 500; }
+    .rt-gb-form-wrap .rtg-consent-group { margin: 18px 0 22px; font-size: 0.85rem; color: var(--gray-text); }
+    .rt-gb-form-wrap .rtg-consent-group label { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
     .rt-gb-form-wrap .rtg-consent-group input { width: auto; margin-top: 3px; }
+    .rt-gb-form-wrap .rtg-consent-group a { color: #5b0acd; text-decoration: underline; }
+    /* Boxes and radios are inputs too, so they inherit the field sizing above
+       unless they are taken back out of it. Without this the consent box
+       renders as a padded 48px-tall sliver. */
+    .rt-gb-form-wrap .rtg-option-group input[type="checkbox"], .rt-gb-form-wrap .rtg-option-group input[type="radio"], .rt-gb-form-wrap .rtg-consent-group input[type="checkbox"] { width: 18px; height: 18px; min-height: 0; flex: 0 0 auto; padding: 0; border-radius: 3px; accent-color: #7216f4; }
     .rt-gb-form-wrap .rtg-invalid { border: 2px solid #281345 !important; outline-color: #7216f4 !important; }
     .rt-gb-form-wrap .rtg-submit-btn { width:100%; padding:16px 20px; border:0; border-radius:4px; color:#ffffff; font: inherit; font-weight:700; background: #7216f4; cursor:pointer; }
     .rt-gb-form-wrap .rtg-submit-btn[disabled] { opacity: 1; background: #393939; cursor: not-allowed; }
@@ -423,6 +434,14 @@ window.RTG_CONFIG = {
   if (!container || !ASSET_SLUG) return;
 
   function escHtml(s){ var d=document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+  // The gate's consent text carries a bare privacy-policy URL. Escape first,
+  // then turn the URL into a link -- same words, now clickable, and it wraps
+  // instead of running past the card edge.
+  function escHtmlLinkify(s){
+    return escHtml(s).replace(/https?:\/\/[^\s<]+[^\s<.,:;)]/g, function(u){
+      return '<a href="' + u + '" rel="noopener">' + u + '</a>';
+    });
+  }
   function escAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON ('+res.status+')');} if(!res.ok) throw new Error(j.message||'Request failed ('+res.status+')'); return j;}); }
   function fieldTypeToInputType(t){ return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
@@ -483,7 +502,7 @@ window.RTG_CONFIG = {
       html += '</div>';
     });
     if (consentText) {
-      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + escHtml(consentText) + '</span></label></div>';
+      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + escHtmlLinkify(consentText) + '</span></label></div>';
     }
     html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
     html += '<button type="submit" class="rtg-submit-btn">Send Me the Guide</button>';

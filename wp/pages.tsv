@@ -50,9 +50,9 @@ errnot	157	errnot/index.html	verbatim
 # the old URL. Change the slug WITH the content, never before it.
 how-to-select-a-tms	1519	insights/2026/how-to-select-a-tms/index.html	page
 #
-# STAGING ID. 4799 is the post created on the staging site. Production has no such post
-# yet; create it there (same title, slug, category, tags and author as 1519) and put the
-# production id here before publishing to production.
+# STAGING ID. 4799 is the post created on the staging site. The production post is a
+# different id on the `tms-selection-mistakes-prod` row below; do not write either id
+# over the other.
 tms-selection-mistakes	4799	insights/2026/tms-selection-mistakes/index.html	page
 #
 # PRODUCTION ROWS. The two article rows above carry STAGING ids. Production drifted:
@@ -62,18 +62,17 @@ tms-selection-mistakes	4799	insights/2026/tms-selection-mistakes/index.html	page
 # abandon that equity and leave the old iframe page live beside it. WP writes _wp_old_slug
 # on the rename and 301s the old URL.
 #
-# Order for 1519: publish the CONTENT first, while column 5 still reads the old slug, then
-# rename post_name and post_title. That way the old URL never serves the new slug with old
-# content, and the new URL never appears before the article does. After the rename, column 5
-# below becomes `how-to-select-a-tms` — change it in the same commit that records the rename.
+# DONE, September 18, 2026. The content was published while column 5 still read
+# `2024-tms-selection-guide`, so check_identity() passed against the name the post still
+# carried, and only then were post_name and post_title moved. Column 5 now reads the name
+# production 1519 carries today — read back live on September 19, 2026 — so the guard keeps
+# passing. If that order ever has to run again on another site, publish content first and
+# rename second: the old URL never serves the new slug with old content.
 how-to-select-a-tms-prod	1519	insights/2026/how-to-select-a-tms/index.html	page	how-to-select-a-tms
 #
-# tms-selection-mistakes-prod has NO id yet. Create the post on production first —
-#   wp post create --post_type=post --post_status=draft --post_author=240264699 \
-#     --post_title='The 5 Most Common Selection Failures and How to Avoid Them' \
-#     --post_name=tms-selection-mistakes --post_category=10096769 \
-#     --tags_input='Cash Forecasting,Cash Visibility,ERP Connectivity,Explainer,Liquidity Management,TMS,Vendor Selection' \
-#     --porcelain
-# — then put the id it returns in the row below and uncomment it. Terms and author copied
-# from staging 4799, read live on September 18, 2026.
+# 4832 is REAL. It was created on production on September 18, 2026 with the author, title,
+# slug, category and tags copied from staging 4799, and its content is written and read-back
+# verified. Confirmed live on September 19, 2026: post_name `tms-selection-mistakes`,
+# post_status `draft`. It is still a DRAFT, so /tms-selection-mistakes/ 404s until a person
+# clicks Publish in WP Admin — this rail writes content and refuses status moves by design.
 tms-selection-mistakes-prod	4832	insights/2026/tms-selection-mistakes/index.html	page	tms-selection-mistakes

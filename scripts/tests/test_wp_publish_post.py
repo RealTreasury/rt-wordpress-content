@@ -22,6 +22,10 @@ for real, so the guards are tested rather than described:
   11. page mode refuses to drop a wp:block pattern ref
   12. the manifest rejects an unknown mode
   13. WP-CLI global flags go BEFORE the subcommand (WP-CLI 2.12.0 rejects them after)
+  14. the per-site identity guard refuses an id that is a different post on this target
+  15-17. the WPCode snippet's post AND its rendering option cache
+  18. a `*-prod` row names its content region after the post_name, not the row label
+  19. restore takes the same identity guard as publish
 """
 from __future__ import annotations
 
@@ -482,6 +486,60 @@ wpp.cmd_plan(env_for(r17), "site-header-snippet", 1885, raw_src, "raw",
              "site-header-snippet")
 check("17 plan reads the snippet cache", any("get_option(" in c for c in r17.stdins))
 check("17 plan writes nothing", r17.writes == 0)
+
+# --- 18. a *-prod row names its region after the post, not after the row ----------------
+# This is the whole reason column 5 exists. The row is `how-to-select-a-tms-prod` because
+# ids are per site; the POST is `how-to-select-a-tms`. Keying the content region and the
+# CSS scope off the row label wrote `rt-page--how-to-select-a-tms-prod` into production
+# while staging carried `rt-page--how-to-select-a-tms`, so two sites serving the same
+# article no longer diffed clean. 146 occurrences had to be renamed in place.
+check("18 page_slug_for prefers the post_name over the row label",
+      wpp.page_slug_for("how-to-select-a-tms-prod", "how-to-select-a-tms")
+      == "how-to-select-a-tms")
+check("18 page_slug_for falls back to the label when column 5 is absent",
+      wpp.page_slug_for("errnot", None) == "errnot")
+
+r18 = Remote(name={1519: "how-to-select-a-tms"}, kind={1519: "post"})
+r18.body[1519] = ("<!-- wp:block {\"ref\":183} /-->\n<!-- wp:html -->\n"
+                  "<iframe src=\"https://realtreasury.github.io/x/\"></iframe>\n"
+                  "<!-- /wp:html -->")
+r18.status[1519] = "publish"
+wpp.cmd_publish(env_for(r18), "how-to-select-a-tms-prod", 1519, page_src, "page",
+                "how-to-select-a-tms")
+check("18 the region marker carries the post_name, not the row label",
+      "rt:page-content how-to-select-a-tms " in r18.body[1519] + " "
+      and "how-to-select-a-tms-prod" not in r18.body[1519])
+check("18 the CSS scope carries the post_name too",
+      "rt-page--how-to-select-a-tms-prod" not in r18.body[1519]
+      and "rt-page--how-to-select-a-tms" in r18.body[1519])
+
+# --- 19. restore takes the same identity guard as publish -------------------------------
+# restore writes the WHOLE post_content by manifest id, the same blast radius as a
+# publish. Unguarded, `restore --target production how-to-select-a-tms` pushes a STAGING
+# backup onto production 1519 -- the live post the guard exists for.
+backup = tmp / "backup.html"
+backup.write_text("<!-- wp:block {\"ref\":183} /-->\nrestored body\n", encoding="utf-8")
+
+r19 = Remote(name={1519: "2024-tms-selection-guide"}, kind={1519: "post"})
+r19.body[1519] = "the live 2024 guide"
+r19.status[1519] = "publish"
+try:
+    wpp.cmd_restore(env_for(r19), "how-to-select-a-tms", 1519, "page", str(backup),
+                    "how-to-select-a-tms")
+    check("19 restore refuses an id that is a different post on this target", False)
+except SystemExit:
+    check("19 restore refuses an id that is a different post on this target", True)
+check("19 nothing was restored over the wrong post", r19.writes == 0
+      and r19.body[1519] == "the live 2024 guide")
+
+# The same restore against the target where the id IS that post still goes through.
+r19b = Remote(name={1519: "how-to-select-a-tms"}, kind={1519: "post"})
+r19b.body[1519] = "current body"
+r19b.status[1519] = "publish"
+wpp.cmd_restore(env_for(r19b), "how-to-select-a-tms", 1519, "page", str(backup),
+                "how-to-select-a-tms")
+check("19 restore still works when the id is the right post",
+      r19b.body[1519] == backup.read_text(encoding="utf-8"))
 
 if failures:
     print(f"\n{len(failures)} check(s) failed", file=sys.stderr)

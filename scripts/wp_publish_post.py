@@ -118,7 +118,12 @@ def ssh(env: dict[str, str], remote_cmd: str, stdin: bytes | None = None) -> str
 
 
 def manifest() -> dict[str, tuple[int, Path, str, str]]:
-    """slug -> (post id, source file, mode).
+    """slug -> (post id, source file, mode, post_name).
+
+    post_name is column 5: the name the post must already carry on the target being
+    written. It defaults to the row label and diverges only for the `*-prod` rows,
+    where ids are per site. `check_identity()` refuses on a mismatch and
+    `page_slug_for()` keys the content region off it.
 
     mode `page` wraps the source page's body+CSS in a core/html block and splices it
     into the post, preserving the surrounding pattern refs.
@@ -133,6 +138,12 @@ def manifest() -> dict[str, tuple[int, Path, str, str]]:
     source-of-record note. That derivation is deterministic, which is the point — `plan`
     then compares exactly instead of squinting past "expected paste noise", which is the
     only reason page 4587's stripped backslashes were visible as a diff at all.
+
+    mode `verbatim` is for a page already hand-pasted as a whole standalone document:
+    the file IS post_content, spliced into the wrapper and pattern refs the post
+    already carries. /errnot/ needs it — `page` would drop the <head> that loads its
+    CDN Tailwind, and `native` would replace its full-bleed wrapper with a constrained
+    one.
     """
     if not MANIFEST.exists():
         die(f"{MANIFEST} not found")
@@ -165,10 +176,6 @@ def fetch_content(env, post_id: int) -> str:
 
 def fetch_status(env, post_id: int) -> str:
     return ssh(env, f"wp --quiet post get {post_id} --field=post_status").strip()
-
-
-def fetch_type(env, post_id: int) -> str:
-    return ssh(env, f"wp --quiet post get {post_id} --field=post_type").strip()
 
 
 def eval_php(env, php: str) -> str:
@@ -274,7 +281,11 @@ def splice(current: str, block: str, slug: str, mode: str = "page") -> str:
             return current[:blocks[0].start()] + block + current[blocks[0].end():]
         die(f"verbatim first run needs exactly one wp:html block to claim; found "
             f"{len(blocks)}. Add the rt:page-content markers by hand first.")
-    die("no rt:page-content region and no wp:html block containing a github.io iframe")
+    die("no rt:page-content region and no wp:html block containing a github.io iframe. "
+        "A post created by `wp post create` has empty content and gives splice() nothing "
+        "to claim: seed it in WP Admin first with the header ref, the full-bleed group, an "
+        f"empty `<!-- rt:page-content {slug} -->` / `<!-- /rt:page-content -->` pair and the "
+        "footer ref. See docs/GO-LIVE-SEPT-2026.md.")
 
 
 STDIN_PROBE_TOKEN = "RT_STDIN_OK"
@@ -624,9 +635,14 @@ def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
     return 0
 
 
-def cmd_restore(env, slug, post_id, backup_path: str) -> int:
+def cmd_restore(env, slug, post_id, mode, backup_path: str, post_name=None) -> int:
+    # A restore is a full post_content write, the same blast radius as a publish, so it
+    # takes the same guard. Without it `restore --target production how-to-select-a-tms`
+    # would push a STAGING backup onto production 1519 -- the live post this row's id
+    # trap is about -- because ids are per site and nothing downstream re-checks.
+    kind = check_identity(env, slug, post_id, mode, post_name)
     content = Path(backup_path).read_text(encoding="utf-8")
-    if fetch_type(env, post_id) == "wpcode":
+    if kind == "wpcode":
         # Restoring the post alone would leave the live nav on the rolled-forward code,
         # because the option is what renders. write_wpcode puts both back.
         write_wpcode(env, post_id, fetch_content(env, post_id), content,
@@ -679,7 +695,7 @@ def main(argv=None) -> int:
         return cmd_publish(env, a.slug, post_id, source, mode, post_name)
     if not a.backup:
         die("restore needs a backup file")
-    return cmd_restore(env, a.slug, post_id, a.backup)
+    return cmd_restore(env, a.slug, post_id, mode, a.backup, post_name)
 
 
 if __name__ == "__main__":

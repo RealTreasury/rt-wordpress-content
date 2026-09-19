@@ -11,10 +11,11 @@ September 17 — `E-Guide_Real Treasury_AV_rev09 with links.pdf`, 42 pages,
 earlier draft of this runbook said Revision 8 shipped "three segment cuts"
 (Cash Tools / TMS-Lite / TRMS) — that was wrong, and there are no segment cuts
 to gate. **Re-read against production on September 19: steps 1, 2, 3, 4, 5, 6a,
-6b and the automation half of 7 are all done.** What remains is publishing 4585
-in WP Admin and, when you choose to, sending the release broadcast. The
-per-step notes below carry the evidence; where an older paragraph still
-describes a switch as unthrown, it is marked.
+6b and the automation half of 7 are all done.** After this branch merges, first
+write its thank-you source to draft 4585 with
+`python3 scripts/wp_publish_post.py publish guide-thank-you --target production`,
+then publish 4585 in WP Admin. The release broadcast remains optional. The
+per-step notes below carry the evidence.
 
 ## Pages
 
@@ -22,7 +23,7 @@ describes a switch as unthrown, it is marked.
 |---|---|---|
 | Download page (gated form) | WP **4202** `/treasury-tech-selection-guide/` | **published, and it is now the download page** — `plan guide-download` reads back 1035 words identical to the repo source |
 | Download page content | WP **4587** draft, slug `…-guide-download` | draft, and **no longer matches the repo** — 242 changed lines against the source, because 4202 moved on and this staging copy did not |
-| Guide thank-you | WP **4585** `/treasury-tech-selection-guide/thank-you/` | draft, matches the repo |
+| Guide thank-you | WP **4585** `/treasury-tech-selection-guide/thank-you/` | draft; it matched the pre-PR source on September 19, so publish this branch's source before changing the page status |
 | Waitlist signup | WP post **4211** `/2026-treasury-tech-guide-waitlist/` | published (GitHub Pages iframe) |
 | Waitlist confirmation | WP **4809** `/2026-treasury-tech-guide-waitlist-confirmed/` | **published**, matches the repo |
 
@@ -42,8 +43,10 @@ describes a switch as unthrown, it is marked.
 > `redirectUrl: 'https://realtreasury.com/treasury-tech-selection-guide/thank-you/'`,
 > so every visitor who submits the form right now is sent to a 404. The lead and
 > the delivery email are unaffected (see "How a download actually reaches
-> someone") — the visitor is simply told nothing. Publishing 4585 in WP Admin
-> fixes it, and it is the last step that needs a person.
+> someone") — the visitor is simply told nothing. After this branch merges,
+> write the updated source to 4585 with `wp_publish_post.py`, verify the readback,
+> and then publish 4585 in WP Admin. The status change is the last step that
+> needs a person.
 
 4587 is the staging draft, **not a destination**. `/treasury-tech-selection-guide-download/`
 404s because the page has never been published, and it should never be published
@@ -63,9 +66,10 @@ the repo header comment (replaced by a one-line source-of-record note) and the
 paste noise — which is the only reason the corruption below was visible at all.
 
 Readback diff, September 17, after the repair: **4585 and 4587 read back identical
-to their repo sources**, both still drafts. 4809 matches too. 4202 differs,
-correctly — it serves the waitlist confirmation until release, which is the whole
-reason 4809 exists.
+to the repo sources at that commit**, both still drafts. This branch now changes
+the 4585 button rule, so repeat the guarded publish/readback after merge before
+changing its status. 4809 matches too. 4202 has since become the live download
+page, as recorded above.
 
 ## WordPress eats backslashes on the way in — `wp_slash()` or lose them
 
@@ -122,10 +126,10 @@ as static files and are verified intact.
 
 The ordering matters because page 4202 changes meaning.
 
-**What is left is exactly the set of acts a person has to perform:** publishing a
-WordPress page, publishing a Resend template, and arming a send. Claude is blocked
-from all three by the auto-mode classifier, deliberately, and by the house rule that
-a person publishes. Everything that could be staged ahead of them has been.
+**What is left:** after this branch merges, use the guarded publisher to update
+4585 while it is still a draft, verify that the source and WordPress read back
+identically, and then have a person publish the page in WP Admin. The broadcast
+can be sent later when desired.
 
 **To see and test the download form before any of this, no publishing required:**
 WP Admin → Pages → *The Real Treasury Tech Selection Guide* (4587) → **Preview**.
@@ -186,8 +190,11 @@ final redirect, which 404s until 4585 is published. No email arrives until step 
       is the command that does it; the script is on `main` now, no special
       checkout needed. It writes `post_content` only and refuses if `post_status`
       moved, so it cannot publish anything itself.
-      **Still outstanding: publish 4585 in WP Admin.** Until that happens the
-      form's post-submit redirect 404s for every real visitor.
+      **Still outstanding:** after this branch merges, run
+      `python3 scripts/wp_publish_post.py publish guide-thank-you --target production`.
+      It updates `post_content` while preserving the draft status and verifies
+      the readback. Only then publish 4585 in WP Admin. Until that status change,
+      the form's post-submit redirect 404s for every real visitor.
 7. **Enable automation and send the broadcast.** *The automation half is DONE* —
    "Tech Selection Guide — deliver on signup"
    (`01a067af-c041-7579-a1f3-ad0f042f25fe`) reads `enabled` from the Resend API

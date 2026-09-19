@@ -25,22 +25,22 @@ all of which are deliberate human acts in WP Admin and Resend.
 
 > **Re-read against production on September 19, 2026** with
 > `scripts/wp_publish_post.py plan <slug>` (it reports `post_status`), a plain
-> `curl` of each URL, and the Resend API for the template, automation and
-> broadcast. **The release has largely already happened.** The September 17 state
-> this table used to record — 4202 still serving the waitlist confirmation, 4809
-> a draft — is no longer true. Steps 1, 5, 6a, 6b and the automation half of
-> step 7 are done.
+> `curl` of each URL, the Resend API for the template, automation and broadcast,
+> and WP-CLI over the same SSH rail `wp_publish_post.py` uses for post status and
+> the RT Gate tables. **The release has largely already happened.** The
+> September 17 state this table used to record — 4202 still serving the waitlist
+> confirmation, 4809 a draft — is no longer true. Steps 1, 2, 5, 6a, 6b and the
+> automation half of step 7 are done.
 >
-> **Two things are outstanding and one of them is live and broken:**
->
-> 1. **4585, the guide thank-you page, is still a draft**, so
->    `/treasury-tech-selection-guide/thank-you/` 404s — while 4202 is live as the
->    download form and the delivery automation is **enabled**. Every visitor who
->    submits the form right now gets a 404 for a confirmation. The lead and the
->    email are unaffected (see "How a download actually reaches someone"), but
->    the visitor is told nothing. Publishing 4585 in WP Admin fixes it.
-> 2. **Step 2's RT Gate mapping was not re-verified**, and it is no longer
->    harmless if it was never changed. See the warning on that step.
+> **One thing is outstanding, and it is live and broken: 4585, the guide
+> thank-you page, is still a draft.** `/treasury-tech-selection-guide/thank-you/`
+> returns 404, while 4202 is live as the download form and the delivery
+> automation is enabled. The live page carries
+> `redirectUrl: 'https://realtreasury.com/treasury-tech-selection-guide/thank-you/'`,
+> so every visitor who submits the form right now is sent to a 404. The lead and
+> the delivery email are unaffected (see "How a download actually reaches
+> someone") — the visitor is simply told nothing. Publishing 4585 in WP Admin
+> fixes it, and it is the last step that needs a person.
 
 4587 is the staging draft, **not a destination**. `/treasury-tech-selection-guide-download/`
 404s because the page has never been published, and it should never be published
@@ -134,20 +134,20 @@ final redirect, which 404s until 4585 is published. No email arrives until step 
    published and `/2026-treasury-tech-guide-waitlist-confirmed/` returns 200;
    `plan guide-waitlist-confirmed` reports `post_status publish` and identical
    content. It had to land before step 2, and it did.
-2. **Repoint the waitlist redirect — now urgent, verify first.** RT Gate asset #9
-   (`treasury-tech-selection-guide-waitlist`, mapping #5) had `target_url` set to
-   `https://realtreasury.com/treasury-tech-selection-guide/` as of September 17.
-   That was safe while 4202 still served the waitlist confirmation. **It is not
-   safe now:** 4202 is the download page, so if the mapping is still unchanged
-   every waitlist signup is landing on the download form. This state was not
-   re-verified on September 19 — the mapping lives in the `rtg_mappings` table
-   and is readable only from WP Admin. **Check it before anything else.** Set it
-   to
-   `https://realtreasury.com/2026-treasury-tech-guide-waitlist-confirmed/`.
-   Until this is done, turning 4202 into the download page drops waitlist signups
-   onto the download form. WP Admin only — the waitlist page carries no
-   `redirectUrl` and follows the `/submit` response's `primary_redirect_url`.
-   Verify by submitting the waitlist form once and watching where it lands.
+2. ~~**Repoint the waitlist redirect.**~~ **DONE, verified September 19.** RT Gate
+   asset #9 (`treasury-tech-selection-guide-waitlist`, mapping #5) now carries
+   `target_url = https://realtreasury.com/2026-treasury-tech-guide-waitlist-confirmed/`.
+   Waitlist signups land on the confirmation page, not the download form. This
+   had to be true before 4202 changed meaning, and it was.
+
+   **Where to read it, because guessing cost a false alarm.** `target_url` is a
+   key inside the asset's JSON `config` column — `wp_rtg_assets` holds only
+   `id, name, slug, type, config`, with no `target_url` column of its own. A
+   query naming that column returns an empty result, which reads like "unset"
+   rather than like a bad query. Select `config` for the asset id over the same
+   SSH + WP-CLI rail `scripts/wp_publish_post.py` uses. The waitlist page itself
+   carries no `redirectUrl`; it follows the `/submit` response's
+   `primary_redirect_url`, which is where this value ends up.
 3. ~~**Upload the release PDF**~~ **DONE September 17, 2026.** Revision 9 is in the
    media library as attachment **4821**, under an unguessable filename linked from
    no page, and serves 200 `application/pdf`:
@@ -255,6 +255,5 @@ it is what screen readers and image-blocked clients render.
   4202, so the waitlist keeps working correctly no matter when 4202 changes.
 - ~~4202 has not been touched; it still serves the waitlist confirmation~~ — **no
   longer true as of September 19.** 4202 is the download page now and 4809 is
-  published, so the waitlist's landing page depends entirely on step 2's mapping.
-  The rest of this section was verified on September 17 and has not been
-  re-checked since; treat it as a claim to confirm, not a fact.
+  published. The waitlist still lands correctly, because step 2's mapping was
+  repointed at 4809 — verified September 19, not assumed.

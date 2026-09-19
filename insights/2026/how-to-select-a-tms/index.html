@@ -545,41 +545,58 @@
         }
         .rt-art-faq dd { margin: 12px 0 0; font-size: 1.05rem; line-height: 1.7; color: #393939; }
 
-        /* The guide download action sits directly under the contents list. */
+        /* The guide download action sits directly under the contents list, which
+           means it lands between the reader and the first paragraph. At the foot
+           of an article a dark slab with a 2.35rem heading is the culmination and
+           earns its weight; here it is an interruption, so it reads as a single
+           quiet line instead: hairline border, no fill, body-sized heading, and
+           the copy and the button on one row. Grid areas put the button beside
+           the text without reordering the markup. */
         .rt-art .rt-art-cta {
-            margin-top: 56px;
-            padding: 44px;
-            background: #281345;
-            border-radius: 6px;
-            color: #ffffff;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-areas: "title action" "copy action";
+            align-items: center;
+            column-gap: 32px;
+            margin: 0 0 40px;
+            padding: 20px 24px;
+            border: 1px solid #d9d9e0;
+            border-radius: 8px;
         }
         .rt-art .rt-art-cta h2 {
+            grid-area: title;
             margin: 0 !important;
             padding: 0;
             border: 0;
-            max-width: 22ch;
-            font-size: clamp(1.65rem, 3.6vw, 2.35rem);
-            line-height: 1.15;
-            letter-spacing: -0.03em;
-            color: #ffffff;
+            max-width: none;
+            font-size: 1.08rem;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -0.01em;
+            color: #281345;
         }
-        .rt-art .rt-art-cta p { margin-top: 20px; max-width: 36em; color: #ffffff; }
+        .rt-art .rt-art-cta p { grid-area: copy; margin: 5px 0 0; max-width: 56ch; font-size: 0.94rem; line-height: 1.55; color: #5c5c66; }
         .rt-art .rt-art-cta .rt-art-btn {
+            grid-area: action;
             display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 40px;
-            min-height: 54px;
-            margin-top: 28px;
-            padding: 16px 24px;
-            background: #ffffff;
-            color: #5b0acd;
-            border-radius: 4px;
+            gap: 12px;
+            margin: 0;
+            padding: 11px 18px;
+            background: #7216f4;
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 0.92rem;
             font-weight: 700;
+            white-space: nowrap;
             text-decoration: none;
         }
-        .rt-art-btn::after { content: ""; width: 9px; height: 9px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); }
-        .rt-art .rt-art-cta .rt-art-btn:hover { background: #f0eaf9; color: #281345; }
+        .rt-art-btn::after { content: ""; width: 8px; height: 8px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); }
+        .rt-art .rt-art-cta .rt-art-btn:hover { background: #5b0acd; color: #ffffff; }
+        @media (max-width: 600px) {
+            .rt-art .rt-art-cta { grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "copy" "action"; }
+            .rt-art .rt-art-cta .rt-art-btn { justify-content: space-between; margin-top: 16px; }
+        }
         .rt-art a:focus-visible { outline: 2px solid #7216f4; outline-offset: 5px; }
         .rt-art .rt-art-cta .rt-art-btn:focus-visible { outline-color: #ffffff; }
         @media (max-width: 640px) {

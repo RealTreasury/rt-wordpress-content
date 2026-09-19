@@ -437,11 +437,15 @@ window.RTG_CONFIG = {
   function escAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   // The gate's consent text carries a bare privacy-policy URL. Linkify the raw
   // text in pieces so both the href attribute and the visible label are escaped.
+  // target="_blank" is not decoration: this link sits inside the form, so a
+  // same-tab navigation would discard everything the visitor has typed. It is
+  // also what makes rel="noopener noreferrer" mean anything -- without a target
+  // the rel is inert.
   function escHtmlLinkify(s){
     var value=String(s == null ? '' : s), out='', last=0;
     value.replace(/https?:\/\/[^\s<>"']*[^\s<>"'.,:;)]/g, function(u, offset){
       out += escHtml(value.slice(last, offset));
-      out += '<a href="' + escAttr(u) + '" rel="noopener">' + escHtml(u) + '</a>';
+      out += '<a href="' + escAttr(u) + '" target="_blank" rel="noopener noreferrer">' + escHtml(u) + '</a>';
       last = offset + u.length;
       return u;
     });

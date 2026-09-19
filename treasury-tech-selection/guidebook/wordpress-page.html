@@ -434,15 +434,19 @@ window.RTG_CONFIG = {
   if (!container || !ASSET_SLUG) return;
 
   function escHtml(s){ var d=document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
-  // The gate's consent text carries a bare privacy-policy URL. Escape first,
-  // then turn the URL into a link -- same words, now clickable, and it wraps
-  // instead of running past the card edge.
-  function escHtmlLinkify(s){
-    return escHtml(s).replace(/https?:\/\/[^\s<]+[^\s<.,:;)]/g, function(u){
-      return '<a href="' + u + '" rel="noopener">' + u + '</a>';
-    });
-  }
   function escAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  // The gate's consent text carries a bare privacy-policy URL. Linkify the raw
+  // text in pieces so both the href attribute and the visible label are escaped.
+  function escHtmlLinkify(s){
+    var value=String(s == null ? '' : s), out='', last=0;
+    value.replace(/https?:\/\/[^\s<>"']*[^\s<>"'.,:;)]/g, function(u, offset){
+      out += escHtml(value.slice(last, offset));
+      out += '<a href="' + escAttr(u) + '" rel="noopener">' + escHtml(u) + '</a>';
+      last = offset + u.length;
+      return u;
+    });
+    return out + escHtml(value.slice(last));
+  }
   function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON ('+res.status+')');} if(!res.ok) throw new Error(j.message||'Request failed ('+res.status+')'); return j;}); }
   function fieldTypeToInputType(t){ return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
   function fieldAutocomplete(f){ if (f.autocomplete === false) return 'off'; if (f.key === 'full_name') return 'name'; if (f.key === 'first_name') return 'given-name'; if (f.key === 'last_name') return 'family-name'; return ({ email:'email', tel:'tel', company:'organization', url:'url' })[f.type] || 'on'; }

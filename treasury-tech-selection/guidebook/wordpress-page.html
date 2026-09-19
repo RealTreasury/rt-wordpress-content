@@ -447,6 +447,26 @@ window.RTG_CONFIG = {
     });
     return out + escHtml(value.slice(last));
   }
+  // escHtmlLinkify keeps the URL visible, which is right in general and wrong
+  // here: form 2's consent text ends in the full privacy-policy URL, and printed
+  // out it ran the label to three lines. Other gates render the same text as
+  // plain prose and would lose the link entirely if we shortened it at the
+  // source, so shorten it at the point of display instead — hang the link on the
+  // words that are already there, and drop the URL only when they exist.
+  function consentHtml(text){
+    var raw = String(text == null ? '' : text);
+    var m = raw.match(/https?:\/\/[^\s<>"']*[^\s<>"'.,:;)]/);
+    if (!m) return escHtmlLinkify(raw);
+    var url = m[0];
+    var body = raw.replace(url, '').replace(/[\s:]+$/, '');
+    if (!/privacy policy/i.test(body)) return escHtmlLinkify(raw);
+    var out = escHtml(body).replace(/privacy policy/i, function(phrase){
+      return '<a href="' + escAttr(url) + '" rel="noopener">' + phrase + '</a>';
+    });
+    if (!/[.!?]$/.test(body)) { out += '.'; }
+    return out;
+  }
+
   function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON ('+res.status+')');} if(!res.ok) throw new Error(j.message||'Request failed ('+res.status+')'); return j;}); }
   function fieldTypeToInputType(t){ return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
   function fieldAutocomplete(f){ if (f.autocomplete === false) return 'off'; if (f.key === 'full_name') return 'name'; if (f.key === 'first_name') return 'given-name'; if (f.key === 'last_name') return 'family-name'; return ({ email:'email', tel:'tel', company:'organization', url:'url' })[f.type] || 'on'; }
@@ -506,7 +526,7 @@ window.RTG_CONFIG = {
       html += '</div>';
     });
     if (consentText) {
-      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + escHtmlLinkify(consentText) + '</span></label></div>';
+      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + consentHtml(consentText) + '</span></label></div>';
     }
     html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
     html += '<button type="submit" class="rtg-submit-btn">Send Me the Guide</button>';

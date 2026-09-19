@@ -34,6 +34,8 @@ turning this on never bulk-publishes history.
 from __future__ import annotations
 
 import argparse
+import contextlib
+import fcntl
 import json
 import os
 import subprocess
@@ -59,6 +61,22 @@ GLOBAL_PREFIXES = ("scripts/lib/",)
 def log(msg: str) -> None:
     print(f"[{datetime.now(timezone.utc).strftime('%FT%TZ')}] wp_deploy_on_merge: {msg}",
           flush=True)
+
+
+@contextlib.contextmanager
+def deployment_lock(state: Path):
+    """Serialize cron invocations before either reads deployed.sha."""
+    state.mkdir(parents=True, exist_ok=True)
+    with (state / "deploy.lock").open("a", encoding="utf-8") as handle:
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            yield False
+        else:
+            try:
+                yield True
+            finally:
+                fcntl.flock(handle, fcntl.LOCK_UN)
 
 
 # ---------------------------------------------------------------- manifests --
@@ -179,6 +197,15 @@ def record_deployment(sha: str, ok: bool, summary: str, token: str) -> dict:
 
 def run(checkout: Path, state: Path, auth_git: str, publisher: list[str],
         dry_run: bool, use_github: bool) -> int:
+    with deployment_lock(state) as acquired:
+        if not acquired:
+            log("another deployment run is active; doing nothing")
+            return 0
+        return _run(checkout, state, auth_git, publisher, dry_run, use_github)
+
+
+def _run(checkout: Path, state: Path, auth_git: str, publisher: list[str],
+         dry_run: bool, use_github: bool) -> int:
     state.mkdir(parents=True, exist_ok=True)
     hold = state / "deploy-hold.json"
     if (state / "hooks-off").exists():
@@ -216,8 +243,11 @@ def run(checkout: Path, state: Path, auth_git: str, publisher: list[str],
     changed = [c for c in git(auth_git, checkout, "diff", "--name-only",
                               last, new).splitlines() if c]
     try:
-        pages = parse_pages((checkout / "wp" / "pages.tsv").read_text(encoding="utf-8"))
-        deploy = parse_deploy((checkout / "wp" / "deploy.tsv").read_text(encoding="utf-8"))
+        # `new` is the tree a real run will fast-forward to.  Read its manifests
+        # explicitly so --dry-run reports exactly the same mapping without
+        # moving the dedicated checkout first.
+        pages = parse_pages(git(auth_git, checkout, "show", f"{new}:wp/pages.tsv"))
+        deploy = parse_deploy(git(auth_git, checkout, "show", f"{new}:wp/deploy.tsv"))
         slugs = affected_slugs(changed, deploy, pages)
     except (OSError, ValueError) as exc:
         log(f"refused: {exc}")

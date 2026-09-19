@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -182,6 +183,17 @@ class EndToEnd(unittest.TestCase):
         self.assertEqual(self.deployed_sha(), before)
         self.assertEqual(sh("git", "rev-parse", "HEAD", cwd=self.checkout), before)
 
+    def test_dry_run_uses_the_new_tree_manifests(self):
+        self.run_leg()
+        self.write("wp/deploy.tsv", DEPLOY.replace("beta\n", ""))
+        self.commit("remove beta deploy row")
+        messages = []
+        with patch.object(leg, "log", messages.append):
+            self.assertEqual(self.run_leg(dry_run=True), 0)
+        plan = next(message for message in messages if "page(s) to publish" in message)
+        self.assertIn("['alpha', 'gamma-prod']", plan)
+        self.assertNotIn("beta", plan)
+
     def test_failure_sets_a_hold_keeps_the_sha_and_stops_the_next_run(self):
         self.run_leg()
         before = self.deployed_sha()
@@ -216,6 +228,13 @@ class EndToEnd(unittest.TestCase):
         self.write("insights/beta/index.html", "<p>b2</p>")
         self.commit("beta")
         self.assertEqual(self.run_leg(), 0)
+        self.assertEqual(self.published(), [])
+
+    def test_concurrent_run_leaves_the_active_deployment_alone(self):
+        with leg.deployment_lock(self.state) as acquired:
+            self.assertTrue(acquired)
+            self.assertEqual(self.run_leg(), 0)
+        self.assertFalse((self.state / "deployed.sha").exists())
         self.assertEqual(self.published(), [])
 
     def test_refuses_off_main_and_dirty_trees(self):

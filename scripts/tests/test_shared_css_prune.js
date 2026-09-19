@@ -19,10 +19,15 @@
 // be dead while its class is very much alive — a page's own <style> may already have
 // outranked it.
 //
-// The base is the MERGE BASE with main, never main's tip. Comparing against the tip
+// The base is the MERGE BASE with main -- EXCEPT when HEAD already contains main's tip,
+// in which case it is the tip. Comparing a branch that is BEHIND main against the tip
 // reports every change main has taken since the branch was cut as if this branch had made
 // it; that produced a confident false alarm about edited rules the first time this was
-// run. PRUNE_BASE_REF overrides it.
+// run. But once the branch has merged main IN, that misattribution is impossible -- the
+// branch holds those commits too -- and the merge base becomes a stale fork point that
+// folds main's own additions into this branch's diff, flipping the run out of PRUNE MODE
+// and skipping the checks that have teeth, while still exiting 0. PRUNE_BASE_REF overrides
+// both.
 //
 // WHAT RUNS ON WHICH BRANCH. This is wired into CI for every pull request, so it must be
 // green on a branch that never touches shared.css and on one that legitimately adds rules.
@@ -66,7 +71,18 @@ function baseRef() {
                 'origin/main', 'main'].filter(Boolean);
   for (const tip of tips) {
     const mb = git('merge-base', 'HEAD', tip);
-    if (mb) return mb;
+    if (!mb) continue;
+    // If HEAD already CONTAINS the tip -- the branch has merged main in -- then the tip is
+    // the right base and the merge base is not. Nothing the tip holds can be misattributed
+    // to this branch, because this branch holds it too; that is the whole reason the merge
+    // base was chosen, and once the merge has happened the reason is spent. Meanwhile the
+    // merge base has become a stale fork point, so main's own additions since the fork land
+    // in this branch's diff as "selectors added" and silently drop the run out of PRUNE
+    // MODE -- the checks with teeth skip, and the run still exits 0. That happened on #889
+    // after the nav-breakpoint change merged: 26 added, 194 removed, all three prune checks
+    // skipped, green.
+    const tipSha = git('rev-parse', tip);
+    return tipSha && mb === tipSha ? tipSha : mb;
   }
   return null;
 }

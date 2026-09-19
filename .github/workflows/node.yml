@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          # test:css-prune compares shared.css against its merge base with the PR's base
+          # branch, which a depth-1 checkout cannot resolve.
+          fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
@@ -18,3 +22,11 @@ jobs:
       - run: npm run test:iframe-height
       - run: npm run test:banner
       - run: npm run test:publish-css
+      - run: npm run test:publish-post
+      - run: npm run test:carousel
+      # Structural checks on shared.css always; the prune-specific assertions only on a
+      # removal-only change to it. Green on a PR that never touches the stylesheet.
+      - run: npm run test:css-prune
+      # Last: it rebuilds and asserts nothing committed moved, so it reads the tree the
+      # steps above have already touched.
+      - run: npm run test:build-clean

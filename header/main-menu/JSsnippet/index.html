@@ -20,6 +20,13 @@ function updateDropdownPositioning() {
 window.addEventListener('load', updateDropdownPositioning);
 window.addEventListener('resize', updateDropdownPositioning);
 
+// The width below which the nav is the hamburger + fixed overlay. It MUST match the
+// three `@media (max-width: 1150px)` blocks in assets/css/shared.css: the CSS decides
+// whether the mobile menu is on screen, this decides whether it is managed. When it was
+// 992 here and 1150 there, 993-1150px showed a mobile menu that click-outside would not
+// dismiss and any resize force-closed.
+const RT_NAV_BREAKPOINT = 1150;
+
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile hamburger toggle functionality
     const mobileToggle = document.querySelector('.rt-mobile-toggle');
@@ -138,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             // Close mobile menu on mobile
-            if (window.innerWidth <= 992) {
+            if (window.innerWidth <= RT_NAV_BREAKPOINT) {
                 if (navMenu) navMenu.classList.remove('active');
                 if (mobileToggle) mobileToggle.classList.remove('active');
                 document.body.classList.remove('menu-open');
@@ -148,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handle window resize - close mobile menu if resizing to desktop
     window.addEventListener('resize', function() {
-        if (window.innerWidth > 992) {
+        if (window.innerWidth > RT_NAV_BREAKPOINT) {
             if (navMenu) navMenu.classList.remove('active');
             if (mobileToggle) mobileToggle.classList.remove('active');
             document.body.classList.remove('menu-open');

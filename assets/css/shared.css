@@ -1727,7 +1727,7 @@ body.banner-closed.rt-no-body-padding .site-content {
     --dropdown-border-color: rgba(199, 125, 255, .35);
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1150px) {
     :root {
         --nav-height: 70px;
     }
@@ -1795,11 +1795,18 @@ body.banner-closed .rt-nav-container {
 .rt-logo {
     margin-right: auto;
     padding-left: 0;
+    /* .rt-nav-wrapper is a flex row. Without this the logo is the item that gives
+       way as the nav links grow: measured 244px at 1512, 220 at 1280, 120 at 1180,
+       40 at 1100 and 0 at 1024 — squashed, then gone, while its height stayed 48.
+       The nav has the slack, so the nav shrinks and the logo does not. */
+    flex: 0 0 auto;
+    min-width: max-content;
 }
 
 .rt-logo img {
     height: 48px;
     width: auto;
+    flex-shrink: 0;
     background: none !important;
     box-shadow: none !important;
 }
@@ -2795,7 +2802,16 @@ body.banner-closed .rt-nav-container {
 }
 
 /* Mobile Styles */
-@media (max-width: 992px) {
+/* Between the mobile hand-over and a comfortable desktop the row fits, but only just:
+   at 1300px it needs every pixel of the default spacing. Tighten the gaps rather than
+   let the logo or the portal button be the thing that gives. */
+@media (min-width: 1151px) and (max-width: 1300px) {
+    .rt-nav-wrapper { padding: 0 1rem 0 0.75rem; }
+    .rt-nav { gap: 0.45rem; margin-right: 0.75rem; }
+    .rt-nav-link { padding: 0.5rem 0.6rem; font-size: 1rem; }
+}
+
+@media (max-width: 1150px) {
     .rt-mobile-toggle {
         display: block !important;
         margin-left: auto;
@@ -3747,7 +3763,7 @@ body.banner-closed .rt-dropdown {
     top: 120px !important;
 }
 
-@media (max-width: 992px) {
+@media (max-width: 1150px) {
     .treasury-portal .side-menu,
     .treasury-portal .shortlist-menu {
         top: 70px !important;

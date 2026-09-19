@@ -112,9 +112,14 @@ here; never add new content there.
   On submit it follows the `/submit` response's `primary_redirect_url`, which is
   the asset's gate URL configured in WP Admin — there is no `redirectUrl` in the
   page's `RTG_CONFIG`. That gate URL historically pointed at
-  `/treasury-tech-selection-guide/` (page 4202), which becomes the guide DOWNLOAD
-  page at release; it must be repointed to the confirmation page below before
-  4202 changes, or a waitlist signup lands on the download form.
+  `/treasury-tech-selection-guide/` (page 4202). 4202 is the guide DOWNLOAD page
+  now, and the gate URL was repointed to the confirmation page below before that
+  happened — verified September 19, 2026: asset #9's `config` carries
+  `target_url = https://realtreasury.com/2026-treasury-tech-guide-waitlist-confirmed/`.
+  Had it not been repointed, every waitlist signup would land on the download
+  form. Note `target_url` is a key inside the asset's JSON `config` column, not a
+  column of `wp_rtg_assets`; a query naming it as a column returns empty, which
+  reads like "unset" rather than like a bad query.
 - `treasury-tech-selection/waitlist/confirmed/wordpress-page.html` — waitlist
   confirmation. WordPress-native (a paste, like the two guidebook pages), at
   `/2026-treasury-tech-guide-waitlist-confirmed/`. Not a child of the waitlist:

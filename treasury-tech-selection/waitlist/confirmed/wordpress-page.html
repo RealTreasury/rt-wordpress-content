@@ -5,10 +5,15 @@
   refuses if post_status moved. See ../../guidebook/wordpress-page.html for why
   these pages are not on the GitHub Pages iframe pipeline.
 
-  THIS FILE IS NOT THE LIVE PAGE. Merging it changes nothing a visitor sees.
-  It becomes reachable only after two WP Admin steps, in this order:
-  publish page 4809, then repoint RT Gate asset #9. Both are in
-  docs/guide-release-runbook.md; neither is a push to this repo.
+  THIS PAGE IS LIVE as of September 19, 2026, and this file matches it —
+  `wp_publish_post.py plan guide-waitlist-confirmed` reports post 4809
+  `post_status publish` and identical content. Merging still changes nothing a
+  visitor sees; the repo is the source of record, not the deploy trigger.
+
+  The two WP Admin steps it used to wait on are both done: page 4809 is
+  published, and RT Gate asset #9 now points at
+  /2026-treasury-tech-guide-waitlist-confirmed/. See
+  docs/guide-release-runbook.md steps 1 and 2 for the evidence.
 
   Reached only by redirect from the waitlist signup at
   /2026-treasury-tech-guide-waitlist/ (RT Gate asset

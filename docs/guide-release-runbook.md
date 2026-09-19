@@ -10,8 +10,11 @@ September 17 — `E-Guide_Real Treasury_AV_rev09 with links.pdf`, 42 pages,
 `Partnership with Ernie/Guidebook DRAFTS/Revision 9`. It is **one PDF**. An
 earlier draft of this runbook said Revision 8 shipped "three segment cuts"
 (Cash Tools / TMS-Lite / TRMS) — that was wrong, and there are no segment cuts
-to gate. Steps 3, 4 and 5 below are **done**; what remains is steps 1, 2, 6, 7,
-all of which are deliberate human acts in WP Admin and Resend.
+to gate. **Re-read against production on September 19: steps 1, 2, 3, 4, 5, 6a,
+6b and the automation half of 7 are all done.** What remains is publishing 4585
+in WP Admin and, when you choose to, sending the release broadcast. The
+per-step notes below carry the evidence; where an older paragraph still
+describes a switch as unthrown, it is marked.
 
 ## Pages
 
@@ -164,9 +167,11 @@ final redirect, which 404s until 4585 is published. No email arrives until step 
    placeholder paragraphs are gone, and the stale `alt` text was corrected to the
    `-new.png` cover's line ("Success Starts with Selection"). The broadcast was also
    renamed from "Untitled" to "Guide waitlist — release".
-   **The template edit is a SAVED DRAFT — someone must click Publish in Resend.**
-   Until then the published version still carries the bank CRE placeholder. See the
-   section below; this is exactly the trap that bit us on September 16.
+   ~~**The template edit is a SAVED DRAFT — someone must click Publish in Resend.**~~
+   **Published, verified September 19** (`list-templates` reports
+   `guide-delivery` as `published`). It was a saved draft when this was written,
+   and until it was published the live version carried the bank CRE placeholder.
+   See the section below; this is exactly the trap that bit us on September 16.
 6. **Publish the download page.** Two parts, in this order:
    a. ~~**Publish the Resend template.**~~ **DONE.** Template
       `guide-delivery` (`da8cbac1-…`) reads `published` from the Resend API on
@@ -207,8 +212,10 @@ The form on 4202 never shows the PDF URL. The chain is:
 4. The Resend automation matches `event.segment_id` against that segment and sends
    template `guide-delivery`, which is the only place the real PDF URL appears.
 
-So the email address is the gate, and every link in the chain is now wired except
-the two switches a person throws: publish the template, enable the automation.
+So the email address is the gate, and every link in the chain is wired. Both
+switches this paragraph used to wait on — publish the template, enable the
+automation — were thrown before September 19 and verified that day, so the
+chain is live end to end.
 
 ## Resend: publish the template, or you ship the old one
 
@@ -219,9 +226,11 @@ check, and still goes out wrong.
 
 This bit us on September 16: `guide-waitlist-confirmation` had the new cover saved
 but not published, so a 17:55 UTC test signup delivered the old light cover. Tim
-clicked Publish at 17:58 UTC and the next send was correct. **Check
-`guide-delivery` the same way before release** — its published version still
-carries the placeholder PDF, and there may be a draft above it.
+clicked Publish at 17:58 UTC and the next send was correct. **`guide-delivery`
+was checked the same way and is `published` as of September 19**, so the
+placeholder-PDF version is no longer the one that sends. The trap is still
+worth knowing: it is the reason to re-check any template you edit from here on,
+not a step still outstanding.
 
 ## Cover art: `-new.png` is the current one
 

@@ -1,6 +1,6 @@
 # 2026 Tech Selection Guide — release runbook
 
-State of play as of September 17, 2026. Every page state, RT Gate `target_url`
+State of play as of September 19, 2026. Every page state, RT Gate `target_url`
 and WordPress-vs-repo diff below was re-read from the live site on that date
 rather than carried over from the last write-up.
 

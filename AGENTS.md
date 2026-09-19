@@ -119,3 +119,8 @@ notes in `README.md`.
 
 See `docs/webinar-publishing.md` for the taxonomy contract and pre-publish
 QA checklist.
+
+## Tech Selection Guide release
+
+See `docs/guide-release-runbook.md` for the current WordPress-native guide
+release state and the remaining publish sequence.

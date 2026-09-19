@@ -140,17 +140,21 @@ const cases = {
       'evergreen promotion in the markup; bannerLineup() swaps the dated one in before paint.');
   },
 
-  'both click paths read the live destination, not a stale copy'() {
+  'the whole-banner click reads the live destination and the CTA remains a native link'() {
     assert.ok(!/LIVE_EVENT_REGISTRATION_URL/.test(html),
       'LIVE_EVENT_REGISTRATION_URL is back. It is the trap this file exists for: a second ' +
       'copy of the destination that the clicks use and the markup does not.');
-    for (const h of ['function registerLive', 'function expandBanner']) {
+    for (const h of ['function expandBanner']) {
       const start = html.indexOf(h);
       assert.notStrictEqual(start, -1, h + ' is gone');
       const body = html.slice(start, html.indexOf('\n}', start));
       assert.ok(/bannerDestination\(\)/.test(body),
         h + ' no longer navigates via bannerDestination(), so it can drift from the CTA');
     }
+    assert.ok(!/function registerLive/.test(html),
+      'registerLive duplicates ordinary anchor navigation and prevents modified clicks');
+    assert.ok(!/onclick="registerLive\(event\)"/.test(html),
+      'the CTA should use its native anchor behavior');
   },
 
   'the rotation can be held and cannot run on one promotion'() {

@@ -12,9 +12,9 @@
 }
 
 :root {
-    /* Parked: the .banner-logo rules below are unused while the banner
-       promotes an RT-owned event. Re-add the class to the banner-icon div
-       to bring the Forum mark back. */
+    /* The rota adds .banner-logo for entries whose `logo` field is true.
+       RT-owned promotions leave it off; a Forum entry opts in through its
+       data rather than by editing the markup. */
     --forum-logo: url("https://realtreasury.com/wp-content/uploads/2026/08/TreasuryTech-Virtual-Forum-Main-Logo-White.jpg");
 }
 
@@ -609,7 +609,7 @@ body.banner-minimized .rt-nav-container {
                  visitor without it sees this, and this cannot expire. Hardcoding a
                  dated promotion here is how "an expired event drops off by itself"
                  stops being true for the no-JS path. -->
-            <a href="https://realtreasury.com/treasury-tech-selection-guide/" class="banner-cta" onclick="registerLive(event)">
+            <a href="https://realtreasury.com/treasury-tech-selection-guide/" class="banner-cta">
                 Get the Guide
                 <span>→</span>
             </a>
@@ -855,13 +855,6 @@ function expandBanner(event) {
         return;
     }
 
-    const dest = bannerDestination();
-    if (dest) window.location.href = dest;
-}
-
-function registerLive(event) {
-    event.preventDefault();
-    event.stopPropagation();
     const dest = bannerDestination();
     if (dest) window.location.href = dest;
 }

@@ -53,6 +53,15 @@ here, treat that as a bug and fix it.
 
 See also `docs/webinar-publishing.md` for the webinar publishing contract.
 
+## Existing selection pages: SEO and copy
+
+See `docs/selection-pages-seo.md` for the September 2026 four-page review and
+publication checks. Preserve the owner's approved wording; improve contextual
+links using existing phrases rather than adding SEO copy or vendor lists.
+WordPress/Yoast owns document metadata. `verbatim` publishing preserves styles,
+scripts and font links but removes embedded head titles/meta/canonical links so
+they do not compete with WordPress. Body and SVG titles are preserved.
+
 ## Gated content — use RT Gate, not `treasury-portal-access`
 
 All new gated content (forms that unlock a video, download, link, or

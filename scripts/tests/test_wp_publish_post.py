@@ -331,8 +331,13 @@ check("11b nothing was written when refs would be dropped", "bare" not in r2.bod
 vb_src = tmp / "errnot.html"
 vb_src.write_text(
     '<!DOCTYPE html>\n<html><head><script src="https://cdn.tailwindcss.com"></script>'
+    '<title>Embedded title</title><meta name="robots" content="noindex">'
+    '<meta name="description" content="Embedded description">'
+    '<link rel="canonical" href="https://example.com/wrong/">'
+    '<link rel="stylesheet" href="https://fonts.example.com/inter.css">'
     '<style>.hero { color: red; }</style></head>'
-    '<body class="rt-no-body-padding"><h1>The Method</h1></body></html>', encoding="utf-8")
+    '<body class="rt-no-body-padding"><h1>The Method</h1>'
+    '<svg><title>Accessible illustration</title></svg></body></html>', encoding="utf-8")
 r3 = Remote()
 env3 = env_for(r3)
 r3.status[157] = "publish"
@@ -348,6 +353,11 @@ check("11c verbatim claims the one wp:html block on the first run",
       "old pasted page" not in after)
 check("11c verbatim keeps the head, so the Tailwind CDN survives",
       "cdn.tailwindcss.com" in after)
+check("11c embedded SEO metadata cannot conflict with WordPress",
+      "Embedded title" not in after and "Embedded description" not in after
+      and "noindex" not in after and "example.com/wrong" not in after)
+check("11c metadata cleanup preserves fonts and accessible SVG titles",
+      "fonts.example.com/inter.css" in after and "<title>Accessible illustration</title>" in after)
 check("11c verbatim does not scope the CSS", ".hero { color: red; }" in after
       and "rt-page--errnot .hero" not in after)
 check("11c verbatim keeps the post's own group wrapper and trailing block",

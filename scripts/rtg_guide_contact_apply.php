@@ -1,52 +1,47 @@
 <?php
 /**
- * Two production changes for the Tech Selection Guide funnel.
+ * Two production changes for the gated-content funnel.
  *
- *   1. New RT Gate form "Tech Selection Guide Download" = the General Form's
- *      fields plus a "Would you like us to reach out?" checkbox, notifying
- *      contact@ + Tim + Tracey. Mapping 8 (the guidebook asset) is repointed
- *      at it so no other gated asset changes.
+ *   1. RT Gate form 2 ("General Form", the one every gated asset points at)
+ *      gains one optional, unchecked-by-default checkbox asking whether the
+ *      visitor wants us to reach out. The answer rides along on the internal
+ *      notification that form 2 already sends.
  *   2. Post 4585 (/treasury-tech-selection-guide/thank-you/) gains a
- *      "Schedule a Call" block pointing at Tracey's Calendly.
+ *      "Schedule a Call" block pointing at Tracey's Calendly, which is where
+ *      scheduling now lives after coming out of the Resend emails.
  *
- * Idempotent. Plan-only unless RTG_APPLY=1. Snapshots every row it touches
- * into the plugin's own revision tables and prints the old post_content.
+ * Idempotent. Plan-only unless RTG_APPLY=1. Snapshots form 2 into the plugin's
+ * own revision table and writes the old post_content to uploads/ before it
+ * touches either one, then reads back what it wrote.
  */
 global $wpdb;
 $apply = ( getenv( 'RTG_APPLY' ) === '1' );
 $forms = $wpdb->prefix . 'rtg_forms';
-$maps  = $wpdb->prefix . 'rtg_mappings';
 
-$NAME       = 'Tech Selection Guide Download';
-$MAPPING_ID = 8;
-$POST_ID    = 4585;
+$FORM_ID = 2;
+$POST_ID = 4585;
 
-/* ---------- 1. the form ---------- */
-$src = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$forms} WHERE id = %d", 2 ), ARRAY_A );
-if ( ! $src ) { echo "FATAL: form 2 missing\n"; return; }
-$fields = json_decode( $src['fields_schema'], true );
-if ( ! is_array( $fields ) ) { echo "FATAL: form 2 fields_schema unparseable\n"; return; }
+/* ---------- 1. the checkbox ---------- */
+$form = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$forms} WHERE id = %d", $FORM_ID ), ARRAY_A );
+if ( ! $form ) { echo "FATAL: form {$FORM_ID} missing\n"; return; }
 
-$has = false;
-foreach ( $fields as $f ) { if ( isset( $f['key'] ) && 'contact_request' === $f['key'] ) { $has = true; } }
-if ( ! $has ) {
+$fields = json_decode( $form['fields_schema'], true );
+if ( ! is_array( $fields ) ) { echo "FATAL: form {$FORM_ID} fields_schema unparseable\n"; return; }
+
+$form_done = false;
+foreach ( $fields as $f ) { if ( isset( $f['key'] ) && 'contact_request' === $f['key'] ) { $form_done = true; } }
+if ( ! $form_done ) {
+	/* required=false is what leaves it unchecked: the renderer only writes a
+	   `required` attribute, never `checked`, so an untouched box submits ''. */
 	$fields[] = array(
 		'key'          => 'contact_request',
 		'label'        => 'Would you like us to reach out?',
 		'type'         => 'checkbox',
 		'required'     => false,
 		'autocomplete' => false,
-		'options'      => array( 'Yes, contact me about my selection' ),
+		'options'      => array( 'Yes, please contact me' ),
 	);
 }
-$email_settings = wp_json_encode( array(
-	'lead_email_mode'     => 'none',
-	'internal_notify'     => true,
-	'internal_recipients' => 'contact@realtreasury.com, Tschultz@realtreasury.com, tknight@realtreasury.com',
-) );
-
-$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$forms} WHERE name = %s", $NAME ), ARRAY_A );
-$mapping  = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$maps} WHERE id = %d", $MAPPING_ID ), ARRAY_A );
 
 /* ---------- 2. the page ---------- */
 $post = get_post( $POST_ID );
@@ -70,7 +65,7 @@ $back_add    = "    <div class=\"rt-gbty-talk\">\n"
 	. "    </div>\n\n"
 	. $back_anchor;
 
-$page_done = ( false !== strpos( $content, 'rt-gbty-call' ) );
+$page_done   = ( false !== strpos( $content, 'rt-gbty-call' ) );
 $new_content = $content;
 if ( ! $page_done ) {
 	if ( 1 !== substr_count( $content, $css_anchor ) || 1 !== substr_count( $content, $back_anchor ) ) {
@@ -83,30 +78,19 @@ if ( ! $page_done ) {
 }
 
 echo "=== PLAN ===\n";
-echo "form: " . ( $existing ? "UPDATE id {$existing['id']}" : "INSERT \"{$NAME}\"" ) . "\n";
-echo "mapping {$MAPPING_ID}: form_id " . ( $mapping ? $mapping['form_id'] : '?' ) . " -> (new form)\n";
-echo "post {$POST_ID}: " . ( $page_done ? 'already has the call block, no change' : 'insert call block (' . strlen( $content ) . ' -> ' . strlen( $new_content ) . " bytes)" ) . "\n";
+echo "form {$FORM_ID}: " . ( $form_done ? 'already has contact_request, no change' : 'append contact_request checkbox (' . count( $fields ) . " fields after)" ) . "\n";
+echo "form {$FORM_ID} email_settings: UNCHANGED -> " . $form['email_settings'] . "\n";
+echo "post {$POST_ID}: " . ( $page_done ? 'already has the call block, no change' : 'insert call block (' . strlen( $content ) . ' -> ' . strlen( $new_content ) . ' bytes)' ) . "\n";
 if ( ! $apply ) { echo "\nPLAN ONLY. Re-run with RTG_APPLY=1 to write.\n"; return; }
 
 /* ---------- apply ---------- */
-if ( $existing ) {
-	$form_id = (int) $existing['id'];
-	$wpdb->insert( $wpdb->prefix . 'rtg_form_revisions', array( 'form_id' => $form_id, 'snapshot' => wp_json_encode( $existing ), 'edited_by' => 0, 'restored_from_revision_id' => 0 ), array( '%d', '%s', '%d', '%d' ) );
-	$wpdb->update( $forms, array( 'fields_schema' => wp_json_encode( $fields ), 'consent_text' => $src['consent_text'], 'email_settings' => $email_settings ), array( 'id' => $form_id ), array( '%s', '%s', '%s' ), array( '%d' ) );
-	echo "UPDATED form {$form_id}\n";
-} else {
-	$wpdb->insert( $forms, array( 'name' => $NAME, 'fields_schema' => wp_json_encode( $fields ), 'consent_text' => $src['consent_text'], 'email_settings' => $email_settings ), array( '%s', '%s', '%s', '%s' ) );
-	$form_id = (int) $wpdb->insert_id;
-	echo "INSERTED form {$form_id}\n";
-}
-if ( ! $form_id ) { echo "FATAL: no form id (" . $wpdb->last_error . ") — nothing else written\n"; return; }
-
-if ( $mapping && (int) $mapping['form_id'] !== $form_id ) {
-	$wpdb->insert( $wpdb->prefix . 'rtg_mapping_revisions', array( 'mapping_id' => $MAPPING_ID, 'snapshot' => wp_json_encode( $mapping ), 'edited_by' => 0, 'restored_from_revision_id' => 0 ), array( '%d', '%s', '%d', '%d' ) );
-	$wpdb->update( $maps, array( 'form_id' => $form_id ), array( 'id' => $MAPPING_ID ), array( '%d' ), array( '%d' ) );
-	echo "MAPPING {$MAPPING_ID} -> form {$form_id}\n";
-} else {
-	echo "MAPPING {$MAPPING_ID} unchanged\n";
+if ( ! $form_done ) {
+	$wpdb->insert( $wpdb->prefix . 'rtg_form_revisions', array(
+		'form_id' => $FORM_ID, 'snapshot' => wp_json_encode( $form ),
+		'edited_by' => 0, 'restored_from_revision_id' => 0,
+	), array( '%d', '%s', '%d', '%d' ) );
+	$ok = $wpdb->update( $forms, array( 'fields_schema' => wp_json_encode( $fields ) ), array( 'id' => $FORM_ID ), array( '%s' ), array( '%d' ) );
+	echo ( false === $ok ) ? "ERROR: form update failed: " . $wpdb->last_error . "\n" : "FORM {$FORM_ID} updated\n";
 }
 
 if ( ! $page_done ) {
@@ -120,5 +104,9 @@ if ( ! $page_done ) {
 }
 
 echo "=== READ BACK ===\n";
-echo wp_json_encode( $wpdb->get_row( $wpdb->prepare( "SELECT id, name, email_settings FROM {$forms} WHERE id = %d", $form_id ), ARRAY_A ) ) . "\n";
-echo wp_json_encode( $wpdb->get_row( $wpdb->prepare( "SELECT id, form_id, asset_id, resend_segment_id FROM {$maps} WHERE id = %d", $MAPPING_ID ), ARRAY_A ) ) . "\n";
+$after = $wpdb->get_row( $wpdb->prepare( "SELECT fields_schema, email_settings FROM {$forms} WHERE id = %d", $FORM_ID ), ARRAY_A );
+$keys  = array();
+foreach ( (array) json_decode( $after['fields_schema'], true ) as $f ) { $keys[] = $f['key']; }
+echo "form {$FORM_ID} fields: " . implode( ', ', $keys ) . "\n";
+echo "form {$FORM_ID} email_settings: " . $after['email_settings'] . "\n";
+echo "post {$POST_ID} has call block: " . ( false !== strpos( get_post( $POST_ID )->post_content, 'rt-gbty-call' ) ? 'yes' : 'no' ) . "\n";

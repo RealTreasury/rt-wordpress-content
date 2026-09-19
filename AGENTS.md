@@ -40,6 +40,17 @@ here, treat that as a bug and fix it.
    npm run test:ejs
    ```
 
+## Publishing to WordPress
+
+- **Native pages deploy on merge.** For the rows in `wp/deploy.tsv`, merging to
+  `main` is the release: a box-side cron leg (`scripts/wp_deploy_on_merge.py`)
+  runs `scripts/wp_publish_post.py publish --target production <slug>` for each
+  row whose source changed, then records a GitHub Deployment on the merged sha.
+  Rows not listed there (drafts, staging-id rows) still publish only by hand.
+  See `docs/deploy-on-merge.md` for the state files, the hold, and the kill switch.
+- `scripts/wp_deploy_on_merge.py --dry-run` says what the next run would publish.
+- Test: `npm run test:deploy-on-merge` (offline; also in CI).
+
 ## Directory conventions (read before adding new pages)
 
 - **`webinars/`** (plural) — canonical home for every webinar page.

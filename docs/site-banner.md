@@ -31,7 +31,10 @@ top of the page's script holds one entry per promotion:
   drops off by itself; nobody has to remember to remove it.
 - Everything eligible today goes into the lineup, **dated entries first**. One
   eligible entry renders static. Two or more rotate every 8 seconds.
-- `logo: true` swaps the "RT" tile for the Treasury Tech Virtual Forum mark. Leave
+- `logo: true` swaps the "RT" tile for the Treasury Tech Virtual Forum mark —
+  `applyBannerItem()` adds `.banner-logo` *and* clears the icon's text, because
+  `.banner-icon` centres its text content and "RT" would otherwise be painted
+  over the mark. Leave
   it off for an RT-owned promotion or the event gets badged with someone else's.
 
 The rotation pauses on hover and on focus, and does not run at all for a visitor
@@ -45,13 +48,18 @@ which is why dated-first ordering matters.
    `scripts/tests/test_banner_destination.js`. That list is deliberately a second
    edit: it is the line that says which promotions this banner is for, so a URL
    cannot be changed to something unrelated and stay self-consistent.
-3. If the new entry is the one that should paint before JavaScript runs — what a
-   no-JS visitor sees — update the markup's `.banner-highlight`, `.banner-subtitle`
-   and the CTA `href` to match it. The test checks that the markup's default is one
-   of the entries and that its href agrees.
+3. Leave the markup alone unless you are changing the **evergreen** promotion.
+   The markup default is what paints before JavaScript runs and what a no-JS
+   visitor keeps seeing, so it must be an entry that cannot expire. A dated
+   promotion there is a promise that breaks itself: the window closes, the JS
+   path drops it, and the no-JS path goes on advertising the finished event with
+   nothing failing. The test now requires the default to have no `start`/`end`,
+   not merely to exist in `BANNER_ITEMS`.
 4. `npm run test:banner`.
 
-Retiring is usually nothing: let the window close.
+Retiring a dated promotion is nothing: let the window close. That is true because
+of rule 3 — it stops being true the moment a dated entry is hardcoded into the
+markup.
 
 ### The title budget is 28 characters
 

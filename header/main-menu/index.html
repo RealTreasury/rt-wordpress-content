@@ -594,17 +594,23 @@ body.banner-minimized .rt-nav-container {
 
             <div class="banner-text">
                 <div class="banner-title">
-                    <span class="banner-highlight">AFP 2026 Guided Tours</span>
+                    <span class="banner-highlight">Tech Selection Guide</span>
                 </div>
                 <div class="banner-subtitle">
-                    November 9–10 at AFP Las Vegas — three booths, ten seats, free to attend.
+                    The 2026 edition — the segments, the products in each, and how to run the selection.
                 </div>
             </div>
         </div>
 
         <div class="banner-actions">
-            <a href="https://realtreasury.com/afp-2026-tms-tour/" class="banner-cta" onclick="registerLive(event)">
-                Register Now
+            <!-- The markup default is the EVERGREEN promotion, never a dated one.
+                 bannerLineup() replaces it synchronously before first paint, so a
+                 visitor with JavaScript still sees the dated promotion first. A
+                 visitor without it sees this, and this cannot expire. Hardcoding a
+                 dated promotion here is how "an expired event drops off by itself"
+                 stops being true for the no-JS path. -->
+            <a href="https://realtreasury.com/treasury-tech-selection-guide/" class="banner-cta" onclick="registerLive(event)">
+                Get the Guide
                 <span>→</span>
             </a>
         </div>
@@ -724,6 +730,10 @@ function applyBannerItem(item) {
     if (icon) {
         icon.setAttribute('aria-label', item.label || 'Real Treasury');
         icon.classList.toggle('banner-logo', item.logo === true);
+        // .banner-logo only paints a background image; .banner-icon still centres
+        // its text content, so leaving "RT" in place renders it OVER the event's
+        // mark. Clear it for a logo entry and restore it for an RT one.
+        icon.textContent = item.logo === true ? '' : 'RT';
     }
     if (cta) {
         // The href is the single source of the destination. Every navigation

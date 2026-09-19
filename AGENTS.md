@@ -40,6 +40,12 @@ here, treat that as a bug and fix it.
    npm run test:ejs
    ```
 
+## Site-wide banner
+
+The source of record, promotion rota, date-window contract, test command and
+WordPress deployment notes are in `docs/site-banner.md`. Run
+`npm run test:banner` after changing the banner or its destinations.
+
 ## Directory conventions (read before adding new pages)
 
 - **`webinars/`** (plural) — canonical home for every webinar page.

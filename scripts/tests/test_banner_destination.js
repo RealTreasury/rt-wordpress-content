@@ -154,6 +154,10 @@ const cases = {
       assert.ok(new RegExp("'" + hold + "', stopBannerRotation").test(html),
         'the rotation no longer pauses on ' + hold + ' — a moving CTA is hard to click');
     }
+    assert.ok(/focusout'[\s\S]*banner\.contains\(event\.relatedTarget\)/.test(html),
+      'moving focus between controls inside the banner must not restart rotation');
+    assert.ok(/clearTimeout\(bannerSwapTimer\)/.test(html),
+      'pausing during a crossfade must cancel the queued promotion swap');
   },
 
   'no retired destination survives anywhere in the file'() {

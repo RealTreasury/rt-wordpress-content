@@ -289,8 +289,7 @@ body.banner-closed { min-height: auto; }
 
 /* The rotation crossfades the text and the button label together, so the bar
    never shows one promotion's title beside another's call to action. */
-.banner-text,
-.banner-cta {
+.banner-text {
     transition: opacity 260ms ease;
 }
 
@@ -321,6 +320,8 @@ body.banner-closed { min-height: auto; }
     padding: 12px 24px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
+    transition: opacity 260ms ease, transform 0.3s ease, box-shadow 0.3s ease,
+        color 0.3s ease, border-color 0.3s ease;
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -328,7 +329,6 @@ body.banner-closed { min-height: auto; }
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
@@ -756,6 +756,7 @@ function bannerDestination() {
 const BANNER_LINEUP = bannerLineup();
 let bannerIndex = 0;
 let bannerTimer = null;
+let bannerSwapTimer = null;
 
 if (BANNER_LINEUP.length) {
     applyBannerItem(BANNER_LINEUP[0]);
@@ -771,18 +772,26 @@ function startBannerRotation() {
         const banner = document.getElementById('workshopBanner');
         if (!banner || banner.style.display === 'none') return;
         banner.classList.add('swapping');
-        setTimeout(function () {
+        bannerSwapTimer = setTimeout(function () {
             bannerIndex = (bannerIndex + 1) % BANNER_LINEUP.length;
             applyBannerItem(BANNER_LINEUP[bannerIndex]);
             banner.classList.remove('swapping');
+            bannerSwapTimer = null;
         }, 260);
     }, BANNER_ROTATE_MS);
 }
 
 function stopBannerRotation() {
-    if (!bannerTimer) return;
-    clearInterval(bannerTimer);
-    bannerTimer = null;
+    if (bannerTimer) {
+        clearInterval(bannerTimer);
+        bannerTimer = null;
+    }
+    if (bannerSwapTimer) {
+        clearTimeout(bannerSwapTimer);
+        bannerSwapTimer = null;
+        const banner = document.getElementById('workshopBanner');
+        if (banner) banner.classList.remove('swapping');
+    }
 }
 
 // Add banner state management
@@ -883,7 +892,11 @@ window.addEventListener('load', function() {
     banner.addEventListener('mouseenter', stopBannerRotation);
     banner.addEventListener('mouseleave', startBannerRotation);
     banner.addEventListener('focusin', stopBannerRotation);
-    banner.addEventListener('focusout', startBannerRotation);
+    banner.addEventListener('focusout', function(event) {
+        if (!event.relatedTarget || !banner.contains(event.relatedTarget)) {
+            startBannerRotation();
+        }
+    });
 
     // Expand banner on hover when minimized, collapse on mouse leave
     banner.addEventListener('mouseenter', function() {

@@ -242,9 +242,7 @@ window.RT_TOUR = {
     .rt-t-form-card {
         background: #ffffff; border: 1px solid #7216f4;
         border-radius: 8px; padding: 32px 34px; margin-bottom: 26px;
-        position: relative;
     }
-    .rt-t-form-card::before { content: none; }
     .rt-t-form-heading { font-size: 1.45rem; font-weight: 800; margin: 0 0 5px; color: var(--dark-text); }
     .rt-t-form-subtext { font-size: 0.94rem; color: var(--gray-text); margin: 0 0 20px; max-width: 64ch; }
 
@@ -326,16 +324,15 @@ window.RT_TOUR = {
         color: var(--gray-text); cursor: pointer;
     }
     .rt-t-form-wrap .rtg-ack-group input { width: auto; flex: 0 0 auto; margin-top: 3px; }
-    .rt-t-form-wrap .rtg-invalid { border: 2px solid #281345 !important; outline-color: #7216f4 !important; }
+    .rt-t-form-wrap .rtg-invalid { border-color: #281345 !important; box-shadow: inset 0 0 0 1px #281345; outline-color: #7216f4 !important; }
     .rt-t-form-wrap .rtg-submit-btn {
         width: 100%; padding: 16px 20px; border: 0; border-radius: 4px; color: #ffffff;
         font: inherit; font-weight: 700;
         background: #7216f4; cursor: pointer;
     }
     .rt-t-form-wrap .rtg-submit-btn[disabled] { opacity: 1; background: #393939; cursor: not-allowed; }
-    .rt-t-form-wrap .rtg-submit-btn:hover { background: #5b0acd; }
+    .rt-t-form-wrap .rtg-submit-btn:not([disabled]):hover { background: #5b0acd; }
     .rt-t-form-wrap .rtg-submit-btn:focus-visible { outline: 2px solid #281345; outline-offset: 4px; }
-    .rt-t-form-wrap .rtg-submit-btn:active { transform: translateY(0); }
     .rt-t-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
     .rt-t-form-wrap .rtg-response.rtg-error { color: #281345; font-weight: 700; }
     .rt-t-form-wrap .rtg-response.rtg-success { color: #5b0acd; }
@@ -368,7 +365,6 @@ window.RT_TOUR = {
     html.rt-t-embed .rt-t-card, html.rt-t-embed .rt-t-form-card {
         background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 0; margin: 0;
     }
-    html.rt-t-embed .rt-t-form-card::before { display: none; }
     html.rt-t-embed .rt-t-pill { padding: 4px 10px; font-size: 0.75rem; }
     html.rt-t-embed .rt-t-fineprint { text-align: left; }
     html.rt-t-embed .rt-t-form-wrap input, html.rt-t-embed .rt-t-form-wrap select,

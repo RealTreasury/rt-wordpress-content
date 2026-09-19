@@ -17,11 +17,30 @@ all of which are deliberate human acts in WP Admin and Resend.
 
 | what | where | status |
 |---|---|---|
-| Download page (gated form) | WP **4202** `/treasury-tech-selection-guide/` | published, still serving the **waitlist confirmation** |
-| Download page content | WP **4587** draft, slug `…-guide-download` | draft, matches the repo (the corrupted email check was repaired September 17) |
+| Download page (gated form) | WP **4202** `/treasury-tech-selection-guide/` | **published, and it is now the download page** — `plan guide-download` reads back 1035 words identical to the repo source |
+| Download page content | WP **4587** draft, slug `…-guide-download` | draft, and **no longer matches the repo** — 242 changed lines against the source, because 4202 moved on and this staging copy did not |
 | Guide thank-you | WP **4585** `/treasury-tech-selection-guide/thank-you/` | draft, matches the repo |
 | Waitlist signup | WP post **4211** `/2026-treasury-tech-guide-waitlist/` | published (GitHub Pages iframe) |
-| Waitlist confirmation | WP **4809** `/2026-treasury-tech-guide-waitlist-confirmed/` | draft, matches the repo |
+| Waitlist confirmation | WP **4809** `/2026-treasury-tech-guide-waitlist-confirmed/` | **published**, matches the repo |
+
+> **Re-read against production on September 19, 2026** with
+> `scripts/wp_publish_post.py plan <slug>` (it reports `post_status`), a plain
+> `curl` of each URL, and the Resend API for the template, automation and
+> broadcast. **The release has largely already happened.** The September 17 state
+> this table used to record — 4202 still serving the waitlist confirmation, 4809
+> a draft — is no longer true. Steps 1, 5, 6a, 6b and the automation half of
+> step 7 are done.
+>
+> **Two things are outstanding and one of them is live and broken:**
+>
+> 1. **4585, the guide thank-you page, is still a draft**, so
+>    `/treasury-tech-selection-guide/thank-you/` 404s — while 4202 is live as the
+>    download form and the delivery automation is **enabled**. Every visitor who
+>    submits the form right now gets a 404 for a confirmation. The lead and the
+>    email are unaffected (see "How a download actually reaches someone"), but
+>    the visitor is told nothing. Publishing 4585 in WP Admin fixes it.
+> 2. **Step 2's RT Gate mapping was not re-verified**, and it is no longer
+>    harmless if it was never changed. See the warning on that step.
 
 4587 is the staging draft, **not a destination**. `/treasury-tech-selection-guide-download/`
 404s because the page has never been published, and it should never be published
@@ -111,16 +130,19 @@ The form renders and submits for real against RT Gate — it writes a lead and c
 a Resend contact in the Downloads segment. The only thing that misbehaves is the
 final redirect, which 404s until 4585 is published. No email arrives until step 7.
 
-1. **Publish the waitlist confirmation page 4809.** It is a draft today, so
-   `/2026-treasury-tech-guide-waitlist-confirmed/` 404s — verified September 17.
-   This has to land *before* step 2, not with it: repointing the gate at a draft
-   page sends every waitlist signup to a 404 for as long as the gap lasts.
-   Publishing 4809 on its own changes nothing for visitors, because nothing links
-   to it yet.
-2. **Repoint the waitlist redirect.** RT Gate asset #9
-   (`treasury-tech-selection-guide-waitlist`, mapping #5) has `target_url` set to
-   `https://realtreasury.com/treasury-tech-selection-guide/` — verified still true
-   on September 17. Change it to
+1. ~~**Publish the waitlist confirmation page 4809.**~~ **DONE.** The page is
+   published and `/2026-treasury-tech-guide-waitlist-confirmed/` returns 200;
+   `plan guide-waitlist-confirmed` reports `post_status publish` and identical
+   content. It had to land before step 2, and it did.
+2. **Repoint the waitlist redirect — now urgent, verify first.** RT Gate asset #9
+   (`treasury-tech-selection-guide-waitlist`, mapping #5) had `target_url` set to
+   `https://realtreasury.com/treasury-tech-selection-guide/` as of September 17.
+   That was safe while 4202 still served the waitlist confirmation. **It is not
+   safe now:** 4202 is the download page, so if the mapping is still unchanged
+   every waitlist signup is landing on the download form. This state was not
+   re-verified on September 19 — the mapping lives in the `rtg_mappings` table
+   and is readable only from WP Admin. **Check it before anything else.** Set it
+   to
    `https://realtreasury.com/2026-treasury-tech-guide-waitlist-confirmed/`.
    Until this is done, turning 4202 into the download page drops waitlist signups
    onto the download form. WP Admin only — the waitlist page carries no
@@ -146,24 +168,29 @@ final redirect, which 404s until 4585 is published. No email arrives until step 
    Until then the published version still carries the bank CRE placeholder. See the
    section below; this is exactly the trap that bit us on September 16.
 6. **Publish the download page.** Two parts, in this order:
-   a. **Publish the Resend template.** `guide-delivery` has the correct content
-      saved as a draft; the published version still carries the bank CRE
-      placeholder. Resend → Templates → *Tech Selection Guide — delivery* →
-      **Publish**. Do this before step 7 or the first delivery goes out wrong,
-      which is precisely what happened on September 16.
-   b. **Write the form into 4202 and publish.** From a checkout of
-      `feat/native-page-publish`:
+   a. ~~**Publish the Resend template.**~~ **DONE.** Template
+      `guide-delivery` (`da8cbac1-…`) reads `published` from the Resend API on
+      September 19. It had to precede step 7 or the first delivery would go out
+      carrying the bank CRE placeholder, which is precisely what happened on
+      September 16.
+   b. **Write the form into 4202 and publish.** *The 4202 half is DONE* —
+      `plan guide-download` reads back 1035 words identical to
+      `treasury-tech-selection/guidebook/wordpress-page.html`, so the cutover has
+      landed and `/treasury-tech-selection-guide/` is the download form.
       `python3 scripts/wp_publish_post.py publish guide-download --target production`
-      — that puts `treasury-tech-selection/guidebook/wordpress-page.html` into
-      **4202**. Then publish **4585** in WP Admin. The script writes `post_content`
-      only and refuses if `post_status` moved, so it cannot publish anything itself.
-      4202 is already published, so writing its content IS the cutover: the moment
-      it lands, `/treasury-tech-selection-guide/` stops being the waitlist
-      confirmation and becomes the download form. Steps 1 and 2 must already be done.
-7. **Enable automation** "Tech Selection Guide — deliver on signup"
-   (`01a067af-c041-7579-a1f3-ad0f042f25fe`, currently disabled; wiring re-verified
-   September 17 and correct) and send the broadcast. This is the only step that
-   causes mail to leave.
+      is the command that does it; the script is on `main` now, no special
+      checkout needed. It writes `post_content` only and refuses if `post_status`
+      moved, so it cannot publish anything itself.
+      **Still outstanding: publish 4585 in WP Admin.** Until that happens the
+      form's post-submit redirect 404s for every real visitor.
+7. **Enable automation and send the broadcast.** *The automation half is DONE* —
+   "Tech Selection Guide — deliver on signup"
+   (`01a067af-c041-7579-a1f3-ad0f042f25fe`) reads `enabled` from the Resend API
+   on September 19; wiring was re-verified September 17 and is correct. **Still
+   outstanding: the broadcast.** "2026 Guide Release — Waitlist"
+   (`ae14794e-…`) is still a `draft`. Sending it is the only remaining act that
+   pushes mail out on purpose — but note that with the automation already on,
+   delivery mail is *already* leaving for anyone who submits the form.
 
 ## How a download actually reaches someone
 
@@ -214,14 +241,20 @@ it is what screen readers and image-blocked clients render.
 
 ## Safe today, because
 
-- The delivery automation is **disabled** (re-verified September 17), so nothing
-  in `guide-delivery` reaches anyone either way. Its wiring is correct: it triggers
-  on `signup.created`, branches on `event.segment_id == 22b33094-…` (the Downloads
-  segment), and sends template `da8cbac1-…`.
-- The release broadcast is a **draft**.
+> **Superseded on September 19, 2026.** This section described the state before
+> the cutover. It is kept for the record; the corrections are inline.
+
+- ~~The delivery automation is **disabled**~~ — **it is enabled now.** Mail from
+  `guide-delivery` reaches anyone who submits the form on 4202. Its wiring is
+  correct and unchanged: it triggers on `signup.created`, branches on
+  `event.segment_id == 22b33094-…` (the Downloads segment), and sends template
+  `da8cbac1-…`, which is published.
+- The release broadcast is a **draft**. *(Still true — `ae14794e-…`, verified
+  September 19.)*
 - The waitlist confirmation email links only to `/treasury-tech-market/`, never to
   4202, so the waitlist keeps working correctly no matter when 4202 changes.
-- 4202 has not been touched; it still serves the waitlist confirmation, so the
-  waitlist works today exactly as it always has. 4809 is not a fix for anything
-  live — it is only where the waitlist lands *after* 4202 becomes the download
-  page.
+- ~~4202 has not been touched; it still serves the waitlist confirmation~~ — **no
+  longer true as of September 19.** 4202 is the download page now and 4809 is
+  published, so the waitlist's landing page depends entirely on step 2's mapping.
+  The rest of this section was verified on September 17 and has not been
+  re-checked since; treat it as a claim to confirm, not a fact.

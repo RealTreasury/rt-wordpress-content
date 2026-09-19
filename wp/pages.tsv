@@ -32,7 +32,6 @@ nav-js-snippet	1865	header/main-menu/JSsnippet/index.html	raw
 # 4587 is a staging draft, not a destination: its slug 404s and should never be published,
 # because the download form's home is 4202. It is listed because it is the page that carried
 # the stripped-backslash corruption, and `plan` is how that stayed visible.
-# 4809's source arrives with PR #901; until that merges, `plan` on it dies on a missing file.
 #
 # COLUMN 5 is the post_name the id must carry on whichever target you are writing. It
 # defaults to column 1 when omitted. Post ids are PER SITE and staging has drifted from

@@ -1,92 +1,169 @@
-// Guards the site-wide banner's destination against the one way it fails quietly.
+// Guards the site-wide banner's destinations against the ways they fail quietly.
 //
-// The banner carries the registration URL TWICE: on the CTA's href, and in the
-// LIVE_EVENT_REGISTRATION_URL const. Every click path — the desktop CTA
-// (registerLive), the whole-bar mobile target (expandBanner), and the minimized bar —
-// calls preventDefault() and navigates via the const, so the href is decoration. A swap
-// that updates only the href looks completely correct in review and in the rendered page,
-// and sends every visitor to the previous event.
+// The banner used to carry one registration URL twice — on the CTA's href and in a
+// LIVE_EVENT_REGISTRATION_URL const — and every click path navigated via the const,
+// so a swap that updated only the href looked correct in review and in the rendered
+// page while sending every visitor to the previous event. That trap is gone: the
+// destination now lives once, in BANNER_ITEMS, and both click paths read it back off
+// the CTA element. This file keeps it gone, and guards what replaced it.
 //
-// So: the two must agree, they must both be the destination this rota slot is for, and no
-// id from a retired destination may survive anywhere in the file. None of that needs a
-// browser, and all of it is exactly the mistake this file's history keeps producing.
+// BANNER_ITEMS is the rota. Each entry is a promotion with an optional inclusive
+// date window; the bar shows everything eligible today and rotates when more than
+// one is. So the checks below are: the list parses, every entry is complete and
+// points somewhere this banner is allowed to send people, every date window is a
+// real window, the title still fits on one line, the markup's own default is one of
+// the entries (what a no-JS visitor gets), and no retired destination survives.
 //
-// DESTINATION names the page the banner is currently supposed to send people to. Agreement
-// between the two fields alone is not enough — both could be moved to an unrelated URL and
-// still agree. Changing DESTINATION is part of a banner swap, not an obstacle to one: it is
-// the line that says which event this banner is for.
+// DESTINATIONS names every page the banner may send people to. Agreement inside the
+// file is not enough — an entry could be moved to an unrelated URL and stay
+// self-consistent. Changing DESTINATIONS is part of a banner swap, not an obstacle
+// to one: it is the line that says which promotions this banner is for.
 
 'use strict';
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
+const vm = require('vm');
 
 const FILE = path.join(__dirname, '..', '..', 'header', 'main-menu', 'index.html');
 const html = fs.readFileSync(FILE, 'utf8');
 
-// The current rota slot: AFP 2026 guided vendor tours, September 15-18 2026.
-const DESTINATION = 'https://realtreasury.com/afp-2026-tms-tour/';
+// The promotions this banner is currently allowed to run.
+const DESTINATIONS = [
+  'https://realtreasury.com/afp-2026-tms-tour/',
+  'https://realtreasury.com/treasury-tech-selection-guide/',
+];
 
-function ctaHref() {
-  const m = html.match(/<a\s+href="([^"]+)"\s+class="banner-cta"/);
-  assert.ok(m, 'no <a class="banner-cta"> with an href in header/main-menu/index.html');
-  return m[1];
+// A title over this wraps at 375px, and a wrapped title grows the bar past the
+// hardcoded nav offset and pushes the navigation underneath itself.
+const TITLE_MAX = 28;
+
+function bannerItems() {
+  const start = html.indexOf('const BANNER_ITEMS = [');
+  assert.notStrictEqual(start, -1, 'BANNER_ITEMS is gone from header/main-menu/index.html');
+  const open = html.indexOf('[', start);
+  let depth = 0;
+  let end = -1;
+  for (let i = open; i < html.length; i++) {
+    if (html[i] === '[') depth++;
+    else if (html[i] === ']') {
+      depth--;
+      if (depth === 0) { end = i; break; }
+    }
+  }
+  assert.notStrictEqual(end, -1, 'BANNER_ITEMS is not a closed array literal');
+  return vm.runInNewContext('(' + html.slice(open, end + 1) + ')');
 }
 
-function registrationConst() {
-  const m = html.match(/const\s+LIVE_EVENT_REGISTRATION_URL\s*=\s*'([^']+)'/);
-  assert.ok(m, 'LIVE_EVENT_REGISTRATION_URL is gone from header/main-menu/index.html');
-  return m[1];
-}
+const items = bannerItems();
 
 const cases = {
-  'the CTA href and the const that actually navigates agree'() {
-    assert.strictEqual(ctaHref(), registrationConst(),
-      'the banner CTA href and LIVE_EVENT_REGISTRATION_URL point at different places — ' +
-      'the const is the one that navigates, so visitors would go to the href-less one');
+  'the banner has at least one promotion to run'() {
+    assert.ok(items.length > 0, 'BANNER_ITEMS is empty — the bar would render nothing');
   },
 
-  'every navigation path reads the const, not the href'() {
-    // If a handler ever starts using the href, the check above stops being the whole story.
-    const handlers = ['function registerLive', 'function expandBanner'];
-    for (const h of handlers) {
-      const start = html.indexOf(h);
-      assert.notStrictEqual(start, -1, h + ' is gone');
-      const body = html.slice(start, html.indexOf('\n}', start));
-      assert.ok(/LIVE_EVENT_REGISTRATION_URL/.test(body), h + ' no longer navigates via the const');
+  'at least one promotion is evergreen, so the bar is never empty'() {
+    const evergreen = items.filter((i) => !i.start && !i.end);
+    assert.ok(evergreen.length > 0,
+      'every entry is dated, so the banner goes blank the day the last window closes. ' +
+      'Leave one entry without start/end as the fallback.');
+  },
+
+  'every promotion is complete'() {
+    for (const item of items) {
+      const where = 'BANNER_ITEMS entry ' + JSON.stringify(item.key || '(no key)');
+      for (const field of ['key', 'title', 'subtitle', 'cta', 'url']) {
+        assert.ok(typeof item[field] === 'string' && item[field].trim(),
+          where + ' is missing ' + field);
+      }
     }
   },
 
-  'the destination is an absolute https URL'() {
-    assert.match(registrationConst(), /^https:\/\/[^\s"']+$/, 'the destination is not an absolute https URL');
+  'promotion keys are unique'() {
+    const keys = items.map((i) => i.key);
+    assert.strictEqual(new Set(keys).size, keys.length,
+      'two BANNER_ITEMS entries share a key: ' + keys.join(', '));
   },
 
-  'the banner points at the destination this rota slot is for'() {
-    assert.strictEqual(registrationConst(), DESTINATION,
-      'the banner navigates to ' + registrationConst() + ', not ' + DESTINATION + '. If the ' +
-      'rota moved on, move DESTINATION at the top of this file with it; if it did not, the ' +
-      'banner is pointing somewhere it should not.');
-    assert.strictEqual(ctaHref(), DESTINATION,
-      'the CTA href is ' + ctaHref() + ', not ' + DESTINATION);
+  'every destination is one this banner is for'() {
+    for (const item of items) {
+      assert.match(item.url, /^https:\/\/[^\s"']+$/,
+        item.key + "'s url is not an absolute https URL: " + item.url);
+      assert.ok(DESTINATIONS.includes(item.url),
+        'the banner would send people to ' + item.url + ' (' + item.key + '), which is not in ' +
+        'DESTINATIONS at the top of this file. If the rota moved on, move DESTINATIONS with ' +
+        'it; if it did not, the banner is pointing somewhere it should not.');
+    }
+  },
+
+  'every date window is a real window'() {
+    for (const item of items) {
+      const dated = 'start' in item || 'end' in item;
+      if (!dated) continue;
+      for (const field of ['start', 'end']) {
+        assert.match(String(item[field]), /^\d{4}-\d{2}-\d{2}$/,
+          item.key + "'s " + field + ' is not a YYYY-MM-DD date: ' + item[field] +
+          '. A half-filled window is silently ignored and the entry never runs.');
+      }
+      assert.ok(item.start <= item.end,
+        item.key + ' starts after it ends (' + item.start + ' > ' + item.end + ')');
+    }
+  },
+
+  'every title still fits on one line'() {
+    for (const item of items) {
+      assert.ok(item.title.length <= TITLE_MAX,
+        `${item.key}'s title is ${item.title.length} chars ("${item.title}") — ` +
+        `over ${TITLE_MAX} it wraps at 375px and pushes the nav under the banner`);
+    }
+  },
+
+  "the markup's own default is one of the promotions"() {
+    // What a visitor with JavaScript off sees, and what paints before the picker runs.
+    const title = html.match(/<span class="banner-highlight">([^<]+)<\/span>/);
+    const href = html.match(/<a\s+href="([^"]+)"\s+class="banner-cta"/);
+    assert.ok(title, 'no .banner-highlight in the banner markup');
+    assert.ok(href, 'no <a class="banner-cta"> with an href in the banner markup');
+    const match = items.find((i) => i.title === title[1].trim());
+    assert.ok(match,
+      'the markup shows "' + title[1].trim() + '", which is not in BANNER_ITEMS — a no-JS ' +
+      'visitor gets a promotion the rota no longer runs');
+    assert.strictEqual(href[1], match.url,
+      'the markup\'s CTA href is ' + href[1] + ' but ' + match.key + ' points at ' + match.url);
+  },
+
+  'both click paths read the live destination, not a stale copy'() {
+    assert.ok(!/LIVE_EVENT_REGISTRATION_URL/.test(html),
+      'LIVE_EVENT_REGISTRATION_URL is back. It is the trap this file exists for: a second ' +
+      'copy of the destination that the clicks use and the markup does not.');
+    for (const h of ['function registerLive', 'function expandBanner']) {
+      const start = html.indexOf(h);
+      assert.notStrictEqual(start, -1, h + ' is gone');
+      const body = html.slice(start, html.indexOf('\n}', start));
+      assert.ok(/bannerDestination\(\)/.test(body),
+        h + ' no longer navigates via bannerDestination(), so it can drift from the CTA');
+    }
+  },
+
+  'the rotation can be held and cannot run on one promotion'() {
+    assert.ok(/prefers-reduced-motion/.test(html),
+      'the rotation no longer honours prefers-reduced-motion');
+    assert.ok(/BANNER_LINEUP\.length < 2/.test(html),
+      'startBannerRotation no longer refuses to rotate a single promotion');
+    for (const hold of ['mouseenter', 'focusin']) {
+      assert.ok(new RegExp("'" + hold + "', stopBannerRotation").test(html),
+        'the rotation no longer pauses on ' + hold + ' — a moving CTA is hard to click');
+    }
   },
 
   'no retired destination survives anywhere in the file'() {
-    // A swap that misses one of the two edit points usually leaves the old id behind.
+    // A swap that misses an edit point usually leaves the old id behind.
     const retired = [
       '52ec549d-0107-4908-a71d-21a4844f4afe',   // Sept 15 2026 "Make AFP Count" Teams event
     ];
     for (const id of retired) {
       assert.ok(!html.includes(id), 'a retired destination is still referenced: ' + id);
     }
-  },
-
-  'the banner title still fits on one line'() {
-    // A long .banner-highlight is what has pushed the banner under the nav before.
-    const m = html.match(/<span class="banner-highlight">([^<]+)<\/span>/);
-    assert.ok(m, 'no .banner-highlight in the banner');
-    const title = m[1].trim();
-    assert.ok(title.length > 0 && title.length <= 28,
-      `banner title is ${title.length} chars ("${title}") — over 28 it wraps at 375px`);
   },
 };
 
@@ -96,4 +173,4 @@ for (const [name, fn] of Object.entries(cases)) {
   catch (e) { failed++; console.error('FAIL ' + name + '\n     ' + e.message); }
 }
 if (failed) { console.error(failed + ' banner check(s) failed'); process.exit(1); }
-console.log('all banner destination checks passed');
+console.log('all banner checks passed (' + items.length + ' promotions)');

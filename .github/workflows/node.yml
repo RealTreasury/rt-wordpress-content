@@ -21,6 +21,7 @@ jobs:
       - run: npm run test:ejs
       - run: npm run test:iframe-height
       - run: npm run test:banner
+      - run: npm run test:guide-consent
       - run: npm run test:publish-css
       - run: npm run test:publish-post
       - run: npm run test:deploy-on-merge

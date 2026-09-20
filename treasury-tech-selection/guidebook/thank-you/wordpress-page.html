@@ -34,7 +34,10 @@
     .rt-gbty-heading { font-size: 2rem; font-weight: 800; margin: 0 0 16px; background: linear-gradient(90deg, #2f1850 0%, #5b0acd 48%, #7216f4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .rt-gbty-text { font-size: 1.05rem; color: var(--gray-text); margin: 0 0 12px; }
     .rt-gbty-note { font-size: 0.9rem; color: var(--gray-text); margin: 24px 0 0; }
-    .rt-gbty-back { display: inline-block; margin-top: 32px; padding: 14px 28px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
+    /* Same specificity trap as the waitlist confirmation: `.rt-gbty a` is (0,1,1)
+       and beats a bare `.rt-gbty-back` (0,1,0), so the label came out purple on
+       purple. Qualify with the element. */
+    .rt-gbty a.rt-gbty-back { display: inline-block; margin-top: 32px; padding: 14px 28px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
     .rt-gbty-back:hover { filter: brightness(1.05); }
 
     @media (max-width: 480px) {

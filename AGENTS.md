@@ -61,6 +61,12 @@ here, treat that as a bug and fix it.
 - `scripts/wp_deploy_on_merge.py --dry-run` says what the next run would publish.
 - Test: `npm run test:deploy-on-merge` (offline; also in CI).
 
+## Site-wide banner
+
+The source of record, promotion rota, date-window contract, test command and
+WordPress deployment notes are in `docs/site-banner.md`. Run
+`npm run test:banner` after changing the banner or its destinations.
+
 ## Directory conventions (read before adding new pages)
 
 - **`webinars/`** (plural) — canonical home for every webinar page.
@@ -94,6 +100,7 @@ REST API at `/wp-json/rtg/v1/` and is configured via the WP Admin
   this is the reference implementation. New gated pages should mirror its
   `window.RTG_CONFIG` block and its form-rendering / submission script.
 - **Full integration guide:** `docs/rt-gate.md`.
+- **2026 selection-guide release sequence:** `docs/guide-release-runbook.md`.
 - **Existing RT Gate pages** all live under `webinars/` (plural) and
   `treasury-tech-selection/waitlist/`. There are no RT Gate pages under
   `webinar/` (singular) — that directory is deprecated redirect stubs.
@@ -148,3 +155,8 @@ notes in `README.md`.
 
 See `docs/webinar-publishing.md` for the taxonomy contract and pre-publish
 QA checklist.
+
+## Tech Selection Guide release
+
+See `docs/guide-release-runbook.md` for the current WordPress-native guide
+release state and the remaining publish sequence.

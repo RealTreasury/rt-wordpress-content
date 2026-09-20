@@ -13,7 +13,8 @@
     "test:publish-post": "python3 scripts/tests/test_wp_publish_post.py",
     "test:carousel": "node scripts/tests/test_homepage_carousel.js",
     "test:css-prune": "node scripts/tests/test_shared_css_prune.js",
-    "test:build-clean": "node scripts/tests/test_build_output_is_committed.js"
+    "test:build-clean": "node scripts/tests/test_build_output_is_committed.js",
+    "test:consent": "node scripts/tests/test_consent_renderer.js"
   },
   "devDependencies": {
     "ejs": "^3.1.10",

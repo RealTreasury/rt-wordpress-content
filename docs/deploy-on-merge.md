@@ -46,13 +46,13 @@ State dir: `/srv/ai-data/wp-deploy`.
 ## Which rows
 
 Only rows whose merge should *be* the release belong in `wp/deploy.tsv`. Kept out
-on purpose: the three release drafts (the rail cannot publish a draft anyway), the
-two rows that carry staging post ids, and `nav-js-snippet`. Its responsive
-breakpoint is coupled to `assets/css/shared.css`, which has its own guarded,
-manual publish rail; the two must be published together until they share one atomic
-release mechanism. Add a row only when a page is live on production, its source in
-this repo is the source of record, and all of its release-coupled assets use this
-same rail.
+on purpose: two release drafts and the published `guide-waitlist-confirmed` page,
+which remains a deliberate hand step; the two rows that carry staging post ids; and
+`nav-js-snippet` plus `site-header-snippet`. Those snippets are release-coupled to
+`assets/css/shared.css`, which has its own guarded, manual publish rail; publish
+the coupled assets together until they share one atomic release mechanism. Add a row
+only when a page is live on production, its source in this repo is the source of
+record, and all of its release-coupled assets use this same rail.
 
 ## Checking
 

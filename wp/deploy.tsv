@@ -12,12 +12,14 @@
 #     its status.
 #   * how-to-select-a-tms, tms-selection-mistakes — those rows carry STAGING post ids;
 #     writing them to production would overwrite a different post.
+#   * nav-js-snippet — its 1150px breakpoint is coupled to shared.css, which has
+#     a separate guarded publish rail. Publish both manually in one sitting until
+#     they share one atomic release mechanism.
 # Only the *-prod rows of those two pages are here.
 real-treasury-explained
 payment-networks-explained
 data-flows-of-a-tms
 site-header-snippet
-nav-js-snippet
 guide-download
 errnot
 how-to-select-a-tms-prod

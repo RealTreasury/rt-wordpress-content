@@ -75,6 +75,17 @@ class Mapping(unittest.TestCase):
             leg.parse_deploy("alpha\nalpha\n")
 
 
+class LiveManifest(unittest.TestCase):
+    def test_nav_js_waits_for_its_coupled_shared_css_release(self):
+        """Never let the deploy rail split the known 1150px breakpoint pair."""
+        root = HERE.parents[1]
+        pages = leg.parse_pages((root / "wp/pages.tsv").read_text(encoding="utf-8"))
+        deploy = leg.parse_deploy((root / "wp/deploy.tsv").read_text(encoding="utf-8"))
+        self.assertEqual(pages["nav-js-snippet"],
+                         "header/main-menu/JSsnippet/index.html")
+        self.assertNotIn("nav-js-snippet", deploy)
+
+
 class EndToEnd(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="wpdeploy-"))

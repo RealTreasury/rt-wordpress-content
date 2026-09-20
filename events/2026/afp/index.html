@@ -506,25 +506,6 @@ window.RT_TOUR = {
   function escHtml(s) { var d = document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
   function escAttr(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function parseJsonOrThrow(res) { return res.text().then(function (t) { var j = {}; try { j = t ? JSON.parse(t) : {}; } catch (e) { throw new Error('Invalid JSON (' + res.status + ')'); } if (!res.ok) throw new Error(j.message || 'Request failed (' + res.status + ')'); return j; }); }
-  /* consent_text is authored in WP Admin and may carry a privacy-policy link.
-     Render it with only <a href> (http/https) allowed; everything else is text. */
-  function safeConsentHtml(str) {
-    var out = '';
-    try {
-      var doc = new DOMParser().parseFromString('<div>' + String(str == null ? '' : str) + '</div>', 'text/html');
-      var root = doc.body && doc.body.firstChild;
-      if (!root) return escHtml(str);
-      root.childNodes.forEach(function (n) {
-        if (n.nodeType === 3) { out += escHtml(n.nodeValue); return; }
-        if (n.nodeType === 1 && n.tagName === 'A' && /^https?:\/\//i.test(n.getAttribute('href') || '')) {
-          out += '<a href="' + escAttr(n.getAttribute('href')) + '" target="_blank" rel="noopener noreferrer">' + escHtml(n.textContent) + '</a>';
-          return;
-        }
-        if (n.nodeType === 1) { out += escHtml(n.textContent); }
-      });
-      return out;
-    } catch (e) { return escHtml(str); }
-  }
   /* WordPress.com's edge caches anonymous REST GETs per URL (observed: a
      two-day-old counter). A per-request token forces a fresh read. */
   function bust(url) { return url + (url.indexOf('?') === -1 ? '?' : '&') + '_=' + Date.now(); }
@@ -898,7 +879,7 @@ window.RT_TOUR = {
       html += '</div>';
     });
     if (consentText) {
-      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtTourConsent" required> <span>' + safeConsentHtml(consentText) + '</span></label></div>';
+      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtTourConsent" required> <span>' + escHtml(consentText) + '</span></label></div>';
     }
     html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
     if (schema.preview) {

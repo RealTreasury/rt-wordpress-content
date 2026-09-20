@@ -348,7 +348,7 @@ window.RTG_CONFIG = {
 
       <figure class="rt-gb-quote">
         <p class="rt-gb-quote-label">What readers say</p>
-        <blockquote>&ldquo;What I like about this guide is that it&rsquo;s genuinely impartial&hellip; If you need a guide to the treasury technology market, this is it. It&rsquo;s almost like a workbook. It helps you see who&rsquo;s out there, what they offer and where they might fit. Whether you&rsquo;re a smaller treasury team with relatively straightforward needs, or a much larger and more complex treasury function, it gives you the chance to look across the whole market and properly consider the different options available to you. It&rsquo;s comprehensive, balanced and, most importantly, it doesn&rsquo;t leave you wondering what you might have missed.&rdquo;</blockquote>
+        <blockquote>What I like about this guide is that it&rsquo;s genuinely impartial&hellip; If you need a guide to the treasury technology market, this is it. It&rsquo;s almost like a workbook. It helps you see who&rsquo;s out there, what they offer and where they might fit. Whether you&rsquo;re a smaller treasury team with relatively straightforward needs, or a much larger and more complex treasury function, it gives you the chance to look across the whole market and properly consider the different options available to you. It&rsquo;s comprehensive, balanced and, most importantly, it doesn&rsquo;t leave you wondering what you might have missed.&rdquo;</blockquote>
         <cite><b>Mike Richards,</b> CEO &amp; Founder, The Treasury Recruitment Company</cite>
       </figure>
     </div>
@@ -498,25 +498,6 @@ window.RTG_CONFIG = {
 
   function escHtml(s){ var d=document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
   function escAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  /* consent_text is authored in WP Admin and may carry a privacy-policy link.
-     Render it with only <a href> (http/https) allowed; everything else is text. */
-  function safeConsentHtml(str) {
-    var out = '';
-    try {
-      var doc = new DOMParser().parseFromString('<div>' + String(str == null ? '' : str) + '</div>', 'text/html');
-      var root = doc.body && doc.body.firstChild;
-      if (!root) return escHtml(str);
-      root.childNodes.forEach(function (n) {
-        if (n.nodeType === 3) { out += escHtml(n.nodeValue); return; }
-        if (n.nodeType === 1 && n.tagName === 'A' && /^https?:\/\//i.test(n.getAttribute('href') || '')) {
-          out += '<a href="' + escAttr(n.getAttribute('href')) + '" target="_blank" rel="noopener noreferrer">' + escHtml(n.textContent) + '</a>';
-          return;
-        }
-        if (n.nodeType === 1) { out += escHtml(n.textContent); }
-      });
-      return out;
-    } catch (e) { return escHtml(str); }
-  }
   function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON ('+res.status+')');} if(!res.ok) throw new Error(j.message||'Request failed ('+res.status+')'); return j;}); }
   function fieldTypeToInputType(t){ return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
   function fieldAutocomplete(f){ if (f.autocomplete === false) return 'off'; if (f.key === 'full_name') return 'name'; if (f.key === 'first_name') return 'given-name'; if (f.key === 'last_name') return 'family-name'; return ({ email:'email', tel:'tel', company:'organization', url:'url' })[f.type] || 'on'; }
@@ -576,7 +557,7 @@ window.RTG_CONFIG = {
       html += '</div>';
     });
     if (consentText) {
-      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + safeConsentHtml(consentText) + '</span></label></div>';
+      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + escHtml(consentText) + '</span></label></div>';
     }
     html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
     html += '<button type="submit" class="rtg-submit-btn">Send Me the Guide</button>';

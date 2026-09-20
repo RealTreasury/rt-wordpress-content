@@ -202,29 +202,96 @@ function bannerScript() {
   return html.slice(start, end);
 }
 
+// The rest of the rota: the pre-paint bootstrap that builds BANNER_LINEUP, and
+// startBannerRotation/stopBannerRotation. Lifted separately because it declares
+// module state and touches the banner element, so it only runs where the stub
+// DOM and the virtual clock are in place.
+function bannerBootstrapScript() {
+  const start = html.indexOf('// Runs synchronously, before first paint');
+  assert.notStrictEqual(start, -1, 'the pre-paint bootstrap marker moved');
+  const end = html.indexOf('// Add banner state management', start);
+  assert.notStrictEqual(end, -1,
+    'the marker below stopBannerRotation moved; this harness lifts the bootstrap and the ' +
+    'rotation only, and stops before the rest of the banner behaviour');
+  return html.slice(start, end);
+}
+
+// The hover/focus wiring is a handful of addEventListener calls inside the load
+// handler. Lifting the slice means the tests fire the listeners the page really
+// registers, not a re-typed copy of them.
+function bannerWiringScript() {
+  const start = html.indexOf('// Rotate only when more than one promotion is in window today.');
+  assert.notStrictEqual(start, -1, 'the rotation wiring comment moved');
+  const end = html.indexOf('// Expand banner on hover when minimized', start);
+  assert.notStrictEqual(end, -1, 'the marker below the rotation wiring moved');
+  return html.slice(start, end);
+}
+
 // A DOM stub with only what applyBannerItem() reaches for.
 function makeNode(cls) {
-  return {
+  const node = {
     className: cls || '',
     classes: new Set(),
     attrs: {},
+    style: {},
+    listeners: {},
     _text: '',
     childNodes: [],
     get textContent() { return this._text; },
     set textContent(v) { this._text = String(v); this.childNodes = [{ nodeType: 3, nodeValue: String(v) }]; },
     setAttribute(k, v) { this.attrs[k] = String(v); },
     getAttribute(k) { return Object.prototype.hasOwnProperty.call(this.attrs, k) ? this.attrs[k] : null; },
-    classList: {
-      toggle(name, on) { on ? this.__o.classes.add(name) : this.__o.classes.delete(name); },
-    },
     insertBefore(node, ref) { this.childNodes.unshift(node); },
     get firstChild() { return this.childNodes[0] || null; },
+    addEventListener(type, fn) { (this.listeners[type] || (this.listeners[type] = [])).push(fn); },
+    // The rotation's hold/resume is wired entirely through listeners, so the
+    // tests below have to be able to fire them.
+    dispatch(type, event) { (this.listeners[type] || []).forEach((fn) => fn(event || {})); },
+    contains(other) { return other === this; },
+  };
+  node.classList = {
+    toggle(name, on) { on ? node.classes.add(name) : node.classes.delete(name); },
+    add(name) { node.classes.add(name); },
+    remove(name) { node.classes.delete(name); },
+    contains(name) { return node.classes.has(name); },
+  };
+  return node;
+}
+
+// A virtual clock, so the 8s rota and the 260ms crossfade are asserted rather
+// than waited on. Timers fire in due order; an interval re-arms itself.
+function makeClock() {
+  let now = 0;
+  let seq = 0;
+  const timers = new Map();
+  return {
+    count: () => timers.size,
+    api: {
+      setInterval(fn, ms) { const id = ++seq; timers.set(id, { fn, due: now + ms, every: ms }); return id; },
+      setTimeout(fn, ms) { const id = ++seq; timers.set(id, { fn, due: now + ms, every: null }); return id; },
+      clearInterval(id) { timers.delete(id); },
+      clearTimeout(id) { timers.delete(id); },
+    },
+    advance(ms) {
+      const target = now + ms;
+      for (;;) {
+        let next = null;
+        for (const entry of timers) {
+          if (entry[1].due <= target && (!next || entry[1].due < next[1].due)) next = entry;
+        }
+        if (!next) break;
+        now = next[1].due;
+        if (next[1].every === null) timers.delete(next[0]);
+        else next[1].due = now + next[1].every;
+        next[1].fn();
+      }
+      now = target;
+    },
   };
 }
 
 function makeBanner() {
   const icon = makeNode('banner-icon');
-  icon.classList.__o = icon;
   icon.textContent = 'RT';
   const title = makeNode('banner-highlight');
   const subtitle = makeNode('banner-subtitle');
@@ -239,10 +306,21 @@ function makeBanner() {
 }
 
 // Runs the lifted functions with BANNER_ITEMS replaced and the clock pinned.
-function runRota(itemsOverride, today) {
+function runRota(itemsOverride, today, opts) {
+  opts = opts || {};
   const dom = makeBanner();
+  const clock = makeClock();
   const ctx = {
     document: { getElementById: (id) => (id === 'workshopBanner' ? dom.banner : null), createTextNode: (v) => ({ nodeType: 3, nodeValue: v }) },
+    window: {
+      matchMedia: (q) => ({
+        matches: /prefers-reduced-motion/.test(q) ? opts.reducedMotion === true : false,
+      }),
+    },
+    setInterval: clock.api.setInterval,
+    clearInterval: clock.api.clearInterval,
+    setTimeout: clock.api.setTimeout,
+    clearTimeout: clock.api.clearTimeout,
     Intl: { DateTimeFormat: function () { return { format: () => today }; } },
     Date,
     console,
@@ -252,12 +330,19 @@ function runRota(itemsOverride, today) {
   // Swap in the fixture AFTER the page's own list is defined.
   vm.runInContext('BANNER_ITEMS.length = 0; Array.prototype.push.apply(BANNER_ITEMS, ' +
     JSON.stringify(itemsOverride) + ');', ctx);
+  // ...and before the bootstrap freezes the lineup, when the caller wants the
+  // real rotation rather than just the pure functions.
+  if (opts.rotate) {
+    vm.runInContext(bannerBootstrapScript(), ctx);
+    vm.runInContext('(function (banner) {' + bannerWiringScript() + '})(' +
+      'document.getElementById("workshopBanner"));', ctx);
+  }
   // Array.from re-homes the result: an array built inside the VM carries that
   // realm's Array.prototype, and deepStrictEqual compares prototypes, so a
   // correct lineup would fail the comparison for the wrong reason.
   const keys = () => Array.from(vm.runInContext(
     'bannerLineup().map(function (i) { return i.key; })', ctx));
-  return { ctx, dom, keys };
+  return { ctx, dom, clock, keys, title: () => dom.title.textContent };
 }
 
 const DATED = { key: 'dated', title: 'Dated', subtitle: 's', cta: 'Go', url: 'https://realtreasury.com/a/', start: '2026-09-15', end: '2026-11-10' };
@@ -324,6 +409,82 @@ const runtimeCases = {
     assert.ok(!r.dom.icon.classes.has('banner-logo'));
     assert.strictEqual(r.dom.icon.textContent, 'RT',
       'swapping back from a logo entry must restore the tile, not leave it blank');
+  },
+
+  'the rota advances to the next promotion across the crossfade'() {
+    const r = runRota([DATED, EVER], '2026-10-01', { rotate: true });
+    assert.strictEqual(r.title(), 'Dated', 'the bootstrap should paint the dated entry first');
+    r.clock.advance(8000);
+    assert.ok(r.dom.banner.classes.has('swapping'),
+      'the bar should fade out before the swap, not cut to the next promotion');
+    assert.strictEqual(r.title(), 'Dated', 'the swap must land after the fade, not with it');
+    r.clock.advance(260);
+    assert.strictEqual(r.title(), 'Ever', 'the rota did not advance to the next promotion');
+    assert.strictEqual(r.dom.cta.getAttribute('href'), EVER.url,
+      'the rota moved the title but left the CTA pointing at the previous promotion');
+    assert.ok(!r.dom.banner.classes.has('swapping'), 'the bar was left faded out');
+    r.clock.advance(8000 + 260);
+    assert.strictEqual(r.title(), 'Dated', 'the rota does not wrap back to the first promotion');
+  },
+
+  'a lineup of one never rotates'() {
+    const r = runRota([EVER], '2026-10-01', { rotate: true });
+    assert.strictEqual(r.clock.count(), 0,
+      'a single eligible promotion armed a rotation timer — the bar would crossfade to itself');
+    r.clock.advance(8000 * 3);
+    assert.strictEqual(r.title(), 'Ever');
+    assert.ok(!r.dom.banner.classes.has('swapping'));
+  },
+
+  'reduced motion holds the first promotion'() {
+    const r = runRota([DATED, EVER], '2026-10-01', { rotate: true, reducedMotion: true });
+    assert.strictEqual(r.clock.count(), 0, 'the rotation ignored prefers-reduced-motion');
+    r.clock.advance(8000 * 3);
+    assert.strictEqual(r.title(), 'Dated',
+      'a reduced-motion visitor gets the first entry and it does not move');
+  },
+
+  'hovering holds the promotion and leaving resumes the rota'() {
+    for (const [hold, resume] of [['mouseenter', 'mouseleave'], ['focusin', 'focusout']]) {
+      const r = runRota([DATED, EVER], '2026-10-01', { rotate: true });
+      r.dom.banner.dispatch(hold, {});
+      r.clock.advance(8000 + 260);
+      assert.strictEqual(r.title(), 'Dated',
+        hold + ' did not hold the promotion — a moving CTA is hard to read and hard to click');
+      r.dom.banner.dispatch(resume, {});
+      r.clock.advance(8000 + 260);
+      assert.strictEqual(r.title(), 'Ever', resume + ' did not resume the rota');
+    }
+  },
+
+  'holding during a crossfade cancels the queued swap and clears the fade'() {
+    const r = runRota([DATED, EVER], '2026-10-01', { rotate: true });
+    r.clock.advance(8000);
+    assert.ok(r.dom.banner.classes.has('swapping'), 'the crossfade did not start');
+    r.dom.banner.dispatch('mouseenter', {});
+    assert.ok(!r.dom.banner.classes.has('swapping'),
+      'pausing mid-crossfade left the bar faded out');
+    r.clock.advance(8000 + 260);
+    assert.strictEqual(r.title(), 'Dated',
+      'the queued swap still fired after the pause, so the promotion changed under the cursor');
+  },
+
+  'moving focus between controls inside the banner does not restart the rota'() {
+    const r = runRota([DATED, EVER], '2026-10-01', { rotate: true });
+    r.dom.banner.dispatch('focusin', {});
+    // relatedTarget is the banner itself, which banner.contains() reports as inside.
+    r.dom.banner.dispatch('focusout', { relatedTarget: r.dom.banner });
+    r.clock.advance(8000 + 260);
+    assert.strictEqual(r.title(), 'Dated',
+      'focus moved from one control in the banner to another and the rota restarted underneath it');
+  },
+
+  'an empty lineup hides the bar instead of leaving the default promotion up'() {
+    const expired = Object.assign({}, DATED, { key: 'expired' });
+    const r = runRota([expired], '2026-11-11', { rotate: true });
+    assert.strictEqual(r.dom.banner.style.display, 'none',
+      'nothing is eligible, so the bar must hide rather than keep painting the markup default');
+    assert.strictEqual(r.clock.count(), 0);
   },
 
   "the shipped list is live today, so the bar is not blank right now"() {

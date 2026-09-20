@@ -108,7 +108,22 @@ here; never add new content there.
 - `webinars/err-not-demo-script/index.html` — Real Treasury × AFP; YouTube iframe
   gate (mapping #7). Custom variant: reveals a live YouTube embed rather than a
   rehosted `<video>`, and unlocks the worksheet download in the same submit.
-- `treasury-tech-selection/waitlist/index.html` — waitlist signup (mapping #5)
+- `treasury-tech-selection/waitlist/index.html` — waitlist signup (mapping #5).
+  On submit it follows the `/submit` response's `primary_redirect_url`, which is
+  the asset's gate URL configured in WP Admin — there is no `redirectUrl` in the
+  page's `RTG_CONFIG`. That gate URL historically pointed at
+  `/treasury-tech-selection-guide/` (page 4202). 4202 is the guide DOWNLOAD page
+  now, and the gate URL was repointed to the confirmation page below before that
+  happened — verified September 19, 2026: asset #9's `config` carries
+  `target_url = https://realtreasury.com/2026-treasury-tech-guide-waitlist-confirmed/`.
+  Had it not been repointed, every waitlist signup would land on the download
+  form. Note `target_url` is a key inside the asset's JSON `config` column, not a
+  column of `wp_rtg_assets`; a query naming it as a column returns empty, which
+  reads like "unset" rather than like a bad query.
+- `treasury-tech-selection/waitlist/confirmed/wordpress-page.html` — waitlist
+  confirmation. WordPress-native (a paste, like the two guidebook pages), at
+  `/2026-treasury-tech-guide-waitlist-confirmed/`. Not a child of the waitlist:
+  the waitlist (4211) is a post, and a WordPress page cannot be a child of a post.
 - `treasury-tech-selection/guidebook/wordpress-page.html` — 2026 Tech Selection
   Guide download request (mapping #8). **WordPress-native, not on the GitHub
   Pages iframe pipeline:** the file is pasted into the WordPress page as a Custom

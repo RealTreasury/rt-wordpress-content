@@ -39,6 +39,16 @@ here, treat that as a bug and fix it.
    ```bash
    npm run test:ejs
    ```
+4. Run the test gate — the one command that means "the tests pass" here, and
+   the gate the automated repair arm (`serena_coder`) runs on a bare worktree
+   with no `npm install`:
+   ```bash
+   bash scripts/run_checks.sh
+   ```
+   It runs the six package-free `npm run test:*` checks and stops at the first
+   failure. `test:build-clean` is left out because it reads `git status` and is
+   red on any dirty tree; CI runs it as its own step against a clean checkout.
+   `RUN_CHECKS_BUILD_CLEAN=1 bash scripts/run_checks.sh` opts it back in.
 
 ## Directory conventions (read before adding new pages)
 
@@ -52,6 +62,15 @@ here, treat that as a bug and fix it.
   the next section.
 
 See also `docs/webinar-publishing.md` for the webinar publishing contract.
+
+## Existing selection pages: SEO and copy
+
+See `docs/selection-pages-seo.md` for the September 2026 four-page review and
+publication checks. Preserve the owner's approved wording; improve contextual
+links using existing phrases rather than adding SEO copy or vendor lists.
+WordPress/Yoast owns document metadata. `verbatim` publishing preserves styles,
+scripts and font links but removes embedded head titles/meta/canonical links so
+they do not compete with WordPress. Body and SVG titles are preserved.
 
 ## Gated content — use RT Gate, not `treasury-portal-access`
 

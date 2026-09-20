@@ -240,13 +240,8 @@ window.RT_TOUR = {
 
     /* ---- Form card ---- */
     .rt-t-form-card {
-        background: #ffffff; border: 2px solid rgba(114, 22, 244, 0.16);
-        border-radius: 20px; padding: 32px 34px; margin-bottom: 26px;
-        box-shadow: 0 14px 36px rgba(91, 10, 205, 0.08); position: relative;
-    }
-    .rt-t-form-card::before {
-        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-        background: var(--gradient-primary); border-radius: 18px 18px 0 0;
+        background: #ffffff; border: 1px solid #7216f4;
+        border-radius: 8px; padding: 32px 34px; margin-bottom: 26px;
     }
     .rt-t-form-heading { font-size: 1.45rem; font-weight: 800; margin: 0 0 5px; color: var(--dark-text); }
     .rt-t-form-subtext { font-size: 0.94rem; color: var(--gray-text); margin: 0 0 20px; max-width: 64ch; }
@@ -268,28 +263,47 @@ window.RT_TOUR = {
         #rtTourForm > .rtg-field-group[data-type="tel"],
         #rtTourForm > .rtg-field-group[data-type="number"],
         #rtTourForm > .rtg-field-group[data-type="select"] { grid-column: span 1; }
+        /* Paired fields sit in the same grid row, so a label that wraps to two
+           lines would otherwise drop its input below its neighbour's. Bottom-
+           aligning the group's contents keeps the two inputs on one line. */
+        #rtTourForm > .rtg-field-group[data-type="text"],
+        #rtTourForm > .rtg-field-group[data-type="email"],
+        #rtTourForm > .rtg-field-group[data-type="company"],
+        #rtTourForm > .rtg-field-group[data-type="tel"],
+        #rtTourForm > .rtg-field-group[data-type="number"],
+        #rtTourForm > .rtg-field-group[data-type="select"] { display: flex; flex-direction: column; justify-content: flex-end; }
     }
-    .rt-t-form-wrap .rtg-field-group { margin-bottom: 13px; }
-    .rt-t-form-wrap label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--dark-text); margin-bottom: 6px; }
+    /* Field chrome is deliberately the same set as the guidebook download
+       form: a solid mid-grey 1px outline rather than a tinted lavender one,
+       a 4px radius, and a 16px floor on the text so iOS does not zoom on
+       focus. The lavender border read as decoration on white and left the
+       boxes hard to pick out; grey reads as an edge. */
+    .rt-t-form-wrap .rtg-field-group { margin-bottom: 14px; }
+    .rt-t-form-wrap label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--dark-text); margin-bottom: 6px; overflow-wrap: anywhere; }
     .rt-t-form-wrap input, .rt-t-form-wrap select, .rt-t-form-wrap textarea {
-        width: 100%; padding: 10px 13px; border: 1px solid #d8c9f7; border-radius: 10px;
-        font: inherit; background: #fff; color: var(--dark-text);
+        width: 100%; min-width: 0; padding: 12px 14px; border: 1px solid #7e7e7e; border-radius: 4px;
+        font: inherit; font-size: max(16px, 1rem); background: #ffffff; color: var(--dark-text);
     }
+    .rt-t-form-wrap input::placeholder, .rt-t-form-wrap textarea::placeholder { color: #393939; opacity: 1; }
     .rt-t-form-wrap textarea { min-height: 70px; resize: vertical; }
     .rt-t-form-wrap select {
         appearance: none; -webkit-appearance: none;
         background-image: linear-gradient(45deg, transparent 50%, var(--primary-purple) 50%), linear-gradient(135deg, var(--primary-purple) 50%, transparent 50%);
-        background-position: calc(100% - 18px) 16px, calc(100% - 13px) 16px;
+        background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px;
         background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 36px;
     }
     .rt-t-form-wrap .rtg-option-group { display: grid; gap: 8px; }
     .rt-t-form-wrap .rtg-option-group label {
         display: flex; align-items: flex-start; gap: 10px; font-weight: 500; margin: 0;
-        border: 1px solid #d8c9f7; border-radius: 10px; padding: 10px 13px; cursor: pointer;
+        border: 1px solid #7e7e7e; border-radius: 4px; padding: 12px 14px; cursor: pointer;
         line-height: 1.45;
     }
-    .rt-t-form-wrap .rtg-option-group label:has(input:checked) { border-color: var(--primary-purple); background: rgba(114, 22, 244, 0.05); }
-    .rt-t-form-wrap .rtg-option-group label:focus-within { outline: 2px solid rgba(114, 22, 244, 0.5); outline-offset: 1px; }
+    /* The inset ring thickens the chosen card's edge without moving anything:
+       a 2px border would reflow every card in the group by a pixel. */
+    .rt-t-form-wrap .rtg-option-group label:has(input:checked) {
+        border-color: #7216f4; box-shadow: inset 0 0 0 1px #7216f4; background: rgba(114, 22, 244, 0.05);
+    }
+    .rt-t-form-wrap .rtg-option-group label:focus-within { outline: 2px solid #7216f4; outline-offset: 2px; }
     .rt-t-form-wrap .rtg-option-group input { width: auto; padding: 0; margin-top: 4px; }
     .rt-t-form-wrap .rtg-option-group .rt-t-opt-name { display: block; font-size: 1.0625rem; font-weight: 700; color: var(--dark-text); }
     .rt-t-form-wrap .rtg-option-group .rt-t-opt-when { display: block; font-size: 0.875rem; font-weight: 500; color: var(--gray-text); margin-top: 2px; }
@@ -302,7 +316,7 @@ window.RT_TOUR = {
        rather than a permission. */
     .rt-t-form-wrap .rtg-ack-group {
         margin: 6px 0 12px; padding: 12px 14px;
-        border: 1px solid rgba(114, 22, 244, 0.18); border-radius: 10px;
+        border: 1px solid #7e7e7e; border-radius: 4px;
     }
     .rt-t-form-wrap .rtg-ack-group label {
         display: flex; gap: 9px; align-items: flex-start; margin: 0;
@@ -310,20 +324,20 @@ window.RT_TOUR = {
         color: var(--gray-text); cursor: pointer;
     }
     .rt-t-form-wrap .rtg-ack-group input { width: auto; flex: 0 0 auto; margin-top: 3px; }
-    .rt-t-form-wrap .rtg-invalid { border-color: #e53e3e !important; outline-color: rgba(229, 62, 62, 0.4) !important; }
+    .rt-t-form-wrap .rtg-invalid { border-color: #281345 !important; box-shadow: inset 0 0 0 1px #281345; outline-color: #7216f4 !important; }
     .rt-t-form-wrap .rtg-submit-btn {
-        width: 100%; padding: 13px 20px; border: 0; border-radius: 12px; color: #fff;
-        font-weight: 700; font-size: 1.02rem;
-        background: linear-gradient(135deg, rgba(114, 22, 244, 0.95), rgba(143, 71, 246, 0.95)); cursor: pointer;
+        width: 100%; padding: 16px 20px; border: 0; border-radius: 4px; color: #ffffff;
+        font: inherit; font-weight: 700;
+        background: #7216f4; cursor: pointer;
     }
-    .rt-t-form-wrap .rtg-submit-btn[disabled] { opacity: 0.7; cursor: not-allowed; }
-    .rt-t-form-wrap .rtg-submit-btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
-    .rt-t-form-wrap .rtg-submit-btn:active { transform: translateY(0); }
+    .rt-t-form-wrap .rtg-submit-btn[disabled] { opacity: 1; background: #393939; cursor: not-allowed; }
+    .rt-t-form-wrap .rtg-submit-btn:not([disabled]):hover { background: #5b0acd; }
+    .rt-t-form-wrap .rtg-submit-btn:focus-visible { outline: 2px solid #281345; outline-offset: 4px; }
     .rt-t-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
-    .rt-t-form-wrap .rtg-response.rtg-error { color: #b91c1c; }
-    .rt-t-form-wrap .rtg-response.rtg-success { color: #047857; }
+    .rt-t-form-wrap .rtg-response.rtg-error { color: #281345; font-weight: 700; }
+    .rt-t-form-wrap .rtg-response.rtg-success { color: #5b0acd; }
     .rt-t-form-wrap input:focus, .rt-t-form-wrap select:focus, .rt-t-form-wrap textarea:focus {
-        outline: 2px solid rgba(114, 22, 244, 0.5); outline-offset: 1px; border-color: rgba(114, 22, 244, 0.55);
+        outline: 2px solid #7216f4; outline-offset: 2px; border-color: #7216f4;
     }
     .rt-t-email-note { font-size: 0.85rem; color: #92400e; margin: 6px 0 0; }
     .rt-t-fineprint { font-size: 0.82rem; color: #6b7280; margin-top: 14px; line-height: 1.55; }
@@ -351,12 +365,11 @@ window.RT_TOUR = {
     html.rt-t-embed .rt-t-card, html.rt-t-embed .rt-t-form-card {
         background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 0; margin: 0;
     }
-    html.rt-t-embed .rt-t-form-card::before { display: none; }
     html.rt-t-embed .rt-t-pill { padding: 4px 10px; font-size: 0.75rem; }
     html.rt-t-embed .rt-t-fineprint { text-align: left; }
     html.rt-t-embed .rt-t-form-wrap input, html.rt-t-embed .rt-t-form-wrap select,
     html.rt-t-embed .rt-t-form-wrap textarea, html.rt-t-embed .rt-t-form-wrap .rtg-option-group label,
-    html.rt-t-embed .rt-t-form-wrap .rtg-submit-btn { border-radius: 6px; }
+    html.rt-t-embed .rt-t-form-wrap .rtg-submit-btn { border-radius: 4px; }
     @media (max-width: 420px) {
     }
 

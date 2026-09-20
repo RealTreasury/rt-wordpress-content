@@ -39,6 +39,16 @@ here, treat that as a bug and fix it.
    ```bash
    npm run test:ejs
    ```
+4. Run the test gate — the one command that means "the tests pass" here, and
+   the gate the automated repair arm (`serena_coder`) runs on a bare worktree
+   with no `npm install`:
+   ```bash
+   bash scripts/run_checks.sh
+   ```
+   It runs the six package-free `npm run test:*` checks and stops at the first
+   failure. `test:build-clean` is left out because it reads `git status` and is
+   red on any dirty tree; CI runs it as its own step against a clean checkout.
+   `RUN_CHECKS_BUILD_CLEAN=1 bash scripts/run_checks.sh` opts it back in.
 
 ## Site-wide banner
 

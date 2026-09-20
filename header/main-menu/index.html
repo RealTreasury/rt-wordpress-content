@@ -12,9 +12,9 @@
 }
 
 :root {
-    /* Parked: the .banner-logo rules below are unused while the banner
-       promotes an RT-owned event. Re-add the class to the banner-icon div
-       to bring the Forum mark back. */
+    /* The rota adds .banner-logo for entries whose `logo` field is true.
+       RT-owned promotions leave it off; a Forum entry opts in through its
+       data rather than by editing the markup. */
     --forum-logo: url("https://realtreasury.com/wp-content/uploads/2026/08/TreasuryTech-Virtual-Forum-Main-Logo-White.jpg");
 }
 
@@ -287,6 +287,24 @@ body.banner-closed { min-height: auto; }
     font-weight: 600;
 }
 
+/* The rotation crossfades the text and the button label together, so the bar
+   never shows one promotion's title beside another's call to action. */
+.banner-text {
+    transition: opacity 260ms ease;
+}
+
+.workshop-banner.swapping .banner-text,
+.workshop-banner.swapping .banner-cta {
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .banner-text,
+    .banner-cta {
+        transition: none;
+    }
+}
+
 .workshop-banner.minimized .banner-highlight {
     color: #ffffff !important;
 }
@@ -302,6 +320,8 @@ body.banner-closed { min-height: auto; }
     padding: 12px 24px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
+    transition: opacity 260ms ease, transform 0.3s ease, box-shadow 0.3s ease,
+        color 0.3s ease, border-color 0.3s ease;
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -309,7 +329,6 @@ body.banner-closed { min-height: auto; }
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     position: relative;
@@ -575,17 +594,23 @@ body.banner-minimized .rt-nav-container {
 
             <div class="banner-text">
                 <div class="banner-title">
-                    <span class="banner-highlight">AFP 2026 Guided Tours</span>
+                    <span class="banner-highlight">Tech Selection Guide</span>
                 </div>
                 <div class="banner-subtitle">
-                    November 9–10 at AFP Las Vegas — three booths, ten seats, free to attend.
+                    The 2026 edition — the segments, the products in each, and how to run the selection.
                 </div>
             </div>
         </div>
 
         <div class="banner-actions">
-            <a href="https://realtreasury.com/afp-2026-tms-tour/" class="banner-cta" onclick="registerLive(event)">
-                Register Now
+            <!-- The markup default is the EVERGREEN promotion, never a dated one.
+                 bannerLineup() replaces it synchronously before first paint, so a
+                 visitor with JavaScript still sees the dated promotion first. A
+                 visitor without it sees this, and this cannot expire. Hardcoding a
+                 dated promotion here is how "an expired event drops off by itself"
+                 stops being true for the no-JS path. -->
+            <a href="https://realtreasury.com/treasury-tech-selection-guide/" class="banner-cta">
+                Get the Guide
                 <span>→</span>
             </a>
         </div>
@@ -594,7 +619,190 @@ body.banner-minimized .rt-nav-container {
     <div class="site-content"></div>
 
 <script>
-const LIVE_EVENT_REGISTRATION_URL = 'https://realtreasury.com/afp-2026-tms-tour/';
+/* ---- What the banner promotes -------------------------------------------
+ *
+ * One entry per promotion. `start`/`end` are INCLUSIVE dates in the site's
+ * own timezone. An entry with neither is evergreen: always eligible, so the
+ * bar is never empty between events. A dated entry outside its window is not
+ * rendered at all \u2014 an expired event drops off by itself.
+ *
+ * The bar rotates between everything eligible today, dated entries first so
+ * the promotion with a deadline is what a visitor sees first. One eligible
+ * entry never moves, and neither does the bar for a visitor who asked for
+ * reduced motion \u2014 they get the first entry, which is why the order matters.
+ *
+ * `title` must hold ONE line from 375px to 1440px or the banner grows taller
+ * than the hardcoded nav offset and pushes the navigation underneath itself.
+ * The budget is 28 characters — put the short name here and the date and the
+ * pitch in `subtitle`. scripts/tests/test_banner_destination.js enforces it,
+ * along with every url being one this banner is allowed to send people to.
+ *
+ * `logo: true` swaps the "RT" tile for the Treasury Tech Virtual Forum mark
+ * (the --forum-logo var at the top of this file). Leave it off for an
+ * RT-owned promotion, or the event gets badged with someone else's mark.
+ * ------------------------------------------------------------------------- */
+const BANNER_ITEMS = [
+    {
+        key: 'tours',
+        title: 'AFP 2026 Guided Tours',
+        subtitle: 'November 9\u201310 at AFP Las Vegas \u2014 three booths, ten seats, free to attend.',
+        cta: 'Register Now',
+        url: 'https://realtreasury.com/afp-2026-tms-tour/',
+        label: 'Real Treasury',
+        start: '2026-09-15',
+        end: '2026-11-10'
+    },
+    {
+        key: 'guide',
+        title: 'Tech Selection Guide',
+        subtitle: 'The 2026 edition \u2014 the segments, the products in each, and how to run the selection.',
+        cta: 'Get the Guide',
+        url: 'https://realtreasury.com/treasury-tech-selection-guide/',
+        label: 'Real Treasury'
+    }
+    /* The Treasury Tech Virtual Forum slot. Fill in the registration URL and
+       the dates and uncomment it \u2014 do not guess either; the last banner swap
+       shipped an Airmeet link for a retired event.
+    ,{
+        key: 'forum',
+        title: 'Treasury Tech Virtual Forum',
+        subtitle: '[TO CONFIRM] date \u2014 [TO CONFIRM] pitch.',
+        cta: 'Save a Seat',
+        url: '[TO CONFIRM]',
+        label: 'Treasury Tech Virtual Forum',
+        logo: true,
+        start: '[TO CONFIRM]',
+        end: '[TO CONFIRM]'
+    }
+    */
+];
+
+// How long each promotion holds the bar when more than one is in window.
+const BANNER_ROTATE_MS = 8000;
+
+// Day granularity, read in the site's timezone rather than the visitor's, so a
+// window does not open a day early in Singapore and a day late in Honolulu.
+function bannerToday() {
+    try {
+        return new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'America/Chicago', year: 'numeric', month: '2-digit', day: '2-digit'
+        }).format(new Date());
+    } catch (e) {
+        return new Date().toISOString().slice(0, 10);
+    }
+}
+
+function isDateWindow(v) {
+    return typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+}
+
+// Everything eligible today: dated entries whose window covers today, plus the
+// evergreen ones, which are always eligible. Dated first, so the promotion with
+// a deadline is the one on screen at first paint and the one a reduced-motion
+// visitor sees. An entry without a real https destination is skipped rather
+// than rendered as a dead call to action.
+function bannerLineup() {
+    const today = bannerToday();
+    const usable = BANNER_ITEMS.filter(function (item) {
+        return item && typeof item.url === 'string' && item.url.indexOf('https://') === 0;
+    });
+    const dated = usable.filter(function (item) {
+        if (!isDateWindow(item.start) || !isDateWindow(item.end)) return false;
+        return item.start <= today && today <= item.end;
+    });
+    const evergreen = usable.filter(function (item) {
+        return !isDateWindow(item.start) && !isDateWindow(item.end);
+    });
+    return dated.concat(evergreen);
+}
+
+function applyBannerItem(item) {
+    const banner = document.getElementById('workshopBanner');
+    if (!banner || !item) return;
+
+    const icon = banner.querySelector('.banner-icon');
+    const title = banner.querySelector('.banner-highlight');
+    const subtitle = banner.querySelector('.banner-subtitle');
+    const cta = banner.querySelector('.banner-cta');
+
+    if (title) title.textContent = item.title;
+    if (subtitle) subtitle.textContent = item.subtitle;
+    if (icon) {
+        icon.setAttribute('aria-label', item.label || 'Real Treasury');
+        icon.classList.toggle('banner-logo', item.logo === true);
+        // .banner-logo only paints a background image; .banner-icon still centres
+        // its text content, so leaving "RT" in place renders it OVER the event's
+        // mark. Clear it for a logo entry and restore it for an RT one.
+        icon.textContent = item.logo === true ? '' : 'RT';
+    }
+    if (cta) {
+        // The href is the single source of the destination. Every navigation
+        // path reads it back off the element, so a swap cannot leave the
+        // markup correct and the clicks pointing at the previous event.
+        cta.setAttribute('href', item.url);
+        // Write the label into the anchor's own text node and leave the arrow
+        // <span> alone; replacing innerHTML would drop it.
+        let labelNode = null;
+        for (let i = 0; i < cta.childNodes.length; i++) {
+            if (cta.childNodes[i].nodeType === 3) { labelNode = cta.childNodes[i]; break; }
+        }
+        if (!labelNode) {
+            labelNode = document.createTextNode('');
+            cta.insertBefore(labelNode, cta.firstChild);
+        }
+        labelNode.nodeValue = item.cta + ' ';
+    }
+    banner.dataset.promo = item.key;
+}
+
+function bannerDestination() {
+    const cta = document.querySelector('.banner-cta');
+    const href = cta ? cta.getAttribute('href') : '';
+    return href && href.indexOf('https://') === 0 ? href : '';
+}
+
+// Runs synchronously, before first paint, so no one sees the markup's default
+// promotion replaced a moment later.
+const BANNER_LINEUP = bannerLineup();
+let bannerIndex = 0;
+let bannerTimer = null;
+let bannerSwapTimer = null;
+
+if (BANNER_LINEUP.length) {
+    applyBannerItem(BANNER_LINEUP[0]);
+} else {
+    const emptyBanner = document.getElementById('workshopBanner');
+    if (emptyBanner) emptyBanner.style.display = 'none';
+}
+
+function startBannerRotation() {
+    if (bannerTimer || BANNER_LINEUP.length < 2) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    bannerTimer = setInterval(function () {
+        const banner = document.getElementById('workshopBanner');
+        if (!banner || banner.style.display === 'none') return;
+        banner.classList.add('swapping');
+        bannerSwapTimer = setTimeout(function () {
+            bannerIndex = (bannerIndex + 1) % BANNER_LINEUP.length;
+            applyBannerItem(BANNER_LINEUP[bannerIndex]);
+            banner.classList.remove('swapping');
+            bannerSwapTimer = null;
+        }, 260);
+    }, BANNER_ROTATE_MS);
+}
+
+function stopBannerRotation() {
+    if (bannerTimer) {
+        clearInterval(bannerTimer);
+        bannerTimer = null;
+    }
+    if (bannerSwapTimer) {
+        clearTimeout(bannerSwapTimer);
+        bannerSwapTimer = null;
+        const banner = document.getElementById('workshopBanner');
+        if (banner) banner.classList.remove('swapping');
+    }
+}
 
 // Add banner state management
 function updateBannerState() {
@@ -647,13 +855,8 @@ function expandBanner(event) {
         return;
     }
 
-    window.location.href = LIVE_EVENT_REGISTRATION_URL;
-}
-
-function registerLive(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    window.location.href = LIVE_EVENT_REGISTRATION_URL;
+    const dest = bannerDestination();
+    if (dest) window.location.href = dest;
 }
 
 function isMobileDevice() {
@@ -684,6 +887,19 @@ window.addEventListener('load', function() {
 
     // Make the entire banner clickable to navigate to the workshop
     banner.addEventListener('click', expandBanner);
+
+    // Rotate only when more than one promotion is in window today.
+    startBannerRotation();
+
+    // Hold the current promotion while someone is reading or aiming at it.
+    banner.addEventListener('mouseenter', stopBannerRotation);
+    banner.addEventListener('mouseleave', startBannerRotation);
+    banner.addEventListener('focusin', stopBannerRotation);
+    banner.addEventListener('focusout', function(event) {
+        if (!event.relatedTarget || !banner.contains(event.relatedTarget)) {
+            startBannerRotation();
+        }
+    });
 
     // Expand banner on hover when minimized, collapse on mouse leave
     banner.addEventListener('mouseenter', function() {

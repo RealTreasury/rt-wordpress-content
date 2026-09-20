@@ -212,7 +212,7 @@ window.RTG_CONFIG = {
 
     .rt-gb-showcase .rt-gb-prose { text-align: left; }
     .rt-gb-showcase .rt-gb-prose ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; padding: 0; list-style: none; margin: 24px 0 0; }
-    .rt-gb-showcase .rt-gb-prose li { padding: 12px 0 30px; border-top: 1px solid #bebebe; margin: 0; }
+    .rt-gb-showcase .rt-gb-prose li { padding: 12px 0; border-top: 1px solid #bebebe; margin: 0; }
     .rt-gb-more { padding: 8px 0 72px; }
     .rt-gb-more .rt-gb-prose > h2 { margin-top: 44px; padding-top: 28px; border-top: 1px solid rgba(114, 22, 244, 0.14); }
     .rt-gb-more .rt-gb-prose > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
@@ -269,7 +269,7 @@ window.RTG_CONFIG = {
       <div class="rt-gb-hero-row">
 
         <div class="rt-gb-hero-copy">
-          <span class="rt-gb-badge">North America Edition</span>
+          <span class="rt-gb-badge">2026 Edition</span>
           <h1 id="rt-gb-hero-heading" class="rt-gb-title">The 2026 Real Treasury Tech Selection Guide</h1>
           <p class="rt-gb-subtitle">The practitioner-led guide to evaluating and selecting treasury technology — enter your details and we'll email you the download link.</p>
         </div>
@@ -498,38 +498,38 @@ window.RTG_CONFIG = {
 
   function escHtml(s){ var d=document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
   function escAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  /* consent_text is authored in WP Admin and may carry a privacy-policy link,
-     either as an <a href> or as a bare URL. Render it as authored: only
-     <a href> (http/https) survives as markup, everything else is text, and a
-     bare URL is linked in place, so the label the visitor checks is the same
-     text the submission stores. */
-  function linkifyText(s){
+  // The gate's consent text carries a bare privacy-policy URL. Linkify the raw
+  // text in pieces so both the href attribute and the visible label are escaped.
+  function escHtmlLinkify(s){
     var value=String(s == null ? '' : s), out='', last=0;
     value.replace(/https?:\/\/[^\s<>"']*[^\s<>"'.,:;)]/g, function(u, offset){
       out += escHtml(value.slice(last, offset));
-      out += '<a href="' + escAttr(u) + '" target="_blank" rel="noopener noreferrer">' + escHtml(u) + '</a>';
+      out += '<a href="' + escAttr(u) + '" rel="noopener">' + escHtml(u) + '</a>';
       last = offset + u.length;
       return u;
     });
     return out + escHtml(value.slice(last));
   }
-  function safeConsentHtml(str){
-    var out = '';
-    try {
-      var doc = new DOMParser().parseFromString('<div>' + String(str == null ? '' : str) + '</div>', 'text/html');
-      var root = doc.body && doc.body.firstChild;
-      if (!root) return linkifyText(str);
-      root.childNodes.forEach(function(n){
-        if (n.nodeType === 3) { out += linkifyText(n.nodeValue); return; }
-        if (n.nodeType === 1 && n.tagName === 'A' && /^https?:\/\//i.test(n.getAttribute('href') || '')) {
-          out += '<a href="' + escAttr(n.getAttribute('href')) + '" target="_blank" rel="noopener noreferrer">' + escHtml(n.textContent) + '</a>';
-          return;
-        }
-        if (n.nodeType === 1) { out += escHtml(n.textContent); }
-      });
-      return out;
-    } catch (e) { return linkifyText(str); }
+  // escHtmlLinkify keeps the URL visible, which is right in general and wrong
+  // here: form 2's consent text ends in the full privacy-policy URL, and printed
+  // out it ran the label to three lines. Other gates render the same text as
+  // plain prose and would lose the link entirely if we shortened it at the
+  // source, so shorten it at the point of display instead — hang the link on the
+  // words that are already there, and drop the URL only when they exist.
+  function consentHtml(text){
+    var raw = String(text == null ? '' : text);
+    var m = raw.match(/https?:\/\/[^\s<>"']*[^\s<>"'.,:;)]/);
+    if (!m) return escHtmlLinkify(raw);
+    var url = m[0];
+    var body = raw.replace(url, '').replace(/[\s:]+$/, '');
+    if (!/privacy policy/i.test(body)) return escHtmlLinkify(raw);
+    var out = escHtml(body).replace(/privacy policy/i, function(phrase){
+      return '<a href="' + escAttr(url) + '" rel="noopener">' + phrase + '</a>';
+    });
+    if (!/[.!?]$/.test(body)) { out += '.'; }
+    return out;
   }
+
   function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON ('+res.status+')');} if(!res.ok) throw new Error(j.message||'Request failed ('+res.status+')'); return j;}); }
   function fieldTypeToInputType(t){ return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
   function fieldAutocomplete(f){ if (f.autocomplete === false) return 'off'; if (f.key === 'full_name') return 'name'; if (f.key === 'first_name') return 'given-name'; if (f.key === 'last_name') return 'family-name'; return ({ email:'email', tel:'tel', company:'organization', url:'url' })[f.type] || 'on'; }
@@ -589,7 +589,7 @@ window.RTG_CONFIG = {
       html += '</div>';
     });
     if (consentText) {
-      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + safeConsentHtml(consentText) + '</span></label></div>';
+      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + consentHtml(consentText) + '</span></label></div>';
     }
     html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
     html += '<button type="submit" class="rtg-submit-btn">Send Me the Guide</button>';

@@ -80,9 +80,12 @@ const. A swap that updated only the href looked correct in review and in the
 rendered page, and sent every visitor to the previous event.
 
 That is gone. The destination lives once, in `BANNER_ITEMS`; `applyBannerItem()`
-writes it to the CTA's `href`, and both click paths (`registerLive`, the
-whole-bar `expandBanner`) read it back off the element via `bannerDestination()`.
-The test fails if `LIVE_EVENT_REGISTRATION_URL` ever comes back.
+writes it to the CTA's `href`. The CTA itself is a plain anchor and just follows
+that `href` — no click handler, so modified clicks (middle-click, Cmd/Ctrl) keep
+working. The one click path that needs the destination in JavaScript, the
+whole-bar `expandBanner`, reads it back off the element via `bannerDestination()`.
+The test fails if `LIVE_EVENT_REGISTRATION_URL` ever comes back, and also if a
+`registerLive` handler is reintroduced on the CTA.
 
 ## Deploying it
 

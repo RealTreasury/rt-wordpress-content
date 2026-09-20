@@ -222,6 +222,22 @@ class EndToEnd(unittest.TestCase):
         self.assertEqual(self.run_leg(), 1)
         self.assertEqual(self.published(), [])
 
+    def test_missing_deploy_row_sets_a_hold_and_stops_the_next_run(self):
+        self.run_leg()
+        self.write("wp/deploy.tsv", DEPLOY + "ghost\n")
+        self.write("insights/beta/index.html", "<p>b2</p>")
+        self.commit("bad manifest")
+        self.assertEqual(self.run_leg(), 1)
+        hold = self.state / "deploy-hold.json"
+        self.assertTrue(hold.exists())
+        self.assertIn("ghost", json.loads(hold.read_text())["error"])
+        record = json.loads(
+            (self.state / "deploy.jsonl").read_text().splitlines()[-1])
+        self.assertFalse(record["ok"])
+        self.assertIn("ghost", record["error"])
+        self.assertEqual(self.run_leg(), 0)  # held: it does not refuse again
+        self.assertEqual(self.published(), [])
+
     def test_kill_switch(self):
         self.run_leg()
         (self.state / "hooks-off").write_text("")

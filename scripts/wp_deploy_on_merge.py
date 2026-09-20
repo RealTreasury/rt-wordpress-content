@@ -251,6 +251,20 @@ def _run(checkout: Path, state: Path, auth_git: str, publisher: list[str],
         slugs = affected_slugs(changed, deploy, pages)
     except (OSError, ValueError) as exc:
         log(f"refused: {exc}")
+        if not dry_run:
+            # A bad manifest is a misconfiguration, not a transient error: leave the
+            # same operator-visible artifacts a publish failure leaves, so the cron
+            # leg stops instead of refusing again every ten minutes into the log.
+            record = {"ts": datetime.now(timezone.utc).strftime("%FT%TZ"),
+                      "from": last, "to": new, "changed": len(changed), "slugs": [],
+                      "ok": False, "results": [], "error": f"refused: {exc}",
+                      "github": "skipped"}
+            with (state / "deploy.jsonl").open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(record) + "\n")
+            hold.write_text(
+                json.dumps({**record, "clear": f"rm {hold} to resume"}, indent=2),
+                encoding="utf-8")
+            log(f"hold written: {hold}")
         return 1
 
     log(f"{last[:7]}..{new[:7]}: {len(changed)} changed file(s), "

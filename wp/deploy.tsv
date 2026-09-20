@@ -4,8 +4,12 @@
 #
 # Listing a row here is the decision that a merge to main IS its release. Rows that
 # must stay a deliberate hand step do not belong here:
-#   * guide-waitlist-confirmed, guide-thank-you, guide-download-staging — drafts, and
-#     4587 is a staging draft whose slug 404s.
+#   * guide-thank-you, guide-download-staging — drafts, and 4587 is a staging draft
+#     whose slug 404s.
+#   * guide-waitlist-confirmed — NOT a draft: 4809 was published September 19, 2026
+#     (see wp/pages.tsv and docs/guide-release-runbook.md). It is held off this list
+#     as a hand step; whether it should be added is an open decision, not a fact about
+#     its status.
 #   * how-to-select-a-tms, tms-selection-mistakes — those rows carry STAGING post ids;
 #     writing them to production would overwrite a different post.
 # Only the *-prod rows of those two pages are here.

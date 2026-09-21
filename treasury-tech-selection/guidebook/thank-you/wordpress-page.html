@@ -40,6 +40,13 @@
     .rt-gbty a.rt-gbty-back { display: inline-block; margin-top: 32px; padding: 14px 28px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
     .rt-gbty-back:hover { filter: brightness(1.05); }
 
+    /* Talk-to-us block. Same specificity trap as `.rt-gbty-back` above: the
+       label needs the element qualifier or `.rt-gbty a` wins. */
+    .rt-gbty-talk { margin: 36px 0 0; padding: 28px 0 0; border-top: 1px solid rgba(114,22,244,0.14); }
+    .rt-gbty-talk-heading { font-size: 1.15rem; font-weight: 700; margin: 0 0 8px; color: var(--dark-text); }
+    .rt-gbty a.rt-gbty-call { display: inline-block; margin-top: 16px; padding: 13px 26px; font-weight: 700; color: var(--primary-purple); background: #fff; border: 2px solid var(--primary-purple); border-radius: 12px; text-decoration: none; }
+    .rt-gbty-call:hover { background: rgba(114,22,244,0.06); }
+
     @media (max-width: 480px) {
         .rt-gbty-container { padding: 56px 20px; }
         .rt-gbty-heading { font-size: 1.6rem; }
@@ -53,6 +60,13 @@
     <p class="rt-gbty-text">We've sent the download link for the 2026 Real Treasury Tech Selection Guide to the email address you gave us.</p>
     <p class="rt-gbty-text">Don't see it in a minute or two? Check spam/junk, or search for an email from Real Treasury.</p>
     <p class="rt-gbty-note">Questions in the meantime? Reach out any time at <a href="mailto:contact@realtreasury.com">contact@realtreasury.com</a>.</p>
+
+    <div class="rt-gbty-talk">
+      <p class="rt-gbty-talk-heading">Want to talk it through?</p>
+      <p class="rt-gbty-text">Book 30 minutes with Tracey Knight. No pitch &mdash; we are vendor agnostic and take no commissions, referral fees, or kickbacks from vendors.</p>
+      <a class="rt-gbty-call" href="https://calendly.com/tknight-realtreasury/30min" target="_blank" rel="noopener">Schedule a Call</a>
+    </div>
+
     <a class="rt-gbty-back" href="https://realtreasury.com">Back to Real Treasury</a>
   </div>
 </div>

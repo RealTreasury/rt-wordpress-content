@@ -292,8 +292,15 @@ def _run(checkout: Path, state: Path, auth_git: str, publisher: list[str],
                f"for {last[:7]}..{new[:7]}"
                if ok else f"FAILED on {results[-1]['slug']} (rc={results[-1]['rc']}) "
                f"for {last[:7]}..{new[:7]}; hold set")
-    github = record_deployment(new, ok, summary, github_token()) if (
-        slugs and use_github) else {"github": "skipped"}
+    github = {"github": "skipped"}
+    if slugs and use_github:
+        # Best effort, and it must stay that way: an exception escaping here would
+        # skip the jsonl record and the sha advance below, and the leg would
+        # republish the same range every run with no hold to stop it.
+        try:
+            github = record_deployment(new, ok, summary, github_token())
+        except Exception as exc:  # noqa: BLE001 -- deliberately broad, see above
+            github = {"github": "failed", "error": f"{type(exc).__name__}: {str(exc)[:200]}"}
     record = {"ts": datetime.now(timezone.utc).strftime("%FT%TZ"), "from": last,
               "to": new, "changed": len(changed), "slugs": slugs, "ok": ok,
               "results": results, **github}

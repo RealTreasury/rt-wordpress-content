@@ -273,6 +273,47 @@ class EndToEnd(unittest.TestCase):
         self.assertFalse((self.state / "deployed.sha").exists())
         self.assertEqual(self.published(), [])
 
+    def test_github_recording_records_deployment_then_status(self):
+        calls = []
+
+        def fake_gh(path, payload, token):
+            calls.append(path)
+            return {"id": 42} if path.endswith("/deployments") else {}
+
+        with patch.object(leg, "gh", fake_gh):
+            rec = leg.record_deployment("abc123", True, "published", "tok")
+        self.assertEqual(rec, {"github": "deployment", "id": 42})
+        self.assertEqual([c.rsplit("/", 1)[-1] for c in calls], ["deployments", "statuses"])
+
+    def test_github_recording_falls_back_to_a_commit_comment(self):
+        calls = []
+
+        def fake_gh(path, payload, token):
+            calls.append(path)
+            if path.endswith("/deployments"):
+                raise OSError("403")
+            return {}
+
+        with patch.object(leg, "gh", fake_gh):
+            rec = leg.record_deployment("abc123", False, "failed", "tok")
+        self.assertEqual(rec["github"], "commit_comment")
+        self.assertTrue(calls[-1].endswith("/commits/abc123/comments"))
+
+    def test_unexpected_github_error_still_records_and_advances(self):
+        self.run_leg()
+        self.write("insights/beta/index.html", "<p>b3</p>")
+        new = self.commit("beta")
+        with patch.object(leg, "github_token", return_value="tok"), \
+                patch.object(leg, "record_deployment", side_effect=RuntimeError("boom")):
+            rc = leg.run(self.checkout, self.state, "git", [str(self.publisher)],
+                         False, use_github=True)
+        self.assertEqual(rc, 0)
+        self.assertEqual(self.deployed_sha(), new)
+        rec = json.loads((self.state / "deploy.jsonl").read_text().splitlines()[-1])
+        self.assertTrue(rec["ok"])
+        self.assertEqual(rec["github"], "failed")
+        self.assertIn("RuntimeError", rec["error"])
+
     def test_refuses_off_main_and_dirty_trees(self):
         self.run_leg()
         (self.checkout / "insights/alpha/index.html").write_text("local edit")

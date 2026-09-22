@@ -150,19 +150,25 @@ related disputes land in one forum, and our client paperwork already picked one.
 
 So the website follows the client agreement, not the footer address.
 
-**One thing for a lawyer, not for this repo.** Our own documents disagree about
-what Real Treasury is:
+**Which entity the website belongs to.** There are two, and they are organized
+in different states. Per the Management Services Agreement effective July 1,
+2026:
 
-- the signed operating agreement is a **Texas** multi-member LLC operating
-  agreement for Real Treasury, LLC, and Real Treasury Services, LLC is likewise
-  described as a Texas limited liability company;
-- the executed client consulting agreement signs as "Real Treasury, **a Florida
-  Limited Liability Company**."
+- **Real Treasury, LLC — a Florida limited liability company.** The "Operating
+  Company": it holds the client contracts, earns the revenue, and is the entity
+  behind this website.
+- **Real Treasury Services, LLC — a Texas limited liability company**, S-corp
+  elected. The shared-services and payroll entity that employs the principals.
 
-Both cannot be right. It does not block this branch — the website now matches
-the client agreement either way — but it is worth straightening out, and it is
-not a drafting question. Source documents are in the file-repository SharePoint
-site under `4. Legal/Real Treasury, LLC/`.
+So Florida is right for the website twice over: it is the state of the entity
+that operates it, and it matches the forum in the client consulting agreement.
+
+An earlier revision of this file claimed the two states were a contradiction
+needing legal review. That was wrong — it conflated the two entities and
+anchored on a June 2024 Texas operating agreement for Real Treasury, LLC over
+the July 2026 MSA. The MSA refers to the Operating Company's operating
+agreement "as amended," so a later one supersedes the 2024 document. Nothing
+here needs a lawyer.
 
 ### 3. Verify the consent layer on staging first
 

@@ -94,6 +94,13 @@ class LiveManifest(unittest.TestCase):
                          "header/main-menu/JSsnippet/index.html")
         self.assertNotIn("nav-js-snippet", deploy)
 
+    def test_site_header_waits_for_its_coupled_shared_css_release(self):
+        """The header snippet is coupled to shared.css the same way nav-js is."""
+        pages, deploy = self.live()
+        self.assertEqual(pages["site-header-snippet"],
+                         "header/main-menu/custom-header.php")
+        self.assertNotIn("site-header-snippet", deploy)
+
 
 class EndToEnd(unittest.TestCase):
     def setUp(self):
@@ -233,6 +240,21 @@ class EndToEnd(unittest.TestCase):
         hold.unlink()
         self.assertEqual(self.run_leg(), 0)
         self.assertEqual(self.published(), ["alpha", "alpha", "beta"])
+
+    def test_unlaunchable_publisher_sets_a_hold_and_a_record(self):
+        self.run_leg()
+        before = self.deployed_sha()
+        self.write("insights/beta/index.html", "<p>b2</p>")
+        self.commit("beta")
+        self.publisher.chmod(0o644)
+        self.assertEqual(self.run_leg(), 2)
+        self.assertEqual(self.deployed_sha(), before)
+        hold = self.state / "deploy-hold.json"
+        self.assertTrue(hold.exists())
+        self.assertEqual(json.loads(hold.read_text())["results"][-1]["rc"], 126)
+        record = json.loads(
+            (self.state / "deploy.jsonl").read_text().splitlines()[-1])
+        self.assertFalse(record["ok"])
 
     def test_missing_deploy_row_refuses_before_publishing(self):
         self.run_leg()

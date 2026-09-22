@@ -287,6 +287,10 @@ def _run(checkout: Path, state: Path, auth_git: str, publisher: list[str],
             rc, out, err = res.returncode, res.stdout, res.stderr
         except subprocess.TimeoutExpired:
             rc, out, err = 124, "", f"timed out after {PUBLISH_TIMEOUT}s"
+        except OSError as exc:
+            # The publisher could not be launched at all (missing interpreter, not
+            # executable).  That fails the same way every run, so it takes the hold.
+            rc, out, err = 126, "", f"could not launch publisher: {exc}"
         results.append({"slug": slug, "rc": rc, "tail": (out + err)[-600:]})
         log(f"publish {slug}: rc={rc}")
         if rc != 0:

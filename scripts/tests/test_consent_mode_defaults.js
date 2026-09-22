@@ -59,4 +59,30 @@ for (const [cookie, want] of cases) {
   assert.strictEqual(analyticsDefault(cookie), want, `cookie ${JSON.stringify(cookie)}`);
 }
 
-console.log(`consent mode defaults: ${cases.length} cookie cases OK`);
+// The Cookie Policy and Privacy Policy both promise a preference control on
+// their own page, and the banner script is what makes that control work.
+assert.match(php, /closest\('\[data-rt-cookie-preferences\]'\)/,
+  'the banner script must open the panel for [data-rt-cookie-preferences]');
+const root = path.join(__dirname, '..', '..');
+for (const page of ['cookie-policy/index.html', 'privacy-policy/index.html']) {
+  const html = fs.readFileSync(path.join(root, page), 'utf8');
+  assert.match(html, /data-rt-cookie-preferences/,
+    `${page} promises a cookie preferences control but carries no trigger`);
+}
+
+// The Cookie Policy says embedded video uses the no-cookie player.
+function htmlFiles(dir) {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    const full = path.join(dir, e.name);
+    if (e.isDirectory()) return htmlFiles(full);
+    return /\.(html|ejs)$/.test(e.name) ? [full] : [];
+  });
+}
+const webinarFiles = ['webinars', 'templates'].flatMap((d) => htmlFiles(path.join(root, d)));
+for (const f of webinarFiles) {
+  assert.ok(!/youtube\.com\/embed\//.test(fs.readFileSync(f, 'utf8')),
+    `${path.relative(root, f)} embeds youtube.com/embed/; use youtube-nocookie.com/embed/`);
+}
+
+console.log(`consent mode defaults: ${cases.length} cookie cases OK; ` +
+  `preference triggers present; ${webinarFiles.length} files free of youtube.com/embed`);

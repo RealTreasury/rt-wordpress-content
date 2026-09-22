@@ -115,6 +115,21 @@ erasure notice added in rt-gate PR #90 still names Salesforce, which is correct
 for as long as data remains there. Both can be cleaned up once the migration
 lands.
 
+**Blocker: two more trackers ride in the GTM container.** The published
+`GTM-W877KNJR` container (fetched from `googletagmanager.com/gtm.js` on
+September 22, 2026) carries a LinkedIn Insight Tag (partner id `8608172`,
+posting to `linkedin.com/collect`) and a Custom HTML tag that loads Apollo's
+website tracker (`assets.apollo.io/micro/website-tracker/tracker.iife.js`).
+Neither tag carries a consent requirement in the container, and Consent Mode's
+`analytics_storage` does not stop a Custom HTML tag or the LinkedIn tag, so
+both fire for a visitor who rejects. As written, the policies say we run no
+advertising cookies or networks and name neither LinkedIn nor Apollo as a
+processor — both untrue while these tags fire. This is a Tag Manager decision,
+not a repo change: remove the two tags, or gate them on consent in GTM and add
+LinkedIn and Apollo (and their cookies) to both policies. Do not publish the
+policies until one of the two is done. What each tag actually sets was not
+measured here; take it from the staging browser check below.
+
 These came out of the publish-check pass:
 
 - **GA4 data retention** — confirmed at 14 months (Tim, September 22, 2026,
@@ -175,7 +190,10 @@ here needs a lawyer.
 This changes analytics collection sitewide, so prove it on staging:
 
 1. Load a page with a clean profile. In DevTools → Network, confirm
-   `stats.wp.com` no longer loads and only the Site Kit tags remain.
+   `stats.wp.com` no longer loads and only the Site Kit tags remain. Before
+   any click, `px.ads.linkedin.com` / `linkedin.com/collect` and
+   `assets.apollo.io` must not load unless the policies disclose them (see the
+   GTM blocker in section 2).
 2. In Console, `dataLayer` should carry the `consent default` entry with
    `analytics_storage: "denied"` as its first Google-related push.
 3. Application → Cookies: no `_ga` before you click Accept.

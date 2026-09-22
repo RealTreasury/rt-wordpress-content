@@ -224,6 +224,63 @@ switches this paragraph used to wait on — publish the template, enable the
 automation — were thrown before September 19 and verified that day, so the
 chain is live end to end.
 
+## Counting the funnel in GA4
+
+Checked September 22, 2026 against GA4 property 446224629 (Data API, 30 days): the
+download page had 129 views and 26 `form_start` events, the thank-you page 25
+views, and **zero** `form_submit`, `generate_lead` or `file_download` events for the
+guide. The form is built in JavaScript and submits with `fetch()`, so GA4's
+enhanced-measurement `form_submit` never fires, and the email links straight at
+the PDF, so the download is a file fetch GA never sees. The property already
+treats `generate_lead` and `file_download` as key events and already has the
+event-scoped custom dimensions `form_name` ("Lead Form Name") and `lead_page`
+("Lead Conversion Page"), which the /contact/ form uses. The guide now reuses
+both, so it appears in the same reports.
+
+Three counters, one per step:
+
+| step | where it is counted | GA4 event | how to read it |
+|---|---|---|---|
+| page visited | `/treasury-tech-selection-guide/` | `page_view` | Reports > Engagement > Pages and screens, filter the path |
+| form completed | `/treasury-tech-selection-guide/thank-you/` (4585) | `generate_lead` with `form_name=tech-selection-guide` | Reports > Engagement > Events, or the Key events report; the thank-you page's own `page_view` count is the cross-check |
+| PDF downloaded | `/treasury-tech-selection-guide/download/` (new child page) | `file_download` with `link_url` = the PDF | Events report, `file_download`, dimension `link_url` or `form_name` |
+
+The thank-you page fires `generate_lead` on load because nothing links to it:
+the only way in is the redirect after a successful rt-gate submit. A refresh is
+guarded with `sessionStorage`. Firing from the download page itself would race
+the redirect and would also mean touching 4202, whose live copy is still Tim's
+`content/guide-form-layout` layout rather than main's.
+
+The download page fires `file_download` and then `location.replace()`s to the
+PDF after `event_callback` or 1.5 s, whichever is first, with a visible fallback
+button. The PDF URL is unchanged; old emails still work, they are just not
+counted. Both scripts call `gtag()` so Google Consent Mode governs them, and
+queue on `dataLayer` if gtag.js is not yet on the page.
+
+Steps to turn it on, in order (the rail is read-only from an agent seat; a
+person runs the writes):
+
+1. Create the page (draft), take the ID it prints, put it in `wp/pages.tsv`
+   (`guide-download-file` row), and set it noindex so it stays out of search
+   and the sitemap:
+   `wp post create --post_type=page --post_parent=4202 --post_name=download --post_title='Download the 2026 Tech Selection Guide' --post_status=draft --porcelain`
+   `wp post meta update <ID> _yoast_wpseo_meta-robots-noindex 1`
+2. `scripts/wp_publish_post.py publish guide-thank-you --target production`
+   (live 4585 was identical to main on September 22, so this is additive).
+3. `scripts/wp_publish_post.py publish guide-download-file --target production`,
+   then `wp post update <ID> --post_status=publish` and confirm
+   `https://realtreasury.com/treasury-tech-selection-guide/download/` loads and
+   hands off to the PDF.
+4. In the Resend dashboard, edit `guide-delivery` and point the download button at
+   `https://realtreasury.com/treasury-tech-selection-guide/download/` instead of
+   the `/wp-content/uploads/...pdf` URL, then **Publish**. Do this from the
+   dashboard, not the API: `get-template` returns the published copy, so an API
+   rewrite would silently revert any saved-but-unpublished edit.
+
+Scanners that execute JavaScript (mail-security link checks, sales-tool
+prefetchers) will register as downloads exactly as they already register as
+page views; read `file_download` next to `ga_traffic_quality` the same way.
+
 ## Resend: publish the template, or you ship the old one
 
 Saving a Resend template leaves a **draft**; the automation sends the last

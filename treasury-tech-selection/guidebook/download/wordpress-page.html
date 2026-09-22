@@ -1,0 +1,97 @@
+<!--
+  WordPress-native "your download is starting" page for the 2026 Tech Selection
+  Guide. Child of /treasury-tech-selection-guide/ at /download/. Source of record;
+  published by scripts/wp_publish_post.py (slug guide-download-file in wp/pages.tsv).
+
+  WHY THIS PAGE EXISTS. The delivery email (Resend template "Tech Selection Guide —
+  delivery") used to link straight at the PDF under /wp-content/uploads/. A direct
+  file fetch runs no JavaScript, so Google Analytics never saw a single download.
+  The email now links here instead. This page fires the GA4 `file_download` event
+  (the property already treats file_download as a key event), then sends the
+  browser on to the PDF. A visible fallback link covers blocked scripts.
+
+  The PDF URL itself is unchanged. Anyone who already has the old link still gets
+  the file; they are simply not counted.
+
+  Keep this page noindex (Yoast meta _yoast_wpseo_meta-robots-noindex = 1). It is
+  a redirect stop, not content.
+-->
+<style>
+    .rt-gbdl {
+        background:
+          radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
+          radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
+          linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .rt-gbdl *, .rt-gbdl *::before, .rt-gbdl *::after { box-sizing: border-box; }
+    .rt-gbdl a { color: var(--primary-purple); }
+
+    .rt-gbdl-container { max-width: 640px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+    .rt-gbdl-icon { width: 64px; height: 64px; margin: 0 auto 24px; border-radius: 50%; background: rgba(114,22,244,0.1); display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--primary-purple); }
+    .rt-gbdl-heading { font-size: 2rem; font-weight: 800; margin: 0 0 16px; background: linear-gradient(90deg, #2f1850 0%, #5b0acd 48%, #7216f4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .rt-gbdl-text { font-size: 1.05rem; color: var(--gray-text); margin: 0 0 12px; }
+    .rt-gbdl-note { font-size: 0.9rem; color: var(--gray-text); margin: 24px 0 0; }
+    /* Same specificity trap as the thank-you page: `.rt-gbdl a` is (0,1,1) and beats a
+       bare class, so the button label needs the element qualifier. */
+    .rt-gbdl a.rt-gbdl-btn { display: inline-block; margin-top: 24px; padding: 14px 28px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
+    .rt-gbdl-btn:hover { filter: brightness(1.05); }
+    .rt-gbdl a.rt-gbdl-back { display: inline-block; margin-top: 32px; font-size: 0.95rem; }
+
+    @media (max-width: 480px) {
+        .rt-gbdl-container { padding: 56px 20px; }
+        .rt-gbdl-heading { font-size: 1.6rem; }
+    }
+</style>
+
+<div class="rt-gbdl">
+  <div class="rt-gbdl-container">
+    <div class="rt-gbdl-icon">&#8659;</div>
+    <h1 class="rt-gbdl-heading">Your guide is on its way</h1>
+    <p class="rt-gbdl-text">The 2026 Real Treasury Tech Selection Guide (PDF, about 20&nbsp;MB) should open in a moment.</p>
+    <p class="rt-gbdl-text">If it does not start, use the button below.</p>
+    <a class="rt-gbdl-btn" id="rtGbDlLink" href="https://realtreasury.com/wp-content/uploads/2026/09/2026-Real-Treasury-Tech-Selection-Guide.pdf">Download the Guide (PDF)</a>
+    <p class="rt-gbdl-note">Questions? Reach out any time at <a href="mailto:contact@realtreasury.com">contact@realtreasury.com</a>.</p>
+    <a class="rt-gbdl-back" href="https://realtreasury.com">Back to Real Treasury</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  var PDF = 'https://realtreasury.com/wp-content/uploads/2026/09/2026-Real-Treasury-Tech-Selection-Guide.pdf';
+  var gone = false;
+  function go() { if (gone) { return; } gone = true; window.location.replace(PDF); }
+
+  // GA4 download event, then hand off to the PDF. gtag() so Consent Mode applies; the
+  // command is queued on dataLayer if gtag.js is not on the page yet. Parameters match
+  // the ones GA4's own enhanced-measurement file_download sends, plus the two registered
+  // custom dimensions (form_name, lead_page) so this lines up with the lead reports.
+  try {
+    window.dataLayer = window.dataLayer || [];
+    var send = function () {
+      if (typeof window.gtag === 'function') { window.gtag.apply(null, arguments); }
+      else { window.dataLayer.push(arguments); }
+    };
+    send('event', 'file_download', {
+      file_name: '2026-Real-Treasury-Tech-Selection-Guide.pdf',
+      file_extension: 'pdf',
+      link_url: PDF,
+      link_text: 'Tech Selection Guide (delivery email)',
+      form_name: 'tech-selection-guide',
+      lead_page: '/treasury-tech-selection-guide/download/',
+      event_callback: go
+    });
+  } catch (e) { /* analytics must never block the download */ }
+  // event_callback only runs when gtag.js is loaded and consented; never wait on it.
+  setTimeout(go, 1500);
+})();
+</script>

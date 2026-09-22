@@ -7,6 +7,14 @@
   Reached only by redirect from the download page after a successful
   RT Gate submit. The document link is delivered by the Resend automation,
   never shown here — receiving the email is what verifies the address.
+
+  Analytics: this page fires the GA4 `generate_lead` event (see the script at the
+  end). One load of this page = one completed guide form, because nothing links
+  here; a refresh is guarded with sessionStorage. Parameters use the two
+  event-scoped custom dimensions already registered on the property
+  (form_name -> "Lead Form Name", lead_page -> "Lead Conversion Page"), the same
+  ones the /contact/ form sends, so both leads land in the same GA4 reports.
+  Downloads are counted separately on ../download/wordpress-page.html.
 -->
 <style>
     .rt-gbty {
@@ -70,3 +78,27 @@
     <a class="rt-gbty-back" href="https://realtreasury.com">Back to Real Treasury</a>
   </div>
 </div>
+
+<script>
+(function () {
+  // GA4 completion event. Reached only by redirect after a successful RT Gate
+  // submit on /treasury-tech-selection-guide/, so one load = one completed form.
+  // gtag() is used (not a raw beacon) so Google Consent Mode applies; if gtag.js
+  // is not on the page yet the command is queued on dataLayer, which is what
+  // gtag() itself does.
+  try {
+    var KEY = 'rt_guide_lead_sent';
+    if (window.sessionStorage && sessionStorage.getItem(KEY)) { return; }
+    window.dataLayer = window.dataLayer || [];
+    var send = function () {
+      if (typeof window.gtag === 'function') { window.gtag.apply(null, arguments); }
+      else { window.dataLayer.push(arguments); }
+    };
+    send('event', 'generate_lead', {
+      form_name: 'tech-selection-guide',
+      lead_page: '/treasury-tech-selection-guide/'
+    });
+    if (window.sessionStorage) { sessionStorage.setItem(KEY, '1'); }
+  } catch (e) { /* analytics must never break the page */ }
+})();
+</script>

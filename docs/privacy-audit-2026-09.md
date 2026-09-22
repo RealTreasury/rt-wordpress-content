@@ -97,13 +97,13 @@ through REST or the block editor afterwards without re-checking that the
 
 ### 2. Confirm before the privacy policy goes live
 
-Two things in the draft are asserted rather than verified, because production
-access was not available in the session that wrote it:
+`privacy@realtreasury.com` is confirmed live and monitored (Tim, September 22,
+2026), so the 10-business-day acknowledgement and 30-day response the policy
+commits to in section 6 are addressable. Nothing to change there.
 
-- **Is `privacy@realtreasury.com` a live, monitored mailbox?** The policy
-  promises acknowledgement in 10 business days and a response in 30. If it does
-  not exist or nobody watches it, point it at a mailbox that someone reads
-  before publishing.
+What is still asserted rather than verified, because production access was not
+available in the session that wrote it:
+
 - **Is the Salesforce connector actually configured?** `rt-gate` ships
   `includes/class-salesforce.php`, but whether it is switched on in production
   could not be checked. Salesforce is named as a processor in section 3 of the

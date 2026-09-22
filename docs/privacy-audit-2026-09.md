@@ -121,11 +121,6 @@ claims:
   County courts, chosen because Dallas leads the footer address. A venue clause
   is a legal decision, not a drafting one — confirm it matches where the LLC is
   organized, or replace it.
-- **Multi-factor authentication.** An earlier draft of privacy policy section 7
-  said access to enquiry records is "protected by multi-factor authentication."
-  It was cut because it could not be verified from this session. If MFA is in
-  fact enforced on Microsoft 365, Salesforce and WordPress.com, put the phrase
-  back — it is worth saying.
 - **Cookie inventory.** The cookie policy table is built from what Cloudflare,
   WordPress and GA4 are known to set, not from a live measurement — a plain
   `curl` of the site returned no cookies at all. Walk the table against a real

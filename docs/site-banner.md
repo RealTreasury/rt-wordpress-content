@@ -6,7 +6,12 @@ The fixed bar across the top of every realtreasury.com page. Source of record is
 ## What it does now
 
 The bar runs a **rota**, not a single hardcoded promotion. `BANNER_ITEMS` near the
-top of the page's script holds one entry per promotion:
+top of the page's script holds one entry per promotion.
+
+As of September 22, 2026 the only live entry is the evergreen `guide` (Tech
+Selection Guide), so the bar renders it static. The AFP 2026 Guided Tours entry
+was pulled early and sits commented out in `BANNER_ITEMS`; it is kept below as
+the shape of a dated entry:
 
 ```js
 {
@@ -60,6 +65,16 @@ which is why dated-first ordering matters.
 Retiring a dated promotion is nothing: let the window close. That is true because
 of rule 3 — it stops being true the moment a dated entry is hardcoded into the
 markup.
+
+Pulling a dated promotion **before** its window closes takes two edits, mirroring
+steps 1 and 2:
+
+1. Comment the entry out of `BANNER_ITEMS` (keep it, with a dated note saying why,
+   so it can come back without being retyped).
+2. Remove its URL from `DESTINATIONS` in `scripts/tests/test_banner_destination.js`.
+   To bring it back, uncomment it and add the URL back.
+
+Then `npm run test:banner`.
 
 ### The title budget is 28 characters
 

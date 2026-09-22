@@ -258,6 +258,41 @@ class EndToEnd(unittest.TestCase):
         self.assertEqual(self.run_leg(), 0)  # held: it does not refuse again
         self.assertEqual(self.published(), [])
 
+    def test_deleted_deploy_manifest_sets_a_hold_and_stops_the_next_run(self):
+        self.run_leg()
+        (self.author / "wp/deploy.tsv").unlink()
+        self.commit("drop deploy manifest")
+        self.assertEqual(self.run_leg(), 1)
+        hold = self.state / "deploy-hold.json"
+        self.assertTrue(hold.exists())
+        self.assertIn("deploy.tsv", json.loads(hold.read_text())["error"])
+        record = json.loads(
+            (self.state / "deploy.jsonl").read_text().splitlines()[-1])
+        self.assertFalse(record["ok"])
+        self.assertEqual(self.run_leg(), 0)  # held: it does not refuse again
+        self.assertEqual(self.published(), [])
+
+    def test_force_pushed_main_sets_a_hold(self):
+        self.run_leg()
+        before = self.deployed_sha()
+        self.write("insights/beta/index.html", "<p>rewritten</p>")
+        sh("git", "add", "-A", cwd=self.author, env=self.genv)
+        sh("git", "commit", "-q", "--amend", "-m", "rewritten", cwd=self.author,
+           env=self.genv)
+        sh("git", "push", "-q", "-f", "origin", "HEAD:main", cwd=self.author,
+           env=self.genv)
+        self.assertEqual(self.run_leg(), 1)
+        self.assertTrue((self.state / "deploy-hold.json").exists())
+        self.assertEqual(self.deployed_sha(), before)
+        self.assertEqual(self.published(), [])
+
+    def test_dry_run_first_run_does_not_claim_a_baseline(self):
+        messages = []
+        with patch.object(leg, "log", messages.append):
+            self.assertEqual(self.run_leg(dry_run=True), 0)
+        self.assertFalse((self.state / "deployed.sha").exists())
+        self.assertFalse(any("baseline recorded" in m for m in messages))
+
     def test_kill_switch(self):
         self.run_leg()
         (self.state / "hooks-off").write_text("")

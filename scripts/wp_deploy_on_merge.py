@@ -233,23 +233,28 @@ def _run(checkout: Path, state: Path, auth_git: str, publisher: list[str],
         if not dry_run:
             git(auth_git, checkout, "merge", "-q", "--ff-only", f"origin/{BRANCH}")
             sha_file.write_text(new + "\n", encoding="utf-8")
-        log(f"baseline recorded at {new[:7]}; nothing published on a first run")
+            log(f"baseline recorded at {new[:7]}; nothing published on a first run")
+        else:
+            log(f"no baseline yet; the next run records {new[:7]} and publishes nothing")
         return 0
     if new == last:
         return 0
-    if not dry_run:
-        git(auth_git, checkout, "merge", "-q", "--ff-only", f"origin/{BRANCH}")
-
-    changed = [c for c in git(auth_git, checkout, "diff", "--name-only",
-                              last, new).splitlines() if c]
+    changed = []
     try:
+        # A failed fast-forward (main force-pushed), an unreachable `last`, or a
+        # manifest missing from `new` will fail the same way every run, so they
+        # take the same hold path as a bad manifest below.
+        if not dry_run:
+            git(auth_git, checkout, "merge", "-q", "--ff-only", f"origin/{BRANCH}")
+        changed = [c for c in git(auth_git, checkout, "diff", "--name-only",
+                                  last, new).splitlines() if c]
         # `new` is the tree a real run will fast-forward to.  Read its manifests
         # explicitly so --dry-run reports exactly the same mapping without
         # moving the dedicated checkout first.
         pages = parse_pages(git(auth_git, checkout, "show", f"{new}:wp/pages.tsv"))
         deploy = parse_deploy(git(auth_git, checkout, "show", f"{new}:wp/deploy.tsv"))
         slugs = affected_slugs(changed, deploy, pages)
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, RuntimeError) as exc:
         log(f"refused: {exc}")
         if not dry_run:
             # A bad manifest is a misconfiguration, not a transient error: leave the

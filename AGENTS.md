@@ -52,8 +52,11 @@ here, treat that as a bug and fix it.
 
 ## Publishing to WordPress
 
-- **Native pages deploy on merge.** For the rows in `wp/deploy.tsv`, merging to
-  `main` is the release: a box-side cron leg (`scripts/wp_deploy_on_merge.py`)
+- **Native pages deploy on merge, once the cron line is installed.** Nothing in
+  this repo schedules the leg; the cron line lives in rt-ai's
+  `config/crontab.expected`, and until that change lands merging publishes
+  nothing. Once it is installed, merging to `main` is the release for the rows in
+  `wp/deploy.tsv`: a box-side cron leg (`scripts/wp_deploy_on_merge.py`)
   runs `scripts/wp_publish_post.py publish --target production <slug>` for each
   row whose source changed, then records a GitHub Deployment on the merged sha.
   Rows not listed there (drafts, staging-id rows, and pages coupled to the

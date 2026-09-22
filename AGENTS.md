@@ -58,8 +58,10 @@ here, treat that as a bug and fix it.
   `wp/deploy.tsv`: a box-side cron leg (`scripts/wp_deploy_on_merge.py`)
   runs `scripts/wp_publish_post.py publish --target production <slug>` for each
   row whose source changed, then records a GitHub Deployment on the merged sha.
-  Rows not listed there (drafts, staging-id rows, and pages coupled to the
-  separately guarded shared-CSS rail) still publish only by hand.
+  Rows not listed there (drafts, staging-id rows, pages coupled to the
+  separately guarded shared-CSS rail, and `guide-waitlist-confirmed`, which is
+  published but held as a hand step pending a decision) still publish only by
+  hand; the `wp/deploy.tsv` header gives the reason for each.
   See `docs/deploy-on-merge.md` for the state files, the hold, and the kill switch.
 - `scripts/wp_deploy_on_merge.py --dry-run` says what the next run would publish.
 - Test: `npm run test:deploy-on-merge` (offline; also in CI).

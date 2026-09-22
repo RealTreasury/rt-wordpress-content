@@ -11,7 +11,7 @@ PR #909 sat fixed-but-unpublished for weeks because nobody ran it.
 
 Nothing in this repo schedules the script. The cron line lives in rt-ai's
 `config/crontab.expected` (line 291 at rt-ai `c6482ad`); rt-ai #767, merged
-September 2026, added it and the box's deploy leg installed it, so it is live on
+September 19, 2026, added it and the box's deploy leg installed it, so it is live on
 rt-ai-02 today. Until this PR merges, the wrapper finds no leg in the clone and
 publishes nothing; once it merges, the line runs the script every 10 minutes as `tschultz` on rt-ai-02, against a dedicated
 clone at `/srv/ai-data/wp-deploy/rt-wordpress-content`. Nobody edits in that clone.

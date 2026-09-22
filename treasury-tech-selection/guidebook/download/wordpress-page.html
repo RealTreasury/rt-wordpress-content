@@ -75,6 +75,8 @@
   // command is queued on dataLayer if gtag.js is not on the page yet. Parameters match
   // the ones GA4's own enhanced-measurement file_download sends, plus the two registered
   // custom dimensions (form_name, lead_page) so this lines up with the lead reports.
+  // lead_page is the guide's form page, the same value the thank-you page's
+  // generate_lead sends, so a lead_page filter keeps the whole guide funnel together.
   try {
     window.dataLayer = window.dataLayer || [];
     var send = function () {
@@ -87,11 +89,13 @@
       link_url: PDF,
       link_text: 'Tech Selection Guide (delivery email)',
       form_name: 'tech-selection-guide',
-      lead_page: '/treasury-tech-selection-guide/download/',
+      lead_page: '/treasury-tech-selection-guide/',
       event_callback: go
     });
   } catch (e) { /* analytics must never block the download */ }
   // event_callback only runs when gtag.js is loaded and consented; never wait on it.
+  // If gtag.js has not loaded within 1.5 s the queued event is lost with the page,
+  // so file_download undercounts on slow connections (see the runbook).
   setTimeout(go, 1500);
 })();
 </script>

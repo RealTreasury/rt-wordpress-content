@@ -22,6 +22,7 @@ jobs:
       - run: npm run test:iframe-height
       - run: npm run test:banner
       - run: npm run test:guide-consent
+      - run: npm run test:guide-ga
       - run: npm run test:publish-css
       - run: npm run test:publish-post
       - run: npm run test:carousel

@@ -24,10 +24,10 @@
 #     step proves more directly.
 #
 # Those two exclusions are also what lets this run in a bare `git worktree add`
-# with no `npm install`, which is exactly what the repair arm hands it: the six
+# with no `npm install`, which is exactly what the repair arm hands it: the seven
 # checks below are plain node/python/bash and need no packages, while build,
 # test:ejs and test:build-clean all do. Verified on a fresh worktree with no
-# node_modules present: 6 passed, exit 0. Keep that true when adding a check.
+# node_modules present: 7 passed, exit 0. Keep that true when adding a check.
 #
 # Usage:  bash scripts/run_checks.sh
 set -euo pipefail
@@ -41,6 +41,7 @@ CHECKS=(
   test:css-prune
   test:publish-post
   test:publish-css
+  test:guide-ga
 )
 
 if [ "${RUN_CHECKS_BUILD_CLEAN:-0}" = "1" ]; then

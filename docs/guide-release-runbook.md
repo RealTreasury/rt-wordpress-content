@@ -23,7 +23,7 @@ per-step notes below carry the evidence.
 |---|---|---|
 | Download page (gated form) | WP **4202** `/treasury-tech-selection-guide/` | **published, and it is now the download page** — `plan guide-download` reads back 1035 words identical to the repo source |
 | Download page content | WP **4587** draft, slug `…-guide-download` | draft, and **no longer matches the repo** — 242 changed lines against the source, because 4202 moved on and this staging copy did not |
-| Guide thank-you | WP **4585** `/treasury-tech-selection-guide/thank-you/` | draft; it matched the pre-PR source on September 19, so publish this branch's source before changing the page status |
+| Guide thank-you | WP **4585** `/treasury-tech-selection-guide/thank-you/` | **published** by September 22, 2026: the URL returns 200 to an anonymous `curl` (a draft returns 404). It was a draft on September 19; the callout below records that state |
 | Waitlist signup | WP post **4211** `/2026-treasury-tech-guide-waitlist/` | published (GitHub Pages iframe) |
 | Waitlist confirmation | WP **4809** `/2026-treasury-tech-guide-waitlist-confirmed/` | **published**, matches the repo |
 
@@ -229,7 +229,8 @@ chain is live end to end.
 Checked September 22, 2026 against GA4 property 446224629 (Data API, 30 days): the
 download page had 129 views and 26 `form_start` events, the thank-you page 25
 views, and **zero** `form_submit`, `generate_lead` or `file_download` events for the
-guide. The form is built in JavaScript and submits with `fetch()`, so GA4's
+guide. The 25 thank-you views are real page loads, not 404s: 4585 returned 200 on
+September 22. The form is built in JavaScript and submits with `fetch()`, so GA4's
 enhanced-measurement `form_submit` never fires, and the email links straight at
 the PDF, so the download is a file fetch GA never sees. The property already
 treats `generate_lead` and `file_download` as key events and already has the
@@ -246,15 +247,19 @@ Three counters, one per step:
 | PDF downloaded | `/treasury-tech-selection-guide/download/` (new child page) | `file_download` with `link_url` = the PDF | Events report, `file_download`, dimension `link_url` or `form_name` |
 
 The thank-you page fires `generate_lead` on load because nothing links to it:
-the only way in is the redirect after a successful rt-gate submit. A refresh is
-guarded with `sessionStorage`. Firing from the download page itself would race
+the only way in is the redirect after a successful rt-gate submit. A reload or a
+back/forward visit is skipped using the browser's navigation type
+(`performance.getEntriesByType('navigation')`), so a refresh does not count twice
+but a second real submit in the same tab does. Nothing is written to storage. Firing from the download page itself would race
 the redirect and would also mean touching 4202, whose live copy is still Tim's
 `content/guide-form-layout` layout rather than main's.
 
 The download page fires `file_download` and then `location.replace()`s to the
 PDF after `event_callback` or 1.5 s, whichever is first, with a visible fallback
 button. The PDF URL is unchanged; old emails still work, they are just not
-counted. Both scripts call `gtag()` so Google Consent Mode governs them, and
+counted. `file_download` carries `lead_page=/treasury-tech-selection-guide/`, the
+same value as the thank-you page's `generate_lead`, so a `lead_page` filter keeps
+the whole guide funnel together; tell the two steps apart by event name. Both scripts call `gtag()` so Google Consent Mode governs them, and
 queue on `dataLayer` if gtag.js is not yet on the page.
 
 Steps to turn it on, in order (the rail is read-only from an agent seat; a
@@ -266,7 +271,10 @@ person runs the writes):
    `wp post create --post_type=page --post_parent=4202 --post_name=download --post_title='Download the 2026 Tech Selection Guide' --post_status=draft --porcelain`
    `wp post meta update <ID> _yoast_wpseo_meta-robots-noindex 1`
 2. `scripts/wp_publish_post.py publish guide-thank-you --target production`
-   (live 4585 was identical to main on September 22, so this is additive).
+   (live 4585 was identical to main on September 22, so this is additive). This
+   writes content only, never `post_status`: confirm `plan guide-thank-you`
+   reports `publish`. If it reports `draft`, run
+   `wp post update 4585 --post_status=publish`, or `generate_lead` never fires.
 3. `scripts/wp_publish_post.py publish guide-download-file --target production`,
    then `wp post update <ID> --post_status=publish` and confirm
    `https://realtreasury.com/treasury-tech-selection-guide/download/` loads and
@@ -280,6 +288,11 @@ person runs the writes):
 Scanners that execute JavaScript (mail-security link checks, sales-tool
 prefetchers) will register as downloads exactly as they already register as
 page views; read `file_download` next to `ga_traffic_quality` the same way.
+The error runs the other way too: the download page redirects after 1.5 s whether
+or not gtag.js has loaded, and a `file_download` still queued on `dataLayer` is
+lost when the page unloads. On a slow connection or with a late-loading tag the
+download is not counted, with no sign of it. Treat `file_download` as a floor for
+real readers and a ceiling once scanners are included; it is not an exact count.
 
 ## Resend: publish the template, or you ship the old one
 

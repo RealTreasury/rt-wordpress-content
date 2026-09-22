@@ -30,7 +30,6 @@ const html = fs.readFileSync(FILE, 'utf8');
 
 // The promotions this banner is currently allowed to run.
 const DESTINATIONS = [
-  'https://realtreasury.com/afp-2026-tms-tour/',
   'https://realtreasury.com/treasury-tech-selection-guide/',
 ];
 

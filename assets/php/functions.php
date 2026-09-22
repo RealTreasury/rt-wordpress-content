@@ -240,6 +240,11 @@ if ( ! defined( 'RT_CONSENT_COOKIE' ) ) {
 /**
  * Current analytics consent, read from the first-party cookie.
  *
+ * Never use this to vary page OUTPUT. WordPress.com and Cloudflare cache
+ * whole pages for anonymous visitors, so HTML rendered from one visitor's
+ * cookie is served to the next. The consent default below is computed in
+ * the browser for exactly that reason.
+ *
  * @return bool True only when the visitor has actively granted analytics.
  */
 function rt_has_analytics_consent() {
@@ -252,17 +257,24 @@ function rt_has_analytics_consent() {
 
 add_action( 'wp_head', 'rt_consent_mode_defaults', 1 );
 function rt_consent_mode_defaults() {
-    $analytics = rt_has_analytics_consent() ? 'granted' : 'denied';
+    // The stored choice is read HERE, in the browser, not in PHP. This block
+    // is part of cached page HTML: rendering 'granted' from the request's
+    // cookie would hand an accepter's consent to a visitor who rejected, on
+    // whatever page the cache happened to store. Output is identical for every
+    // visitor; each browser supplies its own cookie.
     ?>
     <script id="rt-consent-defaults">
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    var rtConsentStored = document.cookie.match(
+        new RegExp('(?:^|;\\s*)' + <?php echo wp_json_encode( RT_CONSENT_COOKIE ); ?> + '=([^;]*)')
+    );
     gtag('consent', 'default', {
         'ad_storage':              'denied',
         'ad_user_data':            'denied',
         'ad_personalization':      'denied',
         'personalization_storage': 'denied',
-        'analytics_storage':       <?php echo wp_json_encode( $analytics ); ?>,
+        'analytics_storage':       (rtConsentStored && rtConsentStored[1] === 'analytics') ? 'granted' : 'denied',
         'functionality_storage':   'granted',
         'security_storage':        'granted',
         'wait_for_update':         500
@@ -382,7 +394,7 @@ function rt_consent_banner() {
                 '<div class="banner-content">' +
                     '<div class="banner-text">' +
                         '<strong>We use analytics cookies</strong> ' +
-                        'They tell us which pages people read. Nothing loads until you choose. ' +
+                        'They tell us which pages people read. None is set until you choose. ' +
                         'See our <a href="/cookie-policy/" style="color:#c77dff">Cookie Policy</a>.' +
                     '</div>' +
                     '<div class="banner-buttons">' +

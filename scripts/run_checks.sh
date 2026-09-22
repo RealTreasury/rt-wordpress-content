@@ -41,6 +41,7 @@ CHECKS=(
   test:css-prune
   test:publish-post
   test:publish-css
+  test:consent-mode
 )
 
 if [ "${RUN_CHECKS_BUILD_CLEAN:-0}" = "1" ]; then

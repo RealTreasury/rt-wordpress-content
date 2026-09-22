@@ -180,7 +180,8 @@ This changes analytics collection sitewide, so prove it on staging:
    `analytics_storage: "denied"` as its first Google-related push.
 3. Application → Cookies: no `_ga` before you click Accept.
 4. Click Accept. `rt_consent=analytics` is set, `_ga` appears.
-5. Reload, open Preferences from the footer Cookie Policy link, untick
+5. Reload, open the Cookie Policy page and use its Manage cookie preferences button
+   (no footer trigger exists; the banner's Preferences button only shows before a choice), untick
    Analytics, save. `_ga` is cleared and does not come back on reload.
 6. Confirm the WP Admin Jetpack Stats dashboard going quiet is acceptable — the
    `stats` module is now off. One line in `rt_disable_jetpack_trackers()` puts

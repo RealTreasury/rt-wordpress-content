@@ -115,16 +115,17 @@ erasure notice added in rt-gate PR #90 still names Salesforce, which is correct
 for as long as data remains there. Both can be cleaned up once the migration
 lands.
 
-These came out of the publish-check pass and are the remaining unevidenced
-claims:
+These came out of the publish-check pass:
 
-- **GA4 data retention.** Section 5 states 14 months. Confirm the setting on the
-  property (Admin → Data Settings → Data Retention) and correct the number if it
-  is not 14 months.
-- **Governing law.** Terms of service section 9 names Texas law and Dallas
-  County courts, chosen because Dallas leads the footer address. A venue clause
-  is a legal decision, not a drafting one — confirm it matches where the LLC is
-  organized, or replace it.
+- **GA4 data retention** — confirmed at 14 months (Tim, September 22, 2026,
+  from recollection of setting it; GA4 offers only 2 or 14 months, so there is
+  no third reading). Section 5 stands. Worth a glance at Admin → Data Settings
+  → Data Retention next time someone is in the property, but not a blocker.
+- **Governing law** — resolved to **Florida, Hillsborough County**. The first
+  draft said Texas / Dallas County, chosen only because Dallas leads the footer
+  address. Our executed client consulting agreement governs by Florida law with
+  exclusive venue in Hillsborough County, and terms of service section 9 now
+  matches it. Rationale below.
 - **Cookie inventory.** The cookie policy table is built from what Cloudflare,
   WordPress and GA4 are known to set, not from a live measurement — a plain
   `curl` of the site returned no cookies at all. Walk the table against a real
@@ -134,6 +135,34 @@ One accuracy fix landed in the same pass: `webinars/err-not-demo-script/`
 built its player URL on `youtube.com/embed/`, which sets cookies on load, while
 the cookie policy says we use the no-cookie player. It now builds
 `youtube-nocookie.com/embed/`, matching `webinars/prompt-to-product/`.
+
+### 2b. Why the terms of service say Florida
+
+Not a preference between two fine options. The point of a venue clause is that
+related disputes land in one forum, and our client paperwork already picked one.
+
+- Our executed client consulting agreement is **governed by Florida law with
+  exclusive venue in Hillsborough County, Florida**.
+- A website terms of service pointing at Dallas County, Texas would have split
+  the forum. Someone who downloads the guide under these terms and later signs
+  an engagement would be covered by two clauses naming two states — which is
+  the one scenario where a venue clause on a brochure site matters at all.
+
+So the website follows the client agreement, not the footer address.
+
+**One thing for a lawyer, not for this repo.** Our own documents disagree about
+what Real Treasury is:
+
+- the signed operating agreement is a **Texas** multi-member LLC operating
+  agreement for Real Treasury, LLC, and Real Treasury Services, LLC is likewise
+  described as a Texas limited liability company;
+- the executed client consulting agreement signs as "Real Treasury, **a Florida
+  Limited Liability Company**."
+
+Both cannot be right. It does not block this branch — the website now matches
+the client agreement either way — but it is worth straightening out, and it is
+not a drafting question. Source documents are in the file-repository SharePoint
+site under `4. Legal/Real Treasury, LLC/`.
 
 ### 3. Verify the consent layer on staging first
 

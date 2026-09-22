@@ -49,8 +49,8 @@ is ever moved to shared.css it needs a second publish via
 ## What changed in copy
 
 - `privacy-policy/index.html` — rewritten. Names every processor
-  (Automattic/Jetpack, **Akismet**, Cloudflare, Google, Resend, Microsoft 365,
-  Salesforce), drops the invented user accounts / passwords / payment
+  (Automattic/Jetpack, **Akismet**, Cloudflare, Google, Resend, Microsoft 365),
+  drops the invented user accounts / passwords / payment
   processing, gives real retention periods, adds a CCPA/CPRA section, and states
   the security posture honestly instead of claiming certifications we do not
   hold.
@@ -101,15 +101,19 @@ through REST or the block editor afterwards without re-checking that the
 2026), so the 10-business-day acknowledgement and 30-day response the policy
 commits to in section 6 are addressable. Nothing to change there.
 
-What is still asserted rather than verified, because production access was not
-available in the session that wrote it:
+Salesforce was briefly named as a processor in section 3, on the assumption the
+`rt-gate` connector was live. Tim confirmed on September 22, 2026 that we are
+retiring Salesforce, so the row is out and the policy no longer names it.
 
-- **Is the Salesforce connector actually configured?** `rt-gate` ships
-  `includes/class-salesforce.php`, but whether it is switched on in production
-  could not be checked. Salesforce is named as a processor in section 3 of the
-  privacy policy on the assumption that it is. If it is not live, strike that
-  row — a policy that names a processor we do not use is as wrong as one that
-  omits a processor we do.
+One thing to watch on timing. The policy now tells readers that Salesforce is
+not among our processors. If contact records are still sitting in Salesforce
+when the policy publishes, the document is ahead of reality in the wrong
+direction — under-disclosure, which is the worse way to be wrong. Either finish
+the wind-down and delete the data before publishing, or put the row back until
+it is done. `includes/class-salesforce.php` still ships in `rt-gate`, and the
+erasure notice added in rt-gate PR #90 still names Salesforce, which is correct
+for as long as data remains there. Both can be cleaned up once the migration
+lands.
 
 These came out of the publish-check pass and are the remaining unevidenced
 claims:

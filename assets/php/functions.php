@@ -318,7 +318,15 @@ function rt_consent_banner() {
             var match = document.cookie.match(
                 new RegExp('(?:^|;\\s*)' + COOKIE + '=([^;]*)')
             );
-            return match ? decodeURIComponent(match[1]) : null;
+            if (!match) { return null; }
+            // A malformed escape (e.g. a hand-edited cookie) would throw here
+            // and stop init() before the preferences trigger is wired. Treat it
+            // as no choice stored: the banner shows and the default stays denied.
+            try {
+                return decodeURIComponent(match[1]);
+            } catch (e) {
+                return null;
+            }
         }
 
         function writeConsent(value) {
@@ -460,9 +468,8 @@ function rt_consent_banner() {
         window.rtOpenCookiePreferences = openPanel;
 
         function init() {
-            if (!readConsent()) {
-                showBanner();
-            }
+            // Wire the preferences trigger first, so nothing in the banner
+            // path can leave the Cookie Policy's control dead.
             document.addEventListener('click', function (e) {
                 var trigger = e.target.closest && e.target.closest('[data-rt-cookie-preferences]');
                 if (trigger) {
@@ -470,6 +477,9 @@ function rt_consent_banner() {
                     openPanel();
                 }
             });
+            if (!readConsent()) {
+                showBanner();
+            }
         }
 
         if (document.readyState === 'loading') {

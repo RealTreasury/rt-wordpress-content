@@ -187,6 +187,17 @@ function runBanner(initialCookies) {
   assert.ok(!b.jar.has('_ga'), '_ga must be cleared when consent is withdrawn in the panel');
   assert.strictEqual(panel.hidden, true, 'panel must close after saving');
 }
+{ // Malformed rt_consent: must not throw; banner shows and the trigger still works.
+  const b = runBanner({ rt_consent: '%E0%A4%A' });
+  assert.ok(b.byId.get('cookieBanner'), 'banner must show when the stored choice cannot be decoded');
+  assert.strictEqual(b.docListeners.length, 1, 'preferences trigger must be wired despite a malformed cookie');
+  const trigger = {};
+  b.docListeners.forEach((fn) => fn({ preventDefault() {},
+    target: { closest: (sel) => (sel === '[data-rt-cookie-preferences]' ? trigger : null) } }));
+  const panel = b.byId.get('rtConsentPanel');
+  assert.ok(panel && panel.hidden === false, 'preferences trigger must open the panel');
+  assert.strictEqual(b.byId.get('rtConsentAnalytics').checked, false, 'undecodable choice must read as not granted');
+}
 
 console.log(`consent mode defaults: ${cases.length} cookie cases OK; ` +
   `banner accept/reject/revoke OK; preference triggers present; ${webinarFiles.length} files free of youtube.com/embed`);

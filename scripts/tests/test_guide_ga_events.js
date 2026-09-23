@@ -10,10 +10,12 @@ const path = require('path');
 const vm = require('vm');
 
 const root = path.join(__dirname, '..', '..', 'treasury-tech-selection', 'guidebook');
-// URL of record: media attachment 4821, the value RT Gate asset #12's target_url and
-// the Resend guide-delivery template carry (docs/guide-release-runbook.md, step 3).
-// Not read from the page, so a wrong redirect target fails here.
-const PDF = 'https://realtreasury.com/wp-content/uploads/2026/09/Real-Treasury-Technology-Selection-Guide-North-America-2026-3e2603e8f094.pdf';
+// URL of record: the guide's stable download name (docs/guide-release-runbook.md,
+// "The PDF URL of record"). Cloudflare 302s it to the current edition's file, the one
+// the published Resend guide-delivery template links to. Not read from the page, so a
+// wrong redirect target fails here. The 4821 URL (…-3e2603e8f094.pdf) 404s since
+// September 23, 2026, so a hashed upload name must never come back.
+const PDF = 'https://realtreasury.com/wp-content/uploads/2026/09/2026-Real-Treasury-Tech-Selection-Guide.pdf';
 const LEAD_PAGE = '/treasury-tech-selection-guide/';
 
 function scriptOf(rel) {
@@ -99,6 +101,9 @@ const download = scriptOf(path.join('download', 'wordpress-page.html'));
   const btn = html.match(/id="rtGbDlLink" href="([^"]+)"/);
   assert.ok(btn, 'download: fallback button present');
   assert.strictEqual(btn[1], PDF, 'download: fallback button links to the uploaded release PDF');
+  const uploads = [...html.matchAll(/https:\/\/realtreasury\.com\/wp-content\/uploads\/[^'"\s<]+\.pdf/g)].map((m) => m[0]);
+  assert.ok(uploads.length >= 2, 'download: PDF appears in the script and the button');
+  uploads.forEach((u) => assert.strictEqual(u, PDF, `download: only the stable PDF name appears on the page, found ${u}`));
 }
 
 {

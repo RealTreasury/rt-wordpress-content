@@ -164,6 +164,21 @@ final redirect, which 404s until 4585 is published. No email arrives until step 
    no page, and serves 200 `application/pdf`:
    `https://realtreasury.com/wp-content/uploads/2026/09/Real-Treasury-Technology-Selection-Guide-North-America-2026-3e2603e8f094.pdf`
    Email verification is the gate; the file itself is public and that is intended.
+   **Superseded; this URL returns 404 since September 23, 2026.** See "The PDF URL
+   of record" below.
+
+   **The PDF URL of record (September 23, 2026).** Link to the stable name
+   `https://realtreasury.com/wp-content/uploads/2026/09/2026-Real-Treasury-Tech-Selection-Guide.pdf`,
+   never to a hashed upload name. A Cloudflare redirect rule 302s it to the current
+   edition's file, today
+   `https://realtreasury.com/wp-content/uploads/2026/09/2026-Real-Treasury-Tech-Selection-Guide-20260923.pdf`
+   (200, `application/pdf`, 14,755,690 bytes), which is what the published Resend
+   `guide-delivery` template links to (published September 23, 12:45 UTC). It is a
+   302 so a later edition can repoint it without touching the download page. The
+   September 17 files have moved on: the 4821 URL above returns 404, and the 4828
+   file (`…-a16b248f6bbc.pdf`) still returns 200 but nothing links to it. RT Gate
+   asset #12's `target_url` was not re-read on September 23; the download form
+   ignores `primary_redirect_url`, so it does not decide what a reader gets.
 4. ~~**Set RT Gate asset #12's `target_url`**~~ **DONE September 17, 2026.** Asset #12
    (`treasury-tech-selection-guidebook`, mapping #8) now carries the URL above;
    written with a read-back check, previous value backed up. Mapping #8's
@@ -260,8 +275,9 @@ the redirect and would also mean touching 4202, whose live copy is still Tim's
 
 The download page fires `file_download` and then `location.replace()`s to the
 PDF after `event_callback` or 1.5 s, whichever is first, with a visible fallback
-button. The PDF URL is unchanged; old emails still work, they are just not
-counted. `file_download` carries `lead_page=/treasury-tech-selection-guide/`, the
+button. It redirects to the stable PDF name (see "The PDF URL of record"),
+which delivery emails sent before September 23 already carry, so the page
+publishes no hidden filename. Old emails still work; they are just not counted. `file_download` carries `lead_page=/treasury-tech-selection-guide/`, the
 same value as the thank-you page's `generate_lead`, so a `lead_page` filter keeps
 the whole guide funnel together; tell the two steps apart by event name. Both scripts call `gtag()` so Google Consent Mode governs them, and
 queue on `dataLayer` if gtag.js is not yet on the page.

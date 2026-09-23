@@ -68,6 +68,13 @@ is ever moved to shared.css it needs a second publish via
 
 ## Left for a person
 
+**Order matters. The GTM consent settings in section 2 come first**, before
+`assets/php/functions.php` is deployed and before any of the three pages
+publish. The banner and panel that `functions.php` ships tell visitors the
+LinkedIn Insight Tag and Apollo's tracker stay off until they choose. That is
+true only once the published container gates both tags, and nothing in this
+repo can gate them.
+
 ### 1. Publish the three pages
 
 Add these rows to `wp/pages.tsv` and run the rail. They are not committed on
@@ -131,8 +138,8 @@ processor — both untrue while these tags fire.
 banner in this PR now disclose both tags as "analytics and marketing", on the one
 optional consent the banner offers. The banner grants only `analytics_storage`
 (`ad_storage` stays denied), so the GTM gate must key on `analytics_storage`; a gate
-on `ad_storage` would never fire. **Owner step in GTM, before these policies
-publish:** for each of the two tags, Advanced Settings → Consent Settings →
+on `ad_storage` would never fire. **Owner step in GTM, before `functions.php` is
+deployed or these policies publish:** for each of the two tags, Advanced Settings → Consent Settings →
 "Require additional consent for tag to fire" → `analytics_storage`, then Submit
 and publish the container. Until that is published the tags still fire for a
 visitor who rejects, and the new copy is untrue. Cookie names are linked to

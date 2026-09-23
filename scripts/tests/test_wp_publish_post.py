@@ -429,6 +429,13 @@ if block:
         check("the privacy audit's pages.tsv rows parse", False)
     wpp.MANIFEST = saved
 
+# The legal pages are wrapper-less page-mode sources: extract() takes the whole file as the
+# body, so any head tag in them would land in post_content. WordPress/Yoast owns metadata.
+for legal in ("privacy-policy", "cookie-policy", "terms-of-service"):
+    rendered = wpp.page_to_block.render((ROOT / legal / "index.html").read_text(encoding="utf-8"), legal)
+    check(f"{legal} renders without head tags in post content",
+          not re.search(r"<(title|meta|link|head|html|body)\b", rendered, re.I))
+
 # --- 14 the identity guard ------------------------------------------------------------------------------
 # Post ids are per site. Production 1519 is the live /2024-tms-selection-guide/ post while
 # staging 1519 is how-to-select-a-tms; writing by id alone would replace a published page,

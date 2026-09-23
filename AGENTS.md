@@ -156,14 +156,19 @@ Analytics consent is Google Consent Mode v2, implemented in
   `window.rtOpenCookiePreferences()`.
 
 Do not add a tag, pixel or embed that sets cookies without routing it through
-this. If it cannot respect Consent Mode, it does not go on the site.
+this. If it cannot respect Consent Mode, it does not go on the site. Tags in
+the GTM container (`GTM-W877KNJR`) are outside this repo: the banner's promise
+holds only if each one requires `analytics_storage` in GTM's consent settings
+(see `docs/privacy-audit-2026-09.md`).
 
 ## Legal pages
 
 `privacy-policy/`, `cookie-policy/` and `terms-of-service/` are `page`-mode
 sources for native WordPress pages 167, 360 and 358. They are content
-fragments — scoped `<style>` plus body, no `<html>`/`<body>` wrapper — like the
-converted insights pages.
+fragments — a `<style>` block plus body markup, with no `<html>`/`<head>`/`<body>`
+wrapper and no head tags. Page mode takes a wrapper-less file whole, so a
+`<title>` or `<meta>` here would land in post content; WordPress/Yoast owns
+metadata. `scripts/tests/test_wp_publish_post.py` checks this.
 
 They describe what the site actually does, so a change to forms, embeds,
 analytics or any third-party service means a matching change here. Both are

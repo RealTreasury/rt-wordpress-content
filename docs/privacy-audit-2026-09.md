@@ -27,9 +27,10 @@ double counted.
   `analytics_storage` defaults to `denied`; ad storage is denied permanently
   because we run no ads. Priority 1 is what puts it ahead of Site Kit — do not
   change it.
-- `rt_has_analytics_consent()` reads a first-party `rt_consent` cookie. A cookie
-  rather than localStorage alone, so PHP can read it and so the Cookie Policy
-  can describe it truthfully.
+- Consent is stored in a first-party `rt_consent` cookie. A cookie rather than
+  localStorage alone, so the head defaults block can read it in the browser
+  before any tag loads, and so the Cookie Policy can describe it truthfully.
+  Nothing in PHP reads it: cached page output must not vary on it.
 - `rt_disable_jetpack_trackers()` filters `jetpack_active_modules` to drop
   `google-analytics` (the duplicate GA4 tag) and `stats` (stats.wp.com, which is
   not Consent Mode aware, was undisclosed in our policies, and is redundant next

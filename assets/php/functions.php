@@ -230,29 +230,12 @@ require_once ASTRA_THEME_DIR . 'inc/core/deprecated/deprecated-functions.php';
 // denied; the banner grants it via a consent update.
 //
 // Consent is stored in a first-party cookie (rt_consent) rather than
-// localStorage only, so PHP can read it and so the Cookie Policy can
-// describe it truthfully.
+// localStorage only, so the head defaults block can read it before any tag
+// loads and so the Cookie Policy can describe it truthfully. It is read in
+// the browser, never in PHP: page output must not vary on it (see below).
 
 if ( ! defined( 'RT_CONSENT_COOKIE' ) ) {
     define( 'RT_CONSENT_COOKIE', 'rt_consent' );
-}
-
-/**
- * Current analytics consent, read from the first-party cookie.
- *
- * Never use this to vary page OUTPUT. WordPress.com and Cloudflare cache
- * whole pages for anonymous visitors, so HTML rendered from one visitor's
- * cookie is served to the next. The consent default below is computed in
- * the browser for exactly that reason.
- *
- * @return bool True only when the visitor has actively granted analytics.
- */
-function rt_has_analytics_consent() {
-    if ( empty( $_COOKIE[ RT_CONSENT_COOKIE ] ) ) {
-        return false;
-    }
-    $value = sanitize_text_field( wp_unslash( $_COOKIE[ RT_CONSENT_COOKIE ] ) );
-    return ( 'analytics' === $value );
 }
 
 add_action( 'wp_head', 'rt_consent_mode_defaults', 1 );

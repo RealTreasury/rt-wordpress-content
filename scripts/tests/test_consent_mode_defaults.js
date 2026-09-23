@@ -29,6 +29,11 @@ assert.ok(!/\$_COOKIE|rt_has_analytics_consent\s*\(/.test(fnBody),
   'the consent default must not be rendered from the request cookie in PHP: ' +
   'cached HTML would carry one visitor\'s consent to another');
 
+// url_passthrough appends ad-click identifiers to internal links while
+// ad_storage is denied. We run no ads and the policies do not disclose it.
+assert.ok(!/url_passthrough/.test(fnBody),
+  'url_passthrough must not be enabled: it passes tracking parameters for visitors who declined');
+
 const m = fnBody.match(/<script id="rt-consent-defaults">([\s\S]*?)<\/script>/);
 assert.ok(m, 'rt-consent-defaults script block is missing');
 // The only PHP inside the block is the cookie name.

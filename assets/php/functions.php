@@ -263,7 +263,6 @@ function rt_consent_mode_defaults() {
         'wait_for_update':         500
     });
     gtag('set', 'ads_data_redaction', true);
-    gtag('set', 'url_passthrough', true);
     </script>
     <?php
 }

@@ -11,10 +11,11 @@ September 17 — `E-Guide_Real Treasury_AV_rev09 with links.pdf`, 42 pages,
 earlier draft of this runbook said Revision 8 shipped "three segment cuts"
 (Cash Tools / TMS-Lite / TRMS) — that was wrong, and there are no segment cuts
 to gate. **Re-read against production on September 19: steps 1, 2, 3, 4, 5, 6a,
-6b and the automation half of 7 are all done.** After this branch merges, first
-write its thank-you source to draft 4585 with
-`python3 scripts/wp_publish_post.py publish guide-thank-you --target production`,
-then publish 4585 in WP Admin. The release broadcast remains optional. The
+6b and the automation half of 7 are all done.** 4585, the thank-you page, was
+still a draft on September 19 but was published by September 22 (the URL
+returns 200). After this branch merges, write its thank-you source to 4585 with
+`python3 scripts/wp_publish_post.py publish guide-thank-you --target production`
+and verify the readback. The release broadcast remains optional. The
 per-step notes below carry the evidence.
 
 ## Pages
@@ -36,8 +37,11 @@ per-step notes below carry the evidence.
 > confirmation, 4809 a draft — is no longer true. Steps 1, 2, 5, 6a, 6b and the
 > automation half of step 7 are done.
 >
-> **One thing is outstanding, and it is live and broken: 4585, the guide
-> thank-you page, is still a draft.** `/treasury-tech-selection-guide/thank-you/`
+> **Superseded September 22, 2026: 4585 is now published and returns 200.** The
+> rest of this paragraph records the September 19 state.
+>
+> **On September 19 one thing was outstanding, and it was live and broken: 4585,
+> the guide thank-you page, was still a draft.** `/treasury-tech-selection-guide/thank-you/`
 > returns 404, while 4202 is live as the download form and the delivery
 > automation is enabled. The live page carries
 > `redirectUrl: 'https://realtreasury.com/treasury-tech-selection-guide/thank-you/'`,

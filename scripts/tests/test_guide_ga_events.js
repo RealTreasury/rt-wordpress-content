@@ -50,7 +50,6 @@ function sandbox({ withGtag = false, runCallback = false, navType = 'navigate' }
     setTimeout: (fn, ms) => { timers.push({ fn, ms }); },
   };
   context.performance = win.performance;
-  context.sessionStorage = undefined;
   vm.createContext(context);
   return { win, timers, run: (src) => vm.runInContext(src, context) };
 }

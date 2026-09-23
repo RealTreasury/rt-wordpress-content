@@ -10,7 +10,10 @@ const path = require('path');
 const vm = require('vm');
 
 const root = path.join(__dirname, '..', '..', 'treasury-tech-selection', 'guidebook');
-const PDF = 'https://realtreasury.com/wp-content/uploads/2026/09/2026-Real-Treasury-Tech-Selection-Guide.pdf';
+// URL of record: media attachment 4821, the value RT Gate asset #12's target_url and
+// the Resend guide-delivery template carry (docs/guide-release-runbook.md, step 3).
+// Not read from the page, so a wrong redirect target fails here.
+const PDF = 'https://realtreasury.com/wp-content/uploads/2026/09/Real-Treasury-Technology-Selection-Guide-North-America-2026-3e2603e8f094.pdf';
 const LEAD_PAGE = '/treasury-tech-selection-guide/';
 
 function scriptOf(rel) {
@@ -87,6 +90,16 @@ for (const navType of ['reload', 'back_forward']) {
 
 // ---- download: file_download then one redirect ---------------------------------
 const download = scriptOf(path.join('download', 'wordpress-page.html'));
+
+{
+  // The page's PDF must be the uploaded release file, in the script and the fallback button.
+  const runbook = fs.readFileSync(path.join(__dirname, '..', '..', 'docs', 'guide-release-runbook.md'), 'utf8');
+  assert.ok(runbook.includes(PDF), 'download: PDF constant must match the runbook URL of record');
+  const html = fs.readFileSync(path.join(root, 'download', 'wordpress-page.html'), 'utf8');
+  const btn = html.match(/id="rtGbDlLink" href="([^"]+)"/);
+  assert.ok(btn, 'download: fallback button present');
+  assert.strictEqual(btn[1], PDF, 'download: fallback button links to the uploaded release PDF');
+}
 
 {
   // No gtag.js: event queued, redirect comes from the timeout alone.

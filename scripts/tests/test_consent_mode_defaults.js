@@ -30,7 +30,8 @@ assert.ok(!/\$_COOKIE|rt_has_analytics_consent\s*\(/.test(fnBody),
   'cached HTML would carry one visitor\'s consent to another');
 
 // url_passthrough appends ad-click identifiers to internal links while
-// ad_storage is denied. We run no ads and the policies do not disclose it.
+// ad_storage is denied. The policies do not disclose it, and the LinkedIn ad
+// tag is gated on analytics consent rather than ad_storage.
 assert.ok(!/url_passthrough/.test(fnBody),
   'url_passthrough must not be enabled: it passes tracking parameters for visitors who declined');
 

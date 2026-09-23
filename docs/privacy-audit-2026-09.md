@@ -24,9 +24,10 @@ double counted.
 
 - `rt_consent_mode_defaults()` on `wp_head` priority 1. Pushes Google Consent
   Mode v2 defaults into `dataLayer` **before** any Google tag loads.
-  `analytics_storage` defaults to `denied`; ad storage is denied permanently
-  because we run no ads. Priority 1 is what puts it ahead of Site Kit — do not
-  change it.
+  `analytics_storage` defaults to `denied`; ad storage is denied permanently:
+  the banner's one optional consent grants only `analytics_storage`, so the
+  GTM gate on the LinkedIn ad tag keys on `analytics_storage` (see below).
+  Priority 1 is what puts it ahead of Site Kit — do not change it.
 - Consent is stored in a first-party `rt_consent` cookie. A cookie rather than
   localStorage alone, so the head defaults block can read it in the browser
   before any tag loads, and so the Cookie Policy can describe it truthfully.

@@ -25,6 +25,7 @@ jobs:
       - run: npm run test:guide-ga
       - run: npm run test:publish-css
       - run: npm run test:publish-post
+      - run: npm run test:deploy-on-merge
       - run: npm run test:carousel
       # Structural checks on shared.css always; the prune-specific assertions only on a
       # removal-only change to it. Green on a PR that never touches the stylesheet.

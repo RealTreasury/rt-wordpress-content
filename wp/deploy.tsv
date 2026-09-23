@@ -1,0 +1,26 @@
+# Pages the deploy leg (scripts/wp_deploy_on_merge.py) publishes to PRODUCTION when
+# `main` advances and their source changed. One slug per line; the slug must be a row
+# in wp/pages.tsv.
+#
+# Listing a row here is the decision that a merge to main IS its release. Rows that
+# must stay a deliberate hand step do not belong here:
+#   * guide-thank-you, guide-download-staging — drafts, and 4587 is a staging draft
+#     whose slug 404s.
+#   * guide-waitlist-confirmed — NOT a draft: 4809 was published September 19, 2026
+#     (see wp/pages.tsv and docs/guide-release-runbook.md). It is held off this list
+#     as a hand step; whether it should be added is an open decision, not a fact about
+#     its status.
+#   * how-to-select-a-tms, tms-selection-mistakes — those rows carry STAGING post ids;
+#     writing them to production would overwrite a different post.
+#   * nav-js-snippet, site-header-snippet — coupled to shared.css (the snippet's
+#     1150px breakpoint matches it), which has a separate guarded publish rail.
+#     Publish the coupled assets manually in one sitting until they share one
+#     atomic release mechanism.
+# Only the *-prod rows of those two pages are here.
+real-treasury-explained
+payment-networks-explained
+data-flows-of-a-tms
+guide-download
+errnot
+how-to-select-a-tms-prod
+tms-selection-mistakes-prod

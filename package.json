@@ -13,6 +13,7 @@
     "test:guide-ga": "node scripts/tests/test_guide_ga_events.js",
     "test:publish-css": "bash scripts/tests/test_wp_publish_shared_css.sh",
     "test:publish-post": "python3 scripts/tests/test_wp_publish_post.py",
+    "test:deploy-on-merge": "python3 scripts/tests/test_wp_deploy_on_merge.py",
     "test:carousel": "node scripts/tests/test_homepage_carousel.js",
     "test:css-prune": "node scripts/tests/test_shared_css_prune.js",
     "test:build-clean": "node scripts/tests/test_build_output_is_committed.js"

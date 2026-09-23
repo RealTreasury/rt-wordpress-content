@@ -42,6 +42,7 @@ CHECKS=(
   test:publish-post
   test:publish-css
   test:guide-ga
+  test:deploy-on-merge
 )
 
 if [ "${RUN_CHECKS_BUILD_CLEAN:-0}" = "1" ]; then

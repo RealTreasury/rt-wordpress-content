@@ -45,10 +45,26 @@ here, treat that as a bug and fix it.
    ```bash
    bash scripts/run_checks.sh
    ```
-   It runs the six package-free `npm run test:*` checks and stops at the first
+   It runs the seven package-free `npm run test:*` checks and stops at the first
    failure. `test:build-clean` is left out because it reads `git status` and is
    red on any dirty tree; CI runs it as its own step against a clean checkout.
    `RUN_CHECKS_BUILD_CLEAN=1 bash scripts/run_checks.sh` opts it back in.
+
+## Publishing to WordPress
+
+- **Native pages deploy on merge.** Nothing in this repo schedules the leg; the
+  cron line lives in rt-ai's `config/crontab.expected` (added by rt-ai #767, merged
+  and installed on rt-ai-02). Once this leg is on `main`, merging to `main` is the release for the rows in
+  `wp/deploy.tsv`: a box-side cron leg (`scripts/wp_deploy_on_merge.py`)
+  runs `scripts/wp_publish_post.py publish --target production <slug>` for each
+  row whose source changed, then records a GitHub Deployment on the merged sha.
+  Rows not listed there (drafts, staging-id rows, pages coupled to the
+  separately guarded shared-CSS rail, and `guide-waitlist-confirmed`, which is
+  published but held as a hand step pending a decision) still publish only by
+  hand; the `wp/deploy.tsv` header gives the reason for each.
+  See `docs/deploy-on-merge.md` for the state files, the hold, and the kill switch.
+- `scripts/wp_deploy_on_merge.py --dry-run` says what the next run would publish.
+- Test: `npm run test:deploy-on-merge` (offline; also in CI).
 
 ## Site-wide banner
 

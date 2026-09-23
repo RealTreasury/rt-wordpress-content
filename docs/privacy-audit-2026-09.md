@@ -124,11 +124,19 @@ Neither tag carries a consent requirement in the container, and Consent Mode's
 `analytics_storage` does not stop a Custom HTML tag or the LinkedIn tag, so
 both fire for a visitor who rejects. As written, the policies say we run no
 advertising cookies or networks and name neither LinkedIn nor Apollo as a
-processor — both untrue while these tags fire. This is a Tag Manager decision,
-not a repo change: remove the two tags, or gate them on consent in GTM and add
-LinkedIn and Apollo (and their cookies) to both policies. Do not publish the
-policies until one of the two is done. What each tag actually sets was not
-measured here; take it from the staging browser check below.
+processor — both untrue while these tags fire.
+
+**Decided September 23, 2026: keep both, gated on consent.** The policies and the
+banner in this PR now disclose both tags as "analytics and marketing", on the one
+optional consent the banner offers. The banner grants only `analytics_storage`
+(`ad_storage` stays denied), so the GTM gate must key on `analytics_storage`; a gate
+on `ad_storage` would never fire. **Owner step in GTM, before these policies
+publish:** for each of the two tags, Advanced Settings → Consent Settings →
+"Require additional consent for tag to fire" → `analytics_storage`, then Submit
+and publish the container. Until that is published the tags still fire for a
+visitor who rejects, and the new copy is untrue. Cookie names are linked to
+LinkedIn's own table rather than listed, because what each tag sets was not
+measured here; confirm with the staging browser check below.
 
 These came out of the publish-check pass:
 
@@ -192,8 +200,8 @@ This changes analytics collection sitewide, so prove it on staging:
 1. Load a page with a clean profile. In DevTools → Network, confirm
    `stats.wp.com` no longer loads and only the Site Kit tags remain. Before
    any click, `px.ads.linkedin.com` / `linkedin.com/collect` and
-   `assets.apollo.io` must not load unless the policies disclose them (see the
-   GTM blocker in section 2).
+   `assets.apollo.io` must not load; after Accept, both should load (see the
+   GTM decision in section 2).
 2. In Console, `dataLayer` should carry the `consent default` entry with
    `analytics_storage: "denied"` as its first Google-related push.
 3. Application → Cookies: no `_ga` before you click Accept.

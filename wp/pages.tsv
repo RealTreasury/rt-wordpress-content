@@ -48,12 +48,6 @@ guide-waitlist-confirmed	4809	treasury-tech-selection/waitlist/confirmed/wordpre
 guide-thank-you	4585	treasury-tech-selection/guidebook/thank-you/wordpress-page.html	native	thank-you
 guide-download-staging	4587	treasury-tech-selection/guidebook/wordpress-page.html	native	treasury-tech-selection-guide-download
 guide-download	4202	treasury-tech-selection/guidebook/wordpress-page.html	native	treasury-tech-selection-guide
-# guide-download-file: the "your download is starting" stop the delivery email links to,
-# so GA4 can count downloads (see docs/guide-release-runbook.md, "Counting the funnel in
-# GA4"). The post does not exist yet; create it, then replace <ID> and drop the leading #:
-#   wp post create --post_type=page --post_parent=4202 --post_name=download \
-#     --post_title='Download the 2026 Tech Selection Guide' --post_status=draft --porcelain
-# guide-download-file	<ID>	treasury-tech-selection/guidebook/download/wordpress-page.html	native	download
 #
 # mode `verbatim`: the post's content IS the whole standalone document, spliced into the
 # wrapper and pattern refs the post already carries. For pages hand-pasted as a full

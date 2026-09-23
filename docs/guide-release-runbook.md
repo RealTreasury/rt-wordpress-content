@@ -174,7 +174,7 @@ final redirect, which 404s until 4585 is published. No email arrives until step 
    `https://realtreasury.com/wp-content/uploads/2026/09/2026-Real-Treasury-Tech-Selection-Guide-20260923.pdf`
    (200, `application/pdf`, 14,755,690 bytes), which is what the published Resend
    `guide-delivery` template links to (published September 23, 12:45 UTC). It is a
-   302 so a later edition can repoint it without touching the download page. The
+   302 so a later edition can repoint it without editing the email template. The
    September 17 files have moved on: the 4821 URL above returns 404, and the 4828
    file (`…-a16b248f6bbc.pdf`) still returns 200 but nothing links to it. RT Gate
    asset #12's `target_url` was not re-read on September 23; the download form
@@ -243,76 +243,63 @@ switches this paragraph used to wait on — publish the template, enable the
 automation — were thrown before September 19 and verified that day, so the
 chain is live end to end.
 
-## Counting the funnel in GA4
+## Counting the funnel
 
 Checked September 22, 2026 against GA4 property 446224629 (Data API, 30 days): the
 download page had 129 views and 26 `form_start` events, the thank-you page 25
 views, and **zero** `form_submit`, `generate_lead` or `file_download` events for the
 guide. The 25 thank-you views are real page loads, not 404s: 4585 returned 200 on
 September 22. The form is built in JavaScript and submits with `fetch()`, so GA4's
-enhanced-measurement `form_submit` never fires, and the email links straight at
-the PDF, so the download is a file fetch GA never sees. The property already
-treats `generate_lead` and `file_download` as key events and already has the
-event-scoped custom dimensions `form_name` ("Lead Form Name") and `lead_page`
-("Lead Conversion Page"), which the /contact/ form uses. The guide now reuses
-both, so it appears in the same reports.
+enhanced-measurement `form_submit` never fires. The property already treats
+`generate_lead` as a key event and already has the event-scoped custom dimensions
+`form_name` ("Lead Form Name") and `lead_page` ("Lead Conversion Page"), which the
+/contact/ form uses. The guide now reuses both, so it appears in the same reports.
 
 Three counters, one per step:
 
-| step | where it is counted | GA4 event | how to read it |
+| step | where it is counted | event | how to read it |
 |---|---|---|---|
-| page visited | `/treasury-tech-selection-guide/` | `page_view` | Reports > Engagement > Pages and screens, filter the path |
-| form completed | `/treasury-tech-selection-guide/thank-you/` (4585) | `generate_lead` with `form_name=tech-selection-guide` | Reports > Engagement > Events, or the Key events report; the thank-you page's own `page_view` count is the cross-check |
-| PDF downloaded | `/treasury-tech-selection-guide/download/` (new child page) | `file_download` with `link_url` = the PDF | Events report, `file_download`, dimension `link_url` or `form_name` |
+| page visited | GA4, `/treasury-tech-selection-guide/` | `page_view` | Reports > Engagement > Pages and screens, filter the path |
+| form completed | GA4, `/treasury-tech-selection-guide/thank-you/` (4585) | `generate_lead` with `form_name=tech-selection-guide` | Reports > Engagement > Events, or the Key events report; the thank-you page's own `page_view` count is the cross-check |
+| PDF downloaded | Resend, the `guide-delivery` email | click on the download button | Resend dashboard > Emails (or the automation's runs), per-email `clicked` status |
 
 The thank-you page fires `generate_lead` on load because nothing links to it:
 the only way in is the redirect after a successful rt-gate submit. A reload or a
 back/forward visit is skipped using the browser's navigation type
 (`performance.getEntriesByType('navigation')`), so a refresh does not count twice
-but a second real submit in the same tab does. Nothing is written to storage. Firing from the download page itself would race
-the redirect and would also mean touching 4202, whose live copy is still Tim's
+but a second real submit in the same tab does. Nothing is written to storage. The
+script calls `gtag()` so Google Consent Mode governs it, and it queues on
+`dataLayer` if gtag.js is not yet on the page. Firing from the form page itself
+would mean touching 4202, whose live copy is still Tim's
 `content/guide-form-layout` layout rather than main's.
 
-The download page fires `file_download` and then `location.replace()`s to the
-PDF after `event_callback` or 1.5 s, whichever is first, with a visible fallback
-button. It redirects to the stable PDF name (see "The PDF URL of record"),
-which delivery emails sent before September 23 already carry, so the page
-publishes no hidden filename. Old emails still work; they are just not counted. `file_download` carries `lead_page=/treasury-tech-selection-guide/`, the
-same value as the thank-you page's `generate_lead`, so a `lead_page` filter keeps
-the whole guide funnel together; tell the two steps apart by event name. Both scripts call `gtag()` so Google Consent Mode governs them, and
-queue on `dataLayer` if gtag.js is not yet on the page.
+**Downloads are not a GA4 event.** The delivery email links straight at the PDF,
+and a file fetch runs no JavaScript, so GA4 cannot see it. An interstitial
+`/download/` page that fired `file_download` was considered and dropped
+(September 23, 2026): it added a page to maintain and a guessable URL that hands
+out the PDF with no email step. The click on the email's download button is the
+download count, and Resend records it, but only with click tracking on.
+**Click tracking is off** on `news.realtreasury.com` (read from the Resend API,
+September 23, 2026), so today downloads are counted nowhere.
 
 Steps to turn it on, in order (the rail is read-only from an agent seat; a
 person runs the writes):
 
-1. Create the page (draft), take the ID it prints, put it in `wp/pages.tsv`
-   (`guide-download-file` row), and set it noindex so it stays out of search
-   and the sitemap:
-   `wp post create --post_type=page --post_parent=4202 --post_name=download --post_title='Download the 2026 Tech Selection Guide' --post_status=draft --porcelain`
-   `wp post meta update <ID> _yoast_wpseo_meta-robots-noindex 1`
-2. `scripts/wp_publish_post.py publish guide-thank-you --target production`
+1. `scripts/wp_publish_post.py publish guide-thank-you --target production`
    (live 4585 was identical to main on September 22, so this is additive). This
    writes content only, never `post_status`: confirm `plan guide-thank-you`
    reports `publish`. If it reports `draft`, run
    `wp post update 4585 --post_status=publish`, or `generate_lead` never fires.
-3. `scripts/wp_publish_post.py publish guide-download-file --target production`,
-   then `wp post update <ID> --post_status=publish` and confirm
-   `https://realtreasury.com/treasury-tech-selection-guide/download/` loads and
-   hands off to the PDF.
-4. In the Resend dashboard, edit `guide-delivery` and point the download button at
-   `https://realtreasury.com/treasury-tech-selection-guide/download/` instead of
-   the `/wp-content/uploads/...pdf` URL, then **Publish**. Do this from the
-   dashboard, not the API: `get-template` returns the published copy, so an API
-   rewrite would silently revert any saved-but-unpublished edit.
+2. Decide on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
+   Domains > the domain > Configuration). It is **domain-wide**: it also rewrites
+   the links in the newsletter track's emails through Resend's tracking redirect.
+   Leave the `guide-delivery` template as it is; its link to the stable PDF name
+   does not change.
 
-Scanners that execute JavaScript (mail-security link checks, sales-tool
-prefetchers) will register as downloads exactly as they already register as
-page views; read `file_download` next to `ga_traffic_quality` the same way.
-The error runs the other way too: the download page redirects after 1.5 s whether
-or not gtag.js has loaded, and a `file_download` still queued on `dataLayer` is
-lost when the page unloads. On a slow connection or with a late-loading tag the
-download is not counted, with no sign of it. Treat `file_download` as a floor for
-real readers and a ceiling once scanners are included; it is not an exact count.
+Scanners (mail-security link checks, sales-tool prefetchers) fetch email links
+too, so Resend clicks overcount real readers the same way they inflate page views;
+read them next to `ga_traffic_quality`. Delivery emails sent before click
+tracking is turned on carry untracked links and are never counted.
 
 ## Resend: publish the template, or you ship the old one
 

@@ -74,9 +74,9 @@ Add these rows to `wp/pages.tsv` and run the rail. They are not committed on
 this branch on purpose — adding them is the decision to deploy.
 
 ```
-privacy-policy		167	privacy-policy/index.html	page	privacy-policy
+privacy-policy	167	privacy-policy/index.html	page	privacy-policy
 terms-of-service	358	terms-of-service/index.html	page	terms-of-service
-cookie-policy		360	cookie-policy/index.html	page	cookie-policy
+cookie-policy	360	cookie-policy/index.html	page	cookie-policy
 ```
 
 Post IDs were read from the `page-id-NNN` body class on the live pages on

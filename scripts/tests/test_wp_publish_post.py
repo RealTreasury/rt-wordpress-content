@@ -413,6 +413,22 @@ check("a row without a 5th column defaults post_name to its label",
 check("a row whose label is not its slug declares the real post_name",
       rows["guide-download"][3] == "treasury-tech-selection-guide")
 
+# --- the rows the privacy audit tells a person to paste still parse ------------------------------------
+audit = (ROOT / "docs" / "privacy-audit-2026-09.md").read_text(encoding="utf-8")
+block = re.search(r"Add these rows to `wp/pages\.tsv`.*?```\n(.*?)```", audit, re.S)
+check("the privacy audit carries a pages.tsv block", block is not None)
+if block:
+    pasted = tmp / "pasted.tsv"
+    pasted.write_text(block.group(1), encoding="utf-8")
+    wpp.MANIFEST = pasted
+    try:
+        pasted_rows = wpp.manifest()
+        check("the privacy audit's pages.tsv rows parse",
+              set(pasted_rows) == {"privacy-policy", "terms-of-service", "cookie-policy"})
+    except SystemExit:
+        check("the privacy audit's pages.tsv rows parse", False)
+    wpp.MANIFEST = saved
+
 # --- 14 the identity guard ------------------------------------------------------------------------------
 # Post ids are per site. Production 1519 is the live /2024-tms-selection-guide/ post while
 # staging 1519 is how-to-select-a-tms; writing by id alone would replace a published page,

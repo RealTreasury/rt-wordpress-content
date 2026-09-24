@@ -1,41 +1,343 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - Real Treasury</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6; color: #281345; }
-        h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem; }
-        h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; }
-        p { margin: 1rem 0; }
-        a { color: #7216f4; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #281345;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .privacy-policy-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .privacy-policy-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.15);
+            margin-bottom: 40px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            color: #281345;
+            transition: all 0.3s ease;
+        }
+
+        .privacy-policy-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 33%, #5b0acd 66%, #9d4edd 100%);
+        }
+
+        .privacy-policy-content:hover {
+            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .privacy-policy-content h1 {
+            color: #281345;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            border-bottom: 3px solid #c77dff;
+            padding-bottom: 10px;
+            font-weight: 600;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .privacy-policy-content h2 {
+            color: #281345;
+            margin: 30px 0 15px 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .privacy-policy-content h3 {
+            color: #281345;
+            margin: 25px 0 10px 0;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .privacy-policy-content p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        .privacy-policy-content ul {
+            margin: 15px 0 15px 25px;
+            color: #444;
+        }
+
+        .privacy-policy-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .privacy-highlight {
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.1) 0%, rgba(199, 125, 255, 0.1) 100%);
+            padding: 20px;
+            border-left: 4px solid #7216f4;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.1);
+            color: #281345;
+            font-weight: 500;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.05) 0%, rgba(199, 125, 255, 0.05) 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .effective-date {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(199, 125, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .privacy-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.1);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .privacy-table th,
+        .privacy-table td {
+            border: 1px solid rgba(199, 125, 255, 0.2);
+            padding: 15px;
+            text-align: left;
+        }
+
+        .privacy-table th {
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .privacy-table tr:nth-child(even) {
+            background: rgba(199, 125, 255, 0.05);
+        }
+
+        .privacy-table tr:hover {
+            background: rgba(199, 125, 255, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .privacy-policy-container {
+                padding: 20px 15px;
+            }
+            
+            .privacy-policy-content {
+                padding: 25px;
+                border-radius: 14px;
+            }
+            
+            .privacy-policy-content h1 {
+                font-size: 2rem;
+            }
+
+            .privacy-policy-content h2 {
+                font-size: 1.3em;
+            }
+            
+            .privacy-table {
+                font-size: 14px;
+            }
+            
+            .privacy-table th,
+            .privacy-table td {
+                padding: 12px 8px;
+            }
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.4);
+        }
     </style>
-</head>
-<body>
-<h1>Terms of Service</h1>
-<p>Effective Date: June 1, 2025</p>
-<p>By accessing or using the Real Treasury website you agree to be bound by these terms. If you do not agree with any part of the terms, you may not use our site.</p>
-<h2>Use of Site</h2>
-<p>All content provided on this site is for informational purposes only. We reserve the right to modify or discontinue the site at any time.</p>
-<h2>Intellectual Property</h2>
-<p>All materials on this website, including text and graphics, are owned by Real Treasury, LLC or its licensors and may not be reused without permission.</p>
-<h2>Limitation of Liability</h2>
-<p>We will not be liable for any damages arising from the use of this site.</p>
-<h2>Contact Us</h2>
-<p>For questions about these terms, please email <a href="mailto:info@realtreasury.com">info@realtreasury.com</a>.</p>
-<script>
-  if (window.self !== window.top) {
-    function sendHeight() {
-      const height = document.documentElement.scrollHeight;
-      window.parent.postMessage({ type: "setHeight", height: height }, "*");
-    }
-    window.addEventListener("DOMContentLoaded", sendHeight);
-    window.addEventListener("resize", sendHeight);
-    window.addEventListener("orientationchange", sendHeight);
-    setTimeout(sendHeight, 500);
-  }
-</script>
-</body>
-</html>
+
+    <div class="privacy-policy-container">
+        <div class="privacy-policy-content">
+            <h1>Terms of Service</h1>
+
+            <div class="effective-date">
+                <strong>Effective Date:</strong> June 21, 2025<br>
+                <strong>Last Updated:</strong> September 22, 2026
+            </div>
+
+            <p>These terms govern your use of realtreasury.com, operated by Real Treasury,
+            LLC. By using the site you accept them. If you do not, please do not use the site.</p>
+
+            <h2>1. What This Site Is</h2>
+
+            <p>Real Treasury is an independent advisory firm for corporate treasury teams.
+            This website publishes research, educational material, a treasury technology
+            market chart, and information about our services.</p>
+
+            <p>Everything here is general information. It is not financial, investment,
+            accounting, tax or legal advice, and it is not a recommendation to buy or use any
+            particular product. Your circumstances are specific to you; published material
+            cannot account for them. If you want advice, engage us or another adviser.</p>
+
+            <p>We take no fees from technology vendors for recommendations, referrals or
+            placement. Where a vendor appears on this site, it is because our research
+            covered it, not because it paid to be there.</p>
+
+            <h2>2. Accuracy</h2>
+
+            <p>We work from public sources, vendor briefings and our own research, and the
+            treasury technology market moves. Vendor capabilities, ownership, pricing and
+            naming change without notice. We make no warranty that material on this site is
+            complete or current, and we may change it at any time. Check anything you intend
+            to rely on.</p>
+
+            <h2>3. Using Our Content</h2>
+
+            <p>The content on this site &mdash; text, charts, graphics, the market chart,
+            and our methodology, including ERR NOT &mdash; belongs to Real Treasury, LLC or
+            its licensors.</p>
+
+            <p>You may read it, print it, and share it internally for your own
+            organization's purposes. You may quote short extracts with attribution and a
+            link. You may not republish it wholesale, resell it, present it as your own
+            work, or use it to build a competing product or dataset. Automated scraping and
+            bulk extraction are not permitted.</p>
+
+            <p>Our name and logo may not be used to suggest that we endorse you, your
+            product or your services without our written agreement.</p>
+
+            <h2>4. Gated Material</h2>
+
+            <p>Some material &mdash; the selection guide, the Treasury Tech Portal, webinar
+            recordings &mdash; is released after you give us your name, work email and
+            employer. Give us accurate details. What we do with them is set out in our
+            <a href="/privacy-policy/">Privacy Policy</a>; in short, we use them to send you
+            what you asked for and to follow up about our services, and you can tell us to
+            stop at any time.</p>
+
+            <p>Access is granted to you, for your organization's use. Please do not pass
+            gated material or portal access to third parties.</p>
+
+            <p>The site has no user accounts and no passwords. There is nothing to register
+            for and nothing to close.</p>
+
+            <h2>5. Acceptable Use</h2>
+
+            <p>Do not use this site to break the law, to infringe anyone's rights, to
+            harass anyone, to submit false information, to introduce malicious code, to
+            probe or circumvent its security, or to place load on it beyond ordinary
+            reading &mdash; including automated crawling that ignores our robots directives.</p>
+
+            <h2>6. Third-Party Sites</h2>
+
+            <p>We link to vendor sites, LinkedIn profiles and other third-party pages. We do
+            not control them, we are not responsible for them, and a link is not an
+            endorsement. Their terms and privacy practices are their own.</p>
+
+            <h2>7. Disclaimers and Liability</h2>
+
+            <p>The site is provided "as is" and "as available". To the fullest extent the
+            law allows, we disclaim implied warranties of merchantability, fitness for a
+            particular purpose and non-infringement, and we do not warrant that the site
+            will be uninterrupted or error-free.</p>
+
+            <p>To the fullest extent the law allows, Real Treasury, LLC is not liable for
+            indirect, incidental, consequential or punitive damages, or for lost profits or
+            lost data, arising from your use of this site. Nothing here limits liability
+            that cannot lawfully be limited, and nothing here affects the terms of a signed
+            engagement between us &mdash; those govern the work we do for clients.</p>
+
+            <h2>8. Changes</h2>
+
+            <p>We may revise these terms. The "Last Updated" date above shows when we last
+            did. Continued use of the site after a change means you accept the revised terms.</p>
+
+            <h2>9. Governing Law</h2>
+
+            <p>These terms are governed by the laws of the State of Florida, without regard
+            to its conflict of laws rules. Any legal action arising out of or relating to
+            them shall be brought exclusively in the state or federal courts located in
+            Hillsborough County, Florida.</p>
+
+            <h2>10. Contact</h2>
+
+            <div class="contact-info">
+                <h3>Questions about these terms</h3>
+                <p><strong>Email:</strong>
+                <a href="mailto:info@realtreasury.com">info@realtreasury.com</a></p>
+                <p><strong>Real Treasury, LLC</strong><br>
+                Dallas, TX &middot; Tampa, FL, United States</p>
+                <p>See also our <a href="/privacy-policy/">Privacy Policy</a> and
+                <a href="/cookie-policy/">Cookie Policy</a>.</p>
+            </div>
+        </div>
+    </div>

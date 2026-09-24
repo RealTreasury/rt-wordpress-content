@@ -45,7 +45,7 @@ here, treat that as a bug and fix it.
    ```bash
    bash scripts/run_checks.sh
    ```
-   It runs the seven package-free `npm run test:*` checks and stops at the first
+   It runs the eight package-free `npm run test:*` checks and stops at the first
    failure. `test:build-clean` is left out because it reads `git status` and is
    red on any dirty tree; CI runs it as its own step against a clean checkout.
    `RUN_CHECKS_BUILD_CLEAN=1 bash scripts/run_checks.sh` opts it back in.
@@ -155,6 +155,41 @@ what the script last published (drift), pins the `ssh.wp.com` host key from
 (commit it). Credentials: `/opt/rt-ai/secrets/wpcom-ssh.env`. Tests:
 `scripts/tests/test_wp_publish_shared_css.sh` (stub remote, no network). Full
 notes in `README.md`.
+
+## Consent and analytics
+
+Analytics consent is Google Consent Mode v2, implemented in
+`assets/php/functions.php`:
+
+- `rt_consent_mode_defaults()` runs on `wp_head` **priority 1** so the consent
+  defaults reach `dataLayer` before Site Kit's tags. Do not lower that priority
+  and do not move it to `wp_footer` — that is exactly the bug it replaced.
+- `rt_disable_jetpack_trackers()` keeps Jetpack's `google-analytics` and `stats`
+  modules off. Jetpack's GA tag duplicated Site Kit's and ignored Consent Mode;
+  `stats` is not Consent Mode aware.
+- Anything that should open the preference panel gets a
+  `data-rt-cookie-preferences` attribute, or calls
+  `window.rtOpenCookiePreferences()`.
+
+Do not add a tag, pixel or embed that sets cookies without routing it through
+this. If it cannot respect Consent Mode, it does not go on the site. Tags in
+the GTM container (`GTM-W877KNJR`) are outside this repo: the banner's promise
+holds only if each one requires `analytics_storage` in GTM's consent settings
+(see `docs/privacy-audit-2026-09.md`).
+
+## Legal pages
+
+`privacy-policy/`, `cookie-policy/` and `terms-of-service/` are `page`-mode
+sources for native WordPress pages 167, 360 and 358. They are content
+fragments — a `<style>` block plus body markup, with no `<html>`/`<head>`/`<body>`
+wrapper and no head tags. Page mode takes a wrapper-less file whole, so a
+`<title>` or `<meta>` here would land in post content; WordPress/Yoast owns
+metadata. `scripts/tests/test_wp_publish_post.py` checks this.
+
+They describe what the site actually does, so a change to forms, embeds,
+analytics or any third-party service means a matching change here. Both are
+outward-facing, so a draft goes through the publish-check skill before anyone
+ships it. Background and the publish steps: `docs/privacy-audit-2026-09.md`.
 
 ## Webinar publishing
 

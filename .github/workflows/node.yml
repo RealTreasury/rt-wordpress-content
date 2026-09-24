@@ -30,6 +30,7 @@ jobs:
       # Structural checks on shared.css always; the prune-specific assertions only on a
       # removal-only change to it. Green on a PR that never touches the stylesheet.
       - run: npm run test:css-prune
+      - run: npm run test:consent-mode
       # Last: it rebuilds and asserts nothing committed moved, so it reads the tree the
       # steps above have already touched.
       - run: npm run test:build-clean

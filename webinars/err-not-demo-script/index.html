@@ -266,9 +266,11 @@ window.RTG_CONFIG = {
     /* ---- YouTube URL -> embed URL (never rehosted, just linked as an iframe) ---- */
     function toYouTubeEmbedUrl(url) {
         if (!url) return url;
-        var m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{6,})/);
+        var m = url.match(/(?:youtube(?:-nocookie)?\.com\/watch\?v=|youtu\.be\/|youtube(?:-nocookie)?\.com\/embed\/)([a-zA-Z0-9_-]{6,})/);
         if (!m) return url;
-        return 'https://www.youtube.com/embed/' + m[1] + '?rel=0';
+        // youtube-nocookie: no cookie is set until the visitor presses play,
+        // which is what the Cookie Policy tells them. Match prompt-to-product.
+        return 'https://www.youtube-nocookie.com/embed/' + m[1] + '?rel=0';
     }
 
     /* ---- iFrame auto-resize (for the WordPress wrapper iframe embedding this whole page) ---- */

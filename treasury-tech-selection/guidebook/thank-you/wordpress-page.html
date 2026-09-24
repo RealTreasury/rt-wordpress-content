@@ -7,6 +7,17 @@
   Reached only by redirect from the download page after a successful
   RT Gate submit. The document link is delivered by the Resend automation,
   never shown here — receiving the email is what verifies the address.
+
+  Analytics: this page fires the GA4 `generate_lead` event (see the script at the
+  end). One load of this page = one completed guide form, because nothing links
+  here. A reload or a back/forward visit is skipped using the browser's own
+  navigation type, so a second real submit in the same tab still counts and
+  nothing is written to storage. Parameters use the two
+  event-scoped custom dimensions already registered on the property
+  (form_name -> "Lead Form Name", lead_page -> "Lead Conversion Page"), the same
+  ones the /contact/ form sends, so both leads land in the same GA4 reports.
+  Downloads are counted in Resend, as clicks on the delivery email's download
+  button (docs/guide-release-runbook.md, "Counting the funnel").
 -->
 <style>
     .rt-gbty {
@@ -70,3 +81,36 @@
     <a class="rt-gbty-back" href="https://realtreasury.com">Back to Real Treasury</a>
   </div>
 </div>
+
+<script>
+(function () {
+  // GA4 completion event. Reached only by redirect after a successful RT Gate
+  // submit on /treasury-tech-selection-guide/, so one load = one completed form.
+  // gtag() is used (not a raw beacon) so Google Consent Mode applies; if gtag.js
+  // is not on the page yet the command is queued on dataLayer, which is what
+  // gtag() itself does.
+  try {
+    // Skip a reload or a back/forward visit: those are the same completed form
+    // seen twice. A fresh redirect after another submit is a 'navigate' entry
+    // and is counted. Browsers without the Navigation Timing API count every load.
+    var nav = null;
+    if (window.performance) {
+      if (typeof performance.getEntriesByType === 'function') {
+        nav = performance.getEntriesByType('navigation')[0] || null;
+      }
+    }
+    if (nav) {
+      if (nav.type === 'reload' || nav.type === 'back_forward') { return; }
+    }
+    window.dataLayer = window.dataLayer || [];
+    var send = function () {
+      if (typeof window.gtag === 'function') { window.gtag.apply(null, arguments); }
+      else { window.dataLayer.push(arguments); }
+    };
+    send('event', 'generate_lead', {
+      form_name: 'tech-selection-guide',
+      lead_page: '/treasury-tech-selection-guide/'
+    });
+  } catch (e) { /* analytics must never break the page */ }
+})();
+</script>

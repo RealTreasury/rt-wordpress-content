@@ -11,10 +11,11 @@ September 17 — `E-Guide_Real Treasury_AV_rev09 with links.pdf`, 42 pages,
 earlier draft of this runbook said Revision 8 shipped "three segment cuts"
 (Cash Tools / TMS-Lite / TRMS) — that was wrong, and there are no segment cuts
 to gate. **Re-read against production on September 19: steps 1, 2, 3, 4, 5, 6a,
-6b and the automation half of 7 are all done.** After this branch merges, first
-write its thank-you source to draft 4585 with
-`python3 scripts/wp_publish_post.py publish guide-thank-you --target production`,
-then publish 4585 in WP Admin. The release broadcast remains optional. The
+6b and the automation half of 7 are all done.** 4585, the thank-you page, was
+still a draft on September 19 but was published by September 22 (the URL
+returns 200). After this branch merges, write its thank-you source to 4585 with
+`python3 scripts/wp_publish_post.py publish guide-thank-you --target production`
+and verify the readback. The release broadcast remains optional. The
 per-step notes below carry the evidence.
 
 ## Pages
@@ -23,7 +24,7 @@ per-step notes below carry the evidence.
 |---|---|---|
 | Download page (gated form) | WP **4202** `/treasury-tech-selection-guide/` | **published, and it is now the download page** — `plan guide-download` reads back 1035 words identical to the repo source |
 | Download page content | WP **4587** draft, slug `…-guide-download` | draft, and **no longer matches the repo** — 242 changed lines against the source, because 4202 moved on and this staging copy did not |
-| Guide thank-you | WP **4585** `/treasury-tech-selection-guide/thank-you/` | draft; it matched the pre-PR source on September 19, so publish this branch's source before changing the page status |
+| Guide thank-you | WP **4585** `/treasury-tech-selection-guide/thank-you/` | **published** by September 22, 2026: the URL returns 200 to an anonymous `curl` (a draft returns 404). It was a draft on September 19; the callout below records that state |
 | Waitlist signup | WP post **4211** `/2026-treasury-tech-guide-waitlist/` | published (GitHub Pages iframe) |
 | Waitlist confirmation | WP **4809** `/2026-treasury-tech-guide-waitlist-confirmed/` | **published**, matches the repo |
 
@@ -36,8 +37,11 @@ per-step notes below carry the evidence.
 > confirmation, 4809 a draft — is no longer true. Steps 1, 2, 5, 6a, 6b and the
 > automation half of step 7 are done.
 >
-> **One thing is outstanding, and it is live and broken: 4585, the guide
-> thank-you page, is still a draft.** `/treasury-tech-selection-guide/thank-you/`
+> **Superseded September 22, 2026: 4585 is now published and returns 200.** The
+> rest of this paragraph records the September 19 state.
+>
+> **On September 19 one thing was outstanding, and it was live and broken: 4585,
+> the guide thank-you page, was still a draft.** `/treasury-tech-selection-guide/thank-you/`
 > returns 404, while 4202 is live as the download form and the delivery
 > automation is enabled. The live page carries
 > `redirectUrl: 'https://realtreasury.com/treasury-tech-selection-guide/thank-you/'`,
@@ -160,6 +164,21 @@ final redirect, which 404s until 4585 is published. No email arrives until step 
    no page, and serves 200 `application/pdf`:
    `https://realtreasury.com/wp-content/uploads/2026/09/Real-Treasury-Technology-Selection-Guide-North-America-2026-3e2603e8f094.pdf`
    Email verification is the gate; the file itself is public and that is intended.
+   **Superseded; this URL returns 404 since September 23, 2026.** See "The PDF URL
+   of record" below.
+
+   **The PDF URL of record (September 23, 2026).** Link to the stable name
+   `https://realtreasury.com/wp-content/uploads/2026/09/2026-Real-Treasury-Tech-Selection-Guide.pdf`,
+   never to a hashed upload name. A Cloudflare redirect rule 302s it to the current
+   edition's file, today
+   `https://realtreasury.com/wp-content/uploads/2026/09/2026-Real-Treasury-Tech-Selection-Guide-20260923.pdf`
+   (200, `application/pdf`, 14,755,690 bytes), which is what the published Resend
+   `guide-delivery` template links to (published September 23, 12:45 UTC). It is a
+   302 so a later edition can repoint it without editing the email template. The
+   September 17 files have moved on: the 4821 URL above returns 404, and the 4828
+   file (`…-a16b248f6bbc.pdf`) still returns 200 but nothing links to it. RT Gate
+   asset #12's `target_url` was not re-read on September 23; the download form
+   ignores `primary_redirect_url`, so it does not decide what a reader gets.
 4. ~~**Set RT Gate asset #12's `target_url`**~~ **DONE September 17, 2026.** Asset #12
    (`treasury-tech-selection-guidebook`, mapping #8) now carries the URL above;
    written with a read-back check, previous value backed up. Mapping #8's
@@ -223,6 +242,64 @@ So the email address is the gate, and every link in the chain is wired. Both
 switches this paragraph used to wait on — publish the template, enable the
 automation — were thrown before September 19 and verified that day, so the
 chain is live end to end.
+
+## Counting the funnel
+
+Checked September 22, 2026 against GA4 property 446224629 (Data API, 30 days): the
+download page had 129 views and 26 `form_start` events, the thank-you page 25
+views, and **zero** `form_submit`, `generate_lead` or `file_download` events for the
+guide. The 25 thank-you views are real page loads, not 404s: 4585 returned 200 on
+September 22. The form is built in JavaScript and submits with `fetch()`, so GA4's
+enhanced-measurement `form_submit` never fires. The property already treats
+`generate_lead` as a key event and already has the event-scoped custom dimensions
+`form_name` ("Lead Form Name") and `lead_page` ("Lead Conversion Page"), which the
+/contact/ form uses. The guide now reuses both, so it appears in the same reports.
+
+Three counters, one per step:
+
+| step | where it is counted | event | how to read it |
+|---|---|---|---|
+| page visited | GA4, `/treasury-tech-selection-guide/` | `page_view` | Reports > Engagement > Pages and screens, filter the path |
+| form completed | GA4, `/treasury-tech-selection-guide/thank-you/` (4585) | `generate_lead` with `form_name=tech-selection-guide` | Reports > Engagement > Events, or the Key events report; the thank-you page's own `page_view` count is the cross-check |
+| PDF downloaded | Resend, the `guide-delivery` email | click on the download button | Resend dashboard > Emails (or the automation's runs), per-email `clicked` status |
+
+The thank-you page fires `generate_lead` on load because nothing links to it:
+the only way in is the redirect after a successful rt-gate submit. A reload or a
+back/forward visit is skipped using the browser's navigation type
+(`performance.getEntriesByType('navigation')`), so a refresh does not count twice
+but a second real submit in the same tab does. Nothing is written to storage. The
+script calls `gtag()` so Google Consent Mode governs it, and it queues on
+`dataLayer` if gtag.js is not yet on the page. Firing from the form page itself
+would mean touching 4202, whose live copy is still Tim's
+`content/guide-form-layout` layout rather than main's.
+
+**Downloads are not a GA4 event.** The delivery email links straight at the PDF,
+and a file fetch runs no JavaScript, so GA4 cannot see it. An interstitial
+`/download/` page that fired `file_download` was considered and dropped
+(September 23, 2026): it added a page to maintain and a guessable URL that hands
+out the PDF with no email step. The click on the email's download button is the
+download count, and Resend records it, but only with click tracking on.
+**Click tracking is off** on `news.realtreasury.com` (read from the Resend API,
+September 23, 2026), so today downloads are counted nowhere.
+
+Steps to turn it on, in order (the rail is read-only from an agent seat; a
+person runs the writes):
+
+1. `scripts/wp_publish_post.py publish guide-thank-you --target production`
+   (live 4585 was identical to main on September 22, so this is additive). This
+   writes content only, never `post_status`: confirm `plan guide-thank-you`
+   reports `publish`. If it reports `draft`, run
+   `wp post update 4585 --post_status=publish`, or `generate_lead` never fires.
+2. Decide on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
+   Domains > the domain > Configuration). It is **domain-wide**: it also rewrites
+   the links in the newsletter track's emails through Resend's tracking redirect.
+   Leave the `guide-delivery` template as it is; its link to the stable PDF name
+   does not change.
+
+Scanners (mail-security link checks, sales-tool prefetchers) fetch email links
+too, so Resend clicks overcount real readers the same way they inflate page views;
+read them next to `ga_traffic_quality`. Delivery emails sent before click
+tracking is turned on carry untracked links and are never counted.
 
 ## Resend: publish the template, or you ship the old one
 

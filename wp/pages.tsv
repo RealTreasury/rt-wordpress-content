@@ -26,13 +26,13 @@ nav-js-snippet	1865	header/main-menu/JSsnippet/index.html	raw
 #
 # mode `native`: the post's content is the file wrapped as ONE Custom HTML block, with the
 # repo header comment swapped for a source-of-record note. These four are the guide release
-# pages. Two are published (4202 and 4809) and two are drafts (4585 and 4587); this script
+# pages. Three are published (4202, 4809 and 4585) and one is a draft (4587); this script
 # never moves post_status in either direction — it writes post_content and refuses if the
 # status shifted under it. Publishing a draft stays a deliberate act in WP Admin.
 #
-# 4585 is the one draft still waiting on that act, and it is live and broken until it lands:
-# 4202 redirects there after every submission and the URL 404s. See
-# docs/guide-release-runbook.md, which is the state of record for all four.
+# 4585 was a draft on September 19, 2026, and 4202's post-submit redirect landed on a 404;
+# it was published by September 22 and returns 200. See docs/guide-release-runbook.md,
+# which is the state of record for all four.
 #
 # 4587 is a staging draft, not a destination: its slug 404s and should never be published,
 # because the download form's home is 4202. It is listed because it is the page that carried

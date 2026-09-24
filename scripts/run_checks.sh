@@ -41,6 +41,7 @@ CHECKS=(
   test:css-prune
   test:publish-post
   test:publish-css
+  test:guide-ga
   test:consent-mode
   test:deploy-on-merge
 )

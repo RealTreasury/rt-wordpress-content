@@ -1317,7 +1317,10 @@ function rt_output_jsonld_structured_data() {
 				'name'        => 'Real Treasury',
 				'legalName'   => 'Real Treasury, LLC',
 				'url'         => 'https://realtreasury.com/',
-				'description' => 'Confused by treasury tech options? Real Treasury gives you unbiased guidance to choose, compare, and implement the right system—no vendor pressure.',
+				// From /team/'s meta description, not the homepage's: the homepage copy
+				// says Real Treasury helps "implement" the system, and the firm does
+				// not implement. Structured data states the service line as it is.
+				'description' => 'We help treasury teams choose the right Treasury Management System (TMS) — independent, unbiased, and based on real operational needs.',
 				'slogan'      => 'Independent. Unbiased. Built for Treasury Teams.',
 				'sameAs'      => array(
 					'https://www.linkedin.com/company/realtreasury/',

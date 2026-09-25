@@ -1,0 +1,96 @@
+# slug	post_id	source in this repo	mode (page|raw, default page)
+#
+# Only PUBLISHED posts belong here. 11 of the 23 iframed posts are drafts — they 404,
+# are absent from the sitemap, and get_permalink() returns ?p=NNNN. Converting one is
+# zero value. Check post_status AND the permalink before adding a row.
+#
+# mode `page`: body+scoped CSS spliced into the post, pattern refs preserved.
+real-treasury-explained	1491	insights/2024/real-treasury-explained/index.html	page
+payment-networks-explained	1516	insights/2024/payment-networks-explained/index.html	page
+data-flows-of-a-tms	1510	insights/2024/tms-data-flow/index.html	page
+#
+# mode `raw`: the post's content IS the file. The site header (nav + explore carousel)
+# lives in WPCode snippet post 1885, titled
+# "rt-wordpress-content/header/main-menu /custom-header.php" — a normal post holding PHP,
+# hooked to astra_body_top. This is the deploy path for custom-header.php; merging the
+# repo file alone reaches nothing, which is what PR #898's review correctly flagged.
+site-header-snippet	1885	header/main-menu/custom-header.php	raw
+#
+# The nav's JavaScript is a SECOND wpcode snippet, post 1865 "Header Menu JavaScript" —
+# separate from 1885, which holds only custom-header.php (the carousel). Without this row
+# the JS file is in the repo, merges clean and deploys NOTHING: no build inlines it and
+# nothing else references it. That is how the 992 breakpoint stayed live after shared.css
+# moved to 1150. It must publish in the same sitting as the CSS — CSS at 1150 with JS at
+# 992 leaves 993–1150px showing a mobile menu that click-outside will not close.
+nav-js-snippet	1865	header/main-menu/JSsnippet/index.html	raw
+#
+# mode `native`: the post's content is the file wrapped as ONE Custom HTML block, with the
+# repo header comment swapped for a source-of-record note. These four are the guide release
+# pages. Three are published (4202, 4809 and 4585) and one is a draft (4587); this script
+# never moves post_status in either direction — it writes post_content and refuses if the
+# status shifted under it. Publishing a draft stays a deliberate act in WP Admin.
+#
+# 4585 was a draft on September 19, 2026, and 4202's post-submit redirect landed on a 404;
+# it was published by September 22 and returns 200. See docs/guide-release-runbook.md,
+# which is the state of record for all four.
+#
+# 4587 is a staging draft, not a destination: its slug 404s and should never be published,
+# because the download form's home is 4202. It is listed because it is the page that carried
+# the stripped-backslash corruption, and `plan` is how that stayed visible.
+#
+# COLUMN 5 is the post_name the id must carry on whichever target you are writing. It
+# defaults to column 1 when omitted. Post ids are PER SITE and staging has drifted from
+# production: production 1519 is the live /2024-tms-selection-guide/ post while staging
+# 1519 is how-to-select-a-tms, and production 4799 is a Flamingo spam record. Writing by
+# id alone would have overwritten a published page, and the pattern-ref guard would not
+# have noticed, because between two site pages the refs match.
+guide-waitlist-confirmed	4809	treasury-tech-selection/waitlist/confirmed/wordpress-page.html	native	2026-treasury-tech-guide-waitlist-confirmed
+guide-thank-you	4585	treasury-tech-selection/guidebook/thank-you/wordpress-page.html	native	thank-you
+guide-download-staging	4587	treasury-tech-selection/guidebook/wordpress-page.html	native	treasury-tech-selection-guide-download
+guide-download	4202	treasury-tech-selection/guidebook/wordpress-page.html	native	treasury-tech-selection-guide
+#
+# mode `verbatim`: the post's content IS the whole standalone document, spliced into the
+# wrapper and pattern refs the post already carries. For pages hand-pasted as a full
+# document that already render natively. /errnot/ loads Tailwind from a CDN in its <head>,
+# which mode `page` would drop, and its group wrapper is full-bleed zero-padding, which
+# mode `native` would replace with a constrained one.
+errnot	157	errnot/index.html	verbatim
+#
+# The two 2026 guide articles. Post 1519 was /2024-tms-selection-guide/ — an iframe to
+# github.io, 673 bytes, no h1, 869 GSC impressions and 0 clicks. It is rewritten from the
+# 2026 guide and its slug moves to /how-to-select-a-tms/; WP writes _wp_old_slug and 301s
+# the old URL. Change the slug WITH the content, never before it.
+how-to-select-a-tms	1519	insights/2026/how-to-select-a-tms/index.html	page
+#
+# STAGING ID. 4799 is the post created on the staging site. The production post is a
+# different id on the `tms-selection-mistakes-prod` row below; do not write either id
+# over the other.
+tms-selection-mistakes	4799	insights/2026/tms-selection-mistakes/index.html	page
+#
+# PRODUCTION ROWS. The two article rows above carry STAGING ids. Production drifted:
+# production 1519 is the live /2024-tms-selection-guide/ post — the one holding 869 GSC
+# impressions — and production has no mistakes post at all. The decision on record is to
+# REBUILD 1519 in place and move its slug, not to create a second post: a new post would
+# abandon that equity and leave the old iframe page live beside it. WP writes _wp_old_slug
+# on the rename and 301s the old URL.
+#
+# DONE, September 18, 2026. The content was published while column 5 still read
+# `2024-tms-selection-guide`, so check_identity() passed against the name the post still
+# carried, and only then were post_name and post_title moved. Column 5 now reads the name
+# production 1519 carries today — read back live on September 19, 2026 — so the guard keeps
+# passing. If that order ever has to run again on another site, publish content first and
+# rename second: the old URL never serves the new slug with old content.
+how-to-select-a-tms-prod	1519	insights/2026/how-to-select-a-tms/index.html	page	how-to-select-a-tms
+#
+# 4832 is REAL. It was created on production on September 18, 2026 with the author, title,
+# slug, category and tags copied from staging 4799, and its content is written and read-back
+# verified. PUBLISHED September 19, 2026 — a person clicked Publish in WP Admin; this rail
+# writes content and refuses status moves by design. /tms-selection-mistakes/ returns 200.
+# Two things needed fixing after: the three Astra chrome settings
+# (ast-global-header-display, site-post-title, footer-sml-layout) were empty on this
+# brand-new post where 1519 and 157 carry `disabled`, so Astra rendered its own masthead
+# and colophon around the ref-183/ref-398 pair — seed those three on any new `page` post.
+# And the REST write that fixed them STRIPPED the rt:page-content markers; they were
+# restored over WP-CLI. Never round-trip a `page`-mode post through REST or the block
+# editor without re-checking for the region.
+tms-selection-mistakes-prod	4832	insights/2026/tms-selection-mistakes/index.html	page	tms-selection-mistakes

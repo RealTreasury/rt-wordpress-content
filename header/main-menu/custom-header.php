@@ -35,23 +35,21 @@ function add_my_custom_header_html() {
                                         <div class="chart-slide active">
                                             <a href="https://realtreasury.com/treasury-tech-market/" class="rt-explore-link">
                                                 <div class="chart-title-overlay">
-                                                    <h3>Treasury Systems</h3>
-                                                    <p>North America</p>
+                                                    <h3>TMS Systems - NORAM</h3>
                                                 </div>
                                                 <img class="rt-explore-image"
-                                                    src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-NORAM-05-2026-clean.png"
-                                                     alt="Treasury Tech Market - North America">
+                                                    src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png"
+                                                     alt="Treasury Tech Market - North America, September 2026">
                                             </a>
                                         </div>
                                         <div class="chart-slide">
                                             <a href="https://realtreasury.com/treasury-tech-market/" class="rt-explore-link">
                                                 <div class="chart-title-overlay">
-                                                    <h3>Treasury Systems</h3>
-                                                    <p>EMEA Vendors</p>
+                                                    <h3>TMS Systems - EMEA</h3>
                                                 </div>
                                                 <img class="rt-explore-image"
-                                                    src="https://realtreasury.com/wp-content/uploads/2026/05/tms-market-clean-EMEA-05-2026.png"
-                                                     alt="Treasury Tech Market - EMEA">
+                                                    src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-clean-EMEA-09-2026-new-2.png"
+                                                     alt="Treasury Tech Market - EMEA, September 2026">
                                             </a>
                                         </div>
                                         <div class="carousel-dots">
@@ -121,9 +119,9 @@ function add_my_custom_header_html() {
                                             <div class="rt-step-number">1</div>
                                             <div class="rt-step-text">Explore tech portal</div>
                                         </a>
-                                        <a href="https://realtreasury.com/2026-treasury-tech-guide-waitlist/" class="rt-journey-step">
+                                        <a href="https://realtreasury.com/treasury-tech-selection-guide/" class="rt-journey-step">
                                             <div class="rt-step-number">2</div>
-                                            <div class="rt-step-text">Join: 2026 Selection Guide waitlist</div>
+                                            <div class="rt-step-text">Download: 2026 Selection Guide</div>
                                         </a>
                                         <a href="https://realtreasury.com/on-demand-workshop/" class="rt-journey-step">
                                             <div class="rt-step-number">3</div>
@@ -157,13 +155,13 @@ function add_my_custom_header_html() {
                                             <span class="rt-service-cta">Request Access →</span>
                                         </a>
 
-                                        <a href="https://realtreasury.com/2026-treasury-tech-guide-waitlist/" class="rt-service-item">
+                                        <a href="https://realtreasury.com/treasury-tech-selection-guide/" class="rt-service-item">
                                             <div class="rt-service-header">
                                                 <div class="rt-service-icon">📘</div>
                                                 <div class="rt-service-title">2026 Real Treasury Tech Selection Guide</div>
                                             </div>
-                                            <div class="rt-service-desc">The practitioner-led guide to evaluating and selecting treasury technology — join the waitlist for early access.</div>
-                                            <span class="rt-service-cta">Join the Waitlist →</span>
+                                            <div class="rt-service-desc">The practitioner-led guide to evaluating and selecting treasury technology — request your download.</div>
+                                            <span class="rt-service-cta">Download the Guide →</span>
                                         </a>
 
                                         <a href="https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/LgF7vpFIP0qANup2hPHi_g2?ismsaljsauthenabled" target="_blank" class="rt-service-item">
@@ -198,10 +196,10 @@ function add_my_custom_header_html() {
                         </div>
                     </div>
                 </div>
-                <!-- Webinars -->
+                <!-- Selection -->
                 <div class="rt-nav-item">
-                    <a href="https://realtreasury.com/webinars/" class="rt-nav-link">
-                        WEBINARS
+                    <a href="https://realtreasury.com/how-to-select-a-tms/" class="rt-nav-link">
+                        TMS SELECTION
                     </a>
                 </div>
                 <!-- About -->

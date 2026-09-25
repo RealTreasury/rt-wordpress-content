@@ -221,186 +221,276 @@ require_once ASTRA_THEME_DIR . 'inc/core/deprecated/deprecated-functions.php';
  * site and are preserved across Astra theme updates.
  */
 
-// Site-Wide Cookie Management System
-add_action('wp_footer', 'add_sitewide_cookie_banner');
-function add_sitewide_cookie_banner() {
+// ===============================================================
+// CONSENT MANAGEMENT
+// ===============================================================
+// Google Consent Mode v2. The defaults MUST be pushed into dataLayer
+// before any Google tag loads, so this runs on wp_head at priority 1 --
+// ahead of Site Kit's gtag/GTM snippets. Analytics storage defaults to
+// denied; the banner grants it via a consent update.
+//
+// Consent is stored in a first-party cookie (rt_consent) rather than
+// localStorage only, so the head defaults block can read it before any tag
+// loads and so the Cookie Policy can describe it truthfully. It is read in
+// the browser, never in PHP: page output must not vary on it (see below).
+
+if ( ! defined( 'RT_CONSENT_COOKIE' ) ) {
+    define( 'RT_CONSENT_COOKIE', 'rt_consent' );
+}
+
+add_action( 'wp_head', 'rt_consent_mode_defaults', 1 );
+function rt_consent_mode_defaults() {
+    // The stored choice is read HERE, in the browser, not in PHP. This block
+    // is part of cached page HTML: rendering 'granted' from the request's
+    // cookie would hand an accepter's consent to a visitor who rejected, on
+    // whatever page the cache happened to store. Output is identical for every
+    // visitor; each browser supplies its own cookie.
     ?>
-    <script>
-    // FAST COOKIE MANAGEMENT WITH PRIVATE BROWSING OPTIMIZATION
-    (function() {
-    document.addEventListener('DOMContentLoaded', function() {
-
-        // Quick private browsing check
-        let isPrivateBrowsing = false;
-        try {
-            localStorage.setItem('__pb_test__', 'test');
-            localStorage.removeItem('__pb_test__');
-        } catch (e) {
-            isPrivateBrowsing = true;
-            console.log('🔒 Private browsing detected - using minimal cookie handling');
-        }
-
-        // Skip complex cookie management in private browsing
-        if (isPrivateBrowsing) {
-            console.log('Skipping cookie banner for private browsing');
-            return;
-        }
-
-        function checkCookieConsent() {
-            try {
-                const consent = localStorage.getItem('cookie_consent');
-                if (!consent) {
-                    showCookieBanner();
-                } else {
-                    const consentData = JSON.parse(consent);
-                    if (consentData.preferences && consentData.preferences.analytics) {
-                        loadGoogleAnalytics();
-                    }
-                }
-            } catch (e) {
-                console.log('Cookie consent check failed:', e);
-            }
-        }
-
-        function showCookieBanner() {
-            if (document.getElementById('cookieBanner')) return;
-
-            const banner = document.createElement('div');
-            banner.id = 'cookieBanner';
-            banner.className = 'cookie-banner';
-            banner.innerHTML = `
-                <div class="banner-content">
-                    <div class="banner-text">
-                        <strong>🍪 We use cookies to enhance your experience</strong>
-                        This website uses cookies to provide you with a personalized browsing experience.
-                    </div>
-                    <div class="banner-buttons">
-                        <button class="cookie-btn cookie-btn-accept" onclick="acceptAllCookies()">Accept All</button>
-                        <button class="cookie-btn cookie-btn-decline" onclick="declineAllCookies()">Decline All</button>
-                        <a href="https://realtreasury.com/cookie-policy/" class="cookie-btn cookie-btn-manage">Learn More</a>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(banner);
-            setTimeout(() => banner.classList.add('show'), 100);
-        }
-
-        window.acceptAllCookies = function() {
-            try {
-                const preferences = {
-                    essential: true,
-                    analytics: true,
-                    marketing: true,
-                    preference: true
-                };
-
-                localStorage.setItem('cookie_consent', JSON.stringify({
-                    timestamp: new Date().toISOString(),
-                    preferences: preferences
-                }));
-
-                hideCookieBanner();
-                loadGoogleAnalytics();
-                console.log('✅ All cookies accepted');
-            } catch (e) {
-                console.log('Error accepting cookies:', e);
-                hideCookieBanner();
-            }
-        }
-
-        window.declineAllCookies = function() {
-            try {
-                const preferences = {
-                    essential: true,
-                    analytics: false,
-                    marketing: false,
-                    preference: false
-                };
-
-                localStorage.setItem('cookie_consent', JSON.stringify({
-                    timestamp: new Date().toISOString(),
-                    preferences: preferences
-                }));
-
-                hideCookieBanner();
-                removeCookiesByPattern('_ga');
-                console.log('❌ Non-essential cookies declined');
-            } catch (e) {
-                console.log('Error declining cookies:', e);
-                hideCookieBanner();
-            }
-        }
-
-        function hideCookieBanner() {
-            const banner = document.getElementById('cookieBanner');
-            if (banner) {
-                banner.classList.remove('show');
-                setTimeout(() => {
-                    if (banner.parentNode) {
-                        banner.parentNode.removeChild(banner);
-                    }
-                }, 300);
-            }
-        }
-
-        function loadGoogleAnalytics() {
-            // Skip GA in private browsing or if already loaded
-            if (isPrivateBrowsing || typeof gtag !== 'undefined') {
-                return;
-            }
-
-            try {
-                const script = document.createElement('script');
-                script.async = true;
-                script.src = 'https://www.googletagmanager.com/gtag/js?id=G-6KLBPGHTSM';
-
-                // Add timeout for GA loading
-                script.onerror = function() {
-                    console.log('Google Analytics failed to load');
-                };
-
-                document.head.appendChild(script);
-
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-6KLBPGHTSM', {
-                    'anonymize_ip': true,
-                    'cookie_flags': 'max-age=7200;secure;samesite=none'
-                });
-
-                console.log('📊 Google Analytics loaded');
-            } catch (e) {
-                console.log('Error loading Google Analytics:', e);
-            }
-        }
-
-        function removeCookiesByPattern(pattern) {
-            try {
-                const cookies = document.cookie.split(';');
-                cookies.forEach(cookie => {
-                    const [name] = cookie.trim().split('=');
-                    if (name.includes(pattern)) {
-                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${window.location.hostname}`;
-                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
-                    }
-                });
-            } catch (e) {
-                console.log('Error removing cookies:', e);
-            }
-        }
-
-        // Initialize cookie management
-        checkCookieConsent();
-
-        window.showCookieBanner = showCookieBanner;
+    <script id="rt-consent-defaults">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    var rtConsentStored = document.cookie.match(
+        new RegExp('(?:^|;\\s*)' + <?php echo wp_json_encode( RT_CONSENT_COOKIE ); ?> + '=([^;]*)')
+    );
+    gtag('consent', 'default', {
+        'ad_storage':              'denied',
+        'ad_user_data':            'denied',
+        'ad_personalization':      'denied',
+        'personalization_storage': 'denied',
+        'analytics_storage':       (rtConsentStored && rtConsentStored[1] === 'analytics') ? 'granted' : 'denied',
+        'functionality_storage':   'granted',
+        'security_storage':        'granted',
+        'wait_for_update':         500
     });
-    })();
+    gtag('set', 'ads_data_redaction', true);
     </script>
     <?php
 }
 
+/**
+ * Jetpack ships two trackers we do not want:
+ *
+ *  - google-analytics: a second GA4 tag (G-6KLBPGHTSM) duplicating the
+ *    Site Kit tag. It double-counts pageviews and ignores Consent Mode.
+ *  - stats: Automattic's own pixel (stats.wp.com). Not Consent Mode aware,
+ *    undisclosed in our policies, and redundant next to GA4 + Search Console.
+ *
+ * Both are removed unconditionally rather than varied on the consent cookie,
+ * so page output stays cacheable.
+ */
+add_filter( 'jetpack_active_modules', 'rt_disable_jetpack_trackers' );
+function rt_disable_jetpack_trackers( $modules ) {
+    if ( ! is_array( $modules ) ) {
+        return $modules;
+    }
+    return array_values( array_diff( $modules, array( 'google-analytics', 'stats' ) ) );
+}
+
+// Consent banner + preference panel.
+add_action( 'wp_footer', 'rt_consent_banner' );
+function rt_consent_banner() {
+    ?>
+    <style id="rt-consent-styles">
+    .cookie-btn-manage{background:hsla(0,0%,100%,.14);color:#fff;border:1px solid hsla(0,0%,100%,.28)}
+    .cookie-btn-manage:hover{background:hsla(0,0%,100%,.24);color:#fff}
+    .rt-consent-panel{position:fixed;inset:0;z-index:99997;display:flex;align-items:center;
+        justify-content:center;background:rgba(10,6,20,.6);padding:20px}
+    .rt-consent-panel[hidden]{display:none}
+    .rt-consent-panel__card{background:#fff;color:#281345;max-width:520px;width:100%;
+        border-radius:14px;padding:28px;box-shadow:0 18px 50px rgba(0,0,0,.35);
+        max-height:85vh;overflow:auto}
+    .rt-consent-panel__card h2{font-size:1.25rem;margin:0 0 6px}
+    .rt-consent-panel__card p{font-size:.92rem;line-height:1.55;color:#444;margin:0 0 18px}
+    .rt-consent-row{display:flex;gap:12px;align-items:flex-start;padding:14px 0;
+        border-top:1px solid rgba(40,19,69,.12)}
+    .rt-consent-row input{margin-top:3px;width:16px;height:16px;flex:none}
+    .rt-consent-row strong{display:block;font-size:.95rem}
+    .rt-consent-row span{font-size:.85rem;color:#555;line-height:1.45}
+    .rt-consent-panel__actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+    .rt-consent-panel__actions .cookie-btn{margin-left:0}
+    </style>
+    <script id="rt-consent-banner">
+    (function () {
+        var COOKIE  = <?php echo wp_json_encode( RT_CONSENT_COOKIE ); ?>;
+        var MAX_AGE = 60 * 60 * 24 * 180; // 180 days
+
+        function readConsent() {
+            var match = document.cookie.match(
+                new RegExp('(?:^|;\\s*)' + COOKIE + '=([^;]*)')
+            );
+            if (!match) { return null; }
+            // A malformed escape (e.g. a hand-edited cookie) would throw here
+            // and stop init() before the preferences trigger is wired. Treat it
+            // as no choice stored: the banner shows and the default stays denied.
+            try {
+                return decodeURIComponent(match[1]);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function writeConsent(value) {
+            var secure = (location.protocol === 'https:') ? '; Secure' : '';
+            document.cookie = COOKIE + '=' + encodeURIComponent(value) +
+                '; path=/; max-age=' + MAX_AGE + '; SameSite=Lax' + secure;
+            // Our own record of when consent was given, for audit purposes.
+            try {
+                localStorage.setItem('rt_consent_at', new Date().toISOString());
+            } catch (e) {}
+        }
+
+        function applyConsent(granted) {
+            if (typeof window.gtag !== 'function') {
+                window.dataLayer = window.dataLayer || [];
+                window.gtag = function () { window.dataLayer.push(arguments); };
+            }
+            window.gtag('consent', 'update', {
+                'analytics_storage': granted ? 'granted' : 'denied'
+            });
+            if (!granted) {
+                clearAnalyticsCookies();
+            }
+        }
+
+        function clearAnalyticsCookies() {
+            var host = location.hostname;
+            var scopes = ['', '; domain=' + host, '; domain=.' + host.replace(/^www\./, '')];
+            document.cookie.split(';').forEach(function (raw) {
+                var name = raw.split('=')[0].trim();
+                if (!/^_ga|^_gid$|^_gat|^_gcl/.test(name)) { return; }
+                scopes.forEach(function (scope) {
+                    document.cookie = name +
+                        '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + scope;
+                });
+            });
+        }
+
+        function decide(value) {
+            writeConsent(value);
+            applyConsent(value === 'analytics');
+            hideBanner();
+            closePanel();
+        }
+
+        // ---- banner ----------------------------------------------------
+        function showBanner() {
+            if (document.getElementById('cookieBanner')) { return; }
+            var banner = document.createElement('div');
+            banner.id = 'cookieBanner';
+            banner.className = 'cookie-banner';
+            banner.setAttribute('role', 'region');
+            banner.setAttribute('aria-label', 'Cookie consent');
+            banner.innerHTML =
+                '<div class="banner-content">' +
+                    '<div class="banner-text">' +
+                        '<strong>We use analytics and marketing cookies</strong> ' +
+                        'They tell us which pages people read and which companies visit, and measure LinkedIn ads. None is set until you choose. ' +
+                        'See our <a href="/cookie-policy/" style="color:#c77dff">Cookie Policy</a>.' +
+                    '</div>' +
+                    '<div class="banner-buttons">' +
+                        '<button type="button" class="cookie-btn cookie-btn-accept" data-rt-consent="accept">Accept</button>' +
+                        '<button type="button" class="cookie-btn cookie-btn-decline" data-rt-consent="reject">Reject</button>' +
+                        '<button type="button" class="cookie-btn cookie-btn-manage" data-rt-consent="manage">Preferences</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(banner);
+            banner.addEventListener('click', function (e) {
+                var action = e.target.getAttribute('data-rt-consent');
+                if (action === 'accept')      { decide('analytics'); }
+                else if (action === 'reject') { decide('essential'); }
+                else if (action === 'manage') { openPanel(); }
+            });
+            setTimeout(function () { banner.classList.add('show'); }, 100);
+        }
+
+        function hideBanner() {
+            var banner = document.getElementById('cookieBanner');
+            if (!banner) { return; }
+            banner.classList.remove('show');
+            setTimeout(function () {
+                if (banner.parentNode) { banner.parentNode.removeChild(banner); }
+            }, 300);
+        }
+
+        // ---- preference panel ------------------------------------------
+        function buildPanel() {
+            var panel = document.createElement('div');
+            panel.className = 'rt-consent-panel';
+            panel.id = 'rtConsentPanel';
+            panel.hidden = true;
+            panel.innerHTML =
+                '<div class="rt-consent-panel__card" role="dialog" aria-modal="true" aria-labelledby="rtConsentTitle">' +
+                    '<h2 id="rtConsentTitle">Cookie preferences</h2>' +
+                    '<p>We keep this short because we only use two kinds of cookie.</p>' +
+                    '<div class="rt-consent-row">' +
+                        '<input type="checkbox" checked disabled aria-label="Essential cookies, always on">' +
+                        '<label><strong>Essential</strong>' +
+                        '<span>Needed for the site to work &mdash; security, spam filtering on forms, ' +
+                        'and remembering this choice. Always on.</span></label>' +
+                    '</div>' +
+                    '<div class="rt-consent-row">' +
+                        '<input type="checkbox" id="rtConsentAnalytics">' +
+                        '<label for="rtConsentAnalytics"><strong>Analytics and marketing</strong>' +
+                        '<span>Google Analytics 4, LinkedIn Insight Tag and Apollo&rsquo;s website tracker: ' +
+                        'which pages get read, which companies visit, and how LinkedIn ads perform. ' +
+                        'Off unless you turn it on.</span></label>' +
+                    '</div>' +
+                    '<div class="rt-consent-panel__actions">' +
+                        '<button type="button" class="cookie-btn cookie-btn-accept" data-rt-panel="save">Save choices</button>' +
+                        '<button type="button" class="cookie-btn cookie-btn-decline" data-rt-panel="close">Cancel</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(panel);
+            panel.addEventListener('click', function (e) {
+                var action = e.target.getAttribute('data-rt-panel');
+                if (action === 'save') {
+                    decide(document.getElementById('rtConsentAnalytics').checked ? 'analytics' : 'essential');
+                } else if (action === 'close' || e.target === panel) {
+                    closePanel();
+                }
+            });
+            return panel;
+        }
+
+        function openPanel() {
+            var panel = document.getElementById('rtConsentPanel') || buildPanel();
+            document.getElementById('rtConsentAnalytics').checked = (readConsent() === 'analytics');
+            panel.hidden = false;
+        }
+
+        function closePanel() {
+            var panel = document.getElementById('rtConsentPanel');
+            if (panel) { panel.hidden = true; }
+        }
+
+        // Let any page open the preference panel. The Cookie Policy page
+        // links to this, so the "manage your preferences" promise is real.
+        window.rtOpenCookiePreferences = openPanel;
+
+        function init() {
+            // Wire the preferences trigger first, so nothing in the banner
+            // path can leave the Cookie Policy's control dead.
+            document.addEventListener('click', function (e) {
+                var trigger = e.target.closest && e.target.closest('[data-rt-cookie-preferences]');
+                if (trigger) {
+                    e.preventDefault();
+                    openPanel();
+                }
+            });
+            if (!readConsent()) {
+                showBanner();
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+    <?php
+}
 
 // Remove default Astra post footer elements
 function remove_astra_default_footer() {

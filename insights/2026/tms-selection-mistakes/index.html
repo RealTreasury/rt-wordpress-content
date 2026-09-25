@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 5 Most Common TMS Selection Failures | Real Treasury</title>
+    <meta name="description" content="No written requirements, falling for the demo, buying the salesperson, the easy button, buying on price. The five mistakes and how to avoid each one.">
+    <meta property="og:title" content="The 5 Most Common Selection Failures and How to Avoid Them">
+    <meta property="og:description" content="No written requirements, falling for the demo, buying the salesperson, the easy button, buying on price. The five mistakes and how to avoid each one.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://realtreasury.com/tms-selection-mistakes/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .rt-art {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #131313;
+            line-height: 1.7;
+        }
+
+        .rt-art *,
+        .rt-art *::before,
+        .rt-art *::after { box-sizing: border-box; }
+
+        .rt-art p,
+        .rt-art ul,
+        .rt-art ol,
+        .rt-art h2,
+        .rt-art h3,
+        .rt-art figure { margin: 0; }
+
+        .rt-art-hero {
+            padding: 64px 0 48px;
+            background: #f8f8f8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rt-art-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: none;
+            pointer-events: none;
+        }
+
+        .rt-art-wrap {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .rt-art-eyebrow {
+            display: inline-block;
+            background: none;
+            color: #5b0acd;
+            padding: 0;
+            border-radius: 0;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+
+        .rt-art-hero h1 {
+            font-size: clamp(2.1rem, 4.8vw, 3.5rem);
+            font-weight: 800;
+            color: #281345;
+            line-height: 1.15;
+            margin: 0 0 20px;
+            letter-spacing: -0.035em;
+        }
+
+        .rt-art-lede {
+            font-size: 1.2rem;
+            color: #393939;
+            line-height: 1.65;
+        }
+
+
+        .rt-art-body {
+            padding: 56px 0 72px;
+            background: #ffffff;
+        }
+
+        .rt-art-body > .rt-art-wrap > * + * { margin-top: 22px; }
+
+        .rt-art-body h2 {
+            font-size: clamp(1.5rem, 2.8vw, 2rem);
+            font-weight: 700;
+            color: #393939;
+            line-height: 1.25;
+            margin-top: 56px !important;
+            padding-top: 26px;
+            border-top: 1px solid #ebe4f7;
+        }
+
+        .rt-art-body h2:first-child {
+            margin-top: 0 !important;
+            padding-top: 0;
+            border-top: 0;
+        }
+
+        .rt-art-body h3 {
+            font-size: 1.16rem;
+            font-weight: 600;
+            color: #131313;
+            margin-top: 38px !important;
+        }
+
+        .rt-art-body p {
+            font-size: 1.05rem;
+            color: #393939;
+        }
+
+        .rt-art-body ul,
+        .rt-art-body ol {
+            padding-left: 26px;
+            color: #393939;
+            font-size: 1.05rem;
+        }
+
+        .rt-art-body li { margin-bottom: 9px; }
+
+        .rt-art-body a {
+            color: #7216f4;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .rt-art-body a:hover { color: #5b0acd; }
+
+        .rt-art-body strong { color: #131313; }
+
+        .rt-art-statrow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 26px 0;
+            border-top: 1px solid #bebebe;
+            border-bottom: 1px solid #bebebe;
+        }
+
+        .rt-art-stat { flex: 1 1 140px; }
+
+        .rt-art-stat b {
+            display: block;
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #7216f4;
+            line-height: 1;
+        }
+
+        .rt-art-stat span {
+            display: block;
+            margin-top: 7px;
+            font-size: 0.86rem;
+            color: #7e7e7e;
+            font-weight: 500;
+        }
+
+        .rt-art-statcap {
+            font-size: 0.86rem;
+            color: #7e7e7e;
+        }
+
+        .rt-art-split {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+
+        .rt-art-split h4 {
+            margin: 0 0 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #7216f4;
+        }
+
+        .rt-art-split > div:last-child h4 { color: #7e7e7e; }
+
+        .rt-art-split ul {
+            margin: 0;
+            padding-left: 22px;
+            font-size: 1rem;
+        }
+
+        .rt-art-seg h3 {
+            color: #5b0acd;
+        }
+
+        .rt-art-faq dt {
+            font-weight: 600;
+            color: #131313;
+            font-size: 1.05rem;
+            margin-top: 24px;
+        }
+
+        .rt-art-faq dd {
+            margin: 7px 0 0;
+            color: #393939;
+            font-size: 1.05rem;
+        }
+
+        .rt-art-cta {
+            margin-top: 56px !important;
+            padding: 34px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #281345 0%, #5b0acd 100%);
+            color: #ffffff;
+        }
+
+        .rt-art-cta h2 {
+            border-top: 0 !important;
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+            color: #ffffff !important;
+            font-size: 1.5rem;
+        }
+
+        .rt-art-cta p {
+            color: rgba(255, 255, 255, 0.86) !important;
+            margin-top: 12px;
+        }
+
+        .rt-art-cta a.rt-art-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 13px 26px;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #5b0acd !important;
+            font-weight: 600;
+            text-decoration: none !important;
+        }
+
+        .rt-art-cta a.rt-art-btn:hover {
+            background: #f8f8f8;
+            color: #281345 !important;
+        }
+
+        .rt-art-quote {
+            margin-top: 30px !important;
+            padding-top: 24px;
+            border-top: 1px solid #bebebe;
+            color: #393939;
+        }
+
+        .rt-art-quote cite {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            font-style: normal;
+            color: #7e7e7e;
+        }
+
+        @media (max-width: 640px) {
+            .rt-art-wrap { padding: 0 20px; }
+            .rt-art-hero { padding: 48px 0 40px; }
+            .rt-art-body { padding: 40px 0 56px; }
+        }
+
+        /* ---- Contents ---- */
+        .rt-art-toc {
+            margin: 34px 0 0;
+            padding: 22px 0;
+            border-top: 1px solid #bebebe;
+            border-bottom: 0;
+        }
+
+        .rt-art-toc h2 {
+            margin: 0 0 12px !important;
+            padding: 0 !important;
+            border: 0 !important;
+            font-size: 0.76rem !important;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: #393939 !important;
+        }
+
+        .rt-art-toc ol {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: toc;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 32px;
+        }
+
+        .rt-art-toc li {
+            counter-increment: toc;
+            display: flex;
+            align-items: baseline;
+            margin: 0;
+            padding: 12px 0;
+            border-bottom: 1px solid #ebe4f7;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            break-inside: avoid;
+        }
+
+        .rt-art-toc li::before {
+            content: counter(toc, decimal-leading-zero);
+            margin-right: 10px;
+            font-variant-numeric: tabular-nums;
+            font-weight: 700;
+            color: #5b0acd;
+        }
+
+        .rt-art-toc a { font: inherit; color: #393939 !important; text-decoration: none !important; }
+        .rt-art-toc a:hover { color: #7216f4 !important; text-decoration: underline !important; }
+
+        /* ---- Segment cards ---- */
+        .rt-art-segs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 18px;
+        }
+
+        .rt-art-segs > div {
+            display: flex;
+            flex-direction: column;
+            padding: 22px 20px;
+            border: 1px solid #ebe4f7;
+            border-radius: 14px;
+            background: #ffffff;
+        }
+
+        .rt-art-segs h3 {
+            margin: 0 0 10px !important;
+            font-size: 1.05rem;
+            color: #5b0acd;
+        }
+
+        .rt-art-segs p { font-size: 0.97rem !important; margin: 0; }
+
+        .rt-art-segs .rt-art-segs-fit {
+            display: block;
+            margin-top: auto;
+            padding-top: 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: #7e7e7e;
+        }
+
+        /* ---- ERR NOT strip ---- */
+        .rt-art-steps {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: none;
+        }
+
+        .rt-art-steps li {
+            margin: 0;
+            padding: 16px 14px;
+            border: 1px solid #ebe4f7;
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .rt-art-steps b {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #7216f4;
+            line-height: 1;
+        }
+
+        .rt-art-steps strong {
+            display: block;
+            hyphens: none;
+            margin: 8px 0 4px;
+            font-size: 0.95rem;
+            color: #131313;
+        }
+
+        .rt-art-steps span {
+            display: block;
+            font-size: 0.85rem;
+            color: #7e7e7e;
+            line-height: 1.45;
+        }
+
+        /* ---- Mistake headers ---- */
+        .rt-art-mistake {
+            display: grid;
+            grid-template-columns: 64px minmax(0, 1fr);
+            align-items: start;
+            gap: 24px;
+            margin-top: 58px !important;
+            padding-top: 28px;
+            border-top: 2px solid #281345;
+        }
+
+        .rt-art-mistake .rt-art-num {
+            flex: 0 0 auto;
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1;
+            color: #7216f4;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rt-art-mistake h2 {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: 0 !important;
+        }
+
+        .rt-art-body .rt-art-eq {
+            display: block;
+            margin: 16px 0 24px !important;
+            padding: 0 0 18px;
+            border-bottom: 1px solid #ebe4f7;
+            background: none;
+            font-size: 1.25rem !important;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #281345 !important;
+            letter-spacing: -0.02em;
+        }
+        .rt-art-eq > span:first-child { color: #393939; }
+        .rt-art-eq > span:last-child { font-weight: 700; }
+        .rt-art-eq .rt-art-ne { display: inline-block; padding: 0 0.35em; color: #7216f4; font-size: 1.65rem; vertical-align: -0.06em; line-height: 1; font-weight: 400; }
+
+        /* Full-width action notes keep advice in the article's reading measure. */
+        .rt-art .rt-art-avoid {
+            display: block;
+            margin-top: 36px !important;
+            padding: 0;
+            background: none;
+            border: 0;
+        }
+        .rt-art .rt-art-avoid > h3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0 !important;
+            padding: 0 0 16px;
+            border-bottom: 2px solid #7216f4;
+            font-size: 1.2rem;
+            line-height: 1.35;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #281345;
+        }
+        .rt-art .rt-art-avoid > h3::before { content: "✓"; display: grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border: 1px solid #7216f4; border-radius: 50%; color: #5b0acd; font-size: 17px; font-weight: 600; }
+        .rt-art .rt-art-avoid-copy { margin: 20px 0 0; }
+        .rt-art .rt-art-avoid-copy > * + * { margin-top: 18px; }
+        .rt-art .rt-art-avoid-copy ul { padding: 0; list-style: none; }
+        .rt-art .rt-art-avoid-copy li { position: relative; margin: 0; padding: 14px 0 14px 24px; border-bottom: 1px solid #ebe4f7; }
+        .rt-art .rt-art-avoid-copy li::before { content: ""; position: absolute; left: 2px; top: 24px; width: 6px; height: 6px; border-radius: 50%; background: #7216f4; }
+        .rt-art .rt-art-avoid-copy li strong { color: #5b0acd; }
+        @media (max-width: 640px) {
+            .rt-art .rt-art-avoid > h3 { font-size: 1.1rem; }
+        }
+
+        /* ---- Recap ---- */
+        .rt-art .rt-art-recap {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            counter-reset: recap;
+        }
+
+        .rt-art-recap li {
+            counter-increment: recap;
+            display: flex;
+            gap: 22px;
+            align-items: baseline;
+            margin: 0;
+            padding: 22px 0;
+            border-bottom: 1px solid #bebebe;
+            font-size: 1.02rem;
+        }
+
+        .rt-art-recap li::before {
+            content: counter(recap);
+            flex: 0 0 2rem;
+            font-size: 1.5rem;
+            line-height: 1;
+            font-weight: 800;
+            color: #7216f4;
+            font-variant-numeric: tabular-nums;
+        }
+
+        @media (max-width: 640px) {
+            .rt-art-toc ol { grid-template-columns: 1fr; }
+            .rt-art-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .rt-art-mistake { grid-template-columns: 36px minmax(0, 1fr); gap: 14px; margin-top: 42px !important; }
+            .rt-art-mistake .rt-art-num { font-size: 2.8rem; }
+            .rt-art-body .rt-art-eq { font-size: 1.15rem !important; text-align: left; padding: 0 0 16px; }
+        }
+    </style>
+</head>
+<body>
+<div class="rt-art">
+
+  <section class="rt-art-hero">
+    <div class="rt-art-wrap">
+      <span class="rt-art-eyebrow">TMS Selection</span>
+      <h1>The 5 Most Common Selection Failures and How to Avoid Them</h1>
+      <p class="rt-art-lede">You have likely heard of companies that love their TMS and others that definitely do not. The ones that feel like they aren&rsquo;t getting &ldquo;value,&rdquo; or just outright hate their TMS usually made a less than ideal selection.</p>
+      <nav class="rt-art-toc" aria-label="Contents">
+        <h2>The five</h2>
+        <ol>
+          <li><a href="#mistake-1">No written, prioritized requirements</a></li>
+          <li><a href="#mistake-2">Falling in love with the demo</a></li>
+          <li><a href="#mistake-3">Buying because you like the salesperson</a></li>
+          <li><a href="#mistake-4">Choosing the familiar option</a></li>
+          <li><a href="#mistake-5">Buying on price alone</a></li>
+        </ol>
+      </nav>
+    </div>
+  </section>
+
+  <article class="rt-art-body">
+    <div class="rt-art-wrap">
+
+      <p>And that poor selection was compounded by an implementation that was doomed before it began. You can&rsquo;t &ldquo;out-implement&rdquo; a poor selection.</p>
+
+      <p>Unfortunately, this happens more often than most people think. In fact, many treasury technology projects end in &ldquo;no decision,&rdquo; and even among those that do move forward, a significant percentage of treasurers say they are unhappy with the outcome.</p>
+
+      <p>Why?</p>
+
+      <p>Because treasury teams frequently make the same avoidable mistakes during the selection process.</p>
+
+      <p>Once you know what these mistakes are, they&rsquo;re surprisingly easy to avoid.</p>
+
+      <p>Let&rsquo;s walk through the most common errors treasury teams make when selecting a TMS.</p>
+
+      <p>We&rsquo;ve already talked about <a href="/how-to-select-a-tms/">how a selection project should be run</a>. Our <a href="/errnot/">ERR NOT&trade; Methodology</a> is designed to keep you on &ldquo;track,&rdquo; but keep these common errors in mind so that you&rsquo;ll be sure to avoid them.</p>
+
+      <p>ERR NOT&trade; addresses the real number one reason companies don&rsquo;t select the best-fit system: not having a clear understanding of the current treasury technology marketplace, the segments, and how the products are positioned and marketed.</p>
+
+      <p>That one is hard to correct all by yourself; therefore, this is going to focus on the five that you can correct!</p>
+
+      <div class="rt-art-mistake" id="mistake-1">
+        <span class="rt-art-num" aria-hidden="true">1</span>
+        <h2>Not Having Written, Prioritized Requirements</h2>
+      </div>
+
+      <p class="rt-art-eq"><span>Want</span> <span class="rt-art-ne">&ne;</span> <span>Need.</span></p>
+
+      <p>Many companies begin serious demos without having a written, prioritized list of requirements. They rely on general ideas like:</p>
+
+      <ul>
+        <li>&ldquo;We want better visibility&rdquo;</li>
+        <li>&ldquo;We need forecasting&rdquo;</li>
+        <li>&ldquo;We want automation&rdquo;</li>
+        <li>or my favorite, &ldquo;We need to do something with AI&rdquo;</li>
+      </ul>
+
+      <p>We&rsquo;ve all heard some version of this advice, &ldquo;When you write down a goal, it becomes more tangible. You are more likely to stay focused on it and more likely to achieve it.&rdquo; I believe the same is true with your treasury technology goals.</p>
+
+      <p>Start with what you are trying to accomplish. Then be honest about what your current state is versus the future state you have in mind. What it takes to fill that gap is the basis of your requirements. Often the list begins with things like this:</p>
+
+      <ul>
+        <li>Automated previous day balance &amp; transaction reporting from 10 banks; intraday balance and transaction reporting from 5 of them.</li>
+        <li>Ability to reconcile previous day transactions vs the previous day cash position.</li>
+        <li>Ability to automatically pull A/R and A/P data from your ERP to add to bank transactions to set a cash position and a short-term forecast.</li>
+        <li>Ability to compare forecast vs forecast and forecast vs actual for a user-defined period.</li>
+        <li>And possibly many more.</li>
+      </ul>
+
+      <p>When you see a demo, you must keep yourself from being overly impressed by things that don&rsquo;t help meet the requirements. Ask yourself:</p>
+
+      <ul>
+        <li>Was that feature on my must-have list?</li>
+        <li>Does it solve one of my real problems?</li>
+        <li>Or was it simply interesting, cool, with a &ldquo;wow&rdquo; factor?</li>
+      </ul>
+
+      <p>Writing down and prioritizing requirements takes some time, but it is one of the most important steps in the selection process.</p>
+
+      <p>Do this before serious demos begin.</p>
+
+<div class="rt-art-avoid">
+        <h3>How to avoid mistake #1</h3>
+        <div class="rt-art-avoid-copy">
+
+        <p>The key is to create clear, prioritized requirements. Start by separating requirements into categories:</p>
+
+        <ul>
+          <li><strong>Must-Have Requirements.</strong> The system cannot succeed without these.</li>
+          <li><strong>Like-to-Have Requirements.</strong> Valuable features, but not essential.</li>
+          <li><strong>Nice-to-Have Requirements.</strong> These aren&rsquo;t really necessary, but good if they are &ldquo;free.&rdquo;</li>
+        </ul>
+
+        <p>You can share these with vendors and ask them how they support your requirements.</p>
+
+        <p>Place the greatest weight on your must-have items. Must-have requirements should be just that: MUST HAVE. If a system can&rsquo;t meet them, move on to the next system.</p>
+        </div>
+      </div>
+
+      <div class="rt-art-mistake" id="mistake-2">
+        <span class="rt-art-num" aria-hidden="true">2</span>
+        <h2>Falling in Love with the Demo</h2>
+      </div>
+
+      <p class="rt-art-eq"><span>Great Pitch</span> <span class="rt-art-ne">&ne;</span> <span>Great Product.</span></p>
+
+      <p>The second mistake treasury teams commonly make when selecting treasury technology is buying what &ldquo;looks good.&rdquo;</p>
+
+      <p>Think about it as if the various treasury management systems were people. Many seemingly beautiful people are only so on the outside. Just like how someone may not catch your eye at first, but when you get to know them, they have amazing personalities that you find infinitely attractive.</p>
+
+      <p>Systems can be the same way. Some have flashy dashboards, a beautiful UX (user experience), and features that make everyone watching the demo say, &ldquo;wow&rdquo;, &ldquo;cool&rdquo;, or &ldquo;fire.&rdquo; (Pick the one that fits your generation&hellip;lol).</p>
+
+      <p>But those can be distractions. How does the system really work? What are the workflows that support your requirements?</p>
+
+      <p>Years ago, when I was &ldquo;Demo Woman,&rdquo; there was a feature in the product I sold which people absolutely loved during demos. It always got attention; it looked very impressive.</p>
+
+      <p>But implemented clients rarely used it. It worked but just wasn&rsquo;t practical for daily use. It wasn&rsquo;t essential for the day-to-day job.</p>
+
+      <p>I&rsquo;ve always remembered that, and it is something I stress to our clients. A demo is designed to show a product in its best light, and that&rsquo;s a good thing. Vendors should show their technology well. But treasury teams should remember that the purpose of the demo is not to be impressed. The purpose is to determine whether the system can meet your requirements, to understand its strengths and weaknesses, and then determine how well those align with your requirements.</p>
+
+      <p>That is why written, prioritized requirements matter so much. They help you stay focused when the demo gets exciting.</p>
+
+      <p>Before you give too much weight to a beautiful dashboard or a &ldquo;sexy&rdquo; feature, ask yourself:</p>
+
+      <ul>
+        <li>Will our team actually use this after implementation?</li>
+        <li>Does this solve a real treasury problem, or does it just look good in the demo?</li>
+      </ul>
+
+      <p>A strong demo can tell you a lot, but only if you are focused on your requirements.</p>
+
+<div class="rt-art-avoid">
+        <h3>How to avoid mistake #2</h3>
+        <div class="rt-art-avoid-copy">
+
+        <p>Instead of letting vendors control the demo, treasury teams should control it themselves. A better approach to a deep dive demo (not the initial short overview demo) is to create a custom demo script that requires each vendor to demonstrate how they handle your specific requirements.</p>
+
+        <p>For example:</p>
+
+        <ul>
+          <li>Show how you would build a daily cash position</li>
+          <li>Demonstrate how bank statements are reconciled and transactions categorized</li>
+          <li>Walk through the building of a forecast scenario</li>
+        </ul>
+
+        <p>When every vendor follows the same script, you get a true apples-to-apples comparison of how the systems actually perform.</p>
+
+        <p>Suddenly the differences become obvious.</p>
+        </div>
+      </div>
+
+      <div class="rt-art-mistake" id="mistake-3">
+        <span class="rt-art-num" aria-hidden="true">3</span>
+        <h2>Buying because you like the salesperson</h2>
+      </div>
+
+      <p class="rt-art-eq"><span>Great Salesperson</span> <span class="rt-art-ne">&ne;</span> <span>Great Support/Great Product.</span></p>
+
+      <p>The next common mistake treasury teams make is choosing the winning vendor based on the salesperson they like the most. There is an old sales adage that people buy from people they like. And that&rsquo;s true, but should it be?</p>
+
+      <p>When it comes to treasury technology, liking the salesperson should not be a factor. You are not buying the salesperson; you are subscribing to software. You are entering into a relationship with the vendor as a company, and salespeople come and go. Your contract, however, will likely last three to five years, long after the salesperson with whom you built a relationship is gone.</p>
+
+      <p>This is not a criticism of salespeople; I have been the TMS salesperson, and I respect good salespeople. Being likeable, responsive, helpful, and persuasive are all part of the job. A strong salesperson helps you understand the benefits and value of the product. And their job is to make the buying process as frictionless as possible.</p>
+
+      <p>But your job is different. Your job is to select the system that best fits your requirements and adds the most value to your company. To do that, you must stay focused on your requirements. Do not let a great sales experience outweigh a weak functional fit.</p>
+
+      <p>And do not let the salesperson&rsquo;s use of the latest buzzwords pull you away from what your treasury team actually needs. The only technologies that truly matter are the ones that help you achieve your goals and solve your problems.</p>
+
+<div class="rt-art-avoid">
+        <h3>How to avoid mistake #3</h3>
+        <div class="rt-art-avoid-copy">
+
+        <p>Separate the person from the product. Imagine that you will never see them again after the sale (unlikely, but imagine it). Now, how do you like the product?</p>
+
+        <p>Be sure to speak to references for your top one or two vendors. Ask questions about support and the vendor&rsquo;s responsiveness to problems. Ask about whether or not the vendor has kept promises regarding new functionality. Ask what would change if they could go back to the selection process and do it all over again.</p>
+
+        <p>Regarding all the great new advances in technology (Agentic AI, built-in chatbots, MCP servers and LLMs, APIs and more), every step of the way as you see and hear these, keep going back to your requirements:</p>
+
+        <ul>
+          <li>Does this help us achieve our goals?</li>
+          <li>Is this tied to a must-have or a like-to-have requirement?</li>
+          <li>Will this create real value for our treasury team?</li>
+        </ul>
+
+        <p>Or does it simply look and sound good in the moment?</p>
+
+        <p>It&rsquo;s very easy to get off track and choose a system that is &ldquo;okay.&rdquo; But when you stay focused on your requirements, your goals, and the value you need to create, selection will become the start of real success.</p>
+
+        <p>And, you can do much better than just &ldquo;okay.&rdquo; Don&rsquo;t let these things distract you from your requirements.</p>
+        </div>
+      </div>
+
+      <div class="rt-art-mistake" id="mistake-4">
+        <span class="rt-art-num" aria-hidden="true">4</span>
+        <h2>Choosing the Familiar Option Instead of the Best One</h2>
+      </div>
+
+      <p class="rt-art-eq"><span>Familiar</span> <span class="rt-art-ne">&ne;</span> <span>Best Fit.</span></p>
+
+      <p>The fourth common reason companies often select a system that isn&rsquo;t the very best one for them is that they opt for the &ldquo;easy button&rdquo; and choose:</p>
+
+      <ul>
+        <li>the name that is most familiar,</li>
+        <li>the demo that was presented best, or</li>
+        <li>the system that they used at their last company.</li>
+      </ul>
+
+      <p>None of these will help you get the best-fit technology for your current company and current needs.</p>
+
+      <p>What worked well somewhere else may not work well for you now at your current company. The most familiar vendor may not be the strongest match. And the best-presented demo was likely delivered by the best-prepared demo person, which does not directly equate to the best-fit technology.</p>
+
+      <p>Run a serious, objective selection process. It should include at least 3-5 vendors from the correct segment(s) that most closely align with your requirements. Don&rsquo;t let the promise of a quarter-end &lsquo;special discount&rsquo; or &ldquo;signing by the end of the month&rdquo; cause you to rush the process to only look at 1 or 2 vendors.</p>
+
+<div class="rt-art-avoid">
+        <h3>How to avoid mistake #4</h3>
+        <div class="rt-art-avoid-copy">
+
+        <p>The solution is simple: evaluate the current marketplace, not your past experience. Start by:</p>
+
+        <ul>
+          <li>Understanding how the market has evolved</li>
+          <li>Identifying vendors across your relevant segment(s)</li>
+          <li>Looking beyond the handful of vendors everyone knows and adding others from the relevant segment(s)</li>
+        </ul>
+
+        <p>Treasury teams are always surprised by how many new and innovative solutions now exist. Expanding your view of the market greatly increases the chance that you&rsquo;ll find the system that truly fits your needs.</p>
+        </div>
+      </div>
+
+      <div class="rt-art-mistake" id="mistake-5">
+        <span class="rt-art-num" aria-hidden="true">5</span>
+        <h2>Buying Based on Price Alone</h2>
+      </div>
+
+      <p class="rt-art-eq"><span>Price</span> <span class="rt-art-ne">&ne;</span> <span>Value.</span></p>
+
+      <p>The fifth and final common reason treasury teams don&rsquo;t select the technology that is the best fit for their operations is simple: They buy on price.</p>
+
+      <p>Yep, they choose the Lowest-Priced option, especially when the products &ldquo;kind of seem the same.&rdquo;</p>
+
+      <p>Buying the lowest-priced option makes sense when you are buying a commodity. Remember the movie Trading Places with Eddie Murphy, Ralph Bellamy, and Dan Aykroyd? It came out in 1983 (I know, I&rsquo;m showing my age). Although still funny, parts of it are definitely offensive by today&rsquo;s standards. Times have changed!</p>
+
+      <p>But, I still remember Randolph and Mortimer teaching Billy Ray about commodities, like bacon and oranges. When two things are truly the same, price does matter. It makes perfect sense to drive an extra couple of minutes to save ten cents per gallon on gas.</p>
+
+      <p>But what should you do when all things aren&rsquo;t equal? And treasury management systems ARE NOT all equal in their functionality or their ability to meet your requirements.</p>
+
+      <p>If every product still seems the same at the end of your evaluation, the selection process didn&rsquo;t do its job. A well-run process makes the differences clear. It shows you the strengths and weaknesses of each system and how well they meet your requirements.</p>
+
+      <p>Now don&rsquo;t get me wrong; price does matter. Your company has a budget, and the system needs to deliver enough value to justify the cost. But the lowest subscription or implementation cost doesn&rsquo;t automatically mean the lowest total cost of ownership nor the best value.</p>
+
+<div class="rt-art-avoid">
+        <h3>How to avoid mistake #5</h3>
+        <div class="rt-art-avoid-copy">
+
+        <p>Instead of focusing on price alone, evaluate:</p>
+
+        <ul>
+          <li>Functional fit against your requirements</li>
+          <li>Vendor roadmap</li>
+          <li>Service and support</li>
+          <li>Total cost of ownership</li>
+          <li><strong>Scalability.</strong> If you are subscribing to a small solution that only takes a couple of months to implement, only consider what you may need in just 1&ndash;2 years. If you outgrow it and have to implement a more complex solution in a couple of years, that&rsquo;s ok given the time and effort spent. If you are subscribing to a large solution with a year-long implementation, look ahead 3&ndash;5 years. It will be considered a failure if you have to do it all over again too soon.</li>
+        </ul>
+
+        <p>A higher subscription cost may ultimately deliver far greater value if the system better supports your treasury strategy.</p>
+
+        <p>Price does matter, but value matters more:</p>
+
+        <ul>
+          <li>Select the system that best meets your requirements and then negotiate to the price and terms you need.</li>
+          <li>Most vendors are willing to work with serious buyers who have completed a thoughtful process and can clearly verbalize why their product is the preferred choice.</li>
+        </ul>
+
+        <p>TMS solutions ARE NOT commodities. Put in the time and effort to run a fast, efficient, and objective selection process. You will be glad you did.</p>
+        </div>
+      </div>
+
+      <h2>That completes my five common selection errors</h2>
+
+      <ol class="rt-art-recap">
+        <li>Not having clear, written, and prioritized requirements.</li>
+        <li>Buying what looks good, including beautiful dashboards and the latest technology buzzwords.</li>
+        <li>Buying from the salesperson you like the most.</li>
+        <li>Hitting the &ldquo;easy button&rdquo; and choosing the most familiar name or the system someone used at a previous company.</li>
+        <li>Buying the cheapest option because the systems mistakenly appear to be the same.</li>
+      </ol>
+
+      <p>A structured, objective process leads to a confident decision &amp; greater ROI.</p>
+
+      <p>Real Treasury&rsquo;s <a href="/errnot/">ERR NOT&trade; methodology</a> is designed to help treasury teams avoid these mistakes and make a clear, defensible decision based on their actual requirements.</p>
+
+      <h2>Final Thoughts</h2>
+
+      <p>Selecting a Treasury Management System can be a major decision.</p>
+
+      <p>Treasury teams that approach selection thoughtfully, getting educated and evaluating the marketplace, defining requirements, issuing a short, focused RFI and not a long, useless RFP, using a demo script tied to your requirements, and focusing on value, consistently make better decisions.</p>
+
+      <p>And better selection is the start of Success!</p>
+
+      <p><a href="/treasury-tech-market/">See the current market chart and its three segments</a>, or <a href="/treasury-tech-selection-guide/">get the 2026 Real Treasury Tech Selection Guide</a>.</p>
+
+      <div class="rt-art-quote">
+        <p><strong>Tracey Knight</strong>, Real Treasury, Co-Founder &amp; Principal Consultant. With over 30 years&rsquo; experience as a practitioner, vendor (sales, implementations, client success), and consultant, Tracey brings rare perspective, guiding treasury and finance teams through unbiased tech selection, hands-on workshops, and smarter decisions that drive adoption, insight, and lasting transformation.</p>
+      </div>
+
+    </div>
+  </article>
+
+</div>
+</body>
+</html>

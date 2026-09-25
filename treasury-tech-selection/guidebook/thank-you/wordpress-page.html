@@ -1,0 +1,116 @@
+<!--
+  WordPress-native copy of the guide download thank-you page.
+  Source of record; deployed by pasting into the WordPress page as a
+  Custom HTML block. See ../wordpress-page.html for why this page is not
+  on the iframe pipeline.
+
+  Reached only by redirect from the download page after a successful
+  RT Gate submit. The document link is delivered by the Resend automation,
+  never shown here — receiving the email is what verifies the address.
+
+  Analytics: this page fires the GA4 `generate_lead` event (see the script at the
+  end). One load of this page = one completed guide form, because nothing links
+  here. A reload or a back/forward visit is skipped using the browser's own
+  navigation type, so a second real submit in the same tab still counts and
+  nothing is written to storage. Parameters use the two
+  event-scoped custom dimensions already registered on the property
+  (form_name -> "Lead Form Name", lead_page -> "Lead Conversion Page"), the same
+  ones the /contact/ form sends, so both leads land in the same GA4 reports.
+  Downloads are counted in Resend, as clicks on the delivery email's download
+  button (docs/guide-release-runbook.md, "Counting the funnel").
+-->
+<style>
+    .rt-gbty {
+        background:
+          radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
+          radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
+          linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .rt-gbty *, .rt-gbty *::before, .rt-gbty *::after { box-sizing: border-box; }
+    .rt-gbty a { color: var(--primary-purple); }
+
+    .rt-gbty-container { max-width: 640px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+
+    .rt-gbty-icon { width: 64px; height: 64px; margin: 0 auto 24px; border-radius: 50%; background: rgba(114,22,244,0.1); display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--primary-purple); }
+    .rt-gbty-heading { font-size: 2rem; font-weight: 800; margin: 0 0 16px; background: linear-gradient(90deg, #2f1850 0%, #5b0acd 48%, #7216f4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .rt-gbty-text { font-size: 1.05rem; color: var(--gray-text); margin: 0 0 12px; }
+    .rt-gbty-note { font-size: 0.9rem; color: var(--gray-text); margin: 24px 0 0; }
+    /* Same specificity trap as the waitlist confirmation: `.rt-gbty a` is (0,1,1)
+       and beats a bare `.rt-gbty-back` (0,1,0), so the label came out purple on
+       purple. Qualify with the element. */
+    .rt-gbty a.rt-gbty-back { display: inline-block; margin-top: 32px; padding: 14px 28px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
+    .rt-gbty-back:hover { filter: brightness(1.05); }
+
+    /* Talk-to-us block. Same specificity trap as `.rt-gbty-back` above: the
+       label needs the element qualifier or `.rt-gbty a` wins. */
+    .rt-gbty-talk { margin: 36px 0 0; padding: 28px 0 0; border-top: 1px solid rgba(114,22,244,0.14); }
+    .rt-gbty-talk-heading { font-size: 1.15rem; font-weight: 700; margin: 0 0 8px; color: var(--dark-text); }
+    .rt-gbty a.rt-gbty-call { display: inline-block; margin-top: 16px; padding: 13px 26px; font-weight: 700; color: var(--primary-purple); background: #fff; border: 2px solid var(--primary-purple); border-radius: 12px; text-decoration: none; }
+    .rt-gbty-call:hover { background: rgba(114,22,244,0.06); }
+
+    @media (max-width: 480px) {
+        .rt-gbty-container { padding: 56px 20px; }
+        .rt-gbty-heading { font-size: 1.6rem; }
+    }
+  </style>
+
+<div class="rt-gbty">
+  <div class="rt-gbty-container">
+    <div class="rt-gbty-icon">&#9993;</div>
+    <h1 class="rt-gbty-heading">Check your inbox</h1>
+    <p class="rt-gbty-text">We've sent the download link for the 2026 Real Treasury Tech Selection Guide to the email address you gave us.</p>
+    <p class="rt-gbty-text">Don't see it in a minute or two? Check spam/junk, or search for an email from Real Treasury.</p>
+    <p class="rt-gbty-note">Questions in the meantime? Reach out any time at <a href="mailto:contact@realtreasury.com">contact@realtreasury.com</a>.</p>
+
+    <div class="rt-gbty-talk">
+      <p class="rt-gbty-talk-heading">Want to talk it through?</p>
+      <p class="rt-gbty-text">Book 30 minutes with Tracey Knight. No pitch &mdash; we are vendor agnostic and take no commissions, referral fees, or kickbacks from vendors.</p>
+      <a class="rt-gbty-call" href="https://calendly.com/tknight-realtreasury/30min" target="_blank" rel="noopener">Schedule a Call</a>
+    </div>
+
+    <a class="rt-gbty-back" href="https://realtreasury.com">Back to Real Treasury</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  // GA4 completion event. Reached only by redirect after a successful RT Gate
+  // submit on /treasury-tech-selection-guide/, so one load = one completed form.
+  // gtag() is used (not a raw beacon) so Google Consent Mode applies; if gtag.js
+  // is not on the page yet the command is queued on dataLayer, which is what
+  // gtag() itself does.
+  try {
+    // Skip a reload or a back/forward visit: those are the same completed form
+    // seen twice. A fresh redirect after another submit is a 'navigate' entry
+    // and is counted. Browsers without the Navigation Timing API count every load.
+    var nav = null;
+    if (window.performance) {
+      if (typeof performance.getEntriesByType === 'function') {
+        nav = performance.getEntriesByType('navigation')[0] || null;
+      }
+    }
+    if (nav) {
+      if (nav.type === 'reload' || nav.type === 'back_forward') { return; }
+    }
+    window.dataLayer = window.dataLayer || [];
+    var send = function () {
+      if (typeof window.gtag === 'function') { window.gtag.apply(null, arguments); }
+      else { window.dataLayer.push(arguments); }
+    };
+    send('event', 'generate_lead', {
+      form_name: 'tech-selection-guide',
+      lead_page: '/treasury-tech-selection-guide/'
+    });
+  } catch (e) { /* analytics must never break the page */ }
+})();
+</script>

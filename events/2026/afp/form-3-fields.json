@@ -1,0 +1,13 @@
+[
+  { "key": "full_name",       "label": "Full name",                             "type": "text",     "required": true,  "autocomplete": true, "placeholder": "Jane Smith" },
+  { "key": "email",           "label": "Work email",                            "type": "email",    "required": true,  "autocomplete": true, "placeholder": "you@company.com" },
+  { "key": "phone",           "label": "Phone",                                 "type": "tel",      "required": true,  "autocomplete": true, "placeholder": "(555) 555-5555" },
+  { "key": "company",         "label": "Company",                               "type": "company",  "required": true,  "autocomplete": true },
+  { "key": "title",           "label": "Title",                                 "type": "text",     "required": false, "autocomplete": true },
+  { "key": "current_system",  "label": "Treasury system you use today",         "type": "text",     "required": true,  "autocomplete": true, "placeholder": "System name, or \"none\"" },
+  { "key": "group_size",      "label": "Group size",                            "type": "select",   "required": true,  "autocomplete": true, "options": ["Just me", "2 people", "3 people", "4+ people"] },
+  { "key": "tms_timeline",    "label": "Where are you in your evaluation?",     "type": "select",   "required": true,  "autocomplete": true, "options": ["Actively selecting in 2026", "Planning for 2027", "Just researching"] },
+  { "key": "tour_preference", "label": "Which tour?",                           "type": "text",     "required": true,  "autocomplete": true },
+  { "key": "interests",       "label": "Anything you want to be sure you see?", "type": "textarea", "required": false, "autocomplete": true },
+  { "key": "utm",             "label": "UTM",                                   "type": "text",     "required": false, "autocomplete": true }
+]

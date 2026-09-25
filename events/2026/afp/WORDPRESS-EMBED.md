@@ -1,4 +1,4 @@
-# Walk the Map (AFP 2026) — WordPress + RT Gate wiring
+# The Real Treasury Guided Vendor Tours (AFP 2026) — WordPress + RT Gate wiring
 
 The page in this folder is served from GitHub Pages and embedded in the
 WordPress post (draft 4485, "Guided Vendor Tours at AFP 2026") inside the
@@ -12,7 +12,7 @@ In post 4485, inside the `rt-afp-formcard` group, delete the
 (after the "Reserve your spot" / "Pick a session below." paragraphs):
 
 ```html
-<iframe id="iframe-default" class="rt-afp-embed" src="https://realtreasury.github.io/rt-wordpress-content/events/2026/afp/?embed=1" title="Walk the Map tour registration" scrolling="no" style="width:100%;border:0;min-height:720px;display:block;overflow:hidden" data-iframe-resizer="true" data-iframe-resizer-allowed-origins="https://realtreasury.github.io"></iframe>
+<iframe id="iframe-default" class="rt-afp-embed" src="https://realtreasury.github.io/rt-wordpress-content/events/2026/afp/?embed=1" title="Real Treasury guided vendor tour registration" scrolling="no" style="width:100%;border:0;min-height:720px;display:block;overflow:hidden" data-iframe-resizer="true" data-iframe-resizer-allowed-origins="https://realtreasury.github.io"></iframe>
 <script>
 (function () {
   var frame = document.getElementById('iframe-default');
@@ -81,25 +81,32 @@ Add the two keys next to the existing `public_stats`:
 
 ## 3. Form 3 fields (WP Admin → Real Treasury Gate → Forms → AFP 2026 Walk the Map Tour Registration)
 
-The page already captures all of these even while form 3 is the stock
-email-only form. Pasting the schema makes WP Admin show the same fields:
+The canonical schema is `form-3-fields.json` in this directory. Paste it into the
+form's Fields JSON box and save.
 
-```json
-[
-  { "key": "full_name",       "label": "Full name",                              "type": "text",     "required": true,  "placeholder": "Jane Smith" },
-  { "key": "email",           "label": "Work email",                             "type": "email",    "required": true,  "placeholder": "you@company.com" },
-  { "key": "company",         "label": "Company",                                "type": "company",  "required": true },
-  { "key": "title",           "label": "Title",                                  "type": "text",     "required": false },
-  { "key": "group_size",      "label": "Group size",                             "type": "select",   "required": true,  "options": ["Just me", "2 people", "3 people", "4+ people"] },
-  { "key": "tms_timeline",    "label": "Where are you in your evaluation?",      "type": "select",   "required": true,  "options": ["Actively selecting in 2026", "Planning for 2027", "Just researching"] },
-  { "key": "tour_preference", "label": "Which tour?",                            "type": "text",     "required": true },
-  { "key": "interests",       "label": "Anything you want to be sure you see?",  "type": "textarea", "required": false },
-  { "key": "utm",             "label": "UTM",                                    "type": "text",     "required": false }
-]
-```
+The page captures every one of these keys whether or not WP Admin holds them
+(see `PAGE_FIELDS` in `index.html`), so pasting changes nothing a visitor sees —
+verified by rendering the form against both schemas and diffing the field list.
+What it buys you is a WP Admin Forms screen that matches reality.
+
+Two things to know before pasting:
+
+- **`eligibility_confirm` is deliberately NOT in that file.** RT Gate's field
+  builder only offers `text, email, tel, company, textarea, select, radio,
+  checkbox, url, number, date` (`class-admin.php`), and the acknowledgement
+  needs a required checkbox whose label is the whole disclaimer. The server does
+  not validate `type` — `validate_fields_schema()` only requires unique keys and
+  an `email` key — so a custom type *would* round-trip through `/form/{id}`. But
+  the builder's type dropdown has no such option, so the moment anyone opens
+  that row in the UI the type silently degrades to `text` and a legal
+  acknowledgement becomes a text box. The page owns it instead; nothing in
+  WP Admin can break it.
+- Because every type in the file IS in the builder's list, it is safe to save
+  either way — straight Save, or Load From JSON then Save.
 
 Email settings: confirmation to registrant only; internal notify
 tschultz@ + tknight@.
+
 
 ## 4. Smoke test (after merge)
 

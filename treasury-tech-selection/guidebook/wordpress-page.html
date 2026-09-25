@@ -1,0 +1,648 @@
+<!--
+  WordPress-native copy of the Tech Selection Guide download page.
+
+  This file is the source of record; deploy it with scripts/wp_publish_post.py
+  after owner review and merge. It is deliberately NOT on the
+  GitHub Pages -> iframe pipeline the other landing pages use, because:
+    - same-origin removes rt-gate's github.io CORS dependency,
+    - there is no cross-origin iframe height to negotiate, and
+    - iframe content is invisible to search and LLM crawlers, which is a
+      real cost on a lead-generation page.
+  A push here does not deploy; the guarded publisher handles WordPress.
+
+  No document wrapper (doctype / html / head / body) — WordPress supplies it.
+  Rules are scoped to .rt-guidebook / .rt-gb-* or the theme wrappers containing
+  this page. Shared header/footer patterns are unchanged.
+
+  redirectUrl is the thank-you page, a WordPress child of /treasury-tech-selection-guide/
+  (page 4202) with slug "thank-you". Its source is ./thank-you/wordpress-page.html;
+  the repo path is not a URL.
+
+  Release precondition: the RT Gate asset's target_url must point at the uploaded
+  guide PDF before this page is published. That URL is what the Resend delivery
+  email carries; the page itself never shows it.
+-->
+<script>
+window.RTG_CONFIG = {
+    assetSlug:   'treasury-tech-selection-guidebook', // RT Gate -> Assets
+    mappingId:   8,                                   // RT Gate -> Mappings
+    redirectUrl: 'https://realtreasury.com/treasury-tech-selection-guide/thank-you/'
+};
+</script>
+
+<style>
+    /* Native WordPress page, not a standalone document: the brand background
+       lives on the scoped wrapper so it never restyles the theme's body. */
+    .rt-guidebook {
+        background: #ffffff;
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --deep-purple: #5b0acd;
+        --lavender-pink: #c77dff;
+        --dark-text: #281345;
+        --gray-text: #393939;
+        --white: #ffffff;
+        --off-white: #f8f8f8;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        --gradient-light: linear-gradient(135deg, #f8f8f8 0%, #ffffff 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .rt-guidebook *, .rt-guidebook *::before, .rt-guidebook *::after { box-sizing: border-box; }
+    .rt-guidebook img { max-width: 100%; height: auto; }
+    .rt-guidebook a { color: inherit; text-decoration: none; }
+
+    /* The theme adds group + article gutters outside our own containers.
+       Remove only the wrapper around this page; header/footer patterns stay intact. */
+    .entry-content > .wp-block-group:has(> .rt-guidebook) { padding: 0; }
+
+    /* ---- Layout ---- */
+    .rt-gb-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---- Hero ----
+       The form card is the hero's right-hand column. Measured on the live page
+       before this: the card's top edge was 2,017px down a 1440x900 desktop and
+       3,114px down a 390x844 phone, so a visitor met two full screens of copy
+       before the only thing the page collects. All of that copy still follows
+       the form, in the same order and unchanged. */
+    .rt-gb-hero { background: #281345; padding: 44px 0 52px; text-align: left; position: relative; overflow: hidden; margin-bottom: 0; }
+    .rt-gb-hero .rt-gb-container { position: relative; z-index: 2; }
+    .rt-gb-hero-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 430px);
+        grid-template-rows: auto 1fr;
+        grid-template-areas: "copy form" "points form";
+        column-gap: 48px;
+        align-items: start;
+    }
+    .rt-gb-hero-copy { grid-area: copy; }
+    .rt-gb-hero-points { grid-area: points; align-self: start; margin: 26px 0 0; list-style: none; padding: 0; }
+    .rt-gb-hero .rt-gb-form-card { grid-area: form; }
+    .rt-gb-badge { display: inline-block; padding: 0; font-size: 0.85rem; font-weight: 700; color: #c77dff; margin-bottom: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .rt-guidebook .rt-gb-title { font-size: clamp(2.1rem, 3.8vw, 3.2rem); font-weight: 800; line-height: 1.08; margin: 0 0 16px; color: #ffffff; max-width: 15ch; letter-spacing: -0.035em; text-wrap: balance; }
+    .rt-guidebook .rt-gb-subtitle { font-size: 1.1rem; color: #ffffff; line-height: 1.6; max-width: 44ch; margin: 0; font-weight: 400; }
+
+    /* The three value points that used to sit under the preview image. */
+    .rt-gb-hero-points li { position: relative; padding-left: 28px; margin: 12px 0; font-size: 0.98rem; color: #ffffff; line-height: 1.5; max-width: 46ch; }
+    .rt-gb-hero-points li::before { content: "\2713"; position: absolute; left: 0; top: 0; color: #c77dff; font-weight: 700; }
+
+    /* ---- Market map beside the intro copy ---- */
+    .rt-gb-showcase { padding: 40px 0 8px; }
+    .rt-gb-showcase-row { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 48px; align-items: start; max-width: 1040px; margin: 0 auto; }
+    .rt-gb-showcase .rt-gb-prose { max-width: none; margin: 0; }
+
+    /* ---- Preview Card ---- */
+    .rt-gb-preview { padding: 24px 20px; position: relative; }
+    /* Header band across the top of the preview card, pulled out to the card
+       edges and set off from the chart by a hairline rule. */
+    .rt-gb-preview-label { position: static; transform: none; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; border: 0; border-bottom: 1px solid rgba(114, 22, 244, 0.12); color: var(--dark-text); border-radius: 0; padding: 18px 20px 14px; box-shadow: none; text-align: center; line-height: 1.3; max-width: none; margin: -24px -20px 18px; }
+    .rt-gb-preview-label strong { display: block; font-size: 1.1rem; font-weight: 700; margin: 0; white-space: nowrap; }
+    .rt-gb-preview-label span { display: block; font-size: 1.1rem; color: var(--primary-purple, #7216f4); font-weight: 600; opacity: 1; margin: 0; }
+    .rt-gb-preview img { width: 100%; max-width: 330px; height: auto; border-radius: 50%; display: block; margin: 0 auto; mix-blend-mode: multiply; }
+
+    /* ---- Form Card ---- */
+    .rt-gb-form-card { min-width: 0; background: #ffffff; border: 1px solid #7216f4; border-radius: 8px; padding: 28px; position: relative; scroll-margin-top: 150px; }
+    .rt-gb-hero .rt-gb-form-card { border-color: rgba(255, 255, 255, 0.16); box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3); }
+    .rt-gb-form-card::before { content: none; }
+    .rt-guidebook .rt-gb-form-heading { font-size: 2rem; font-weight: 700; color: var(--dark-text); margin: 0 0 8px; text-align: left; letter-spacing: -0.03em; }
+    .rt-gb-form-subtext { font-size: 0.95rem; color: var(--gray-text); text-align: left; margin-bottom: 18px; }
+
+    /* ---- Embedded Form ---- */
+    .rt-gb-form-wrap .rtg-field-group { margin-bottom: 14px; }
+    .rt-gb-form-wrap label { display:block; font-size:0.9rem; font-weight:600; color: var(--dark-text); margin-bottom: 6px; }
+    /* height:auto + an explicit line-height are load-bearing: the theme pins
+       input/select to height:40px, and `font: inherit` pulls in a 1.6
+       line-height, so a 24px-padded select had 14px of box for a 26px line and
+       clipped "Select..." in half. Inputs survived it because the UA centres
+       their text; a select does not. */
+    .rt-gb-form-wrap input, .rt-gb-form-wrap select, .rt-gb-form-wrap textarea { width:100%; min-width: 0; padding:12px 14px; border:1px solid #7e7e7e; border-radius:4px; font: inherit; font-size: max(16px, 1rem); line-height: 1.4; height: auto; min-height: 48px; background: #ffffff; color: var(--dark-text); }
+    .rt-gb-form-wrap textarea { min-height: 104px; }
+    .rt-gb-form-wrap input::placeholder, .rt-gb-form-wrap textarea::placeholder { color: #393939; opacity: 1; }
+    .rt-gb-form-wrap label { overflow-wrap: anywhere; }
+    .rt-gb-form-wrap select { appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--primary-purple) 50%), linear-gradient(135deg, var(--primary-purple) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
+    .rt-gb-form-wrap .rtg-option-group { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+    .rt-gb-form-wrap .rtg-option-group label { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; margin: 0; }
+    .rt-gb-form-wrap .rtg-option-group input { width: auto; padding: 0; }
+    .rt-gb-form-wrap .rtg-consent-group { margin: 18px 0 22px; font-size: 0.85rem; color: var(--gray-text); }
+    .rt-gb-form-wrap .rtg-consent-group label { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+    .rt-gb-form-wrap .rtg-consent-group input { width: auto; margin-top: 3px; }
+    .rt-gb-form-wrap .rtg-consent-group a { color: #5b0acd; text-decoration: underline; }
+    /* Boxes and radios are inputs too, so they inherit the field sizing above
+       unless they are taken back out of it. Without this the consent box
+       renders as a padded 48px-tall sliver. */
+    .rt-gb-form-wrap .rtg-option-group input[type="checkbox"], .rt-gb-form-wrap .rtg-option-group input[type="radio"], .rt-gb-form-wrap .rtg-consent-group input[type="checkbox"] { width: 18px; height: 18px; min-height: 0; flex: 0 0 auto; padding: 0; border-radius: 3px; accent-color: #7216f4; }
+    .rt-gb-form-wrap .rtg-invalid { border: 2px solid #281345 !important; outline-color: #7216f4 !important; }
+    .rt-gb-form-wrap .rtg-submit-btn { width:100%; padding:16px 20px; border:0; border-radius:4px; color:#ffffff; font: inherit; font-weight:700; background: #7216f4; cursor:pointer; }
+    .rt-gb-form-wrap .rtg-submit-btn[disabled] { opacity: 1; background: #393939; cursor: not-allowed; }
+    .rt-gb-form-wrap .rtg-response { margin-top: 12px; font-size: 0.9rem; }
+    .rt-gb-form-wrap .rtg-response.rtg-error { color: #281345; font-weight: 700; }
+    .rt-gb-form-wrap .rtg-response.rtg-success { color: #5b0acd; }
+    .rt-gb-form-wrap input:focus, .rt-gb-form-wrap select:focus, .rt-gb-form-wrap textarea:focus { outline: 2px solid #7216f4; outline-offset: 2px; border-color: #7216f4; }
+    .rt-gb-form-wrap .rtg-submit-btn:focus-visible { outline: 2px solid #281345; outline-offset: 4px; }
+    .rt-gb-form-wrap .rtg-submit-btn:hover { background: #5b0acd; }
+    .rt-gb-form-wrap .rtg-submit-btn:active { transform: translateY(0); }
+
+    .rt-gb-disclaimer { font-size: 0.8rem; color: #393939; text-align: center; margin-top: 16px; line-height: 1.5; }
+
+    /* ---- Social proof strip ----
+       Out of the form card and into a band under the hero, so it stops adding
+       height to the card itself. */
+    .rt-gb-proof { display: flex; gap: 24px; justify-content: center; max-width: 820px; margin: 0 auto; padding: 20px 0; border-bottom: 1px solid #bebebe; flex-wrap: wrap; }
+    .rt-gb-proof-item { flex: 1 1 120px; text-align: center; }
+    .rt-gb-proof-number { font-size: 1.5rem; font-weight: 800; color: #5b0acd; display: block; }
+    .rt-gb-proof-label { font-size: 0.8rem; color: var(--gray-text); }
+
+    @media (max-width: 980px) {
+        .rt-gb-hero-row { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; grid-template-areas: "copy" "form" "points"; }
+        .rt-gb-hero-copy { margin-bottom: 24px; }
+        .rt-gb-hero .rt-gb-form-card { width: 100%; max-width: 560px; }
+        .rt-gb-hero-points { margin-top: 24px; }
+        .rt-guidebook .rt-gb-title { max-width: none; }
+        .rt-guidebook .rt-gb-subtitle { max-width: none; }
+        .rt-gb-showcase-row { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+        .rt-gb-preview { max-width: 420px; margin: 0 auto; }
+    }
+    @media (max-width: 768px) {
+        /* Every line above the form on a phone is a line the visitor scrolls
+           past, so the hero is tuned to land the card inside the first screen
+           rather than just behind the cookie consent bar. */
+        .rt-gb-hero { padding: 28px 0 36px; margin-bottom: 0; }
+        .rt-guidebook .rt-gb-title { font-size: 1.95rem; }
+        .rt-guidebook .rt-gb-subtitle { font-size: 1.02rem; line-height: 1.5; }
+        .rt-gb-hero-copy { margin-bottom: 20px; }
+        .site-main > article:has(.rt-guidebook) { padding-inline: 0 !important; }
+        .rt-gb-showcase { padding-top: 32px; }
+        .rt-gb-form-card { padding: 22px 20px; width: 100%; }
+        .rt-gb-proof { gap: 8px; padding: 16px 0; }
+        .rt-gb-proof-item { flex: 1 1 0; min-width: 0; }
+        .rt-gb-preview { padding: 20px 16px 16px; }
+        .rt-gb-preview-label { padding: 14px 16px 12px; margin: -20px -16px 14px; }
+        .rt-gb-preview-label strong { font-size: 0.85rem; }
+        .rt-gb-preview-label span { font-size: 0.85rem; }
+    }
+    @media (max-width: 480px) {
+        .rt-guidebook .rt-gb-title { font-size: 1.75rem; margin-bottom: 14px; }
+        .rt-gb-container { padding: 0 16px; }
+        .rt-gb-badge { font-size: 0.8rem; padding: 0; margin-bottom: 10px; }
+        .rt-gb-form-card { padding: 20px 16px; border-radius: 8px; width: 100%; }
+        .rt-gb-form-card::before { border-radius: 14px 14px 0 0; }
+        .rt-guidebook .rt-gb-form-heading { font-size: 1.6rem; }
+        .rt-gb-form-subtext { margin-bottom: 18px; }
+    }
+
+    /* ---- Long-form prose blocks (above and below the form) ----
+       The page carried 136 crawlable words and the form renders as
+       "Loading form..." to a crawler, so the copy around the form is real
+       HTML rather than anything the embed injects.
+       `.rt-guidebook a { color: inherit }` above is (0,1,1) and ties with a
+       bare `.rt-gb-prose a`, so these are qualified with the wrapper. */
+    .rt-gb-prose { max-width: 820px; margin: 0 auto; }
+    .rt-gb-prose h2 { font-size: 1.6rem; font-weight: 700; color: var(--dark-text); margin: 0 0 12px; line-height: 1.3; }
+    .rt-gb-prose h3 { font-size: 1.15rem; font-weight: 600; color: var(--dark-text); margin: 32px 0 10px; }
+    .rt-gb-prose p { font-size: 1.02rem; color: #393939; margin: 0 0 18px; line-height: 1.75; }
+    .rt-gb-prose ul { margin: 0 0 14px; padding-left: 24px; }
+    .rt-gb-prose li { font-size: 1.02rem; color: #393939; margin: 0 0 9px; line-height: 1.65; }
+    .rt-guidebook .rt-gb-prose a { color: var(--primary-purple); text-decoration: underline; text-underline-offset: 2px; }
+    .rt-guidebook .rt-gb-prose a:hover { color: var(--deep-purple); }
+    .rt-gb-prose strong { color: var(--dark-text); }
+    .rt-gb-prose-note { font-size: 0.92rem; color: var(--gray-text); }
+
+    .rt-gb-showcase .rt-gb-prose { text-align: left; }
+    .rt-gb-showcase .rt-gb-prose ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; padding: 0; list-style: none; margin: 24px 0 0; }
+    .rt-gb-showcase .rt-gb-prose li { padding: 12px 0 30px; border-top: 1px solid #bebebe; margin: 0; }
+    .rt-gb-more { padding: 8px 0 72px; }
+    .rt-gb-more .rt-gb-prose > h2 { margin-top: 44px; padding-top: 28px; border-top: 1px solid rgba(114, 22, 244, 0.14); }
+    .rt-gb-more .rt-gb-prose > h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+    .rt-gb-more .rt-gb-prose > h2 { font-size: 1.85rem; letter-spacing: -0.025em; border-color: #bebebe; }
+    .rt-guidebook a:focus-visible { outline: 2px solid #7216f4; outline-offset: 4px; }
+
+    @media (max-width: 768px) {
+        .rt-gb-prose h2 { font-size: 1.35rem; }
+        .rt-gb-more { padding-bottom: 44px; }
+    }
+
+    /* ---- Reader quote ---- */
+    /* The testimonial used to run on straight after the contents list under a
+       plain rule, at close to body size, with the attribution 100 words down.
+       So it read as more of the article and you only learned someone else was
+       speaking once you reached the end — which is where the credibility is.
+       The eyebrow and the quote mark say what it is before the first word, and
+       the attribution is given room at the bottom. */
+    .rt-gb-quote { max-width: 820px; margin: 48px auto 0; padding: 30px 0 0; border: 0; border-top: 1px solid #bebebe; }
+    .rt-gb-quote-label { margin: 0 0 14px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--primary-purple); }
+    .rt-guidebook .rt-gb-quote blockquote { margin: 0; padding: 0; border: 0; font-style: normal; font-size: 1.1rem; line-height: 1.68; color: var(--dark-text); max-width: 66ch; }
+    .rt-guidebook .rt-gb-quote blockquote::before { content: "\201C"; display: block; font-family: Georgia, 'Times New Roman', serif; font-size: 2.6rem; line-height: 0.62; color: rgba(114, 22, 244, 0.28); margin-bottom: 0; }
+    .rt-gb-quote cite { display: block; margin-top: 24px; padding-top: 18px; border-top: 1px solid #e4e4ea; font-style: normal; font-size: 0.9rem; line-height: 1.5; color: var(--gray-text); }
+    .rt-gb-quote cite b { display: inline; font-size: 1rem; color: var(--dark-text); font-weight: 700; margin-right: 5px; }
+    @media (max-width: 768px) {
+        .rt-guidebook .rt-gb-quote blockquote { font-size: 1.05rem; }
+        .rt-gb-showcase .rt-gb-prose ul { grid-template-columns: 1fr; }
+    }
+    /* Native disclosures keep the complete supporting copy in the HTML. */
+    .rt-gb-detail { border-top: 1px solid #bebebe; }
+    .rt-gb-detail summary { cursor: pointer; padding: 16px 24px 16px 0; color: var(--dark-text); font-weight: 600; line-height: 1.5; }
+    .rt-gb-detail summary h2 { display: inline; font-size: 1.25rem; }
+    .rt-gb-detail summary::marker { color: var(--primary-purple); }
+    .rt-gb-detail summary:focus-visible { outline: 2px solid #7216f4; outline-offset: 3px; }
+    .rt-gb-detail-body { padding-bottom: 8px; }
+    .rt-gb-more .rt-gb-prose > h2 { margin-top: 28px; padding-top: 20px; }
+    .rt-gb-preview-label strong { white-space: normal; }
+
+    /* ---- Closing return to the form ---- */
+    .rt-gb-closer { background: #281345; padding: 44px 0; text-align: center; }
+    .rt-guidebook .rt-gb-closer h2 { font-size: 1.7rem; font-weight: 700; color: #ffffff; margin: 0 0 18px; letter-spacing: -0.025em; }
+    .rt-guidebook .rt-gb-closer-btn { display: inline-block; padding: 16px 34px; border-radius: 4px; background: #7216f4; color: #ffffff; font-weight: 700; text-decoration: none; }
+    .rt-guidebook .rt-gb-closer-btn:hover { background: #8f47f6; color: #ffffff; }
+    @media (max-width: 768px) {
+        .rt-gb-closer { padding: 36px 0; }
+        .rt-guidebook .rt-gb-closer h2 { font-size: 1.4rem; }
+    }
+  </style>
+
+<div class="rt-guidebook">
+
+  <section class="rt-gb-hero" aria-labelledby="rt-gb-hero-heading">
+    <div class="rt-gb-container">
+      <div class="rt-gb-hero-row">
+
+        <div class="rt-gb-hero-copy">
+          <span class="rt-gb-badge">North America Edition</span>
+          <h1 id="rt-gb-hero-heading" class="rt-gb-title">The 2026 Real Treasury Tech Selection Guide</h1>
+          <p class="rt-gb-subtitle">The practitioner-led guide to evaluating and selecting treasury technology — enter your details and we'll email you the download link.</p>
+        </div>
+
+        <!-- Download request form: first viewport at every width, and second in
+             source order after the heading for keyboard and screen readers -->
+        <div class="rt-gb-form-card" id="get-the-guide" role="region" aria-labelledby="rt-gb-form-heading">
+          <h2 id="rt-gb-form-heading" class="rt-gb-form-heading">Get the Guide</h2>
+          <p class="rt-gb-form-subtext">Fill out the short form and we'll email you the download link.</p>
+
+          <div class="rt-gb-form-wrap">
+            <div id="rtGbFormContainer"><p>Loading form...</p></div>
+          </div>
+
+          <p class="rt-gb-disclaimer">
+            No spam — unsubscribe any time.
+          </p>
+        </div>
+
+        <ul class="rt-gb-hero-points">
+          <li>Independent, practitioner-written vendor categorization</li>
+          <li>Covers cash, payments, bank connectivity, and TMS selection</li>
+          <li>Built from live client TMS selection engagements</li>
+        </ul>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="rt-gb-container">
+    <div class="rt-gb-proof">
+      <div class="rt-gb-proof-item">
+        <span class="rt-gb-proof-number">2026</span>
+        <span class="rt-gb-proof-label">Edition</span>
+      </div>
+      <div class="rt-gb-proof-item">
+        <span class="rt-gb-proof-number">Free</span>
+        <span class="rt-gb-proof-label">Download</span>
+      </div>
+      <div class="rt-gb-proof-item">
+        <span class="rt-gb-proof-number">100%</span>
+        <span class="rt-gb-proof-label">Independent</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="rt-gb-showcase" aria-label="About the guide">
+    <div class="rt-gb-container">
+      <div class="rt-gb-showcase-row">
+
+        <!-- Guide preview image -->
+        <div class="rt-gb-preview">
+          <p class="rt-gb-preview-label"><strong>TMS Systems - NORAM</strong></p>
+          <img
+            src="https://realtreasury.com/wp-content/uploads/2026/09/tms-market-NORAM-09-2026-clean-new-1.png"
+            alt="Treasury Tech Market Map — North America, September 2026, preview of the 2026 Real Treasury Tech Selection Guide"
+            loading="lazy"
+          >
+        </div>
+
+        <div class="rt-gb-prose">
+        <h2>This is not just another guide!</h2>
+        <p>When you first saw or heard about this TMS Selection Guide you probably thought, &ldquo;another one?&rdquo;</p>
+        <p>But wait! This one is different. This guide contains EVERY TMS vendor selling into the North American treasury marketplace.</p>
+
+        <h3>What&rsquo;s in the guide</h3>
+        <p>This guide is designed to help you understand the TMS marketplace better and includes:</p>
+        <ul>
+          <li>An article about our proprietary <a href="/errnot/">ERR NOT&trade; selection methodology</a> with tips you can use to improve your selection process;</li>
+          <li>Information about the three segments and the products in each;</li>
+          <li>A matrix of each segment that highlights each product&rsquo;s functionality; and</li>
+          <li>Several articles which are designed to give you information about changing technology and to help you <a href="/tms-selection-mistakes/">make better selection decisions</a>.</li>
+        </ul>
+        </div>
+      </div>
+
+      <figure class="rt-gb-quote">
+        <p class="rt-gb-quote-label">What readers say</p>
+        <blockquote>What I like about this guide is that it&rsquo;s genuinely impartial&hellip; If you need a guide to the treasury technology market, this is it. It&rsquo;s almost like a workbook. It helps you see who&rsquo;s out there, what they offer and where they might fit. Whether you&rsquo;re a smaller treasury team with relatively straightforward needs, or a much larger and more complex treasury function, it gives you the chance to look across the whole market and properly consider the different options available to you. It&rsquo;s comprehensive, balanced and, most importantly, it doesn&rsquo;t leave you wondering what you might have missed.&rdquo;</blockquote>
+        <cite><b>Mike Richards,</b> CEO &amp; Founder, The Treasury Recruitment Company</cite>
+      </figure>
+    </div>
+  </section>
+
+  <section class="rt-gb-more" aria-label="Why this guide is different">
+    <div class="rt-gb-container">
+      <div class="rt-gb-prose">
+
+        <details class="rt-gb-detail">
+          <summary><h2>Why this one is different</h2></summary>
+          <div class="rt-gb-detail-body">
+        <p>If you look up &ldquo;<a href="/how-to-select-a-tms/">how to buy a treasury management system</a>,&rdquo; you&rsquo;ll find plenty of guides from consultants and industry analysts where vendors pay for inclusion. Moreover, many vendors have written selection guides and, surprisingly enough, each one is biased towards its own system.</p>
+        <p>This Selection Guide is an unbiased view of the current TMS marketplace, not just a narrow slice of the market. Like the TMS marketplace chart, this guide includes every vendor that meets our segment definitions. EVERY ONE and without any kind of financial consideration whatsoever.</p>
+        <p>At Real Treasury, vendors do not pay for inclusion in our market charts, our Treasury Tech Portal, or this guide. Every vendor on our marketplace chart is included in the segment listings and in the matrix. It&rsquo;s entirely free.</p>
+        <p>We believe that knowledge of the segments, and the products within each segment, gives you a better view of your available options so that you can find the best-fit product to meet your unique requirements.</p>
+          </div>
+        </details>
+
+        <details class="rt-gb-detail">
+          <summary><h2>Our principles</h2></summary>
+          <div class="rt-gb-detail-body">
+        <p>A little more than two years ago we started Real Treasury with certain principles in mind, our &ldquo;Requirements,&rdquo; the guideposts or North Star we continue to depend on to drive our decisions:</p>
+        <ul>
+          <li>We work exclusively for our clients. We are your advocates, bringing our unique skillsets and prior experiences to bear on your behalf.</li>
+          <li>We are objective and vendor-agnostic.</li>
+          <li>We don&rsquo;t let partnerships influence selection advice. We have no partnerships with TMS vendors that generate referral payments, kickbacks, commissions, implementation revenue, or any kind of payment that could influence our advice to you.</li>
+        </ul>
+        <p>These principles differentiate us from the many other treasury consultants available to you.</p>
+          </div>
+        </details>
+
+        <details class="rt-gb-detail">
+          <summary><h2>How to use it</h2></summary>
+          <div class="rt-gb-detail-body">
+        <p>We hope you enjoy this inaugural Real Treasury Technology Selection Guide (North American edition) and will use it throughout the year as you explore cash and treasury management solutions.</p>
+        <p>Remember, Success starts with Selection!</p>
+          </div>
+        </details>
+
+        <details class="rt-gb-detail">
+          <summary><h2>About Real Treasury</h2></summary>
+          <div class="rt-gb-detail-body">
+        <p>Real Treasury is a vendor-neutral treasury technology consulting firm specializing in Treasury Management System (TMS) selection. Real Treasury is vendor-agnostic by design and stands out as uniquely focused on selection.</p>
+        <p><strong>Tracey Knight</strong> is a treasury and finance technology expert with 30+ years in FinTech and corporate finance transformation. She has worked with thousands of organizations to modernize cash and treasury operations and improve how finance teams make technology decisions. As a founding partner of Real Treasury, Tracey helps CFOs and Treasurers run objective, requirements-driven selection processes in an increasingly crowded treasury technology marketplace.</p>
+        <p><strong>Tim Schultz</strong> is a Certified Treasury Professional (CTP) and Certified Corporate FP&amp;A Professional (FPAC) with 17+ years of treasury, FP&amp;A, and accounting experience. As a co-founder of Real Treasury, Tim helps treasury teams run structured evaluations, aligning requirements to confidently select the right TMS.</p>
+        <p>Selection is the first step toward success, because the right fit, chosen for the right reasons, sets the foundation for measurable value.</p>
+          </div>
+        </details>
+
+        <details class="rt-gb-detail">
+          <summary><h2>What happens when you submit the form</h2></summary>
+          <div class="rt-gb-detail-body">
+        <p>You will receive an email with the link to the guide. We will also email you when a new edition is published, and occasionally when we write something we think is worth your time. Unsubscribe at any time &mdash; the link is in every email.</p>
+          </div>
+        </details>
+
+        <h2>Frequently asked questions</h2>
+        <div class="rt-gb-faq">
+          <details class="rt-gb-detail">
+            <summary>Do vendors pay to be in the Guide?</summary>
+            <div class="rt-gb-detail-body"><p>No, vendors do not pay for inclusion in our market charts, our Treasury Tech Portal, or this guide.</p></div>
+          </details>
+
+          <details class="rt-gb-detail">
+            <summary>Does it rank or recommend vendors?</summary>
+            <div class="rt-gb-detail-body"><p>This Selection Guide is an unbiased view of the current TMS marketplace, not just a narrow slice of the market. It includes every vendor that meets our segment definitions. We believe that knowledge of the segments, and the products within each segment, gives you a better view of your available options so that you can find the best-fit product to meet your unique requirements.</p></div>
+          </details>
+
+          <details class="rt-gb-detail">
+            <summary>Which market does it cover?</summary>
+            <div class="rt-gb-detail-body"><p>This guide contains EVERY TMS vendor selling into the North American treasury marketplace. This is the inaugural North American edition.</p></div>
+          </details>
+
+          <details class="rt-gb-detail">
+            <summary>Why trust a guide written by consultants?</summary>
+            <div class="rt-gb-detail-body"><p>If you look up &ldquo;how to buy a treasury management system,&rdquo; you&rsquo;ll find plenty of guides from consultants and industry analysts where vendors pay for inclusion. Many vendors have written selection guides, each one biased towards its own system. We have no partnerships with TMS vendors that generate referral payments, kickbacks, commissions, implementation revenue, or any kind of payment that could influence our advice to you.</p></div>
+          </details>
+        </div>
+
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do vendors pay to be in the Guide?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, vendors do not pay for inclusion in our market charts, our Treasury Tech Portal, or this guide."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it rank or recommend vendors?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "This Selection Guide is an unbiased view of the current TMS marketplace, not just a narrow slice of the market. It includes every vendor that meets our segment definitions. We believe that knowledge of the segments, and the products within each segment, gives you a better view of your available options so that you can find the best-fit product to meet your unique requirements."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Which market does it cover?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "This guide contains EVERY TMS vendor selling into the North American treasury marketplace. This is the inaugural North American edition."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why trust a guide written by consultants?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "If you look up “how to buy a treasury management system,” you’ll find plenty of guides from consultants and industry analysts where vendors pay for inclusion. Many vendors have written selection guides, each one biased towards its own system. We have no partnerships with TMS vendors that generate referral payments, kickbacks, commissions, implementation revenue, or any kind of payment that could influence our advice to you."
+              }
+            }
+          ]
+        }
+        </script>
+
+      </div>
+    </div>
+  </section>
+
+
+  <section class="rt-gb-closer" aria-label="Request the guide">
+    <div class="rt-gb-container">
+      <h2>Get the Guide</h2>
+      <a class="rt-gb-closer-btn" href="#get-the-guide">Send Me the Guide</a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var C = window.RTG_CONFIG || {};
+  var API_BASE = (C.wpSiteUrl || 'https://realtreasury.com') + '/wp-json/rtg/v1';
+  var ASSET_SLUG = C.assetSlug;
+  var CONFIG_FORM_ID = C.formId || null;
+  var CONFIG_MAPPING_ID = C.mappingId ? Number(C.mappingId) : null;
+  var CONFIG_REDIRECT_URL = C.redirectUrl || '';
+  var container = document.getElementById('rtGbFormContainer');
+  if (!container || !ASSET_SLUG) return;
+
+  function escHtml(s){ var d=document.createElement('div'); d.appendChild(document.createTextNode(s == null ? '' : String(s))); return d.innerHTML; }
+  function escAttr(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  // The gate's consent text carries a bare privacy-policy URL. Linkify the raw
+  // text in pieces so both the href attribute and the visible label are escaped.
+  // target="_blank" is not decoration: this link sits inside the form, so a
+  // same-tab navigation would discard everything the visitor has typed. It is
+  // also what makes rel="noopener noreferrer" mean anything -- without a target
+  // the rel is inert.
+  function escHtmlLinkify(s){
+    var value=String(s == null ? '' : s), out='', last=0;
+    value.replace(/https?:\/\/[^\s<>"']*[^\s<>"'.,:;)]/g, function(u, offset){
+      out += escHtml(value.slice(last, offset));
+      out += '<a href="' + escAttr(u) + '" target="_blank" rel="noopener noreferrer">' + escHtml(u) + '</a>';
+      last = offset + u.length;
+      return u;
+    });
+    return out + escHtml(value.slice(last));
+  }
+  function parseJsonOrThrow(res){ return res.text().then(function(t){ var j={}; try{j=t?JSON.parse(t):{}}catch(e){throw new Error('Invalid JSON ('+res.status+')');} if(!res.ok) throw new Error(j.message||'Request failed ('+res.status+')'); return j;}); }
+  function fieldTypeToInputType(t){ return ({ text:'text', email:'email', tel:'tel', company:'text', url:'url', number:'number', date:'date' })[t] || 'text'; }
+  function fieldAutocomplete(f){ if (f.autocomplete === false) return 'off'; if (f.key === 'full_name') return 'name'; if (f.key === 'first_name') return 'given-name'; if (f.key === 'last_name') return 'family-name'; return ({ email:'email', tel:'tel', company:'organization', url:'url' })[f.type] || 'on'; }
+
+  function fetchGateSchema(){ return fetch(API_BASE + '/gate/' + ASSET_SLUG).then(parseJsonOrThrow); }
+  function fetchFormSchemaById(id){ return fetch(API_BASE + '/form/' + id).then(parseJsonOrThrow); }
+
+  function fetchFormSchema(){
+    if (CONFIG_FORM_ID) {
+      return fetchFormSchemaById(CONFIG_FORM_ID).then(function(s){
+        s.form_id = s.form_id || CONFIG_FORM_ID;
+        if (CONFIG_MAPPING_ID) s.mapping_id = CONFIG_MAPPING_ID;
+        return s;
+      });
+    }
+    return fetchGateSchema().then(function(s){
+      if (CONFIG_MAPPING_ID && s.mapping_id && Number(s.mapping_id) !== CONFIG_MAPPING_ID) {
+        console.warn('RTG: Configured mappingId', CONFIG_MAPPING_ID, 'does not match mapped ID', s.mapping_id, 'for asset', ASSET_SLUG);
+      }
+      if (CONFIG_MAPPING_ID) s.mapping_id = CONFIG_MAPPING_ID;
+      return s;
+    });
+  }
+
+  function renderForm(schema){
+    var fields = schema.fields || [];
+    var consentText = schema.consent_text || '';
+    var html = '<form id="rtGbForm" novalidate>';
+    fields.forEach(function(f){
+      var req = f.required ? ' required' : '';
+      var mark = f.required ? ' *' : '';
+      var ph = f.placeholder ? ' placeholder="' + escAttr(f.placeholder) + '"' : '';
+      var ac = ' autocomplete="' + fieldAutocomplete(f) + '"';
+      html += '<div class="rtg-field-group"><label for="rtg_' + escAttr(f.key) + '">' + escHtml(f.label) + mark + '</label>';
+      if (f.type === 'textarea') {
+        html += '<textarea id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ph + ac + req + '></textarea>';
+      } else if (f.type === 'select' && f.options) {
+        html += '<select id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ac + req + '><option value="">Select...</option>';
+        f.options.forEach(function(o){ html += '<option value="' + escAttr(o) + '">' + escHtml(o) + '</option>'; });
+        html += '</select>';
+      } else if ((f.type === 'radio' || f.type === 'checkbox') && f.options) {
+        html += '<div class="rtg-option-group">';
+        f.options.forEach(function(o, i){
+          var it = f.type === 'radio' ? 'radio' : 'checkbox';
+          var nm = f.type === 'radio' ? f.key : f.key + '[]';
+          // Keep the && off the line that builds HTML: WordPress's texturize
+          // pass rewrote it to &#038;&#038; there, which is a syntax error
+          // inside <script> and silently killed the whole form.
+          var reqAttr = '';
+          if (i === 0) { if (f.required) { reqAttr = req; } }
+          html += '<label><input type="' + it + '" name="' + escAttr(nm) + '" value="' + escAttr(o) + '"' + reqAttr + '> ' + escHtml(o) + '</label>';
+        });
+        html += '</div>';
+      } else {
+        html += '<input type="' + fieldTypeToInputType(f.type) + '" id="rtg_' + escAttr(f.key) + '" name="' + escAttr(f.key) + '"' + ph + ac + req + '>';
+      }
+      html += '</div>';
+    });
+    if (consentText) {
+      html += '<div class="rtg-consent-group"><label><input type="checkbox" id="rtGbConsent" required> <span>' + escHtmlLinkify(consentText) + '</span></label></div>';
+    }
+    html += '<div style="position:absolute;left:-9999px;" aria-hidden="true"><label>Leave blank <input type="text" name="_rtg_hp" tabindex="-1" autocomplete="off"></label></div>';
+    html += '<button type="submit" class="rtg-submit-btn">Send Me the Guide</button>';
+    html += '<div class="rtg-response" id="rtGbResponse" aria-live="polite" role="status"></div></form>';
+    container.innerHTML = html;
+    attachFormHandler(schema, fields);
+  }
+
+  function attachFormHandler(schema, fieldDefs){
+    var form = document.getElementById('rtGbForm');
+    if (!form) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var hp = form.querySelector('[name="_rtg_hp"]'); if (hp && hp.value) return;
+      form.querySelectorAll('.rtg-invalid').forEach(function(el){ el.classList.remove('rtg-invalid'); });
+      var valid = true;
+      var collected = {};
+      fieldDefs.forEach(function(f){
+        if (f.type === 'checkbox' && f.options) {
+          var checked = [];
+          form.querySelectorAll('[name="' + f.key + '[]"]:checked').forEach(function(cb){ checked.push(cb.value); });
+          if (f.required && checked.length === 0) { valid = false; var g = form.querySelector('[name="' + f.key + '[]"]'); if (g) g.classList.add('rtg-invalid'); }
+          collected[f.key] = checked.join(', ');
+        } else if (f.type === 'radio') {
+          var sel = form.querySelector('[name="' + f.key + '"]:checked');
+          var v = sel ? sel.value : '';
+          if (f.required && !v) { valid = false; var fi = form.querySelector('[name="' + f.key + '"]'); if (fi) fi.classList.add('rtg-invalid'); }
+          collected[f.key] = v;
+        } else {
+          var input = form.querySelector('[name="' + f.key + '"]');
+          if (!input) return;
+          var v2 = input.value.trim();
+          if (f.required && !v2) { input.classList.add('rtg-invalid'); valid = false; }
+          if (f.type === 'email' && v2 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v2)) { input.classList.add('rtg-invalid'); valid = false; }
+          collected[f.key] = v2;
+        }
+      });
+      var consent = document.getElementById('rtGbConsent');
+      if (consent && !consent.checked) { valid = false; consent.classList.add('rtg-invalid'); }
+      var resp = document.getElementById('rtGbResponse');
+      var btn = form.querySelector('.rtg-submit-btn');
+      if (!valid) { if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = 'Please fill in the highlighted fields.'; } return; }
+      if (btn) btn.disabled = true;
+      if (resp) { resp.className = 'rtg-response'; resp.textContent = ''; }
+      var payload = { form_id: schema.form_id, fields: collected, consent: true, honeypot: '' };
+      if (schema.mapping_id) payload.mapping_id = Number(schema.mapping_id);
+      fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+        .then(parseJsonOrThrow)
+        .then(function(){
+          // The /submit response is deliberately ignored. For a link-type
+          // asset rt-gate sets primary_redirect_url to the asset's target_url,
+          // which here is the guide PDF itself. Following it (as the waitlist
+          // page does for its own redirect) would hand the file to anyone who
+          // typed an address, and the point of this gate is that only a real
+          // inbox receives the link. Delivery is the Resend automation on
+          // signup.created; on-page we only move the visitor to the thank-you page.
+          if (!CONFIG_REDIRECT_URL) {
+            if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = "You're all set — check your email for the download link."; }
+            return;
+          }
+          if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = 'Success! Redirecting...'; }
+          window.location.href = CONFIG_REDIRECT_URL;
+        })
+        .catch(function(err){ if (btn) btn.disabled = false; if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = (err && err.message) || 'Submission failed.'; } });
+    });
+  }
+
+  fetchFormSchema()
+    .then(renderForm)
+    .catch(function(err){ container.innerHTML = '<p style="color:#b91c1c;">Unable to load form. ' + escHtml((err && err.message) || 'Unknown error') + '</p>'; });
+})();
+</script>

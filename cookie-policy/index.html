@@ -1,0 +1,428 @@
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #281345;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .privacy-policy-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .privacy-policy-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(114, 22, 244, 0.15);
+            margin-bottom: 40px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            color: #281345;
+            transition: all 0.3s ease;
+        }
+
+        .privacy-policy-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7216f4 0%, #8f47f6 33%, #5b0acd 66%, #9d4edd 100%);
+        }
+
+        .privacy-policy-content:hover {
+            box-shadow: 0 12px 40px rgba(114, 22, 244, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .privacy-policy-content h1 {
+            color: #281345;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            border-bottom: 3px solid #c77dff;
+            padding-bottom: 10px;
+            font-weight: 600;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .privacy-policy-content h2 {
+            color: #281345;
+            margin: 30px 0 15px 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .privacy-policy-content h3 {
+            color: #281345;
+            margin: 25px 0 10px 0;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .privacy-policy-content p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        .privacy-policy-content ul {
+            margin: 15px 0 15px 25px;
+            color: #444;
+        }
+
+        .privacy-policy-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .privacy-highlight {
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.1) 0%, rgba(199, 125, 255, 0.1) 100%);
+            padding: 20px;
+            border-left: 4px solid #7216f4;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.1);
+            color: #281345;
+            font-weight: 500;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, rgba(114, 22, 244, 0.05) 0%, rgba(199, 125, 255, 0.05) 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid rgba(199, 125, 255, 0.2);
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .contact-info h3 {
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .effective-date {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: rgba(199, 125, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .privacy-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.1);
+            border: 2px solid rgba(199, 125, 255, 0.2);
+        }
+
+        .privacy-table th,
+        .privacy-table td {
+            border: 1px solid rgba(199, 125, 255, 0.2);
+            padding: 15px;
+            text-align: left;
+        }
+
+        .privacy-table th {
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .privacy-table tr:nth-child(even) {
+            background: rgba(199, 125, 255, 0.05);
+        }
+
+        .privacy-table tr:hover {
+            background: rgba(199, 125, 255, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .privacy-policy-container {
+                padding: 20px 15px;
+            }
+            
+            .privacy-policy-content {
+                padding: 25px;
+                border-radius: 14px;
+            }
+            
+            .privacy-policy-content h1 {
+                font-size: 2rem;
+            }
+
+            .privacy-policy-content h2 {
+                font-size: 1.3em;
+            }
+            
+            .privacy-table {
+                font-size: 14px;
+            }
+            
+            .privacy-table th,
+            .privacy-table td {
+                padding: 12px 8px;
+            }
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 16px rgba(114, 22, 244, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(114, 22, 244, 0.4);
+        }
+    </style>
+
+
+    <div class="privacy-policy-container">
+        <div class="privacy-policy-content">
+            <h1>Cookie Policy</h1>
+
+            <div class="effective-date">
+                <strong>Effective Date:</strong> September 22, 2026<br>
+                <strong>Last Updated:</strong> September 22, 2026
+            </div>
+
+            <p>This page lists the cookies realtreasury.com sets, what each is for, and how
+            long it lasts. It is meant to be checkable against what your browser actually
+            shows you. If you find something here that we have not listed, tell us and we
+            will either explain it or remove it.</p>
+
+            <h2>1. The Short Version</h2>
+
+            <p>We use two kinds of cookie. Essential ones keep the site working and are
+            always on. Analytics and marketing ones tell us which pages get read, which
+            companies visit, and how LinkedIn ads perform. They stay off until you switch
+            them on.</p>
+
+            <p>We do not sell what these cookies collect. If you accept, LinkedIn and Apollo
+            receive data about your visit, as described in section 3. If you reject, or never
+            answer, no analytics or marketing cookie is set and the LinkedIn and Apollo tags
+            do not load. Google Analytics still sends Google a cookieless signal for each page
+            you view, which includes the page, your IP address and your browser type.</p>
+
+            <p>
+                <button type="button" class="cookie-btn cookie-btn-accept"
+                        data-rt-cookie-preferences
+                        style="padding:12px 22px;font-size:14px;margin-left:0;">
+                    Manage cookie preferences
+                </button>
+            </p>
+
+            <h2>2. Essential Cookies</h2>
+
+            <p>These are set because the site cannot run without them: they keep it secure,
+            stop bots submitting our forms, and remember the cookie choice you made. We do
+            not ask consent for these, and turning them off in your browser will break parts
+            of the site.</p>
+
+            <table class="privacy-table">
+                <thead>
+                    <tr><th>Name</th><th>Set by</th><th>Purpose</th><th>Expires</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>rt_consent</code></td>
+                        <td>Real Treasury</td>
+                        <td>Remembers whether you accepted or rejected analytics cookies</td>
+                        <td>180 days</td>
+                    </tr>
+                    <tr>
+                        <td><code>__cf_bm</code></td>
+                        <td>Cloudflare</td>
+                        <td>Distinguishes people from bots</td>
+                        <td>30 minutes</td>
+                    </tr>
+                    <tr>
+                        <td><code>_cfuvid</code></td>
+                        <td>Cloudflare</td>
+                        <td>Applies rate limits per visitor</td>
+                        <td>Session</td>
+                    </tr>
+                    <tr>
+                        <td><code>cf_clearance</code></td>
+                        <td>Cloudflare</td>
+                        <td>Records that you passed a security challenge, so you are not
+                        asked again. Only set if you are challenged.</td>
+                        <td>Up to 1 year</td>
+                    </tr>
+                    <tr>
+                        <td><code>cf_chl_*</code></td>
+                        <td>Cloudflare Turnstile</td>
+                        <td>Holds the state of the "are you human" check on our forms</td>
+                        <td>Session</td>
+                    </tr>
+                    <tr>
+                        <td><code>wordpress_test_cookie</code>, <code>wp-settings-*</code></td>
+                        <td>WordPress</td>
+                        <td>Sign-in and admin preferences. Only set for our own logged-in
+                        staff, never for visitors.</td>
+                        <td>Session to 1 year</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>We also store one item in your browser's local storage,
+            <code>rt_consent_at</code>, which is the date and time you made your cookie
+            choice. We keep it so we can show when consent was given if you ever ask.</p>
+
+            <p>If you register to watch one of our recorded webinars, that page also stores
+            <code>rtg_&lt;webinar&gt;_access</code> in local storage. It remembers that you
+            registered, so the video plays on your next visit without asking again.</p>
+
+            <p>After you request our treasury technology selection guide, the thank-you page
+            stores <code>rt_guide_lead_sent</code> in your browser's session storage, so a
+            reload does not count your request twice. It is cleared when you close the tab.</p>
+
+            <h2>3. Analytics and Marketing Cookies</h2>
+
+            <p>These are set only after you accept them. Until then Google Analytics loads
+            in a mode that stores nothing on your device, and the LinkedIn and Apollo tags
+            do not load at all. In that mode Google Analytics still sends Google a cookieless
+            signal for each page you view (the page, your IP address and your browser type),
+            with no identifier that links one visit to another. If you reject, or never
+            answer, it stays in that mode and the other two tags never load; if you
+            accept and later change your mind, we delete the Google Analytics cookies below,
+            and the other two tags stop loading from the next page you open. Cookies those
+            two tags have already set stay in your browser until they expire or you clear
+            them.</p>
+
+            <table class="privacy-table">
+                <thead>
+                    <tr><th>Name</th><th>Set by</th><th>Purpose</th><th>Expires</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>_ga</code></td>
+                        <td>Google Analytics 4</td>
+                        <td>Distinguishes one browser from another so repeat visits are not
+                        counted as new people</td>
+                        <td>2 years</td>
+                    </tr>
+                    <tr>
+                        <td><code>_ga_&lt;property id&gt;</code></td>
+                        <td>Google Analytics 4</td>
+                        <td>Keeps the state of your current visit</td>
+                        <td>2 years</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><strong>LinkedIn Insight Tag.</strong> Measures how LinkedIn ads perform
+            and lets site visitors be reached with LinkedIn ads. LinkedIn sets its own cookies,
+            listed in
+            <a href="https://www.linkedin.com/legal/l/cookie-table" target="_blank" rel="noopener">LinkedIn's
+            cookie table</a>, and uses the data under its
+            <a href="https://www.linkedin.com/legal/cookie-policy" target="_blank" rel="noopener">cookie
+            policy</a>.</p>
+
+            <p><strong>Apollo website tracker.</strong> Matches a visit to the company it
+            likely comes from, so we can see which organizations read our material. Apollo
+            handles that data under its
+            <a href="https://www.apollo.io/privacy-policy" target="_blank" rel="noopener">privacy
+            policy</a>.</p>
+
+            <p>Google acts as our processor for this data. It is governed by
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's
+            privacy policy</a>, and you can also opt out at the browser level with
+            <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google's
+            opt-out add-on</a>.</p>
+
+            <h2>4. Embedded Content</h2>
+
+            <p>Some pages embed a video from YouTube. We use YouTube's privacy-enhanced
+            (no-cookie) player, which does not set YouTube's cookies when the page loads,
+            though the player may still keep some data in your browser's local storage.
+            Once you press play, YouTube may set its own cookies under Google's policy. Pages that link out to LinkedIn or a
+            vendor's website hand you over to that site's own cookie practices, which this
+            policy does not cover.</p>
+
+            <h2>5. Changing Your Mind</h2>
+
+            <p>Use the <a href="#" data-rt-cookie-preferences>cookie preferences</a> control
+            on this page or on our Privacy Policy. Your choice is remembered for 180 days, after which we
+            will ask again.</p>
+
+            <p>You can also manage cookies in your browser directly &mdash; every major
+            browser lets you block or delete them, usually under Settings &rarr; Privacy.
+            Blocking essential cookies will stop our forms working.</p>
+
+            <h2>6. Contact</h2>
+
+            <div class="contact-info">
+                <h3>Questions about cookies</h3>
+                <p><strong>Email:</strong>
+                <a href="mailto:privacy@realtreasury.com">privacy@realtreasury.com</a></p>
+                <p><strong>Real Treasury, LLC</strong><br>
+                Dallas, TX &middot; Tampa, FL, United States</p>
+                <p>See also our <a href="/privacy-policy/">Privacy Policy</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-to-top" onclick="scrollToTop()" title="Back to top">&uarr;</button>
+
+    <script>
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.addEventListener('scroll', function () {
+            const backToTop = document.querySelector('.back-to-top');
+            backToTop.style.display = (window.pageYOffset > 300) ? 'block' : 'none';
+        });
+
+        document.querySelector('.back-to-top').style.display = 'none';
+    </script>

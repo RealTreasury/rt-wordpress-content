@@ -1,0 +1,89 @@
+<!--
+  WordPress-native copy of the guide WAITLIST confirmation page.
+  Source of record. Deployed with `scripts/wp_publish_post.py publish
+  guide-waitlist-confirmed` (mode `native`), which writes post_content only and
+  refuses if post_status moved. See ../../guidebook/wordpress-page.html for why
+  these pages are not on the GitHub Pages iframe pipeline.
+
+  THIS PAGE IS LIVE as of September 19, 2026, and this file matches it —
+  `wp_publish_post.py plan guide-waitlist-confirmed` reports post 4809
+  `post_status publish` and identical content. Merging still changes nothing a
+  visitor sees; the repo is the source of record, not the deploy trigger.
+
+  The two WP Admin steps it used to wait on are both done: page 4809 is
+  published, and RT Gate asset #9 now points at
+  /2026-treasury-tech-guide-waitlist-confirmed/. See
+  docs/guide-release-runbook.md steps 1 and 2 for the evidence.
+
+  Reached only by redirect from the waitlist signup at
+  /2026-treasury-tech-guide-waitlist/ (RT Gate asset
+  "treasury-tech-selection-guide-waitlist", mapping #5). That redirect is the
+  asset's gate URL in WP Admin, NOT a redirectUrl on the waitlist page, so
+  pointing the waitlist at this page is a WP Admin change, not a push.
+
+  Why this page exists: /treasury-tech-selection-guide/ (page 4202) used to
+  serve the waitlist confirmation and becomes the DOWNLOAD page at release.
+  A page cannot be a WordPress child of a post, and the waitlist (4211) is a
+  post, so this lives at /2026-treasury-tech-guide-waitlist-confirmed/ rather
+  than under the waitlist path.
+
+  States no release date, by the same rule the pre-launch campaign follows.
+-->
+<style>
+    .rt-wlty {
+        background:
+          radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
+          radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
+          linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --dark-text: #281345;
+        --gray-text: #7e7e7e;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    .rt-wlty *, .rt-wlty *::before, .rt-wlty *::after { box-sizing: border-box; }
+    .rt-wlty a { color: var(--primary-purple); }
+
+    .rt-wlty-container { max-width: 640px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+
+    .rt-wlty-icon { width: 64px; height: 64px; margin: 0 auto 24px; border-radius: 50%; background: rgba(114,22,244,0.1); display: flex; align-items: center; justify-content: center; font-size: 30px; color: var(--primary-purple); }
+    .rt-wlty-heading { font-size: 2rem; font-weight: 800; margin: 0 0 16px; background: linear-gradient(90deg, #2f1850 0%, #5b0acd 48%, #7216f4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .rt-wlty-text { font-size: 1.05rem; color: var(--gray-text); margin: 0 0 12px; }
+    .rt-wlty-rule { border: 0; border-top: 1px solid rgba(114,22,244,0.14); margin: 40px 0 32px; }
+    .rt-wlty-next { font-size: 1.05rem; color: var(--dark-text); margin: 0 0 20px; font-weight: 600; }
+    /* `.rt-wlty a` above is (0,1,1) and outranks a bare `.rt-wlty-cta` (0,1,0),
+       which painted the button's label purple on the purple gradient. Qualify the
+       CTA selectors with the element so they win. */
+    .rt-wlty a.rt-wlty-cta { display: inline-block; padding: 14px 28px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
+    .rt-wlty a.rt-wlty-cta:hover { filter: brightness(1.05); color: #fff; }
+    .rt-wlty-note { font-size: 0.9rem; color: var(--gray-text); margin: 28px 0 0; }
+    .rt-wlty-back { display: inline-block; margin-top: 12px; font-size: 0.9rem; }
+
+    @media (max-width: 480px) {
+        .rt-wlty-container { padding: 56px 20px; }
+        .rt-wlty-heading { font-size: 1.6rem; }
+    }
+  </style>
+
+<div class="rt-wlty">
+  <div class="rt-wlty-container">
+    <div class="rt-wlty-icon">&#10003;</div>
+    <h1 class="rt-wlty-heading">You're on the list</h1>
+    <p class="rt-wlty-text">You'll get one email when the Real Treasury Technology Selection Guide, North American Edition is ready to download. That is the only reason this list exists.</p>
+    <p class="rt-wlty-text">It will come from <strong>news.realtreasury.com</strong>. Adding that to your contacts now saves you digging through a spam folder later.</p>
+
+    <hr class="rt-wlty-rule" />
+
+    <p class="rt-wlty-next">While you wait, see the market you're selecting from.</p>
+    <p class="rt-wlty-text">Our treasury technology chart maps the vendors by what they actually do &mdash; cash tools, TMS-Lite, and full TRMS &mdash; so you can see the field before you shortlist it.</p>
+    <a class="rt-wlty-cta" href="https://realtreasury.com/treasury-tech-market/">View the treasury tech chart</a>
+
+    <p class="rt-wlty-note">Questions in the meantime? Reach us any time at <a href="mailto:contact@realtreasury.com">contact@realtreasury.com</a>.</p>
+    <a class="rt-wlty-back" href="https://realtreasury.com">Back to Real Treasury</a>
+  </div>
+</div>

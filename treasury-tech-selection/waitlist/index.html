@@ -11,6 +11,7 @@
   correct mapping. If the gate's mapping_id disagrees with this value, a
   warning is logged to the console.
 -->
+<script src="https://realtreasury.com/wp-content/plugins/rt-gate/assets/js/rtg-lead-events.js"></script>
 <script>
 window.RTG_CONFIG = {
     assetSlug:  'treasury-tech-selection-guide-waitlist', // RT Gate asset slug
@@ -223,6 +224,7 @@ window.RTG_CONFIG = {
   var CONFIG_FORM_ID = C.formId || null;
   var CONFIG_MAPPING_ID = C.mappingId ? Number(C.mappingId) : null;
   var CONFIG_REDIRECT_URL = C.redirectUrl || '';
+  var LE = window.RTGLeadEvents || null; // RT Gate lead events + session source helper
   var container = document.getElementById('rtWlFormContainer');
   if (!container || !ASSET_SLUG) return;
 
@@ -329,9 +331,11 @@ window.RTG_CONFIG = {
       if (resp) { resp.className = 'rtg-response'; resp.textContent = ''; }
       var payload = { form_id: schema.form_id, fields: collected, consent: true, honeypot: '' };
       if (schema.mapping_id) payload.mapping_id = Number(schema.mapping_id);
+      payload.source = LE ? LE.getSource() : {};
       fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
         .then(parseJsonOrThrow)
         .then(function(data){
+          if (LE) { LE.trackLead({ formId: schema.form_id, asset: ASSET_SLUG, contactRequest: collected }); }
           var target = (data && data.primary_redirect_url) || CONFIG_REDIRECT_URL;
           if (!target) {
             if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = "You're on the list! We'll be in touch."; }

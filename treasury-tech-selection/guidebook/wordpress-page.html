@@ -493,6 +493,10 @@ window.RTG_CONFIG = {
   var CONFIG_FORM_ID = C.formId || null;
   var CONFIG_MAPPING_ID = C.mappingId ? Number(C.mappingId) : null;
   var CONFIG_REDIRECT_URL = C.redirectUrl || '';
+  // RT Gate lead events + session source helper (window.RTGLeadEvents). The
+  // plugin enqueues it in the FOOTER, after this inline script has run, so it
+  // is looked up at submit time, never cached here.
+  function leadEvents(){ return window.RTGLeadEvents || null; }
   var container = document.getElementById('rtGbFormContainer');
   if (!container || !ASSET_SLUG) return;
 
@@ -620,6 +624,8 @@ window.RTG_CONFIG = {
       if (resp) { resp.className = 'rtg-response'; resp.textContent = ''; }
       var payload = { form_id: schema.form_id, fields: collected, consent: true, honeypot: '' };
       if (schema.mapping_id) payload.mapping_id = Number(schema.mapping_id);
+      var LE = leadEvents();
+      payload.source = LE ? LE.getSource() : {};
       fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
         .then(parseJsonOrThrow)
         .then(function(){
@@ -630,12 +636,27 @@ window.RTG_CONFIG = {
           // typed an address, and the point of this gate is that only a real
           // inbox receives the link. Delivery is the Resend automation on
           // signup.created; on-page we only move the visitor to the thank-you page.
+          //
+          // Lead count: the FORM counts the lead when it can, and tells the
+          // thank-you page so with the #rt-lead-counted fragment; the thank-you
+          // page fires its own generate_lead only when the fragment is absent
+          // (RT Gate helper or the theme's rtTrack not live yet). Either way a
+          // guide lead counts exactly once, whatever order rt-gate, the theme
+          // and these two pages are released in. trackLead() returns true only
+          // when the event was handed to window.rtTrack.
+          var counted = false;
+          if (LE) {
+            try {
+              var handed = LE.trackLead({ formId: schema.form_id, asset: ASSET_SLUG, contactRequest: collected });
+              counted = handed === true;
+            } catch (e) { counted = false; }
+          }
           if (!CONFIG_REDIRECT_URL) {
             if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = "You're all set — check your email for the download link."; }
             return;
           }
           if (resp) { resp.className = 'rtg-response rtg-success'; resp.textContent = 'Success! Redirecting...'; }
-          window.location.href = CONFIG_REDIRECT_URL;
+          window.location.href = counted ? CONFIG_REDIRECT_URL.split('#')[0] + '#rt-lead-counted' : CONFIG_REDIRECT_URL;
         })
         .catch(function(err){ if (btn) btn.disabled = false; if (resp) { resp.className = 'rtg-response rtg-error'; resp.textContent = (err && err.message) || 'Submission failed.'; } });
     });

@@ -21,6 +21,23 @@ for (const mod of ['analytics-4', 'tagmanager', 'ads']) {
     `Site Kit ${mod} tag must be blocked off production`);
 }
 
+// Exercise the host check itself: port the PHP body to JS and run it per host.
+{
+  const start = php.indexOf('function rt_block_tags_off_production(');
+  assert.ok(start !== -1, 'rt_block_tags_off_production is missing');
+  const src = php.slice(php.indexOf('{', start) + 1, php.indexOf('\n}\n', start));
+  const ported = src
+    .replace(/\$blocked/g, 'blocked')
+    .replace(/wp_parse_url\(\s*home_url\(\),\s*PHP_URL_HOST\s*\)/g, 'new URL(home).hostname');
+  assert.ok(!/\$|wp_|home_url/.test(ported), 'unexpected PHP left in rt_block_tags_off_production: ' + ported);
+  const blockFor = new Function('blocked', 'home', ported);
+  assert.strictEqual(blockFor(false, 'https://realtreasury.com'), false, 'tags must load on production');
+  assert.strictEqual(blockFor(false, 'https://realtreasury.com/'), false, 'tags must load on production');
+  assert.strictEqual(blockFor(false, 'https://staging-1234-realtreasury.wpcomstaging.com'), true,
+    'tags must be blocked on staging');
+  assert.strictEqual(blockFor(true, 'https://realtreasury.com'), true, 'an existing block must be kept');
+}
+
 const fnStart = php.indexOf('function rt_track_helper()');
 const body = php.slice(fnStart, php.indexOf('\n}\n', fnStart));
 const m = body.match(/<script id="rt-track">([\s\S]*?)<\/script>/);

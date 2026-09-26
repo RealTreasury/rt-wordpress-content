@@ -248,7 +248,7 @@ chain is live end to end.
 **Superseded September 26, 2026 (this branch, `feat/rt-track-helper`):** the
 guide lead is now counted once, at the download form, via
 `window.RTGLeadEvents.trackLead(...)` on a successful RT Gate submit (see
-docs/11-GATED-PAGE-CONFIG.md, "Lead events and session source"). The
+the rt-gate plugin repo's docs/11-GATED-PAGE-CONFIG.md, "Lead events and session source"). The
 thank-you page's own `generate_lead` on load (added by PR #919, described
 below) was removed for exactly the reason its own text warned about: firing
 it a second time double-counted every guide lead once `trackLead` also fired
@@ -257,6 +257,14 @@ at the form. `scripts/tests/test_gated_pages_lead_events.js` and
 numbers and the "why the thank-you page" reasoning below are the September 22
 state and are kept for history; re-read the funnel against GA4 once the new
 event has had a few days of traffic.
+
+**Release in one sitting.** `guide-download` is in `wp/deploy.tsv`, so the form-side
+`trackLead` goes live the moment this branch merges. `guide-thank-you` (4585) is not,
+so the live thank-you page keeps firing `generate_lead` on load until someone publishes
+it by hand. In the same sitting as the merge, hand-publish 4585
+(`scripts/wp_publish_post.py publish --target production guide-thank-you`) and deploy
+the theme's `assets/php/functions.php` (the `rtTrack` helper). Until both land, every
+guide lead counts twice.
 
 Checked September 22, 2026 against GA4 property 446224629 (Data API, 30 days): the
 download page had 129 views and 26 `form_start` events, the thank-you page 25

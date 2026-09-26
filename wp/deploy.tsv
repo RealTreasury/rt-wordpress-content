@@ -17,6 +17,12 @@
 #     Publish the coupled assets manually in one sitting until they share one
 #     atomic release mechanism.
 # Only the *-prod rows of those two pages are here.
+#
+# guide-download ships its form-side trackLead on merge, but guide-thank-you (4585)
+# stays a hand step. In the same sitting as that merge, hand-publish 4585 (so the live
+# thank-you page stops firing generate_lead on load) and deploy the theme's
+# assets/php/functions.php (rtTrack). Until both land, every guide lead counts twice.
+# See docs/guide-release-runbook.md, "Counting the funnel".
 real-treasury-explained
 payment-networks-explained
 data-flows-of-a-tms

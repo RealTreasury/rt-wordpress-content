@@ -1,5 +1,5 @@
 // Static checks that every page wired to RT Gate's lead-events helper
-// (window.RTGLeadEvents, docs/11-GATED-PAGE-CONFIG.md "Lead events and
+// (window.RTGLeadEvents, the rt-gate plugin repo's docs/11-GATED-PAGE-CONFIG.md "Lead events and
 // session source") actually follows the contract:
 //
 //   - an iframe page (served from GitHub Pages inside a realtreasury.com

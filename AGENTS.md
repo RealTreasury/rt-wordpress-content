@@ -72,6 +72,14 @@ The source of record, promotion rota, date-window contract, test command and
 WordPress deployment notes are in `docs/site-banner.md`. Run
 `npm run test:banner` after changing the banner or its destinations.
 
+## Site events
+
+All our own analytics events go through `window.rtTrack(name, params)`
+(theme `assets/php/functions.php`); do not add our own events to Tag Manager.
+Add a CTA event by putting `data-rt-cta` on the link or button. Event
+vocabulary, the iframe bridge, the `rt_src` lead source and the no-personal-data
+rule are in `docs/site-events.md`.
+
 ## Directory conventions (read before adding new pages)
 
 - **`webinars/`** (plural) — canonical home for every webinar page.

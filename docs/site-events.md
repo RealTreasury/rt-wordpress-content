@@ -50,7 +50,7 @@ where it came from. Iframes ask for it with `{source:'rt', type:'rt:source?'}` a
 
 It is written to `sessionStorage` (key `rt_src`, cleared when the tab closes) only after the
 visitor accepts analytics; before that it is held for the current page only. The Cookie Policy's
-inventory should list `rt_src` alongside `rt_consent`.
+inventory lists `rt_src` alongside `rt_consent`; change both together.
 
 ## Campaign tags
 

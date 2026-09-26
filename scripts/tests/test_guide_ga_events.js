@@ -1,4 +1,4 @@
-// Guide funnel lead counting (see docs/11-GATED-PAGE-CONFIG.md, "Lead events
+// Guide funnel lead counting (see the rt-gate plugin repo's docs/11-GATED-PAGE-CONFIG.md, "Lead events
 // and session source", and rt-guide-ga4-funnel-events.md): the guide lead is
 // counted ONCE, at the download form, via window.RTGLeadEvents. This test
 // pins that decision:

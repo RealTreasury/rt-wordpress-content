@@ -265,6 +265,16 @@ the guide lead is never counted twice. If the run holds with only one of the two
 published, publish the other by hand straight away. The theme's `assets/php/functions.php` (the
 `rtTrack` helper) is still a hand deploy.
 
+**Before the merge, not after.** The run above only guards against counting a lead
+twice. It does not guard against counting it zero times: 4202 calls `trackLead` only
+if `window.RTGLeadEvents` exists (`if (LE) {...}`), and that comes from rt-gate #91
+(`rtg-lead-events.js`), which this merge does not ship. The events also go through
+`window.rtTrack`, from the theme's `rt_track_helper` in `assets/php/functions.php`,
+which is a hand deploy. If this branch merges before both are live on production,
+4585 loses its on-load `generate_lead` and 4202 fires nothing, so guide submits count
+zero `generate_lead` events until both land. Confirm rt-gate #91 is released and the
+theme is hand-deployed first, then merge.
+
 Checked September 22, 2026 against GA4 property 446224629 (Data API, 30 days): the
 download page had 129 views and 26 `form_start` events, the thank-you page 25
 views, and **zero** `form_submit`, `generate_lead` or `file_download` events for the

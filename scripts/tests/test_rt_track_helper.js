@@ -51,7 +51,7 @@ function boot({ search = '', referrer = '', cookie = '', stored = null } = {}) {
   win.rtTrack(42);
   assert.strictEqual(events.length, 1);
   eq(events[0].slice(0, 2), ['event', 'generate_lead']);
-  eq(events[0][2], { form_name: 'rtg-form-2', asset: 'x'.repeat(100), n: '3' });
+  eq(events[0][2], { form_name: 'rtg-form-2', asset: 'x'.repeat(100), n: '3', transport_type: 'beacon' });
 }
 
 // Source: captured from the URL and referrer; NOT persisted without consent.
@@ -84,7 +84,7 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   assert.strictEqual(events.length, 0);
   fire('https://realtreasury.github.io', { source: 'rt', type: 'rt:track', name: 'generate_lead',
     params: { asset: 'waitlist', lead_page: '/spoofed/' } });
-  eq(events[0][2], { asset: 'waitlist', lead_page: '/treasury-tech-selection-guide/' });
+  eq(events[0][2], { asset: 'waitlist', lead_page: '/treasury-tech-selection-guide/', transport_type: 'beacon' });
   const replies = [];
   fire('https://realtreasury.github.io', { source: 'rt', type: 'rt:source?' },
     { postMessage: (msg, origin) => replies.push([msg, origin]) });
@@ -93,7 +93,7 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   assert.strictEqual(replies[0][0].type, 'rt:source');
   assert.strictEqual(replies[0][0].data.landing_page, '/treasury-tech-selection-guide/');
   fire('https://calendly.com', { event: 'calendly.event_scheduled' });
-  eq(events[events.length - 1].slice(1), ['book_call', { lead_page: '/treasury-tech-selection-guide/' }]);
+  eq(events[events.length - 1].slice(1), ['book_call', { lead_page: '/treasury-tech-selection-guide/', transport_type: 'beacon' }]);
 }
 
 // CTA clicks: data-rt-cta and Calendly links.
@@ -105,8 +105,8 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   click({ closest: () => el({}) });
   click({ closest: () => null });
   eq(events.map((e) => e[2]), [
-    { cta: 'get-guide', location: 'banner' },
-    { cta: 'calendly', location: '/treasury-tech-selection-guide/' },
+    { cta: 'get-guide', location: 'banner', transport_type: 'beacon' },
+    { cta: 'calendly', location: '/treasury-tech-selection-guide/', transport_type: 'beacon' },
   ]);
 }
 

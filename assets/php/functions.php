@@ -334,6 +334,8 @@ function rt_track_helper() {
                     }
                 }
             }
+            // beacon: lead events fire just before a redirect; this transport survives the unload.
+            p.transport_type = 'beacon';
             if (typeof window.gtag === 'function') { window.gtag('event', name, p); }
         };
         window.addEventListener('message', function (e) {

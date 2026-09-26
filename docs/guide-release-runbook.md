@@ -246,34 +246,40 @@ chain is live end to end.
 ## Counting the funnel
 
 **Superseded September 26, 2026 (this branch, `feat/rt-track-helper`):** the
-guide lead is now counted once, at the download form, via
-`window.RTGLeadEvents.trackLead(...)` on a successful RT Gate submit (see
-the rt-gate plugin repo's docs/11-GATED-PAGE-CONFIG.md, "Lead events and session source"). The
-thank-you page's own `generate_lead` on load (added by PR #919, described
-below) was removed for exactly the reason its own text warned about: firing
-it a second time double-counted every guide lead once `trackLead` also fired
-at the form. `scripts/tests/test_gated_pages_lead_events.js` and
-`scripts/tests/test_guide_ga_events.js` pin the new split. The measurement
-numbers and the "why the thank-you page" reasoning below are the September 22
-state and are kept for history; re-read the funnel against GA4 once the new
-event has had a few days of traffic.
+guide lead is counted once per submit, at the download form when it can be and
+on the thank-you page when it cannot:
 
-**Release in one run.** `guide-download` and `guide-thank-you` (4585) are both in
-`wp/deploy.tsv`, so the deploy run for this merge publishes the form-side `trackLead`
-on 4202 and removes the thank-you page's on-load `generate_lead` from 4585 together;
-the guide lead is never counted twice. If the run holds with only one of the two
-published, publish the other by hand straight away. The theme's `assets/php/functions.php` (the
-`rtTrack` helper) is still a hand deploy.
+- 4202 (the form) calls `window.RTGLeadEvents.trackLead(...)` on a successful RT
+  Gate submit (see the rt-gate plugin repo's docs/11-GATED-PAGE-CONFIG.md, "Lead
+  events and session source"). `trackLead` returns `true` only when it handed the
+  event to the theme's `window.rtTrack`; then the form redirects to
+  `/treasury-tech-selection-guide/thank-you/#rt-lead-counted`.
+- 4585 (the thank-you page) keeps the PR #919 on-load `generate_lead`
+  (`form_name=tech-selection-guide`) as the fallback and skips it when the URL
+  carries `#rt-lead-counted` (and, as before, on a reload or back/forward visit).
 
-**Before the merge, not after.** The run above only guards against counting a lead
-twice. It does not guard against counting it zero times: 4202 calls `trackLead` only
-if `window.RTGLeadEvents` exists (`if (LE) {...}`), and that comes from rt-gate #91
-(`rtg-lead-events.js`), which this merge does not ship. The events also go through
-`window.rtTrack`, from the theme's `rt_track_helper` in `assets/php/functions.php`,
-which is a hand deploy. If this branch merges before both are live on production,
-4585 loses its on-load `generate_lead` and 4202 fires nothing, so guide submits count
-zero `generate_lead` events until both land. Confirm rt-gate #91 is released and the
-theme is hand-deployed first, then merge.
+`scripts/tests/test_guide_ga_events.js` runs both pages' scripts and pins that
+each combination counts exactly one `generate_lead`.
+
+**Release order does not matter.** rt-gate #91 (`rtg-lead-events.js`, which
+defines `window.RTGLeadEvents`), this merge (4202 and 4585), and the hand deploy of
+the theme's `rt_track_helper` (`assets/php/functions.php`) can land in any order:
+
+| live | where the lead counts |
+|---|---|
+| none of them (today) | 4585, fallback event |
+| 4202 + 4585 only, or plus rt-gate #91 only | 4585, fallback event (no `rtTrack`, so `trackLead` returns `false` and no fragment) |
+| 4202 + 4585 + rt-gate #91 + theme | 4202, `form_name=rtg-form-<id>`; 4585 fires nothing |
+| old 4202 + new 4585 (a run that stopped after 4585) | 4585, fallback event |
+
+`guide-thank-you` sits above `guide-download` in `wp/deploy.tsv` because the deploy
+leg publishes in manifest order and stops at the first failure, so it can never
+leave new 4202 with the old 4585 (the only combination that would count twice).
+Until all three are live the `form_name` in GA4 stays `tech-selection-guide`; once
+they are, it becomes `rtg-form-<id>`. Filter the Key events report on either.
+The measurement numbers and the "why the thank-you page" reasoning below are the
+September 22 state and are kept for history; re-read the funnel against GA4 once
+the new event has had a few days of traffic.
 
 Checked September 22, 2026 against GA4 property 446224629 (Data API, 30 days): the
 download page had 129 views and 26 `form_start` events, the thank-you page 25
@@ -290,11 +296,11 @@ Three counters, one per step:
 | step | where it is counted | event | how to read it |
 |---|---|---|---|
 | page visited | GA4, `/treasury-tech-selection-guide/` | `page_view` | Reports > Engagement > Pages and screens, filter the path |
-| form completed | GA4/rtTrack, `/treasury-tech-selection-guide/` (4202), fired at submit success | `generate_lead` with `form_name=rtg-form-<id>`, `asset=treasury-tech-selection-guidebook` | Reports > Engagement > Events, or the Key events report |
+| form completed | GA4/rtTrack, `/treasury-tech-selection-guide/` (4202), fired at submit success; fallback on the thank-you page (4585) when the form could not | `generate_lead` with `form_name=rtg-form-<id>`, `asset=treasury-tech-selection-guidebook` (form), or `form_name=tech-selection-guide` (fallback) | Reports > Engagement > Events, or the Key events report |
 | PDF downloaded | Resend, the `guide-delivery` email | click on the download button | Resend dashboard > Emails (or the automation's runs), per-email `clicked` status |
 
-Historical note (superseded above): the thank-you page used to fire
-`generate_lead` on load, reasoning that nothing links to it except the
+Historical note (superseded above): the thank-you page used to be the only
+place that fired `generate_lead` on load, reasoning that nothing links to it except the
 redirect after a successful rt-gate submit, so one load equaled one
 completed form. That reasoning still held for the thank-you page in
 isolation; it broke once the form page *also* started firing its own lead

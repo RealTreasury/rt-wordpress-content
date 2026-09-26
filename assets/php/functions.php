@@ -292,14 +292,19 @@ function rt_track_helper() {
         var FRAME_ORIGIN = 'https://realtreasury.github.io';
         var UTM = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
         var NAME = /^[a-z][a-z_]{0,39}$/;
+        // Backstop for the no-personal-data rule: a value that looks like an email
+        // address (typed into a search box, say) is dropped, never sent.
+        var EMAIL = /[^\s@]+@[^\s@]+\.[^\s@]+/;
         function consented() {
             return /(?:^|;\s*)<?php echo esc_js( RT_CONSENT_COOKIE ); ?>=analytics(?:;|$)/.test(document.cookie);
         }
         function readStored() {
             try { return JSON.parse(window.sessionStorage.getItem('rt_src') || 'null'); } catch (e) { return null; }
         }
-        var src = readStored();
-        if (!src) {
+        // A stored source is used only while consent stands; after a withdrawal
+        // it is removed (persist() below) and this page rebuilds its own.
+        var src = consented() ? readStored() : null;
+        if (!src || typeof src !== 'object') {
             src = {};
             try {
                 var q = new URLSearchParams(window.location.search);
@@ -313,10 +318,16 @@ function rt_track_helper() {
                 }
             } catch (e) {}
         }
+        // Called at load, from rtSource(), and by the consent banner on every
+        // choice (window.rtSourcePersist), so accepting on the landing page keeps
+        // that page's UTM tags, and rejecting or withdrawing removes rt_src.
         function persist() {
-            if (!consented()) { return; }
-            try { window.sessionStorage.setItem('rt_src', JSON.stringify(src)); } catch (e) {}
+            try {
+                if (consented()) { window.sessionStorage.setItem('rt_src', JSON.stringify(src)); }
+                else { window.sessionStorage.removeItem('rt_src'); }
+            } catch (e) {}
         }
+        window.rtSourcePersist = persist;
         persist();
         window.rtSource = function () {
             persist();
@@ -330,7 +341,8 @@ function rt_track_helper() {
             if (params && typeof params === 'object') {
                 for (var k in params) {
                     if (Object.prototype.hasOwnProperty.call(params, k) && NAME.test(k) && params[k] != null) {
-                        p[k] = String(params[k]).slice(0, 100);
+                        var v = String(params[k]);
+                        if (!EMAIL.test(v)) { p[k] = v.slice(0, 100); }
                     }
                 }
             }
@@ -485,6 +497,11 @@ function rt_consent_banner() {
         function decide(value) {
             writeConsent(value);
             applyConsent(value === 'analytics');
+            // Store (on accept) or remove (on reject) the session lead source now,
+            // not on the next page: see rt_track_helper().
+            if (typeof window.rtSourcePersist === 'function') {
+                try { window.rtSourcePersist(); } catch (e) {}
+            }
             hideBanner();
             closePanel();
         }

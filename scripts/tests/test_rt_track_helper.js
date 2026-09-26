@@ -51,13 +51,14 @@ function boot({ search = '', referrer = '', cookie = '', stored = null } = {}) {
   const events = [];
   const win = {
     location: { search, pathname: '/treasury-tech-selection-guide/', hostname: 'realtreasury.com' },
-    sessionStorage: { getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, v) },
+    sessionStorage: { getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, v),
+      removeItem: (k) => store.delete(k) },
     addEventListener: (t, fn) => listeners[t].push(fn),
     gtag: (...a) => events.push(a),
   };
   const doc = { cookie, referrer, addEventListener: (t, fn) => listeners[t].push(fn) };
   vm.runInNewContext(js, { window: win, document: doc, URLSearchParams, URL, JSON, String, Object });
-  return { win, store, events, listeners };
+  return { win, doc, store, events, listeners };
 }
 
 // rtTrack forwards to gtag, clips values, drops bad names and keys.
@@ -69,6 +70,19 @@ function boot({ search = '', referrer = '', cookie = '', stored = null } = {}) {
   assert.strictEqual(events.length, 1);
   eq(events[0].slice(0, 2), ['event', 'generate_lead']);
   eq(events[0][2], { form_name: 'rtg-form-2', asset: 'x'.repeat(100), n: '3', transport_type: 'beacon' });
+}
+
+// No personal data: an email-shaped value is dropped, the rest of the event is kept.
+{
+  const { win, events } = boot();
+  win.rtTrack('search', { search_term: 'jane.doe@example.com', surface: 'portal' });
+  win.rtTrack('search', { search_term: 'Contact me at x@y.co now', surface: 'portal' });
+  win.rtTrack('search', { search_term: 'cash forecasting', surface: 'portal' });
+  eq(events.map((e) => e[2]), [
+    { surface: 'portal', transport_type: 'beacon' },
+    { surface: 'portal', transport_type: 'beacon' },
+    { search_term: 'cash forecasting', surface: 'portal', transport_type: 'beacon' },
+  ]);
 }
 
 // Source: captured from the URL and referrer; NOT persisted without consent.
@@ -91,6 +105,37 @@ function boot({ search = '', referrer = '', cookie = '', stored = null } = {}) {
 // A rejected choice is not consent.
 assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=rejected' }).store.has('rt_src'));
 assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).store.has('rt_src'));
+
+// Consent given AFTER load, on the landing page: the banner calls
+// rtSourcePersist(), so the landing page's UTM tags are stored at once rather
+// than rebuilt (and lost) on page 2.
+{
+  const { win, doc, store } = boot({ search: '?utm_source=linkedin&utm_campaign=c1' });
+  assert.ok(!store.has('rt_src'));
+  assert.strictEqual(typeof win.rtSourcePersist, 'function', 'banner hook rtSourcePersist must exist');
+  doc.cookie = 'rt_consent=analytics';
+  win.rtSourcePersist();
+  eq(JSON.parse(store.get('rt_src')), { utm_source: 'linkedin', utm_campaign: 'c1',
+    landing_page: '/treasury-tech-selection-guide/' });
+  // ...and a later rejection removes it.
+  doc.cookie = 'rt_consent=essential';
+  win.rtSourcePersist();
+  assert.ok(!store.has('rt_src'), 'rejecting analytics must remove rt_src');
+}
+// Consent withdrawn in an earlier tab state: a stored rt_src is neither used nor kept.
+{
+  const { win, store } = boot({ search: '?utm_source=now', cookie: 'rt_consent=essential',
+    stored: { utm_source: 'old', landing_page: '/old/' } });
+  assert.ok(!store.has('rt_src'), 'stored rt_src must be removed without consent');
+  assert.strictEqual(win.rtSource().utm_source, 'now');
+  assert.strictEqual(win.rtSource().landing_page, '/treasury-tech-selection-guide/');
+}
+// The consent banner calls the hook on every choice.
+{
+  const b = php.slice(php.indexOf('function decide(value)'));
+  const decideBody = b.slice(0, b.indexOf('\n        }\n'));
+  assert.ok(/window\.rtSourcePersist\(\)/.test(decideBody), 'decide() must call window.rtSourcePersist()');
+}
 
 // Iframe bridge: github.io forwarded with this page's lead_page; others ignored.
 {

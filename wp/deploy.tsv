@@ -18,21 +18,20 @@
 # Only the *-prod rows of those two pages are here.
 #
 # guide-thank-you (4585) is published (returns 200 since September 22, 2026) and ships
-# with guide-download (4202) in the same run: 4202 gains the form-side trackLead and
-# 4585 drops its on-load generate_lead together, so a guide lead never counts twice.
-# The publish script's post_status guard never changes 4585's status. The theme's
-# assets/php/functions.php (rtTrack) is still a hand deploy. See
-# docs/guide-release-runbook.md, "Counting the funnel".
-# PREREQUISITE: do not merge this row until rt-gate #91 (rtg-lead-events.js, which
-# defines window.RTGLeadEvents) is live on production AND the theme's rt_track_helper
-# (assets/php/functions.php) has been hand-deployed. 4202 skips trackLead when
-# window.RTGLeadEvents is absent, so merging first removes 4585's on-load event and
-# every guide submit counts zero generate_lead events until both are live.
+# with guide-download (4202) in the same run. The two pages count a guide lead once in
+# every release order: 4202 counts at the form when window.RTGLeadEvents (rt-gate #91)
+# and the theme's window.rtTrack (assets/php/functions.php, a hand deploy) are both
+# live, and then redirects with #rt-lead-counted; 4585 fires its fallback generate_lead
+# only when that fragment is absent. guide-thank-you is listed BEFORE guide-download
+# on purpose: the deploy leg publishes in this order and stops at the first failure,
+# so a half-finished run can leave new-4585 + old-4202 (counts once, at 4585) but
+# never old-4585 + new-4202. The publish script's post_status guard never changes
+# 4585's status. See docs/guide-release-runbook.md, "Counting the funnel".
 real-treasury-explained
 payment-networks-explained
 data-flows-of-a-tms
-guide-download
 guide-thank-you
+guide-download
 errnot
 how-to-select-a-tms-prod
 tms-selection-mistakes-prod

@@ -270,10 +270,11 @@
                 submitting IP address and browser user agent, not the raw values, to detect
                 automated abuse of our forms.</li>
                 <li><strong>How you reached a gated page:</strong> when you submit a gated
-                form, we record the campaign tags on the link you followed, the first page you
-                landed on, and the referring site's domain with your submission, whether or not
-                you accept analytics cookies. We store this on your device only if you accept
-                analytics cookies.</li>
+                form, we record the campaign tags on the link you followed, the page you landed
+                on, and the referring site's domain with your submission, whether or not you
+                accept analytics cookies. If you accept them, your browser also keeps this in
+                session storage until you close the tab, so a form on a later page records where
+                your visit started; if you do not, it is kept for the current page only.</li>
                 <li><strong>Analytics and marketing:</strong> pages viewed, time on page,
                 referring source, the company your visit likely comes from, and whether you
                 arrived from a LinkedIn ad &mdash; <em>only if you accept analytics and
@@ -303,7 +304,7 @@
                     <tr>
                         <td>Follow up on a guide download or portal request</td>
                         <td>Legitimate interest in responding to a business enquiry</td>
-                        <td>Name, work email, company, job title</td>
+                        <td>Name, work email, company, job title, how you reached the page</td>
                     </tr>
                     <tr>
                         <td>Keep the site up and block abuse</td>

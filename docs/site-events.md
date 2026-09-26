@@ -15,11 +15,12 @@ if (typeof window.rtTrack === 'function') window.rtTrack('generate_lead', { ... 
 ## Vocabulary
 
 GA4 recommended names where one exists. Parameters are strings, clipped to 100 characters.
-Never send a name, email address or company name.
+Never send a name, email address or company name. As a backstop, `rtTrack` drops any parameter
+whose value looks like an email address (a visitor can type one into a search box).
 
 | Event | Fires when | Parameters | GA4 key event |
 |---|---|---|---|
-| `generate_lead` | An RT Gate submit succeeds, or the Contact form sends | `form_name`, `asset`, `lead_page`, `contact_request` | yes |
+| `generate_lead` | An RT Gate submit succeeds, or the Contact form sends. The guide thank-you page (4585) fires a fallback `generate_lead` (`form_name=tech-selection-guide`) only when the form could not, see `docs/guide-release-runbook.md`, "Counting the funnel" | `form_name`, `asset`, `lead_page`, `contact_request` | yes |
 | `file_download` | A gated asset is delivered | `asset`, `file_name` | yes |
 | `sign_up` | Newsletter subscription succeeds | `method`, `lead_page` | register when first seen |
 | `book_call` | A Calendly booking completes (Calendly embed message) | `lead_page` | register when first seen |
@@ -49,8 +50,11 @@ where it came from. Iframes ask for it with `{source:'rt', type:'rt:source?'}` a
 `{source:'rt', type:'rt:source', data}`.
 
 It is written to `sessionStorage` (key `rt_src`, cleared when the tab closes) only after the
-visitor accepts analytics; before that it is held for the current page only. The Cookie Policy's
-inventory lists `rt_src` alongside `rt_consent`; change both together.
+visitor accepts analytics, including an acceptance on the landing page itself (the consent banner
+calls `window.rtSourcePersist()` on every choice); before that it is held for the current page
+only. Rejecting or withdrawing analytics removes `rt_src`, and a stored value is never read
+without consent. The Cookie Policy describes `rt_src` in section 3 (Analytics and Marketing
+Cookies) and the Privacy Policy under "How you reached a gated page"; change them together.
 
 ## Campaign tags
 

@@ -64,6 +64,14 @@ for (const page of PAGES) {
       label + ': native page relies on the plugin enqueue, no <script src> tag',
       !text.includes(LEAD_EVENTS_SCRIPT_TAG)
     );
+    // The plugin enqueues the helper in the footer, AFTER this inline script
+    // runs, so a value cached at the top of the script is always null.
+    check(
+      label + ': native page looks the helper up at submit time, never caches it at load',
+      !/var LE = window\.RTGLeadEvents/.test(text) &&
+        /function leadEvents\(\)\s*\{\s*return window\.RTGLeadEvents \|\| null;\s*\}/.test(text) &&
+        /var LE = leadEvents\(\);/.test(text)
+    );
   }
 
   // getSource() feeds payload.source, sent with every submit.
@@ -165,15 +173,16 @@ for (const page of PAGES) {
   }
 }
 
-// The guide thank-you page must NOT fire a lead event -- the guide lead is
-// now counted once, at the download form (see test_guide_ga_events.js).
+// The guide thank-you page is the fallback lead counter only: it never calls
+// trackLead, and its generate_lead is skipped when the form already counted
+// (#rt-lead-counted). test_guide_ga_events.js runs both halves.
 {
   const thankYou = fs.readFileSync(
     path.join(root, 'treasury-tech-selection', 'guidebook', 'thank-you', 'wordpress-page.html'),
     'utf8'
   );
-  check('guide thank-you page: no <script> block', !/<script/.test(thankYou));
   check('guide thank-you page: no trackLead call', !thankYou.includes('trackLead('));
+  check('guide thank-you page: skips when the form counted', thankYou.includes("'#rt-lead-counted'"));
 }
 
 if (failures > 0) {

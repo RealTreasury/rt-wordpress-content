@@ -102,11 +102,13 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   const el = (attrs) => ({ getAttribute: (k) => (k in attrs ? attrs[k] : null) });
   const click = (target) => listeners.click.forEach((fn) => fn({ target }));
   click({ closest: () => el({ 'data-rt-cta': 'get-guide', 'data-rt-cta-location': 'banner' }) });
-  click({ closest: () => el({}) });
+  click({ closest: () => el({ href: 'https://calendly.com/x' }) });
+  click({ closest: () => el({ href: 'https://outlook.office.com/book/RealTreasuryMeeting@realtreasury.com/s/abc' }) });
   click({ closest: () => null });
   eq(events.map((e) => e[2]), [
     { cta: 'get-guide', location: 'banner', transport_type: 'beacon' },
     { cta: 'calendly', location: '/treasury-tech-selection-guide/', transport_type: 'beacon' },
+    { cta: 'bookings', location: '/treasury-tech-selection-guide/', transport_type: 'beacon' },
   ]);
 }
 

@@ -356,9 +356,10 @@ function rt_track_helper() {
         });
         document.addEventListener('click', function (e) {
             var t = e.target;
-            var el = (t && t.closest) ? t.closest('[data-rt-cta], a[href*="calendly.com/"]') : null;
+            var el = (t && t.closest) ? t.closest('[data-rt-cta], a[href*="calendly.com/"], a[href*="outlook.office.com/book/"]') : null;
             if (!el) { return; }
-            var cta = el.getAttribute('data-rt-cta') || 'calendly';
+            var href = el.getAttribute('href') || '';
+            var cta = el.getAttribute('data-rt-cta') || (href.indexOf('calendly.com/') !== -1 ? 'calendly' : 'bookings');
             window.rtTrack('cta_click', { cta: cta, location: el.getAttribute('data-rt-cta-location') || window.location.pathname });
         }, true);
     })();

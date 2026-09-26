@@ -26,7 +26,7 @@ Never send a name, email address or company name.
 | `search` | Portal or market-chart search settles | `search_term`, `surface` | no |
 | `vendor_view` | A vendor card or profile opens | `vendor`, `category`, `surface` | no |
 | `filter_apply` | A portal or chart filter changes | `filter`, `value`, `surface` | no |
-| `cta_click` | Any element with `data-rt-cta="<name>"` (optional `data-rt-cta-location`), or any Calendly link | `cta`, `location` | no |
+| `cta_click` | Any element with `data-rt-cta="<name>"` (optional `data-rt-cta-location`), or any Calendly or Microsoft Bookings link | `cta`, `location` | no |
 
 `surface` is `portal` or `market`. Add a CTA by putting `data-rt-cta` on the link or button; no
 script change is needed.

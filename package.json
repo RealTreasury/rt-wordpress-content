@@ -17,6 +17,7 @@
     "test:carousel": "node scripts/tests/test_homepage_carousel.js",
     "test:css-prune": "node scripts/tests/test_shared_css_prune.js",
     "test:consent-mode": "node scripts/tests/test_consent_mode_defaults.js",
+    "test:market-track": "node scripts/tests/test_market_ttp_track.js",
     "test:build-clean": "node scripts/tests/test_build_output_is_committed.js"
   },
   "devDependencies": {

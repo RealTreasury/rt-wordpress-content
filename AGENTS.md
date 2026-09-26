@@ -45,7 +45,7 @@ here, treat that as a bug and fix it.
    ```bash
    bash scripts/run_checks.sh
    ```
-   It runs the eight package-free `npm run test:*` checks and stops at the first
+   It runs the ten package-free `npm run test:*` checks and stops at the first
    failure. `test:build-clean` is left out because it reads `git status` and is
    red on any dirty tree; CI runs it as its own step against a clean checkout.
    `RUN_CHECKS_BUILD_CLEAN=1 bash scripts/run_checks.sh` opts it back in.

@@ -892,9 +892,58 @@
     </section>
 
     <script>
+// Internal analytics helper - the one place this page's interaction events go
+// out. Calls the theme's window.rtTrack(name, params) when present (the theme
+// defines it early in <head>; this page never implements it). If this page is
+// ever embedded in a cross-origin iframe (e.g. from
+// https://realtreasury.github.io), falls back to postMessage so the parent
+// page can forward the event. No-ops silently otherwise; never throws.
+// NOTE: no double-ampersand operator anywhere in this block - WordPress
+// texturize mangles it on publish (nested "if" statements are used instead,
+// throughout this script).
+function ttpTrack(name, params) {
+    try {
+        if (typeof window.rtTrack === 'function') {
+            window.rtTrack(name, params);
+            return;
+        }
+    } catch (error) {
+        // Analytics must never break the page.
+    }
+
+    try {
+        if (window.parent) {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    source: 'rt',
+                    type: 'rt:track',
+                    name: name,
+                    params: params
+                }, 'https://realtreasury.com');
+            }
+        }
+    } catch (error) {
+        // Analytics must never break the page.
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Treasury market segments initialized');
+
+    var ctaLinks = document.querySelectorAll('.cta-section .cta-card');
+    for (var i = 0; i < ctaLinks.length; i++) {
+        (function(link) {
+            link.addEventListener('click', function() {
+                var titleEl = link.querySelector('.cta-title');
+                var cta = titleEl ? titleEl.textContent.trim() : 'cta';
+                ttpTrack('cta_click', {
+                    cta: cta.slice(0, 100),
+                    location: 'market_find_your_path'
+                });
+            });
+        })(ctaLinks[i]);
+    }
 });
     </script>
 </body>

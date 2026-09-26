@@ -44,6 +44,7 @@ CHECKS=(
   test:guide-ga
   test:consent-mode
   test:deploy-on-merge
+  test:market-track
 )
 
 if [ "${RUN_CHECKS_BUILD_CLEAN:-0}" = "1" ]; then

@@ -267,6 +267,120 @@ function rt_consent_mode_defaults() {
     <?php
 }
 
+// ===============================================================
+// SITE EVENTS: window.rtTrack(name, params)
+// ===============================================================
+// One entry point for our own analytics events (RT Gate, the portal, the
+// market chart, CTAs). It forwards to gtag(), which the consent block above
+// defines, so every event obeys Consent Mode without the caller knowing.
+// Event names and parameters are the vocabulary in docs/site-events.md.
+//
+// Cross-origin pages (iframes from realtreasury.github.io) cannot call it; they
+// post {source:'rt', type:'rt:track', name, params} to this window and the
+// bridge below forwards them with this page's path as lead_page. They ask for
+// the session source with {type:'rt:source?'} and get {type:'rt:source'} back.
+//
+// The session source (UTM tags, landing page, referrer host) is what RT Gate
+// stores with a lead. It is kept in sessionStorage ONLY after the visitor has
+// accepted analytics (the rt_consent cookie); before that it lives for the
+// current page only. Output is identical for every visitor, so it caches.
+add_action( 'wp_head', 'rt_track_helper', 2 );
+function rt_track_helper() {
+    ?>
+    <script id="rt-track">
+    (function () {
+        var FRAME_ORIGIN = 'https://realtreasury.github.io';
+        var UTM = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+        var NAME = /^[a-z][a-z_]{0,39}$/;
+        function consented() {
+            return /(?:^|;\s*)<?php echo esc_js( RT_CONSENT_COOKIE ); ?>=analytics(?:;|$)/.test(document.cookie);
+        }
+        function readStored() {
+            try { return JSON.parse(window.sessionStorage.getItem('rt_src') || 'null'); } catch (e) { return null; }
+        }
+        var src = readStored();
+        if (!src) {
+            src = {};
+            try {
+                var q = new URLSearchParams(window.location.search);
+                UTM.forEach(function (k) { var v = q.get(k); if (v) { src[k] = v.slice(0, 200); } });
+            } catch (e) {}
+            src.landing_page = window.location.pathname.slice(0, 200);
+            try {
+                if (document.referrer) {
+                    var h = new URL(document.referrer).hostname;
+                    if (h && h !== window.location.hostname) { src.referrer_host = h.slice(0, 200); }
+                }
+            } catch (e) {}
+        }
+        function persist() {
+            if (!consented()) { return; }
+            try { window.sessionStorage.setItem('rt_src', JSON.stringify(src)); } catch (e) {}
+        }
+        persist();
+        window.rtSource = function () {
+            persist();
+            var o = {};
+            for (var k in src) { if (Object.prototype.hasOwnProperty.call(src, k)) { o[k] = src[k]; } }
+            return o;
+        };
+        window.rtTrack = function (name, params) {
+            if (typeof name !== 'string' || !NAME.test(name)) { return; }
+            var p = {};
+            if (params && typeof params === 'object') {
+                for (var k in params) {
+                    if (Object.prototype.hasOwnProperty.call(params, k) && NAME.test(k) && params[k] != null) {
+                        p[k] = String(params[k]).slice(0, 100);
+                    }
+                }
+            }
+            if (typeof window.gtag === 'function') { window.gtag('event', name, p); }
+        };
+        window.addEventListener('message', function (e) {
+            var d = e.data;
+            if (e.origin === FRAME_ORIGIN && d && d.source === 'rt') {
+                if (d.type === 'rt:track' && typeof d.name === 'string') {
+                    var p = {};
+                    var given = (d.params && typeof d.params === 'object') ? d.params : {};
+                    for (var k in given) { if (Object.prototype.hasOwnProperty.call(given, k)) { p[k] = given[k]; } }
+                    p.lead_page = window.location.pathname;
+                    window.rtTrack(d.name, p);
+                } else if (d.type === 'rt:source?' && e.source) {
+                    e.source.postMessage({ source: 'rt', type: 'rt:source', data: window.rtSource() }, FRAME_ORIGIN);
+                }
+            } else if (e.origin === 'https://calendly.com' && d && d.event === 'calendly.event_scheduled') {
+                window.rtTrack('book_call', { lead_page: window.location.pathname });
+            }
+        });
+        document.addEventListener('click', function (e) {
+            var t = e.target;
+            var el = (t && t.closest) ? t.closest('[data-rt-cta], a[href*="calendly.com/"]') : null;
+            if (!el) { return; }
+            var cta = el.getAttribute('data-rt-cta') || 'calendly';
+            window.rtTrack('cta_click', { cta: cta, location: el.getAttribute('data-rt-cta-location') || window.location.pathname });
+        }, true);
+    })();
+    </script>
+    <?php
+}
+
+/**
+ * Staging must not report into the production GA4 property. The WordPress.com
+ * staging site runs the same Site Kit configuration, so it loaded the live
+ * tags (63 sessions, 2.5% of production traffic, June-September 2026). GA4 has
+ * no hostname filter; the block has to happen here. Site Kit exposes
+ * googlesitekit_{module}_tag_blocked per module.
+ */
+add_filter( 'googlesitekit_analytics-4_tag_blocked', 'rt_block_tags_off_production' );
+add_filter( 'googlesitekit_tagmanager_tag_blocked', 'rt_block_tags_off_production' );
+add_filter( 'googlesitekit_ads_tag_blocked', 'rt_block_tags_off_production' );
+function rt_block_tags_off_production( $blocked ) {
+    if ( $blocked ) {
+        return $blocked;
+    }
+    return 'realtreasury.com' !== wp_parse_url( home_url(), PHP_URL_HOST );
+}
+
 /**
  * Jetpack ships two trackers we do not want:
  *

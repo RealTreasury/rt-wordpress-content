@@ -43,6 +43,7 @@ CHECKS=(
   test:publish-css
   test:guide-ga
   test:consent-mode
+  test:rt-track
   test:deploy-on-merge
 )
 

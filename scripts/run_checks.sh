@@ -44,6 +44,7 @@ CHECKS=(
   test:guide-ga
   test:consent-mode
   test:rt-track
+  test:lead-events
   test:deploy-on-merge
 )
 

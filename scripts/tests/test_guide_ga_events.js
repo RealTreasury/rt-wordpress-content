@@ -1,70 +1,73 @@
-// Runs the thank-you page's GA4 script in a node vm with a fake window, in the same
-// node-only style as the other static-page checks: generate_lead, and its
-// reload/back-forward skip.
+// Guide funnel lead counting (see docs/11-GATED-PAGE-CONFIG.md, "Lead events
+// and session source", and rt-guide-ga4-funnel-events.md): the guide lead is
+// counted ONCE, at the download form, via window.RTGLeadEvents. This test
+// pins that decision:
+//
+//   - the thank-you page (reached after a successful submit) fires no lead
+//     event at all -- it used to fire GA4 `generate_lead` on load (PR #919);
+//     that was removed so the guide lead isn't double-counted.
+//   - the guide download page (../wordpress-page.html) sends `payload.source`
+//     from the lead-events helper on every submit, and calls
+//     `window.RTGLeadEvents.trackLead(...)` with a real asset, only in the
+//     success branch (after the /submit response is parsed, before the
+//     redirect to the thank-you page), never inside the catch handler.
+//
+// Static text checks, in the same style as the other page checks in this
+// repo -- no DOM/JS harness.
 'use strict';
 
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const vm = require('vm');
 
 const root = path.join(__dirname, '..', '..', 'treasury-tech-selection', 'guidebook');
-const LEAD_PAGE = '/treasury-tech-selection-guide/';
 
-function scriptOf(rel) {
-  const html = fs.readFileSync(path.join(root, rel), 'utf8');
-  const blocks = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
-  assert.strictEqual(blocks.length, 1, `${rel}: expected exactly one inline script`);
-  assert.ok(!blocks[0].includes('&&'), `${rel}: && in inline JS is mangled by WP texturize`);
-  return blocks[0];
+function read(rel) {
+  return fs.readFileSync(path.join(root, rel), 'utf8');
 }
 
-// Returns { win, run() }. withGtag: install a gtag that records calls. navType: performance navigation entry type,
-// or null for a browser without the API.
-function sandbox({ withGtag = false, navType = 'navigate' } = {}) {
-  const gtagCalls = [];
-  const win = { gtagCalls };
-  if (navType !== null) {
-    win.performance = { getEntriesByType: (t) => (t === 'navigation' ? [{ type: navType }] : []) };
-  }
-  if (withGtag) {
-    win.gtag = function () { gtagCalls.push(Array.from(arguments)); };
-  }
-  const context = { window: win };
-  context.performance = win.performance;
-  vm.createContext(context);
-  return { win, run: (src) => vm.runInContext(src, context) };
-}
+// ---- thank-you: no lead event of any kind -----------------------------
+const thankYou = read(path.join('thank-you', 'wordpress-page.html'));
+assert.ok(!/<script/.test(thankYou), 'thank-you page must not carry a <script> block');
+assert.ok(!thankYou.includes('generate_lead\''), 'thank-you page must not fire generate_lead');
+assert.ok(!thankYou.includes('trackLead('), 'thank-you page must not call trackLead');
 
-function events(win) {
-  const fromDl = (win.dataLayer || []).map((a) => Array.from(a));
-  return win.gtagCalls.concat(fromDl).filter((a) => a[0] === 'event');
-}
+// ---- download page: source + trackLead, success branch only ----------
+const download = read('wordpress-page.html');
 
-// ---- thank-you: generate_lead ------------------------------------------------
-const thankYou = scriptOf(path.join('thank-you', 'wordpress-page.html'));
+assert.ok(
+  /var LE = window\.RTGLeadEvents \|\| null;/.test(download),
+  'download page must read window.RTGLeadEvents into LE'
+);
+assert.ok(
+  /payload\.source = LE \? LE\.getSource\(\) : \{\};/.test(download),
+  'download page must set payload.source from LE.getSource() on every submit'
+);
 
-for (const navType of ['navigate', null]) {
-  const s = sandbox({ navType });
-  s.run(thankYou);
-  const ev = events(s.win);
-  assert.strictEqual(ev.length, 1, `thank-you (${navType}): one event queued on dataLayer`);
-  assert.strictEqual(ev[0][1], 'generate_lead');
-  assert.deepStrictEqual(JSON.parse(JSON.stringify(ev[0][2])), { form_name: 'tech-selection-guide', lead_page: LEAD_PAGE });
-}
+const submitIdx = download.indexOf("fetch(API_BASE + '/submit'");
+assert.notStrictEqual(submitIdx, -1, 'download page must POST to /submit');
 
-for (const navType of ['reload', 'back_forward']) {
-  const s = sandbox({ navType });
-  s.run(thankYou);
-  assert.strictEqual(events(s.win).length, 0, `thank-you: a ${navType} must not re-fire generate_lead`);
-}
+const sourceIdx = download.indexOf('payload.source = LE');
+assert.ok(sourceIdx !== -1 && sourceIdx < submitIdx, 'payload.source must be set before the /submit fetch');
 
-{
-  // A second real submit in the same tab is a fresh navigation and counts again.
-  const s = sandbox({ withGtag: true });
-  s.run(thankYou);
-  s.run(thankYou);
-  assert.strictEqual(events(s.win).length, 2, 'thank-you: two fresh loads count twice');
-}
+const trackCalls = download.match(/LE\.trackLead\(/g) || [];
+assert.strictEqual(trackCalls.length, 1, 'download page must call LE.trackLead exactly once');
 
-console.log('guide GA4 event checks passed');
+const trackIdx = download.indexOf('LE.trackLead(');
+assert.ok(trackIdx > submitIdx, 'trackLead must run after the /submit call');
+
+const parseIdx = download.indexOf('.then(parseJsonOrThrow)', submitIdx);
+assert.ok(parseIdx !== -1 && parseIdx < trackIdx, 'trackLead must run after the /submit response is parsed');
+
+const redirectIdx = download.indexOf('window.location.href = CONFIG_REDIRECT_URL', trackIdx);
+assert.ok(redirectIdx !== -1 && trackIdx < redirectIdx, 'trackLead must run before the thank-you page redirect');
+
+const catchIdx = download.indexOf('.catch(', trackIdx);
+assert.ok(catchIdx !== -1 && trackIdx < catchIdx, 'trackLead must sit in the success branch, before the .catch');
+
+const trackSnippet = (download.match(/LE\.trackLead\(\s*\{[^]*?\}\s*\)\s*;/) || [''])[0];
+assert.ok(trackSnippet, 'could not isolate the trackLead(...) call body');
+assert.ok(/asset:\s*ASSET_SLUG/.test(trackSnippet), 'trackLead must set asset: ASSET_SLUG (never empty)');
+assert.ok(/formId:\s*schema\.form_id/.test(trackSnippet), 'trackLead must set formId');
+
+console.log('guide GA4 / lead-event checks passed');

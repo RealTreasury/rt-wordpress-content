@@ -245,6 +245,19 @@ chain is live end to end.
 
 ## Counting the funnel
 
+**Superseded September 26, 2026 (this branch, `feat/rt-track-helper`):** the
+guide lead is now counted once, at the download form, via
+`window.RTGLeadEvents.trackLead(...)` on a successful RT Gate submit (see
+docs/11-GATED-PAGE-CONFIG.md, "Lead events and session source"). The
+thank-you page's own `generate_lead` on load (added by PR #919, described
+below) was removed for exactly the reason its own text warned about: firing
+it a second time double-counted every guide lead once `trackLead` also fired
+at the form. `scripts/tests/test_gated_pages_lead_events.js` and
+`scripts/tests/test_guide_ga_events.js` pin the new split. The measurement
+numbers and the "why the thank-you page" reasoning below are the September 22
+state and are kept for history; re-read the funnel against GA4 once the new
+event has had a few days of traffic.
+
 Checked September 22, 2026 against GA4 property 446224629 (Data API, 30 days): the
 download page had 129 views and 26 `form_start` events, the thank-you page 25
 views, and **zero** `form_submit`, `generate_lead` or `file_download` events for the
@@ -260,18 +273,19 @@ Three counters, one per step:
 | step | where it is counted | event | how to read it |
 |---|---|---|---|
 | page visited | GA4, `/treasury-tech-selection-guide/` | `page_view` | Reports > Engagement > Pages and screens, filter the path |
-| form completed | GA4, `/treasury-tech-selection-guide/thank-you/` (4585) | `generate_lead` with `form_name=tech-selection-guide` | Reports > Engagement > Events, or the Key events report; the thank-you page's own `page_view` count is the cross-check |
+| form completed | GA4/rtTrack, `/treasury-tech-selection-guide/` (4202), fired at submit success | `generate_lead` with `form_name=rtg-form-<id>`, `asset=treasury-tech-selection-guidebook` | Reports > Engagement > Events, or the Key events report |
 | PDF downloaded | Resend, the `guide-delivery` email | click on the download button | Resend dashboard > Emails (or the automation's runs), per-email `clicked` status |
 
-The thank-you page fires `generate_lead` on load because nothing links to it:
-the only way in is the redirect after a successful rt-gate submit. A reload or a
-back/forward visit is skipped using the browser's navigation type
-(`performance.getEntriesByType('navigation')`), so a refresh does not count twice
-but a second real submit in the same tab does. Nothing is written to storage. The
-script calls `gtag()` so Google Consent Mode governs it, and it queues on
-`dataLayer` if gtag.js is not yet on the page. Firing from the form page itself
-would mean touching 4202, whose live copy is still Tim's
-`content/guide-form-layout` layout rather than main's.
+Historical note (superseded above): the thank-you page used to fire
+`generate_lead` on load, reasoning that nothing links to it except the
+redirect after a successful rt-gate submit, so one load equaled one
+completed form. That reasoning still held for the thank-you page in
+isolation; it broke once the form page *also* started firing its own lead
+event on the same submit. Firing from the form page itself was avoided
+originally because that meant touching 4202, whose live copy was still
+Tim's `content/guide-form-layout` layout rather than main's — moot now that
+the event lives in the lead-events helper's `trackLead` call in the page's
+own submit handler, not in a separate inline script.
 
 **Downloads are not a GA4 event.** The delivery email links straight at the PDF,
 and a file fetch runs no JavaScript, so GA4 cannot see it. An interstitial

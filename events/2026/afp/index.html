@@ -34,6 +34,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://realtreasury.com/wp-content/plugins/rt-gate/assets/js/rtg-lead-events.js"></script>
 <script>
 window.RTG_CONFIG = {
     formId:    3,                        /* AFP 2026 Walk the Map Tour Registration */
@@ -481,6 +482,7 @@ window.RT_TOUR = {
   var C = window.RTG_CONFIG || {};
   var T = window.RT_TOUR || { sessions: [] };
   var API_BASE = (C.wpSiteUrl || 'https://realtreasury.com') + '/wp-json/rtg/v1';
+  var LE = window.RTGLeadEvents || null; // RT Gate lead events + session source helper
   var FREE_EMAIL_DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'proton.me', 'protonmail.com'];
   var HIDDEN_FIELD_KEYS = ['utm'];
   var TOUR_FIELD_KEY = 'tour_preference';
@@ -681,6 +683,18 @@ window.RT_TOUR = {
     if (p.mappingId) return Promise.resolve(Number(p.mappingId));
     if (p.assetSlug) return viaGate(p.assetSlug);
     return Promise.resolve(null);
+  }
+
+  /* The asset slug backing whichever mapping resolveMappingId() actually
+     resolves for this choice -- same session/private/general-interest
+     fallback order, so the lead event's asset always matches what the
+     submit was scoped to. */
+  function chosenAssetSlug(chosen) {
+    if (chosen.kind === 'session') return (chosen.session && chosen.session.assetSlug) || '';
+    var p = (chosen.kind === 'none' && T.generalInterest && (T.generalInterest.mappingId || T.generalInterest.assetSlug))
+      ? T.generalInterest
+      : (T.privateTour || {});
+    return p.assetSlug || '';
   }
 
   function tourChoiceOptionsHtml(required) {
@@ -1030,12 +1044,14 @@ window.RT_TOUR = {
             throw new Error('Registration hit a snag on our side — please try again in a few minutes.');
           }
           payload.mapping_id = mappingId;
+          payload.source = LE ? LE.getSource() : {};
           return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         })
         .then(parseJsonOrThrow)
         .then(function () {
           /* Inline success on purpose — the mapped asset's target_url points
              back at this page, so a redirect would just reload the form. */
+          if (LE) { LE.trackLead({ formId: payload.form_id, asset: chosenAssetSlug(chosenTour), contactRequest: collected }); }
           var headline = isWaitlist ? 'You’re on the waitlist'
             : (isPrivate ? 'Custom tour requested'
             : (isNone ? 'Thanks — we have your details' : 'You’re on the list'));

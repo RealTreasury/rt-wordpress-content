@@ -108,6 +108,63 @@ for (const page of PAGES) {
   }
 }
 
+// AFP computes its asset at runtime (asset: chosenAssetSlug(chosenTour)), so the
+// literal '' check above cannot see an empty result. Run the page's own
+// selector against its committed RT_TOUR config for every choice a visitor can
+// make, and require a real asset for each. Also pin that the asset and the
+// submit's mapping come from one shared selector, so they cannot drift apart.
+{
+  const label = 'events/2026/afp/index.html';
+  const text = fs.readFileSync(path.join(root, label), 'utf8');
+  const vm = require('vm');
+
+  function extractFunction(name) {
+    const start = text.indexOf('function ' + name + '(');
+    if (start === -1) return null;
+    let depth = 0;
+    for (let i = text.indexOf('{', start); i < text.length; i++) {
+      if (text[i] === '{') depth += 1;
+      else if (text[i] === '}') {
+        depth -= 1;
+        if (depth === 0) return text.slice(start, i + 1);
+      }
+    }
+    return null;
+  }
+
+  const configMatch = text.match(/window\.RT_TOUR\s*=\s*\{[^]*?\n\};/);
+  const selector = extractFunction('mappingConfigFor');
+  const assetFn = extractFunction('chosenAssetSlug');
+  const resolveFn = extractFunction('resolveMappingId');
+  check(label + ': RT_TOUR config found', !!configMatch);
+  check(label + ': mappingConfigFor() found', !!selector);
+  check(label + ': chosenAssetSlug() found', !!assetFn);
+  check(label + ': resolveMappingId() found', !!resolveFn);
+  if (assetFn) {
+    check(label + ': chosenAssetSlug() reads mappingConfigFor()', assetFn.includes('mappingConfigFor(chosen)'));
+  }
+  if (resolveFn) {
+    check(label + ': resolveMappingId() reads mappingConfigFor()', resolveFn.includes('mappingConfigFor(chosen)'));
+  }
+
+  if (configMatch && selector && assetFn) {
+    const sandbox = { window: {} };
+    vm.runInNewContext(
+      configMatch[0] + '\nvar T = window.RT_TOUR || { sessions: [] };\n' + selector + '\n' + assetFn +
+        '\nwindow.chosenAssetSlug = chosenAssetSlug;',
+      sandbox
+    );
+    const T = sandbox.window.RT_TOUR;
+    const choices = (T.sessions || []).map((s) => ({ kind: 'session', session: s }));
+    choices.push({ kind: 'private' }, { kind: 'none' });
+    for (const c of choices) {
+      const which = c.kind === 'session' ? 'session ' + c.session.id : c.kind;
+      const asset = sandbox.window.chosenAssetSlug(c);
+      check(label + ': chosenAssetSlug() is non-empty for ' + which, typeof asset === 'string' && asset !== '');
+    }
+  }
+}
+
 // The guide thank-you page must NOT fire a lead event -- the guide lead is
 // now counted once, at the download form (see test_guide_ga_events.js).
 {

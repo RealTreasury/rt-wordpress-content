@@ -13,9 +13,9 @@ earlier draft of this runbook said Revision 8 shipped "three segment cuts"
 to gate. **Re-read against production on September 19: steps 1, 2, 3, 4, 5, 6a,
 6b and the automation half of 7 are all done.** 4585, the thank-you page, was
 still a draft on September 19 but was published by September 22 (the URL
-returns 200). After this branch merges, write its thank-you source to 4585 with
-`python3 scripts/wp_publish_post.py publish guide-thank-you --target production`
-and verify the readback. The release broadcast remains optional. The
+returns 200). `guide-thank-you` is now in `wp/deploy.tsv`, so the merge of this
+branch writes its thank-you source to 4585 in the same deploy run as 4202; verify
+the readback with `python3 scripts/wp_publish_post.py plan guide-thank-you`. The release broadcast remains optional. The
 per-step notes below carry the evidence.
 
 ## Pages
@@ -258,13 +258,12 @@ numbers and the "why the thank-you page" reasoning below are the September 22
 state and are kept for history; re-read the funnel against GA4 once the new
 event has had a few days of traffic.
 
-**Release in one sitting.** `guide-download` is in `wp/deploy.tsv`, so the form-side
-`trackLead` goes live the moment this branch merges. `guide-thank-you` (4585) is not,
-so the live thank-you page keeps firing `generate_lead` on load until someone publishes
-it by hand. In the same sitting as the merge, hand-publish 4585
-(`scripts/wp_publish_post.py publish --target production guide-thank-you`) and deploy
-the theme's `assets/php/functions.php` (the `rtTrack` helper). Until both land, every
-guide lead counts twice.
+**Release in one run.** `guide-download` and `guide-thank-you` (4585) are both in
+`wp/deploy.tsv`, so the deploy run for this merge publishes the form-side `trackLead`
+on 4202 and removes the thank-you page's on-load `generate_lead` from 4585 together;
+the guide lead is never counted twice. If the run holds with only one of the two
+published, publish the other by hand straight away. The theme's `assets/php/functions.php` (the
+`rtTrack` helper) is still a hand deploy.
 
 Checked September 22, 2026 against GA4 property 446224629 (Data API, 30 days): the
 download page had 129 views and 26 `form_start` events, the thank-you page 25

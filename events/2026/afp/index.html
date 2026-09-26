@@ -660,41 +660,36 @@ window.RT_TOUR = {
      private-tour mapping (or any other session's): if its configured
      mappingId is missing, resolve live via /gate/{assetSlug}; if that also
      fails, resolve null and the submit is refused rather than misattributed. */
+  /* The config ({ mappingId, assetSlug }) a choice resolves through. The one
+     selector both resolveMappingId() and chosenAssetSlug() read, so the lead
+     event's asset always matches the mapping the submit was scoped to. */
+  function mappingConfigFor(chosen) {
+    if (chosen.kind === 'session') return chosen.session || {};
+    /* 'none' resolves through its own config when one exists, and otherwise
+       falls back to the private-tour mapping — there is no RT Gate asset for
+       general interest yet, and refusing the submit would lose the lead the
+       option exists to capture. The two stay distinguishable on the lead by
+       their tour_preference value. */
+    return (chosen.kind === 'none' && T.generalInterest && (T.generalInterest.mappingId || T.generalInterest.assetSlug))
+      ? T.generalInterest
+      : (T.privateTour || {});
+  }
+
   function resolveMappingId(chosen) {
     function viaGate(slug) {
       return fetch(bust(API_BASE + '/gate/' + slug)).then(parseJsonOrThrow)
         .then(function (j) { return j && j.mapping_id ? Number(j.mapping_id) : null; })
         .catch(function () { return null; });
     }
-    if (chosen.kind === 'session') {
-      var sess = chosen.session;
-      if (sess && sess.mappingId) return Promise.resolve(Number(sess.mappingId));
-      if (sess && sess.assetSlug) return viaGate(sess.assetSlug);
-      return Promise.resolve(null);
-    }
-    /* 'none' resolves through its own config when one exists, and otherwise
-       falls back to the private-tour mapping — there is no RT Gate asset for
-       general interest yet, and refusing the submit would lose the lead the
-       option exists to capture. The two stay distinguishable on the lead by
-       their tour_preference value. */
-    var p = (chosen.kind === 'none' && T.generalInterest && (T.generalInterest.mappingId || T.generalInterest.assetSlug))
-      ? T.generalInterest
-      : (T.privateTour || {});
+    var p = mappingConfigFor(chosen);
     if (p.mappingId) return Promise.resolve(Number(p.mappingId));
     if (p.assetSlug) return viaGate(p.assetSlug);
     return Promise.resolve(null);
   }
 
-  /* The asset slug backing whichever mapping resolveMappingId() actually
-     resolves for this choice -- same session/private/general-interest
-     fallback order, so the lead event's asset always matches what the
-     submit was scoped to. */
+  /* The asset slug backing whichever mapping resolveMappingId() resolves. */
   function chosenAssetSlug(chosen) {
-    if (chosen.kind === 'session') return (chosen.session && chosen.session.assetSlug) || '';
-    var p = (chosen.kind === 'none' && T.generalInterest && (T.generalInterest.mappingId || T.generalInterest.assetSlug))
-      ? T.generalInterest
-      : (T.privateTour || {});
-    return p.assetSlug || '';
+    return mappingConfigFor(chosen).assetSlug || '';
   }
 
   function tourChoiceOptionsHtml(required) {

@@ -4,8 +4,7 @@
 #
 # Listing a row here is the decision that a merge to main IS its release. Rows that
 # must stay a deliberate hand step do not belong here:
-#   * guide-thank-you, guide-download-staging — drafts, and 4587 is a staging draft
-#     whose slug 404s.
+#   * guide-download-staging — 4587 is a staging draft whose slug 404s.
 #   * guide-waitlist-confirmed — NOT a draft: 4809 was published September 19, 2026
 #     (see wp/pages.tsv and docs/guide-release-runbook.md). It is held off this list
 #     as a hand step; whether it should be added is an open decision, not a fact about
@@ -18,15 +17,17 @@
 #     atomic release mechanism.
 # Only the *-prod rows of those two pages are here.
 #
-# guide-download ships its form-side trackLead on merge, but guide-thank-you (4585)
-# stays a hand step. In the same sitting as that merge, hand-publish 4585 (so the live
-# thank-you page stops firing generate_lead on load) and deploy the theme's
-# assets/php/functions.php (rtTrack). Until both land, every guide lead counts twice.
-# See docs/guide-release-runbook.md, "Counting the funnel".
+# guide-thank-you (4585) is published (returns 200 since September 22, 2026) and ships
+# with guide-download (4202) in the same run: 4202 gains the form-side trackLead and
+# 4585 drops its on-load generate_lead together, so a guide lead never counts twice.
+# The publish script's post_status guard never changes 4585's status. The theme's
+# assets/php/functions.php (rtTrack) is still a hand deploy. See
+# docs/guide-release-runbook.md, "Counting the funnel".
 real-treasury-explained
 payment-networks-explained
 data-flows-of-a-tms
 guide-download
+guide-thank-you
 errnot
 how-to-select-a-tms-prod
 tms-selection-mistakes-prod

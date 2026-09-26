@@ -1288,117 +1288,180 @@ function rt_rest_permission_check() {
  * table). Nothing here is inferred — no founding year, revenue, client
  * names, or street address, since none of those are published on the site.
  *
- * Reuse Yoast's canonical Organization identifier. JSON-LD nodes with the
- * same @id describe the same entity, so founder/worksFor edges enrich that
- * organization instead of creating a second company on every page.
+ * Yoast SEO already emits one schema graph per page with an Organization
+ * node at https://realtreasury.com/#organization. Rather than print a second
+ * <script> block and rely on consumers merging nodes by @id across blocks,
+ * this hooks Yoast's own filters:
  *
- * Because the two nodes merge, this one must only ADD properties Yoast does
- * not already emit. Yoast's #organization node carries name, url, logo (as an
- * ImageObject node, @id .../#/schema/logo/image/) and image; it carries no
- * legalName, description, slogan, sameAs, address, founder or employee. Adding
- * a second, differently-typed `logo` gave one entity two conflicting logos --
- * a plain string to a 450x88 crop alongside Yoast's 3163x621 ImageObject --
- * so `logo` is deliberately left to Yoast. Check that list again if Yoast's
- * output changes; `@type` is the intended exception, since Organization +
- * ProfessionalService is a refinement rather than a conflict.
+ *   - wpseo_schema_organization: adds the properties Yoast does not emit
+ *     (legalName, description, slogan, sameAs, address, founder, employee)
+ *     and refines @type to Organization + ProfessionalService. Yoast's name,
+ *     url, logo and image are left untouched — a second logo gave one entity
+ *     two conflicting logos (450x88 string vs Yoast's 3163x621 ImageObject).
+ *   - wpseo_schema_graph: appends the two Person nodes to the same graph.
+ *
+ * If Yoast is not active, rt_output_jsonld_fallback() prints the same nodes
+ * as a standalone block so the data does not silently disappear.
  */
-add_action( 'wp_head', 'rt_output_jsonld_structured_data', 5 );
-function rt_output_jsonld_structured_data() {
-	if ( is_admin() ) {
+function rt_jsonld_org_id() {
+	return 'https://realtreasury.com/#organization';
+}
+
+/** Properties added to the Organization node. Keys must not collide with Yoast's. */
+function rt_jsonld_org_additions() {
+	return array(
+		'legalName'   => 'Real Treasury, LLC',
+		// From /team/'s meta description, not the homepage's: the homepage copy
+		// says Real Treasury helps "implement" the system, and the firm does
+		// not implement. Structured data states the service line as it is.
+		'description' => 'We help treasury teams choose the right Treasury Management System (TMS) — independent, unbiased, and based on real operational needs.',
+		'slogan'      => 'Independent. Unbiased. Built for Treasury Teams.',
+		'sameAs'      => array(
+			'https://www.linkedin.com/company/realtreasury/',
+		),
+		// City/state only, as the site footer publishes it. No street address.
+		'address'     => array(
+			array(
+				'@type'           => 'PostalAddress',
+				'addressLocality' => 'Dallas',
+				'addressRegion'   => 'TX',
+				'addressCountry'  => 'US',
+			),
+			array(
+				'@type'           => 'PostalAddress',
+				'addressLocality' => 'Tampa',
+				'addressRegion'   => 'FL',
+				'addressCountry'  => 'US',
+			),
+		),
+		'founder'     => array(
+			array( '@id' => 'https://realtreasury.com/#tim-schultz' ),
+			array( '@id' => 'https://realtreasury.com/#tracey-knight' ),
+		),
+		'employee'    => array(
+			array( '@id' => 'https://realtreasury.com/#tim-schultz' ),
+			array( '@id' => 'https://realtreasury.com/#tracey-knight' ),
+		),
+	);
+}
+
+/**
+ * The two Principals. Bios are the /team/ page copy verbatim.
+ *
+ * Personal LinkedIn profiles are linked from /team/ but are NOT in sameAs:
+ * linkedin.com/in/ answers every unauthenticated request with 999 (a
+ * made-up profile gets the same answer), so they cannot be verified to
+ * resolve. Owner: add them back after confirming in a browser —
+ * https://www.linkedin.com/in/schultzctp/ and
+ * https://www.linkedin.com/in/traceyfergusonknight/ as linked on /team/.
+ */
+function rt_jsonld_person_nodes() {
+	$org_ref = array( '@id' => rt_jsonld_org_id() );
+	return array(
+		array(
+			'@type'        => 'Person',
+			'@id'          => 'https://realtreasury.com/#tim-schultz',
+			'name'         => 'Tim Schultz',
+			'jobTitle'     => 'Co-Founder & Principal Consultant',
+			'description'  => 'Former treasury lead with 15+ years optimizing cash management and risk operations. Tim founded Real Treasury to democratize access to treasury technology insights and help teams make confident, informed decisions without vendor bias.',
+			'image'        => 'https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/06/TS-Headshot.webp',
+			'url'          => 'https://realtreasury.com/team/',
+			'workLocation' => array(
+				'@type'   => 'Place',
+				'address' => array(
+					'@type'           => 'PostalAddress',
+					'addressLocality' => 'Tampa',
+					'addressRegion'   => 'FL',
+					'addressCountry'  => 'US',
+				),
+			),
+			'worksFor'     => $org_ref,
+		),
+		array(
+			'@type'        => 'Person',
+			'@id'          => 'https://realtreasury.com/#tracey-knight',
+			'name'         => 'Tracey Knight',
+			'jobTitle'     => 'Co-Founder & Principal Consultant',
+			'description'  => 'With 30 years as a practitioner, vendor, and consultant, Tracey brings rare perspective—guiding treasury and finance teams through unbiased tech selection, hands-on workshops, and smarter decisions that drive adoption, insight, and lasting transformation.',
+			'image'        => 'https://i0.wp.com/realtreasury.com/wp-content/uploads/2025/08/TraceyHeadshot-3.webp',
+			'url'          => 'https://realtreasury.com/team/',
+			'workLocation' => array(
+				'@type'   => 'Place',
+				'address' => array(
+					'@type'           => 'PostalAddress',
+					'addressLocality' => 'Dallas',
+					'addressRegion'   => 'TX',
+					'addressCountry'  => 'US',
+				),
+			),
+			'worksFor'     => $org_ref,
+		),
+	);
+}
+
+/** Refine Yoast's Organization node in place; never overwrite a key Yoast set. */
+add_filter( 'wpseo_schema_organization', 'rt_jsonld_extend_yoast_organization', 10, 1 );
+function rt_jsonld_extend_yoast_organization( $data ) {
+	if ( ! is_array( $data ) || ( isset( $data['@id'] ) && rt_jsonld_org_id() !== $data['@id'] ) ) {
+		return $data;
+	}
+	$types = isset( $data['@type'] ) ? (array) $data['@type'] : array( 'Organization' );
+	if ( ! in_array( 'ProfessionalService', $types, true ) ) {
+		$types[] = 'ProfessionalService';
+	}
+	$data['@type'] = $types;
+	foreach ( rt_jsonld_org_additions() as $key => $value ) {
+		if ( ! array_key_exists( $key, $data ) ) {
+			$data[ $key ] = $value;
+		}
+	}
+	return $data;
+}
+
+/** Append the Person nodes to Yoast's graph, once. */
+add_filter( 'wpseo_schema_graph', 'rt_jsonld_extend_yoast_graph', 10, 1 );
+function rt_jsonld_extend_yoast_graph( $graph ) {
+	if ( ! is_array( $graph ) ) {
+		return $graph;
+	}
+	$present = array();
+	foreach ( $graph as $node ) {
+		if ( is_array( $node ) && isset( $node['@id'] ) ) {
+			$present[ $node['@id'] ] = true;
+		}
+	}
+	foreach ( rt_jsonld_person_nodes() as $person ) {
+		if ( ! isset( $present[ $person['@id'] ] ) ) {
+			$graph[] = $person;
+		}
+	}
+	return $graph;
+}
+
+/** Standalone output only when Yoast is not active. */
+add_action( 'wp_head', 'rt_output_jsonld_fallback', 5 );
+function rt_output_jsonld_fallback() {
+	if ( is_admin() || defined( 'WPSEO_VERSION' ) ) {
 		return;
 	}
 
+	$org = array_merge(
+		array(
+			'@type' => array( 'Organization', 'ProfessionalService' ),
+			'@id'   => rt_jsonld_org_id(),
+			'name'  => 'Real Treasury',
+			'url'   => 'https://realtreasury.com/',
+		),
+		rt_jsonld_org_additions()
+	);
 	$graph = array(
 		'@context' => 'https://schema.org',
-		'@graph'   => array(
-			array(
-				'@type'       => array( 'Organization', 'ProfessionalService' ),
-				'@id'         => 'https://realtreasury.com/#organization',
-				'name'        => 'Real Treasury',
-				'legalName'   => 'Real Treasury, LLC',
-				'url'         => 'https://realtreasury.com/',
-				// From /team/'s meta description, not the homepage's: the homepage copy
-				// says Real Treasury helps "implement" the system, and the firm does
-				// not implement. Structured data states the service line as it is.
-				'description' => 'We help treasury teams choose the right Treasury Management System (TMS) — independent, unbiased, and based on real operational needs.',
-				'slogan'      => 'Independent. Unbiased. Built for Treasury Teams.',
-				'sameAs'      => array(
-					'https://www.linkedin.com/company/realtreasury/',
-				),
-				'address'     => array(
-					array(
-						'@type'          => 'PostalAddress',
-						'addressLocality' => 'Dallas',
-						'addressRegion'  => 'TX',
-						'addressCountry' => 'US',
-					),
-					array(
-						'@type'          => 'PostalAddress',
-						'addressLocality' => 'Tampa',
-						'addressRegion'  => 'FL',
-						'addressCountry' => 'US',
-					),
-				),
-				'founder'     => array(
-					array( '@id' => 'https://realtreasury.com/#tim-schultz' ),
-					array( '@id' => 'https://realtreasury.com/#tracey-knight' ),
-				),
-				'employee'    => array(
-					array( '@id' => 'https://realtreasury.com/#tim-schultz' ),
-					array( '@id' => 'https://realtreasury.com/#tracey-knight' ),
-				),
-			),
-			array(
-				'@type'         => 'Person',
-				'@id'           => 'https://realtreasury.com/#tim-schultz',
-				'name'          => 'Tim Schultz',
-				'jobTitle'      => 'Co-Founder & Principal Consultant',
-				'description'   => 'Former treasury lead with 15+ years optimizing cash management and risk operations. Tim founded Real Treasury to democratize access to treasury technology insights and help teams make confident, informed decisions without vendor bias.',
-				'image'         => 'https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/06/TS-Headshot.webp',
-				'url'           => 'https://realtreasury.com/team/',
-				'sameAs'        => array(
-					'https://www.linkedin.com/in/schultzctp/',
-				),
-				'workLocation'  => array(
-					'@type'          => 'Place',
-					'address'        => array(
-						'@type'          => 'PostalAddress',
-						'addressLocality' => 'Tampa',
-						'addressRegion'  => 'FL',
-						'addressCountry' => 'US',
-					),
-				),
-				'worksFor'      => array( '@id' => 'https://realtreasury.com/#organization' ),
-			),
-			array(
-				'@type'         => 'Person',
-				'@id'           => 'https://realtreasury.com/#tracey-knight',
-				'name'          => 'Tracey Knight',
-				'jobTitle'      => 'Co-Founder & Principal Consultant',
-				'description'   => 'With 30 years as a practitioner, vendor, and consultant, Tracey brings rare perspective—guiding treasury and finance teams through unbiased tech selection, hands-on workshops, and smarter decisions that drive adoption, insight, and lasting transformation.',
-				'image'         => 'https://i0.wp.com/realtreasury.com/wp-content/uploads/2025/08/TraceyHeadshot-3.webp',
-				'url'           => 'https://realtreasury.com/team/',
-				'sameAs'        => array(
-					'https://www.linkedin.com/in/traceyfergusonknight/',
-				),
-				'workLocation'  => array(
-					'@type'          => 'Place',
-					'address'        => array(
-						'@type'          => 'PostalAddress',
-						'addressLocality' => 'Dallas',
-						'addressRegion'  => 'TX',
-						'addressCountry' => 'US',
-					),
-				),
-				'worksFor'      => array( '@id' => 'https://realtreasury.com/#organization' ),
-			),
-		),
+		'@graph'   => array_merge( array( $org ), rt_jsonld_person_nodes() ),
 	);
 
-	// JSON_HEX_TAG escapes < and > as \u003C / \u003E, which is still valid JSON.
+	// JSON_HEX_TAG escapes < and > as < / >, which is still valid JSON.
 	// Without it, a value that ever contains "</script>" would close this block
-	// early and the rest of the graph would be parsed as markup. Every value here
-	// is a constant today; this is so that stays true if one becomes a field.
+	// early and the rest of the graph would be parsed as markup.
 	echo '<script type="application/ld+json" class="rt-jsonld-graph">'
 		. wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG )
 		. '</script>' . "\n";

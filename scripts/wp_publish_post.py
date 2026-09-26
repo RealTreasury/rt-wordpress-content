@@ -576,30 +576,8 @@ def write_wpcode(env, post_id: int, current: str, new: str, backup: Path) -> Non
     print(f"-- cache read-back OK: {len(after)} bytes")
 
 
-def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
-    kind = check_identity(env, slug, post_id, mode, post_name)
-    page_slug = page_slug_for(slug, post_name)
-    current = fetch_content(env, post_id)
-    status = fetch_status(env, post_id)
-    block = build(page_slug, source, mode)
-    new = block if mode in ("raw", "native") else splice(current, block, page_slug, mode)
-    if norm(new) == norm(current):
-        if new != current:
-            print("-- content matches; only line endings differ. Publishing to normalise them.")
-        else:
-            print("-- already published: nothing to do")
-            return 0
-    if mode in ("page", "native", "verbatim"):
-        # A DROP is the failure that matters: the page silently loses its nav or footer.
-        # Gaining a ref is how a native page that was published without them gets repaired,
-        # so allow that rather than forcing a hand-edit in WP Admin.
-        before_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)
-        after_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)
-        dropped = [r for r in before_refs if r not in after_refs]
-        if dropped:
-            die(f"refusing: the write would drop pattern ref(s) {dropped} "
-                f"({before_refs} -> {after_refs})")
-
+def write_post(env, slug, post_id, kind, current, new, status) -> None:
+    """Back up, write with wp_slash(), read back, and refuse a post_status move."""
     BACKUPS.mkdir(parents=True, exist_ok=True)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     backup = BACKUPS / f"{env['_target']}-{post_id}-{slug}-{stamp}.html"
@@ -640,6 +618,62 @@ def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
         die(f"post_status changed {status} -> {after}; it should not have. "
             f"restore with: {sys.argv[0]} restore {slug} {backup}")
     print(f"-- read-back OK: {len(back)} bytes, {words(back)} words; still {after}")
+
+
+def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
+    kind = check_identity(env, slug, post_id, mode, post_name)
+    page_slug = page_slug_for(slug, post_name)
+    current = fetch_content(env, post_id)
+    status = fetch_status(env, post_id)
+    block = build(page_slug, source, mode)
+    new = block if mode in ("raw", "native") else splice(current, block, page_slug, mode)
+    if norm(new) == norm(current):
+        if new != current:
+            print("-- content matches; only line endings differ. Publishing to normalise them.")
+        else:
+            print("-- already published: nothing to do")
+            return 0
+    if mode in ("page", "native", "verbatim"):
+        # A DROP is the failure that matters: the page silently loses its nav or footer.
+        # Gaining a ref is how a native page that was published without them gets repaired,
+        # so allow that rather than forcing a hand-edit in WP Admin.
+        before_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)
+        after_refs = re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)
+        dropped = [r for r in before_refs if r not in after_refs]
+        if dropped:
+            die(f"refusing: the write would drop pattern ref(s) {dropped} "
+                f"({before_refs} -> {after_refs})")
+
+    write_post(env, slug, post_id, kind, current, new, status)
+    return 0
+
+
+def seed_markers(current: str, page_slug: str) -> str:
+    """Wrap a hand-built page's one Custom HTML block in an empty-named content region.
+
+    Pages built in WP Admin carry their body in a single core/html block and no
+    rt:page-content markers, so `page` mode has nothing to claim. Seeding wraps that
+    block in the markers and changes nothing a visitor sees; the next publish then
+    replaces exactly that region. Two blocks means guessing which is the body: refuse.
+    """
+    if START_RE.search(current):
+        die("post already carries an rt:page-content region; nothing to seed")
+    blocks = list(re.finditer(r"<!--\s*wp:html\s*-->[\s\S]*?<!--\s*/wp:html\s*-->", current))
+    if len(blocks) != 1:
+        die(f"seed needs exactly one wp:html block; found {len(blocks)}")
+    b = blocks[0]
+    return (current[:b.start()] + f"<!-- rt:page-content {page_slug} -->\n"
+            + b.group(0) + f"\n{END_MARK}" + current[b.end():])
+
+
+def cmd_seed(env, slug, post_id, mode, post_name=None) -> int:
+    if mode != "page":
+        die("seed is for page-mode rows only")
+    kind = check_identity(env, slug, post_id, mode, post_name)
+    current = fetch_content(env, post_id)
+    status = fetch_status(env, post_id)
+    new = seed_markers(current, page_slug_for(slug, post_name))
+    write_post(env, slug, post_id, kind, current, new, status)
     return 0
 
 
@@ -682,7 +716,7 @@ def main(argv=None) -> int:
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--target", default="production",
                    help="which site to act on, from wp/targets.tsv (default: %(default)s)")
-    p.add_argument("command", choices=["plan", "publish", "restore"])
+    p.add_argument("command", choices=["plan", "publish", "restore", "seed"])
     p.add_argument("slug")
     p.add_argument("backup", nargs="?")
     a = p.parse_args(argv)
@@ -701,6 +735,8 @@ def main(argv=None) -> int:
         return cmd_plan(env, a.slug, post_id, source, mode, post_name)
     if a.command == "publish":
         return cmd_publish(env, a.slug, post_id, source, mode, post_name)
+    if a.command == "seed":
+        return cmd_seed(env, a.slug, post_id, mode, post_name)
     if not a.backup:
         die("restore needs a backup file")
     return cmd_restore(env, a.slug, post_id, mode, a.backup, post_name)

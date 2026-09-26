@@ -25,7 +25,7 @@ whose value looks like an email address (a visitor can type one into a search bo
 | `sign_up` | Newsletter subscription succeeds | `method`, `lead_page` | register when first seen |
 | `book_call` | A Calendly booking completes (Calendly embed message) | `lead_page` | register when first seen |
 | `search` | Portal or market-chart search settles | `search_term`, `surface` | no |
-| `vendor_view` | A vendor card or profile opens | `vendor`, `category`, `surface` | no |
+| `vendor_view` | A vendor profile opens (`view_type=profile`), or a card's outbound vendor link is clicked (`view_type=vendor_link`) | `vendor`, `category`, `view_type`, `surface` | no |
 | `filter_apply` | A portal or chart filter changes | `filter`, `value`, `surface` | no |
 | `cta_click` | Any element with `data-rt-cta="<name>"` (optional `data-rt-cta-location`), or any Calendly or Microsoft Bookings link | `cta`, `location` | no |
 

@@ -34,6 +34,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://realtreasury.com/wp-content/plugins/rt-gate/assets/js/rtg-lead-events.js"></script>
 <script>
 window.RTG_CONFIG = {
     formId:    3,                        /* AFP 2026 Walk the Map Tour Registration */
@@ -481,6 +482,7 @@ window.RT_TOUR = {
   var C = window.RTG_CONFIG || {};
   var T = window.RT_TOUR || { sessions: [] };
   var API_BASE = (C.wpSiteUrl || 'https://realtreasury.com') + '/wp-json/rtg/v1';
+  var LE = window.RTGLeadEvents || null; // RT Gate lead events + session source helper
   var FREE_EMAIL_DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'proton.me', 'protonmail.com'];
   var HIDDEN_FIELD_KEYS = ['utm'];
   var TOUR_FIELD_KEY = 'tour_preference';
@@ -658,29 +660,36 @@ window.RT_TOUR = {
      private-tour mapping (or any other session's): if its configured
      mappingId is missing, resolve live via /gate/{assetSlug}; if that also
      fails, resolve null and the submit is refused rather than misattributed. */
+  /* The config ({ mappingId, assetSlug }) a choice resolves through. The one
+     selector both resolveMappingId() and chosenAssetSlug() read, so the lead
+     event's asset always matches the mapping the submit was scoped to. */
+  function mappingConfigFor(chosen) {
+    if (chosen.kind === 'session') return chosen.session || {};
+    /* 'none' resolves through its own config when one exists, and otherwise
+       falls back to the private-tour mapping — there is no RT Gate asset for
+       general interest yet, and refusing the submit would lose the lead the
+       option exists to capture. The two stay distinguishable on the lead by
+       their tour_preference value. */
+    return (chosen.kind === 'none' && T.generalInterest && (T.generalInterest.mappingId || T.generalInterest.assetSlug))
+      ? T.generalInterest
+      : (T.privateTour || {});
+  }
+
   function resolveMappingId(chosen) {
     function viaGate(slug) {
       return fetch(bust(API_BASE + '/gate/' + slug)).then(parseJsonOrThrow)
         .then(function (j) { return j && j.mapping_id ? Number(j.mapping_id) : null; })
         .catch(function () { return null; });
     }
-    if (chosen.kind === 'session') {
-      var sess = chosen.session;
-      if (sess && sess.mappingId) return Promise.resolve(Number(sess.mappingId));
-      if (sess && sess.assetSlug) return viaGate(sess.assetSlug);
-      return Promise.resolve(null);
-    }
-    /* 'none' resolves through its own config when one exists, and otherwise
-       falls back to the private-tour mapping — there is no RT Gate asset for
-       general interest yet, and refusing the submit would lose the lead the
-       option exists to capture. The two stay distinguishable on the lead by
-       their tour_preference value. */
-    var p = (chosen.kind === 'none' && T.generalInterest && (T.generalInterest.mappingId || T.generalInterest.assetSlug))
-      ? T.generalInterest
-      : (T.privateTour || {});
+    var p = mappingConfigFor(chosen);
     if (p.mappingId) return Promise.resolve(Number(p.mappingId));
     if (p.assetSlug) return viaGate(p.assetSlug);
     return Promise.resolve(null);
+  }
+
+  /* The asset slug backing whichever mapping resolveMappingId() resolves. */
+  function chosenAssetSlug(chosen) {
+    return mappingConfigFor(chosen).assetSlug || '';
   }
 
   function tourChoiceOptionsHtml(required) {
@@ -1030,12 +1039,14 @@ window.RT_TOUR = {
             throw new Error('Registration hit a snag on our side — please try again in a few minutes.');
           }
           payload.mapping_id = mappingId;
+          payload.source = LE ? LE.getSource() : {};
           return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         })
         .then(parseJsonOrThrow)
         .then(function () {
           /* Inline success on purpose — the mapped asset's target_url points
              back at this page, so a redirect would just reload the form. */
+          if (LE) { LE.trackLead({ formId: payload.form_id, asset: chosenAssetSlug(chosenTour), contactRequest: collected }); }
           var headline = isWaitlist ? 'You’re on the waitlist'
             : (isPrivate ? 'Custom tour requested'
             : (isNone ? 'Thanks — we have your details' : 'You’re on the list'));

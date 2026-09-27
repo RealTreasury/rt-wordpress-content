@@ -17,6 +17,8 @@
     "test:carousel": "node scripts/tests/test_homepage_carousel.js",
     "test:css-prune": "node scripts/tests/test_shared_css_prune.js",
     "test:consent-mode": "node scripts/tests/test_consent_mode_defaults.js",
+    "test:rt-track": "node scripts/tests/test_rt_track_helper.js",
+    "test:lead-events": "node scripts/tests/test_gated_pages_lead_events.js",
     "test:build-clean": "node scripts/tests/test_build_output_is_committed.js"
   },
   "devDependencies": {

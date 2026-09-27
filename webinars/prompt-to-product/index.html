@@ -3,6 +3,7 @@
      Form + Asset resolved via RT Gate mapping (or direct formId).
      See templates/partials/gated-video.html for full docs.
      ============================================================ -->
+<script src="https://realtreasury.com/wp-content/plugins/rt-gate/assets/js/rtg-lead-events.js"></script>
 <script>
 window.RTG_CONFIG = {
     assetSlug:    'webinar-prompt-to-product', // RT Gate asset slug — resolves the form via Mappings
@@ -254,6 +255,7 @@ window.RTG_CONFIG = {
     var STORAGE_KEY = C.storageKey || ('rtg_' + ASSET_SLUG.replace(/-/g, '_') + '_access');
     var FORM_ID     = null;
     var MAPPING_ID  = CONFIG_MAPPING_ID ? Number(CONFIG_MAPPING_ID) : null;
+    var LE = window.RTGLeadEvents || null; // RT Gate lead events + session source helper
 
     /* ---- Populate page text from config ---- */
     function setText(id, text) { var el = document.getElementById(id); if (el && text) el.textContent = text; }
@@ -426,7 +428,7 @@ window.RTG_CONFIG = {
                 throw new Error((err && err.message) || 'Unable to load gate/form schema.');
             });
     }
-    function submitForm(fields) { var payload = { form_id: FORM_ID, fields: fields, consent: true, honeypot: '' }; if (MAPPING_ID) { payload.mapping_id = MAPPING_ID; } return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(parseJsonOrThrow); }
+    function submitForm(fields) { var payload = { form_id: FORM_ID, fields: fields, consent: true, honeypot: '' }; if (MAPPING_ID) { payload.mapping_id = MAPPING_ID; } payload.source = LE ? LE.getSource() : {}; return fetch(API_BASE + '/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).then(parseJsonOrThrow); }
     function validateToken(token, slug) { return fetch(API_BASE + '/validate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug }) }).then(parseJsonOrThrow); }
     function sendEvent(token, slug, type, meta) { return fetch(API_BASE + '/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token, asset_slug: slug, event_type: type, meta: meta || {} }) }).then(parseJsonOrThrow).catch(function(e) { console.warn('RTG event failed (' + type + '):', e); }); }
 
@@ -477,6 +479,7 @@ window.RTG_CONFIG = {
                 .then(function(data) { if (!data.assets || data.assets.length === 0) throw new Error('No assets returned. Check the form-to-asset mapping in WP Admin.'); var target = null; for (var i = 0; i < data.assets.length; i++) { if (data.assets[i].slug === ASSET_SLUG) { target = data.assets[i]; break; } } if (!target) target = data.assets[0]; return validateToken(target.token, target.slug).then(function(v) { return { asset: target, validation: v }; }); })
                 .then(function(r) {
                     if (!r.validation.valid) throw new Error('Token validation failed.');
+                    if (LE) { LE.trackLead({ formId: FORM_ID, asset: ASSET_SLUG, contactRequest: collected }); }
                     var cfg = r.validation.asset || {}, url = '';
                     if (cfg.type === 'video' && cfg.config) url = cfg.config.embed_url || '';
                     else if (cfg.type === 'link' && cfg.config) url = cfg.config.target_url || '';

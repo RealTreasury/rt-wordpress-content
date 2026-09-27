@@ -8,8 +8,15 @@
   RT Gate submit. The document link is delivered by the Resend automation,
   never shown here — receiving the email is what verifies the address.
 
-  Analytics: this page fires the GA4 `generate_lead` event (see the script at the
-  end). One load of this page = one completed guide form, because nothing links
+  Analytics: this page is the FALLBACK lead counter. The download form counts
+  the lead itself (window.RTGLeadEvents.trackLead through the theme's
+  window.rtTrack) and, when it did, redirects here with #rt-lead-counted; this
+  page then fires nothing. Without that fragment (RT Gate's helper or the
+  theme's rtTrack not live, or an older copy of the form) this page fires the
+  GA4 `generate_lead` event below, as it did before. So a guide lead counts
+  once whichever of rt-gate, the theme and the two pages ships first; see
+  docs/guide-release-runbook.md, "Counting the funnel".
+  One load of this page = one completed guide form, because nothing links
   here. A reload or a back/forward visit is skipped using the browser's own
   navigation type, so a second real submit in the same tab still counts and
   nothing is written to storage. Parameters use the two
@@ -102,6 +109,10 @@
     if (nav) {
       if (nav.type === 'reload' || nav.type === 'back_forward') { return; }
     }
+    // The form already counted this lead (see the header comment).
+    // The fragment is left in place: rewriting the URL through the History API
+    // would register as a history-change page_view in GA4 enhanced measurement.
+    if (window.location.hash === '#rt-lead-counted') { return; }
     window.dataLayer = window.dataLayer || [];
     var send = function () {
       if (typeof window.gtag === 'function') { window.gtag.apply(null, arguments); }

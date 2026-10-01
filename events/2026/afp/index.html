@@ -47,7 +47,6 @@ window.RT_TOUR = {
         {
             id: 's1',
             focus: 'TMS Replacement',
-            audience: 'You have a TMS today and are weighing a change.',
             when: 'Monday, November 9',
             time: '10:15–11:30 AM',
             state: 'open',
@@ -58,7 +57,6 @@ window.RT_TOUR = {
         {
             id: 's2',
             focus: 'Visibility Tour',
-            audience: 'You run treasury on spreadsheets and bank portals.',
             when: 'Monday, November 9',
             time: '1:30–2:45 PM',
             state: 'open',
@@ -69,7 +67,6 @@ window.RT_TOUR = {
         {
             id: 's3',
             focus: 'Visibility Tour',
-            audience: 'You run treasury on spreadsheets and bank portals.',
             when: 'Tuesday, November 10',
             time: '1:45–3:00 PM',
             state: 'open',
@@ -80,7 +77,6 @@ window.RT_TOUR = {
         {
             id: 's4',
             focus: 'TMS Replacement',
-            audience: 'You have a TMS today and are weighing a change.',
             when: 'Tuesday, November 10',
             time: '3:15–4:30 PM',
             state: 'open',
@@ -603,7 +599,7 @@ window.RT_TOUR = {
           label: sessionLabelFor(s, full),
           name: tourName(s),
           when: s.when + ', ' + s.time + (full ? ' — waitlist' : ''),
-          note: full ? 'This tour is full — we’ll contact you if a spot opens.' : (s.audience || ''),
+          note: full ? 'This tour is full — we’ll contact you if a spot opens.' : '',
           pill: pillFor(s)
         });
       }

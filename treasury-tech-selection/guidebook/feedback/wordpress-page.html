@@ -181,7 +181,8 @@
   // Pre-fill the email from the link in the follow-up email (?email=...).
   try {
     var pre = new URLSearchParams(window.location.search).get('email');
-    if (pre) { emailEl.value = pre.trim(); }
+    // A '+' in the address (jo+guide@corp.example) arrives as a space; emails never contain spaces.
+    if (pre) { emailEl.value = pre.trim().split(' ').join('+'); }
   } catch (e) { /* older browsers: the visitor types it */ }
 
   function looksLikeEmail(v) {

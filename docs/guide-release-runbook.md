@@ -414,7 +414,8 @@ for the person and fire a new Teams lead card.
 **Release order (each step needs the one before it):**
 1. Merge rt-ai PR #947, then the owner runs `python3 scripts/hubspot_web_sync.py --create-forms --apply`
    and hands back the new form id.
-2. Put that id in `FORM_GUID` in the page source (PR on this repo).
+2. Put that id in `FORM_GUID` in the page source (PR on this repo). Done October 1, 2026: form id
+   `de7e1b1b-546f-4d4d-b8d1-bcb50c0f6f81`.
 3. Create the WordPress page: draft, parent 4202, slug `feedback`, `jetpack_seo_noindex` on. Uncomment
    its row in `wp/pages.tsv` with the id, then `scripts/wp_publish_post.py publish guide-feedback` and
    publish it in WP Admin.
@@ -422,7 +423,8 @@ for the person and fire a new Teams lead card.
 5. Publish the `guide-feedback` Resend template, then add a wait (7 days) + send step after
    `send_guide` in the automation "Tech Selection Guide — deliver on signup".
 
-Until step 2, the page refuses to send ("Feedback is not open yet").
+With step 2 done, the page sends to the live form; it was set to refuse ("Feedback is not open yet")
+only while `FORM_GUID` was empty.
 
 **Resend objects (staged October 1, 2026).** Template `guide-feedback`, id
 `04bc56bd-6b94-4d3e-9269-837131e30df3`, status draft. The button link is

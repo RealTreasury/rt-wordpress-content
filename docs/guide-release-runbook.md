@@ -327,8 +327,11 @@ person runs the writes):
    writes content only, never `post_status`: confirm `plan guide-thank-you`
    reports `publish`. If it reports `draft`, run
    `wp post update 4585 --post_status=publish`, or `generate_lead` never fires.
-2. Decide on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
-   Domains > the domain > Configuration). It is **domain-wide**: it also rewrites
+2. Turn on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
+   Domains > the domain > Configuration). **Owner approved: turn on** (Decisions
+   tab, "Turn on Resend click tracking for newsletter links?"). The owner flips
+   the setting; it is not yet confirmed on. Re-read it from the Resend API after
+   and replace "Click tracking is off" above with the date it went on. It is **domain-wide**: it also rewrites
    the links in the newsletter track's emails through Resend's tracking redirect.
    Leave the `guide-delivery` template as it is; its link to the stable PDF name
    does not change.

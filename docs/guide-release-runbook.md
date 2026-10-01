@@ -390,3 +390,51 @@ it is what screen readers and image-blocked clients render.
   longer true as of September 19.** 4202 is the download page now and 4809 is
   published. The waitlist still lands correctly, because step 2's mapping was
   repointed at 4809 — verified September 19, not assumed.
+
+## Guide feedback survey (October 1, 2026)
+
+Owner's ask: a short survey on the guide, three 1–5 star ratings, recorded on the HubSpot contact.
+
+**How it works.** Seven days after the guide-delivery email, Resend sends "Was the guide useful?"
+(template `guide-feedback`). Its button links to `/treasury-tech-selection-guide/feedback/?email=<contact>`.
+The page (`treasury-tech-selection/guidebook/feedback/wordpress-page.html`) posts email + one summary
+line to the hidden HubSpot form **Website - Guide Feedback** straight from the browser:
+
+    Guide feedback | Usefulness 4/5 | Segment fit 5/5 | Will use 3/5 | Comment: ...
+
+Responses: HubSpot > Marketing > Forms > Website - Guide Feedback > Submissions (exportable), and on
+each contact's timeline. No contact properties are created; `message` is HubSpot's default property,
+also written by Contact Us, so the contact's `message` holds whichever came last, while every
+submission record keeps its own text.
+
+**Why not RT Gate.** RT Gate keeps one lead row per email and overwrites `form_data.latest` on every
+submit, and the lead feed reads name/company/role from `latest`. A feedback submit would blank those
+for the person and fire a new Teams lead card.
+
+**Release order (each step needs the one before it):**
+1. Merge rt-ai PR #947, then the owner runs `python3 scripts/hubspot_web_sync.py --create-forms --apply`
+   and hands back the new form id.
+2. Put that id in `FORM_GUID` in the page source (PR on this repo).
+3. Create the WordPress page: draft, parent 4202, slug `feedback`, `jetpack_seo_noindex` on. Uncomment
+   its row in `wp/pages.tsv` with the id, then `scripts/wp_publish_post.py publish guide-feedback` and
+   publish it in WP Admin.
+4. Test one submission end to end from an external address; check it in HubSpot.
+5. Publish the `guide-feedback` Resend template, then add a wait (7 days) + send step after
+   `send_guide` in the automation "Tech Selection Guide — deliver on signup".
+
+Until step 2, the page refuses to send ("Feedback is not open yet").
+
+**Resend objects (staged October 1, 2026).** Template `guide-feedback`, id
+`04bc56bd-6b94-4d3e-9269-837131e30df3`, status draft. The button link is
+`.../feedback/?email={{{EMAIL}}}`; `EMAIL` is a Resend reserved contact variable (declaring it is
+rejected with 422), so confirm it fills in on the step-4 test before publishing. Automation change
+for step 5, added after `send_guide` in automation `01a067af-c041-7579-a1f3-ad0f042f25fe`:
+
+    steps:  {"key": "wait_7_days",   "type": "delay",      "config": {"duration": "7 days"}}
+            {"key": "send_feedback", "type": "send_email", "config": {
+                "from": "Real Treasury <newsletter@news.realtreasury.com>",
+                "subject": "Was the guide useful?",
+                "template": {"id": "04bc56bd-6b94-4d3e-9269-837131e30df3"}}}
+    connections: send_guide -> wait_7_days (default), wait_7_days -> send_feedback (default)
+
+The change applies to new signups only. Anyone already past `send_guide` does not get the email.

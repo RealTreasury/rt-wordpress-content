@@ -1,0 +1,246 @@
+<!--
+  WordPress-native guide feedback page: /treasury-tech-selection-guide/feedback/
+  (a WP child page of 4202, like ../thank-you/). Source of record.
+
+  Reached from the "Was the guide useful?" Resend email, sent 7 days after the
+  guide-delivery email, whose button links here with ?email=<contact email>.
+  Owner decision, October 1, 2026: three 1-5 star ratings plus an optional comment,
+  recorded in HubSpot as a form submission, never as new contact properties.
+
+  Where answers go: the browser posts straight to HubSpot's public forms endpoint,
+  hidden form "Website - Guide Feedback" (rt-ai scripts/hubspot_web_sync.py
+  --create-forms). Fields: `email` and `message`, where message is one line:
+    Guide feedback | Usefulness 4/5 | Segment fit 5/5 | Will use 3/5 | Comment: ...
+  Each response shows on the contact's HubSpot timeline and in the form's
+  submissions table (Marketing > Forms > Website - Guide Feedback > Submissions).
+  RT Gate is NOT used: it keeps one lead row per email and a feedback submit
+  would overwrite the visitor's name and company in the lead feed.
+
+  FORM_GUID is filled in once the owner creates the form. Until then the page
+  says feedback is not open yet and sends nothing.
+
+  WordPress texturize: no `&&` and no backslash regex in this script (see
+  docs/guide-release-runbook.md); the email check uses indexOf on purpose.
+-->
+<style>
+    .rt-gbfb {
+        background:
+          radial-gradient(900px 520px at 92% -18%, rgba(143, 71, 246, 0.13), transparent 60%),
+          radial-gradient(700px 400px at 8% 108%, rgba(199, 125, 255, 0.11), transparent 62%),
+          linear-gradient(180deg, #faf7ff 0%, #f8f8ff 54%, #f2edff 100%);
+        --primary-purple: #7216f4;
+        --secondary-purple: #8f47f6;
+        --dark-text: #281345;
+        --gray-text: #6b6b76;
+        --line: rgba(114, 22, 244, 0.16);
+        --star-off: #d6cfe4;
+        --gradient-primary: linear-gradient(135deg, #7216f4 0%, #8f47f6 100%);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: var(--dark-text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
+    .rt-gbfb *, .rt-gbfb *::before, .rt-gbfb *::after { box-sizing: border-box; }
+    .rt-gbfb a { color: var(--primary-purple); }
+    .rt-gbfb-container { max-width: 640px; margin: 0 auto; padding: 72px 24px 88px; }
+    .rt-gbfb-heading { font-size: 2rem; font-weight: 800; line-height: 1.2; margin: 0 0 12px; text-wrap: balance; color: var(--dark-text); }
+    .rt-gbfb-text { font-size: 1.05rem; color: var(--gray-text); margin: 0 0 8px; }
+
+    .rt-gbfb-form { margin: 32px 0 0; padding: 28px; background: #fff; border: 1px solid var(--line); border-radius: 12px; display: grid; gap: 26px; }
+    .rt-gbfb-q { border: 0; margin: 0; padding: 0; min-width: 0; }
+    .rt-gbfb-q legend, .rt-gbfb-label { display: block; font-weight: 700; font-size: 1rem; margin: 0 0 10px; padding: 0; }
+    .rt-gbfb-hint { font-weight: 400; color: var(--gray-text); font-size: 0.9rem; }
+    .rt-gbfb-stars { display: flex; gap: 4px; position: relative; }
+    .rt-gbfb-stars input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+    .rt-gbfb-stars label { cursor: pointer; line-height: 0; padding: 3px; border-radius: 6px; color: var(--star-off); transition: color .12s ease; }
+    .rt-gbfb-stars label svg { width: 34px; height: 34px; fill: currentColor; display: block; }
+    .rt-gbfb-stars label.is-on { color: var(--primary-purple); }
+    .rt-gbfb-stars input:focus-visible + label { outline: 2px solid var(--primary-purple); outline-offset: 2px; }
+    .rt-gbfb-ends { display: flex; justify-content: space-between; max-width: 216px; font-size: 0.78rem; color: var(--gray-text); margin-top: 4px; }
+    .rt-gbfb-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .rt-gbfb textarea, .rt-gbfb input[type="email"] { width: 100%; font: inherit; font-size: 1rem; color: var(--dark-text); background: #fbfaff; border: 1px solid #d9d2ea; border-radius: 8px; padding: 11px 13px; }
+    .rt-gbfb textarea { min-height: 96px; resize: vertical; }
+    .rt-gbfb textarea:focus, .rt-gbfb input[type="email"]:focus { outline: 2px solid var(--primary-purple); outline-offset: 1px; border-color: transparent; }
+    .rt-gbfb-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+    .rt-gbfb-invalid legend, .rt-gbfb-invalid .rt-gbfb-label { color: #b3261e; }
+    .rt-gbfb-privacy { font-size: 0.85rem; color: var(--gray-text); margin: 0; }
+    /* Element-qualified: `.rt-gbfb a` would otherwise beat a bare class (thank-you page trap). */
+    .rt-gbfb button.rt-gbfb-submit { justify-self: start; font: inherit; font-weight: 700; font-size: 1rem; color: #fff; background: var(--gradient-primary); border: 0; border-radius: 12px; padding: 14px 30px; cursor: pointer; }
+    .rt-gbfb button.rt-gbfb-submit[disabled] { opacity: .6; cursor: default; }
+    .rt-gbfb button.rt-gbfb-submit:focus-visible { outline: 2px solid var(--dark-text); outline-offset: 3px; }
+    .rt-gbfb-status { font-size: 0.95rem; margin: 0; min-height: 1.5em; }
+    .rt-gbfb-status.is-error { color: #b3261e; }
+    .rt-gbfb-done { margin: 32px 0 0; padding: 28px; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+    .rt-gbfb-done h2 { font-size: 1.35rem; font-weight: 800; margin: 0 0 8px; }
+    .rt-gbfb a.rt-gbfb-back { display: inline-block; margin-top: 20px; padding: 13px 26px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
+    .rt-gbfb [hidden] { display: none !important; }
+    @media (max-width: 480px) {
+        .rt-gbfb-container { padding: 48px 18px 64px; }
+        .rt-gbfb-heading { font-size: 1.6rem; }
+        .rt-gbfb-form, .rt-gbfb-done { padding: 20px; }
+        .rt-gbfb-stars label svg { width: 38px; height: 38px; }
+        .rt-gbfb-ends { max-width: 236px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .rt-gbfb-stars label { transition: none; } }
+</style>
+
+<div class="rt-gbfb">
+  <div class="rt-gbfb-container">
+    <h1 class="rt-gbfb-heading">How useful was the guide?</h1>
+    <p class="rt-gbfb-text">Three ratings and an optional comment about the Real Treasury Technology Selection Guide. It takes about a minute, and the two of us read every response.</p>
+
+    <form class="rt-gbfb-form" id="rtGbfbForm" novalidate>
+      <fieldset class="rt-gbfb-q" data-q="useful" data-label="Usefulness">
+        <legend>1. Overall, how useful was the guide?</legend>
+        <div class="rt-gbfb-stars"></div>
+        <div class="rt-gbfb-ends" aria-hidden="true"><span>Not useful</span><span>Very useful</span></div>
+      </fieldset>
+
+      <fieldset class="rt-gbfb-q" data-q="segments" data-label="Segment fit">
+        <legend>2. How well did it help you see which segment fits your team: Cash Tools, TMS-Lite, or TRMS?</legend>
+        <div class="rt-gbfb-stars"></div>
+        <div class="rt-gbfb-ends" aria-hidden="true"><span>Not at all</span><span>Very well</span></div>
+      </fieldset>
+
+      <fieldset class="rt-gbfb-q" data-q="use" data-label="Will use">
+        <legend>3. How likely are you to use it in a technology selection?</legend>
+        <div class="rt-gbfb-stars"></div>
+        <div class="rt-gbfb-ends" aria-hidden="true"><span>Unlikely</span><span>Already am</span></div>
+      </fieldset>
+
+      <div>
+        <label class="rt-gbfb-label" for="rtGbfbComment">4. What was missing, unclear, or wrong? <span class="rt-gbfb-hint">(optional)</span></label>
+        <textarea id="rtGbfbComment" maxlength="2000" placeholder="Anything you expected to find and didn't"></textarea>
+      </div>
+
+      <div id="rtGbfbEmailRow">
+        <label class="rt-gbfb-label" for="rtGbfbEmail">Your email</label>
+        <input id="rtGbfbEmail" type="email" autocomplete="email" required>
+      </div>
+
+      <div class="rt-gbfb-hp" aria-hidden="true">
+        <label for="rtGbfbWebsite">Leave this empty</label>
+        <input id="rtGbfbWebsite" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <p class="rt-gbfb-privacy">Your answers are stored with your email in our contact system so we can follow up on what you tell us. See our <a href="https://realtreasury.com/privacy-policy/">privacy policy</a>.</p>
+      <button class="rt-gbfb-submit" id="rtGbfbSubmit" type="submit">Send feedback</button>
+      <p class="rt-gbfb-status" id="rtGbfbStatus" role="status" aria-live="polite"></p>
+    </form>
+
+    <div class="rt-gbfb-done" id="rtGbfbDone" hidden>
+      <h2>Thank you.</h2>
+      <p class="rt-gbfb-text">We read every response. If you want to talk through your own selection, reply to any of our emails or write to <a href="mailto:contact@realtreasury.com">contact@realtreasury.com</a>.</p>
+      <a class="rt-gbfb-back" href="https://realtreasury.com">Back to Real Treasury</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var PORTAL_ID = '247523747';
+  var FORM_GUID = ''; // "Website - Guide Feedback"; filled in after --create-forms --apply
+  var ENDPOINT = 'https://api.hsforms.com/submissions/v3/integration/submit/' + PORTAL_ID + '/' + FORM_GUID;
+  var STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg>';
+
+  var form = document.getElementById('rtGbfbForm');
+  if (!form) { return; }
+  var statusEl = document.getElementById('rtGbfbStatus');
+  var submitBtn = document.getElementById('rtGbfbSubmit');
+  var emailEl = document.getElementById('rtGbfbEmail');
+  var picks = {};
+
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg;
+    statusEl.className = 'rt-gbfb-status' + (isError ? ' is-error' : '');
+  }
+
+  // Star rows: native radios (keyboard + screen reader), labels drawn as stars.
+  var groups = form.querySelectorAll('.rt-gbfb-q');
+  Array.prototype.forEach.call(groups, function (fs) {
+    var q = fs.getAttribute('data-q');
+    var box = fs.querySelector('.rt-gbfb-stars');
+    var labels = [];
+    for (var i = 1; i <= 5; i++) {
+      var id = 'rtGbfb-' + q + '-' + i;
+      var input = document.createElement('input');
+      input.type = 'radio'; input.name = 'rtGbfb-' + q; input.id = id; input.value = String(i);
+      var label = document.createElement('label');
+      label.setAttribute('for', id);
+      label.innerHTML = STAR + '<span class="rt-gbfb-sr">' + i + (i === 1 ? ' star' : ' stars') + '</span>';
+      box.appendChild(input); box.appendChild(label); labels.push(label);
+      input.addEventListener('change', function (e) {
+        var n = Number(e.target.value);
+        picks[q] = n;
+        fs.classList.remove('rt-gbfb-invalid');
+        labels.forEach(function (l, j) { l.classList.toggle('is-on', j < n); });
+      });
+    }
+  });
+
+  // Pre-fill the email from the link in the follow-up email (?email=...).
+  try {
+    var pre = new URLSearchParams(window.location.search).get('email');
+    // A '+' in the address (jo+guide@corp.example) arrives as a space; emails never contain spaces.
+    if (pre) { emailEl.value = pre.trim().split(' ').join('+'); }
+  } catch (e) { /* older browsers: the visitor types it */ }
+
+  function looksLikeEmail(v) {
+    var at = v.indexOf('@');
+    return at > 0 ? v.indexOf('.', at) > at + 1 : false;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (document.getElementById('rtGbfbWebsite').value) { return; } // honeypot: drop silently
+    if (!FORM_GUID) { setStatus('Feedback is not open yet. Please try again later.', true); return; }
+
+    var missing = [];
+    Array.prototype.forEach.call(groups, function (fs) {
+      if (!picks[fs.getAttribute('data-q')]) { missing.push(fs); fs.classList.add('rt-gbfb-invalid'); }
+    });
+    var email = emailEl.value.trim();
+    var emailRow = document.getElementById('rtGbfbEmailRow');
+    emailRow.classList.toggle('rt-gbfb-invalid', !looksLikeEmail(email));
+    if (missing.length) { setStatus('Please rate all three questions.', true); return; }
+    if (!looksLikeEmail(email)) { setStatus('Please enter the email address the guide was sent to.', true); emailEl.focus(); return; }
+
+    var comment = document.getElementById('rtGbfbComment').value.trim();
+    var parts = ['Guide feedback'];
+    Array.prototype.forEach.call(groups, function (fs) {
+      parts.push(fs.getAttribute('data-label') + ' ' + picks[fs.getAttribute('data-q')] + '/5');
+    });
+    if (comment) { parts.push('Comment: ' + comment); }
+
+    var payload = {
+      fields: [
+        { objectTypeId: '0-1', name: 'email', value: email },
+        { objectTypeId: '0-1', name: 'message', value: parts.join(' | ') }
+      ],
+      context: { pageUri: window.location.origin + window.location.pathname, pageName: 'Guide feedback' }
+    };
+
+    submitBtn.disabled = true;
+    setStatus('Sending...', false);
+    fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      .then(function (r) {
+        if (!r.ok) { throw new Error('HTTP ' + r.status); }
+        form.hidden = true;
+        document.getElementById('rtGbfbDone').hidden = false;
+        // GA4, same pattern as ../thank-you/: gtag() so Consent Mode applies, queued if not loaded.
+        try {
+          window.dataLayer = window.dataLayer || [];
+          var send = function () {
+            if (typeof window.gtag === 'function') { window.gtag.apply(null, arguments); }
+            else { window.dataLayer.push(arguments); }
+          };
+          send('event', 'guide_feedback', { form_name: 'guide-feedback' });
+        } catch (err) { /* analytics must never break the page */ }
+      })
+      .catch(function () {
+        submitBtn.disabled = false;
+        setStatus('That did not go through. Please try again, or email your thoughts to contact@realtreasury.com.', true);
+      });
+  });
+})();
+</script>

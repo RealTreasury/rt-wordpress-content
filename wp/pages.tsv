@@ -48,6 +48,10 @@ guide-waitlist-confirmed	4809	treasury-tech-selection/waitlist/confirmed/wordpre
 guide-thank-you	4585	treasury-tech-selection/guidebook/thank-you/wordpress-page.html	native	thank-you
 guide-download-staging	4587	treasury-tech-selection/guidebook/wordpress-page.html	native	treasury-tech-selection-guide-download
 guide-download	4202	treasury-tech-selection/guidebook/wordpress-page.html	native	treasury-tech-selection-guide
+# guide-feedback: /treasury-tech-selection-guide/feedback/, WP child page of 4202 (Oct 1, 2026).
+# The page does not exist yet; uncomment with its id once created (see docs/guide-release-runbook.md,
+# "Guide feedback survey").
+# guide-feedback	<ID>	treasury-tech-selection/guidebook/feedback/wordpress-page.html	native	feedback
 #
 # mode `verbatim`: the post's content IS the whole standalone document, spliced into the
 # wrapper and pattern refs the post already carries. For pages hand-pasted as a full

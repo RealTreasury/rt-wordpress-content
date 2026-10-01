@@ -62,9 +62,9 @@ Add the two keys next to the existing `public_stats`:
 | Asset (slug)               | Mapping | Default state in page |
 |----------------------------|---------|-----------------------|
 | afp-2026-tour-session-1    | 9       | open                  |
-| afp-2026-tour-session-2    | 10      | teased                |
-| afp-2026-tour-session-3    | 11      | teased                |
-| afp-2026-tour-session-4    | 12      | teased                |
+| afp-2026-tour-session-2    | 10      | open                  |
+| afp-2026-tour-session-3    | 11      | open                  |
+| afp-2026-tour-session-4    | 12      | open                  |
 | afp-2026-tour-private      | 13      | always offered        |
 
 - `registration_state`: `open` (taking registrations; flips to waitlist by

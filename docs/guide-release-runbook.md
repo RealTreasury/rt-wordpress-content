@@ -411,11 +411,12 @@ submission record keeps its own text.
 ask for an email we already sent to. The email now carries question 1 as five star links,
 `.../feedback/?email={{{EMAIL}}}&r=1` through `r=5` (source: `feedback/resend-guide-feedback.html`
 and `.txt`). On a link with a usable email and `r`, the page records
-`Guide feedback | Usefulness 4/5 | via email click` as soon as it is visible, says thank you, and offers
-questions 2 and 3 and the comment as optional. Sending those writes a second, complete line, with
-`skipped` for any question left blank, so the latest submission per contact is the full answer. The
-email box only appears when the link brought no usable address, e.g. a forwarded email or a
-dashboard test send.
+`Guide feedback | Usefulness 4/5 | via email click` as soon as it is visible and shows only
+"Thanks, your rating is in." (owner: one question, thanks-only page, record in HubSpot). Questions 2
+and 3 and the comment box were dropped; comments come by replying to the email. The star question
+shows only if the save fails or the link has no `r`. The email box only appears when the link brought
+no usable address, e.g. a forwarded email or a dashboard test send. Resend's click log (each star is
+its own URL) is the backup record if a page save is ever missed.
 
 Corporate link scanners (Safe Links, Mimecast, Proofpoint) open links before the reader does. The
 rating is posted by script on a visible page, not by the GET, so plain prefetchers record nothing. A

@@ -5,13 +5,14 @@
   Reached from the "Was the guide useful?" Resend email, sent 7 days after the
   guide-delivery email. The email carries question 1 as five star links:
     email=<contact email> and r=<1-5>
-  Owner decisions: October 1, 2026, three 1-5 star ratings plus an optional comment,
-  recorded in HubSpot as a form submission, never as new contact properties.
-  October 2, 2026: one click in the email is the whole survey (no typing, no submit),
-  and never ask for an email address we already sent to. So:
-    - With a valid ?email and ?r, the page records "Usefulness r/5" on load, says
-      thank you, and offers questions 2-3 and the comment as optional extras. A
-      second submit sends the full line; the latest submission is the complete one.
+  Owner decisions: October 1, 2026, ratings recorded in HubSpot as a form
+  submission, never as new contact properties.
+  October 2, 2026: one question, one click in the email is the whole survey (no
+  typing, no submit), the page shows only a thank-you, and never ask for an email
+  address we already sent to. Comments come by replying to the email. So:
+    - With a valid email and r, the page records "Usefulness r/5" on load and shows
+      only the thank-you. The star question appears only if that save fails.
+    - Without r (a forwarded or old link), the page shows the one star question.
     - The email box shows only when the link did not carry a usable address.
   Link scanners (Safe Links, Mimecast, Proofpoint) open links before the reader
   does. The click is recorded by script once the page is visible, not by the GET,
@@ -22,10 +23,10 @@
   Where answers go: the browser posts straight to HubSpot's public forms endpoint,
   hidden form "Website - Guide Feedback" (rt-ai scripts/hubspot_web_sync.py
   --create-forms). Fields: `email` and `message`, where message is one line:
-    Guide feedback | Usefulness 4/5 | Segment fit 5/5 | Will use 3/5 | Comment: ...
+    Guide feedback | Usefulness 4/5 | via email click     (star click in the email)
+    Guide feedback | Usefulness 4/5                       (rated on this page)
   Each response shows on the contact's HubSpot timeline and in the form's
   submissions table (Marketing > Forms > Website - Guide Feedback > Submissions).
-  Unanswered optional questions are written as "skipped".
   RT Gate is NOT used: it keeps one lead row per email and a feedback submit
   would overwrite the visitor's name and company in the lead feed.
 
@@ -85,7 +86,6 @@
     .rt-gbfb-status.is-error { color: #b3261e; }
     .rt-gbfb-done { margin: 32px 0 0; padding: 28px; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
     .rt-gbfb-done h2 { font-size: 1.35rem; font-weight: 800; margin: 0 0 8px; }
-    .rt-gbfb a.rt-gbfb-back { display: inline-block; margin-top: 20px; padding: 13px 26px; font-weight: 700; color: #fff; background: var(--gradient-primary); border-radius: 12px; text-decoration: none; }
     .rt-gbfb-got { margin: 20px 0 0; font-size: 0.95rem; color: #b3261e; }
     .rt-gbfb [hidden] { display: none !important; }
     @media (max-width: 480px) {
@@ -101,32 +101,15 @@
 <div class="rt-gbfb">
   <div class="rt-gbfb-container">
     <h1 class="rt-gbfb-heading" id="rtGbfbHeading">How useful was the guide?</h1>
-    <p class="rt-gbfb-text" id="rtGbfbIntro">One rating about the Real Treasury Technology Selection Guide, plus two optional ones and a comment. The two of us read every response.</p>
+    <p class="rt-gbfb-text" id="rtGbfbIntro">One rating for the Real Treasury Technology Selection Guide. The two of us read every response.</p>
     <p class="rt-gbfb-got" id="rtGbfbGot" role="alert" hidden></p>
 
     <form class="rt-gbfb-form" id="rtGbfbForm" novalidate>
       <fieldset class="rt-gbfb-q" data-q="useful" data-label="Usefulness">
-        <legend>1. Overall, how useful was the guide?</legend>
+        <legend>Overall, how useful was the guide?</legend>
         <div class="rt-gbfb-stars"></div>
         <div class="rt-gbfb-ends" aria-hidden="true"><span>Not useful</span><span>Very useful</span></div>
       </fieldset>
-
-      <fieldset class="rt-gbfb-q" data-q="segments" data-label="Segment fit">
-        <legend>2. How well did it help you see which segment fits your team: Cash Tools, TMS-Lite, or TRMS? <span class="rt-gbfb-hint">(optional)</span></legend>
-        <div class="rt-gbfb-stars"></div>
-        <div class="rt-gbfb-ends" aria-hidden="true"><span>Not at all</span><span>Very well</span></div>
-      </fieldset>
-
-      <fieldset class="rt-gbfb-q" data-q="use" data-label="Will use">
-        <legend>3. How likely are you to use it in a technology selection? <span class="rt-gbfb-hint">(optional)</span></legend>
-        <div class="rt-gbfb-stars"></div>
-        <div class="rt-gbfb-ends" aria-hidden="true"><span>Unlikely</span><span>Already am</span></div>
-      </fieldset>
-
-      <div>
-        <label class="rt-gbfb-label" for="rtGbfbComment">4. What was missing, unclear, or wrong? <span class="rt-gbfb-hint">(optional)</span></label>
-        <textarea id="rtGbfbComment" maxlength="2000" placeholder="Anything you expected to find and didn't"></textarea>
-      </div>
 
       <div id="rtGbfbEmailRow" hidden>
         <label class="rt-gbfb-label" for="rtGbfbEmail">Your email</label>
@@ -138,15 +121,15 @@
         <input id="rtGbfbWebsite" type="text" tabindex="-1" autocomplete="off">
       </div>
 
-      <p class="rt-gbfb-privacy">Your answers are stored with your email in our contact system so we can follow up on what you tell us. See our <a href="https://realtreasury.com/privacy-policy/">privacy policy</a>.</p>
-      <button class="rt-gbfb-submit" id="rtGbfbSubmit" type="submit">Send feedback</button>
+      <p class="rt-gbfb-privacy">Your rating is stored with your email in our contact system. See our <a href="https://realtreasury.com/privacy-policy/">privacy policy</a>.</p>
+      <button class="rt-gbfb-submit" id="rtGbfbSubmit" type="submit">Send rating</button>
       <p class="rt-gbfb-status" id="rtGbfbStatus" role="status" aria-live="polite"></p>
     </form>
 
     <div class="rt-gbfb-done" id="rtGbfbDone" hidden>
-      <h2>Thank you.</h2>
-      <p class="rt-gbfb-text">We read every response. If you want to talk through your own selection, reply to any of our emails or write to <a href="mailto:contact@realtreasury.com">contact@realtreasury.com</a>.</p>
-      <a class="rt-gbfb-back" href="https://realtreasury.com">Back to Real Treasury</a>
+      <h2>Thanks, your rating is in.</h2>
+      <p class="rt-gbfb-text">If something was missing or wrong, reply to the email. It comes straight to us.</p>
+      <p class="rt-gbfb-privacy">Your rating is stored with your email in our contact system. See our <a href="https://realtreasury.com/privacy-policy/">privacy policy</a>.</p>
     </div>
   </div>
 </div>
@@ -242,13 +225,21 @@
     } catch (err) { /* analytics must never break the page */ }
   }
 
-  // One click in the email is the whole survey: record it, then offer the rest.
+  var headingEl = document.getElementById('rtGbfbHeading');
+  var introEl = document.getElementById('rtGbfbIntro');
+  var doneEl = document.getElementById('rtGbfbDone');
+  function showDone(isDone) {
+    headingEl.hidden = isDone;
+    introEl.hidden = isDone;
+    form.hidden = isDone;
+    doneEl.hidden = !isDone;
+  }
+
+  // One click in the email is the whole survey: record it and show only the thank-you.
   if (clicked) {
     setStars.useful(clicked);
-    document.getElementById('rtGbfbHeading').textContent = 'Thank you. Your rating is in.';
-    document.getElementById('rtGbfbIntro').textContent = 'That is all we need. If you have another 30 seconds, two more ratings and a comment help us most.';
-    submitBtn.textContent = 'Send the rest';
     if (FORM_GUID ? looksLikeEmail(pre) : false) {
+      showDone(true);
       // Recorded by script once the page is visible, so link prefetchers record nothing.
       var recordClick = function () {
         if (document.visibilityState === 'hidden') { return; }
@@ -256,7 +247,8 @@
         post(pre, 'Guide feedback | Usefulness ' + clicked + '/5 | via email click')
           .then(function () { track('email_click'); })
           .catch(function () {
-            gotEl.textContent = 'Your rating did not save. Please press Send the rest below.';
+            showDone(false);
+            gotEl.textContent = 'Your rating did not save. Please press Send rating to try again.';
             gotEl.hidden = false;
           });
       };
@@ -270,32 +262,21 @@
     if (document.getElementById('rtGbfbWebsite').value) { return; } // honeypot: drop silently
     if (!FORM_GUID) { setStatus('Feedback is not open yet. Please try again later.', true); return; }
 
-    // Only question 1 is required; 2, 3 and the comment are optional.
     var email = emailEl.value.trim();
     emailRow.classList.toggle('rt-gbfb-invalid', !looksLikeEmail(email));
     if (!picks.useful) {
       form.querySelector('[data-q="useful"]').classList.add('rt-gbfb-invalid');
-      setStatus('Please rate question 1.', true);
+      setStatus('Please pick a star rating.', true);
       return;
     }
     if (!looksLikeEmail(email)) { emailRow.hidden = false; setStatus('Please enter the email address the guide was sent to.', true); emailEl.focus(); return; }
 
-    var comment = document.getElementById('rtGbfbComment').value.trim();
-    var parts = ['Guide feedback'];
-    Array.prototype.forEach.call(groups, function (fs) {
-      var n = picks[fs.getAttribute('data-q')];
-      parts.push(fs.getAttribute('data-label') + ' ' + (n ? n + '/5' : 'skipped'));
-    });
-    if (comment) { parts.push('Comment: ' + comment); }
-
     submitBtn.disabled = true;
     setStatus('Sending...', false);
     gotEl.hidden = true;
-    post(email, parts.join(' | '))
+    post(email, 'Guide feedback | Usefulness ' + picks.useful + '/5')
       .then(function () {
-        form.hidden = true;
-        document.getElementById('rtGbfbIntro').hidden = true;
-        document.getElementById('rtGbfbDone').hidden = false;
+        showDone(true);
         track('page');
       })
       .catch(function () {

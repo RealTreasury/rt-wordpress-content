@@ -443,8 +443,10 @@ for the person and fire a new Teams lead card.
    its row in `wp/pages.tsv` with the id, then `scripts/wp_publish_post.py publish guide-feedback` and
    publish it in WP Admin.
 4. Test one submission end to end from an external address; check it in HubSpot.
-5. Publish the `guide-feedback` Resend template, then add a wait (7 days) + send step after
-   `send_guide` in the automation "Tech Selection Guide — deliver on signup".
+5. Publish the `guide-feedback` Resend template, then, in one disable, edit, enable window on the
+   automation "Tech Selection Guide — deliver on signup": add a wait (7 days) + send step after
+   `send_guide`, set `send_guide.config.from` to the `guide@` sender, and confirm reply-to is
+   `contact@realtreasury.com` on both emails (see **Sender** below).
 
 With step 2 done, the page sends to the live form; it was set to refuse ("Feedback is not open yet")
 only while `FORM_GUID` was empty.
@@ -457,9 +459,22 @@ for step 5, added after `send_guide` in automation `01a067af-c041-7579-a1f3-ad0f
 
     steps:  {"key": "wait_7_days",   "type": "delay",      "config": {"duration": "7 days"}}
             {"key": "send_feedback", "type": "send_email", "config": {
-                "from": "Real Treasury <newsletter@news.realtreasury.com>",
+                "from": "Real Treasury <guide@news.realtreasury.com>",
                 "subject": "Was the guide useful?",
                 "template": {"id": "04bc56bd-6b94-4d3e-9269-837131e30df3"}}}
     connections: send_guide -> wait_7_days (default), wait_7_days -> send_feedback (default)
 
 The change applies to new signups only. Anyone already past `send_guide` does not get the email.
+
+**Sender (owner, October 2, 2026):** both guide emails send from `Real Treasury <guide@news.realtreasury.com>`,
+reply-to should be `contact@realtreasury.com` (unconfirmed, see below; an M365 distribution list: Tim and Tracey, verified via
+Graph). `guide@` is send-only: `news.realtreasury.com` has no MX, so mail typed to it directly bounces;
+replies should go to `contact@`. The feedback template already carries the new sender. The live automation
+still sends the guide from `newsletter@`: Resend refuses edits to an enabled automation (422), so in
+the same disable, edit, enable window as the feedback steps, also set `send_guide.config.from` to the
+`guide@` sender. Keep that window short; a signup that arrives while it is disabled may not get the guide.
+
+Where that reply-to is set is not recorded here: the `send_feedback` step JSON above has no
+`reply_to`, and the template source in this repo carries none. Before re-enabling, check in Resend
+that the template or the step sets reply-to `contact@realtreasury.com` for both emails, then send a
+test and reply to it. Without it, replies (the only route for survey comments) go to `guide@` and bounce.

@@ -407,6 +407,29 @@ each contact's timeline. No contact properties are created; `message` is HubSpot
 also written by Contact Us, so the contact's `message` holds whichever came last, while every
 submission record keeps its own text.
 
+**One click is the survey (owner, October 2, 2026).** "Just click the stars and that's it," and never
+ask for an email we already sent to. The email now carries question 1 as five star links,
+`.../feedback/?email={{{EMAIL}}}&r=1` through `r=5` (source: `feedback/resend-guide-feedback.html`
+and `.txt`). On a link with a usable email and `r`, the page records
+`Guide feedback | Usefulness 4/5 | via email click` as soon as it is visible and shows only
+"Thanks, your rating is in." (owner: one question, thanks-only page, record in HubSpot). Questions 2
+and 3 and the comment box were dropped; comments come by replying to the email. The star question
+shows only if the save fails or the link has no `r`. The email box only appears when the link brought
+no usable address, e.g. a forwarded email or a dashboard test send. Resend's click log (each star is
+its own URL) is the backup record if a page save is ever missed.
+
+Corporate link scanners (Safe Links, Mimecast, Proofpoint) open links before the reader does. The
+rating is posted by script on a visible page, not by the GET, so plain prefetchers record nothing. A
+scanner that runs scripts opens all five stars within seconds: several "via email click" lines for one
+contact in a burst are scanner noise, and the reader's own click comes later.
+
+To apply the email change to the Resend draft (the agent's PATCH was blocked as a production change):
+
+    K=$(grep -E '^RESEND_API_KEY=' /opt/rt-ai/secrets/resend.env | cut -d= -f2- | tr -d '"')
+    python3 -c "import json;d='treasury-tech-selection/guidebook/feedback/resend-guide-feedback';json.dump({'html':open(d+'.html').read(),'text':open(d+'.txt').read()},open('/tmp/gf.json','w'))"
+    curl -s -X PATCH -H "Authorization: Bearer $K" -H 'Content-Type: application/json' \
+      --data @/tmp/gf.json https://api.resend.com/templates/04bc56bd-6b94-4d3e-9269-837131e30df3
+
 **Why not RT Gate.** RT Gate keeps one lead row per email and overwrites `form_data.latest` on every
 submit, and the lead feed reads name/company/role from `latest`. A feedback submit would blank those
 for the person and fire a new Teams lead card.
@@ -427,8 +450,8 @@ With step 2 done, the page sends to the live form; it was set to refuse ("Feedba
 only while `FORM_GUID` was empty.
 
 **Resend objects (staged October 1, 2026).** Template `guide-feedback`, id
-`04bc56bd-6b94-4d3e-9269-837131e30df3`, status draft. The button link is
-`.../feedback/?email={{{EMAIL}}}`; `EMAIL` is a Resend reserved contact variable (declaring it is
+`04bc56bd-6b94-4d3e-9269-837131e30df3`, status draft. The star links are
+`.../feedback/?email={{{EMAIL}}}&r=N`; `EMAIL` is a Resend reserved contact variable (declaring it is
 rejected with 422), so confirm it fills in on the step-4 test before publishing. Automation change
 for step 5, added after `send_guide` in automation `01a067af-c041-7579-a1f3-ad0f042f25fe`:
 

@@ -16,7 +16,7 @@ top of the page's script holds one entry per promotion:
     cta: 'Register Now',
     url: 'https://realtreasury.com/afp-2026-tms-tour/',
     label: 'Real Treasury',
-    start: '2026-09-15',
+    start: '2026-10-02',
     end: '2026-11-10'
 }
 ```
@@ -40,6 +40,19 @@ top of the page's script holds one entry per promotion:
 The rotation pauses on hover and on focus, and does not run at all for a visitor
 with `prefers-reduced-motion: reduce` — they get the first entry in the lineup,
 which is why dated-first ordering matters.
+
+## Current lineup
+
+As of October 2, 2026 the bar rotates two promotions:
+
+| key | window | destination |
+|---|---|---|
+| `tours` | October 2 – November 10, 2026 | `/afp-2026-tms-tour/` |
+| `guide` | evergreen | `/treasury-tech-selection-guide/` |
+
+The tours entry retires itself after November 10 and the Guide runs alone again.
+Two commented slots sit ready in `BANNER_ITEMS`: the October 27 webinar and the
+Treasury Tech Virtual Forum. Neither has a confirmed title or registration URL.
 
 ## Adding or retiring a promotion
 

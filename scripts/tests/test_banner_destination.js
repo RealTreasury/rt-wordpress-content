@@ -31,6 +31,7 @@ const html = fs.readFileSync(FILE, 'utf8');
 // The promotions this banner is currently allowed to run.
 const DESTINATIONS = [
   'https://realtreasury.com/treasury-tech-selection-guide/',
+  'https://realtreasury.com/afp-2026-tms-tour/',
 ];
 
 // A title over this wraps at 375px, and a wrapped title grows the bar past the

@@ -16,7 +16,7 @@ top of the page's script holds one entry per promotion:
     cta: 'Register Now',
     url: 'https://realtreasury.com/afp-2026-tms-tour/',
     label: 'Real Treasury',
-    start: '2026-09-15',
+    start: '2026-10-02',
     end: '2026-11-10'
 }
 ```

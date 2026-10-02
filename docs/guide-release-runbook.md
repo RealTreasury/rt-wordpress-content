@@ -467,9 +467,9 @@ for step 5, added after `send_guide` in automation `01a067af-c041-7579-a1f3-ad0f
 The change applies to new signups only. Anyone already past `send_guide` does not get the email.
 
 **Sender (owner, October 2, 2026):** both guide emails send from `Real Treasury <guide@news.realtreasury.com>`,
-reply-to stays `contact@realtreasury.com` (an M365 distribution list: Tim and Tracey, verified via
+reply-to should be `contact@realtreasury.com` (unconfirmed, see below; an M365 distribution list: Tim and Tracey, verified via
 Graph). `guide@` is send-only: `news.realtreasury.com` has no MX, so mail typed to it directly bounces;
-Reply goes to `contact@`. The feedback template already carries the new sender. The live automation
+replies should go to `contact@`. The feedback template already carries the new sender. The live automation
 still sends the guide from `newsletter@`: Resend refuses edits to an enabled automation (422), so in
 the same disable, edit, enable window as the feedback steps, also set `send_guide.config.from` to the
 `guide@` sender. Keep that window short; a signup that arrives while it is disabled may not get the guide.

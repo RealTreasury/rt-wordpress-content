@@ -443,8 +443,10 @@ for the person and fire a new Teams lead card.
    its row in `wp/pages.tsv` with the id, then `scripts/wp_publish_post.py publish guide-feedback` and
    publish it in WP Admin.
 4. Test one submission end to end from an external address; check it in HubSpot.
-5. Publish the `guide-feedback` Resend template, then add a wait (7 days) + send step after
-   `send_guide` in the automation "Tech Selection Guide — deliver on signup".
+5. Publish the `guide-feedback` Resend template, then, in one disable, edit, enable window on the
+   automation "Tech Selection Guide — deliver on signup": add a wait (7 days) + send step after
+   `send_guide`, set `send_guide.config.from` to the `guide@` sender, and confirm reply-to is
+   `contact@realtreasury.com` on both emails (see **Sender** below).
 
 With step 2 done, the page sends to the live form; it was set to refuse ("Feedback is not open yet")
 only while `FORM_GUID` was empty.
@@ -471,3 +473,8 @@ Reply goes to `contact@`. The feedback template already carries the new sender. 
 still sends the guide from `newsletter@`: Resend refuses edits to an enabled automation (422), so in
 the same disable, edit, enable window as the feedback steps, also set `send_guide.config.from` to the
 `guide@` sender. Keep that window short; a signup that arrives while it is disabled may not get the guide.
+
+Where that reply-to is set is not recorded here: the `send_feedback` step JSON above has no
+`reply_to`, and the template source in this repo carries none. Before re-enabling, check in Resend
+that the template or the step sets reply-to `contact@realtreasury.com` for both emails, then send a
+test and reply to it. Without it, replies (the only route for survey comments) go to `guide@` and bounce.

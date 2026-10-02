@@ -494,6 +494,17 @@ const runtimeCases = {
     const keys = runRota(items, today).keys();
     assert.ok(keys.length > 0, 'nothing in BANNER_ITEMS is eligible today — the bar would hide itself');
   },
+
+  'the shipped AFP tours lead the Guide from October 2 through November 10, then drop out'() {
+    for (const day of ['2026-10-02', '2026-11-10']) {
+      assert.deepStrictEqual(runRota(items, day).keys(), ['tours', 'guide'],
+        'on ' + day + ' the shipped lineup should be the tours first, then the Guide');
+    }
+    for (const day of ['2026-10-01', '2026-11-11']) {
+      assert.deepStrictEqual(runRota(items, day).keys(), ['guide'],
+        'on ' + day + ' the tours are outside their window and only the Guide should run');
+    }
+  },
 };
 
 Object.assign(cases, runtimeCases);

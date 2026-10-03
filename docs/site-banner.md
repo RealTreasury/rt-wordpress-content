@@ -104,8 +104,25 @@ The test fails if `LIVE_EVENT_REGISTRATION_URL` ever comes back, and also if a
 ## Deploying it
 
 **The banner is not on the build pipeline and a push does not deploy it.** It is
-synced pattern **183** ("Header Menu", post type `wp_block`) on production, which
-holds two nested documents: the banner, then the nav. Splicing the wrong one is
+synced pattern **183** ("Header Menu", post type `wp_block`) on production, row
+`site-banner` in `wp/pages.tsv` (mode `pattern`, deliberately not in
+`wp/deploy.tsv`). Publish it with the script:
+
+```
+scripts/wp_publish_post.py plan site-banner      # read-only: diff and pattern refs
+scripts/wp_publish_post.py publish site-banner
+```
+
+Pattern mode replaces only the inner content of the pattern's one `wp:html` block
+with the source minus its document tags, and keeps the pattern's wrapper groups. It
+refuses if the pattern has more than one `wp:html` block, or if the live block holds
+a nested `<html>` document or a `<nav>` that the source does not — that is the older
+layout below, and replacing the block would delete the nav. Read the `plan` diff
+before publishing: it should be the banner change and nothing else.
+
+If the script refuses because the pattern still has the older layout, splice by
+hand. In that layout the pattern holds two nested documents: the banner, then the
+nav. Splicing the wrong one is
 easy — anchor on `<div class="workshop-banner" id="workshopBanner">` and take the
 innermost enclosing document (`rfind('<html')` before, `find('</html>')` after),
 because pairing each `<html>` with the next `</html>` matches the outer document

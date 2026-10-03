@@ -425,11 +425,18 @@ def render_pattern(text: str) -> str:
 def splice_pattern(current: str, inner: str) -> str:
     """Replace the inner content of the pattern's ONE wp:html block, nothing else.
 
-    Two blocks means guessing which is the banner, so refuse instead.
+    Two blocks means guessing which is the banner, so refuse instead. So does a block
+    that holds a nested document or a <nav> the source does not: that is the older
+    layout where the nav shared the banner's block, and replacing the block would
+    delete the nav without touching any wp:block ref.
     """
     blocks = list(re.finditer(r"<!--\s*wp:html\s*-->([\s\S]*?)<!--\s*/wp:html\s*-->", current))
     if len(blocks) != 1:
         die(f"pattern mode needs exactly one wp:html block in the pattern; found {len(blocks)}")
+    for tag in (r"<html\b", r"<nav\b"):
+        if re.search(tag, blocks[0].group(1), re.I) and not re.search(tag, inner, re.I):
+            die(f"pattern mode: the live wp:html block has a {tag[:-2]}> the source does not; "
+                f"replacing the block would delete it. Splice by hand (docs/site-banner.md).")
     a, b = blocks[0].span(1)
     return current[:a] + "\n" + inner + "\n" + current[b:]
 

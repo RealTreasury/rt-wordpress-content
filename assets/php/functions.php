@@ -1280,24 +1280,23 @@ function rt_rest_permission_check() {
 
 /**
  * ===============================================================
- * JSON-LD structured data — ProfessionalService + founders
+ * JSON-LD structured data: ProfessionalService + the two Principals
  * ===============================================================
  *
- * DRAFT for owner review (rtai-etbi). Every fact below is sourced from a
- * live realtreasury.com page (see the PR description for the fact/source
- * table). Nothing here is inferred — no founding year, revenue, client
- * names, or street address, since none of those are published on the site.
+ * DRAFT for owner review (rtai-etbi). Scope is deliberately narrow: only facts
+ * stated on realtreasury.com's own public pages (firm name, the two Principals
+ * and their titles, the TMS selection service line, the ERR NOT method). No
+ * client or vendor names, no founding year, no street address, no biography
+ * claims, no personal profile links. The PR description carries the
+ * fact/source table.
  *
  * Yoast SEO already emits one schema graph per page with an Organization
- * node at https://realtreasury.com/#organization. Rather than print a second
- * <script> block and rely on consumers merging nodes by @id across blocks,
- * this hooks Yoast's own filters:
+ * node at https://realtreasury.com/#organization. This hooks Yoast's filters
+ * rather than printing a second block:
  *
- *   - wpseo_schema_organization: adds the properties Yoast does not emit
- *     (legalName, description, slogan, sameAs, address, founder, employee)
- *     and refines @type to Organization + ProfessionalService. Yoast's name,
- *     url, logo and image are left untouched — a second logo gave one entity
- *     two conflicting logos (450x88 string vs Yoast's 3163x621 ImageObject).
+ *   - wpseo_schema_organization: adds legalName, description, founder and one
+ *     Service, and refines @type to Organization + ProfessionalService.
+ *     Yoast's name, url, logo and image are left untouched.
  *   - wpseo_schema_graph: appends the two Person nodes to the same graph.
  *
  * If Yoast is not active, rt_output_jsonld_fallback() prints the same nodes
@@ -1310,91 +1309,49 @@ function rt_jsonld_org_id() {
 /** Properties added to the Organization node. Keys must not collide with Yoast's. */
 function rt_jsonld_org_additions() {
 	return array(
+		// Footer of every page: "Real Treasury, LLC".
 		'legalName'   => 'Real Treasury, LLC',
-		// From /team/'s meta description, not the homepage's: the homepage copy
-		// says Real Treasury helps "implement" the system, and the firm does
-		// not implement. Structured data states the service line as it is.
+		// /team/ meta description, which states the service line as it is (the
+		// homepage meta description says "implement"; the firm does not implement).
 		'description' => 'We help treasury teams choose the right Treasury Management System (TMS) — independent, unbiased, and based on real operational needs.',
-		'slogan'      => 'Independent. Unbiased. Built for Treasury Teams.',
-		'sameAs'      => array(
-			'https://www.linkedin.com/company/realtreasury/',
-		),
-		// City/state only, as the site footer publishes it. No street address.
-		'address'     => array(
-			array(
-				'@type'           => 'PostalAddress',
-				'addressLocality' => 'Dallas',
-				'addressRegion'   => 'TX',
-				'addressCountry'  => 'US',
-			),
-			array(
-				'@type'           => 'PostalAddress',
-				'addressLocality' => 'Tampa',
-				'addressRegion'   => 'FL',
-				'addressCountry'  => 'US',
-			),
-		),
 		'founder'     => array(
 			array( '@id' => 'https://realtreasury.com/#tim-schultz' ),
 			array( '@id' => 'https://realtreasury.com/#tracey-knight' ),
 		),
-		'employee'    => array(
-			array( '@id' => 'https://realtreasury.com/#tim-schultz' ),
-			array( '@id' => 'https://realtreasury.com/#tracey-knight' ),
+		// Service line and method as named on https://realtreasury.com/errnot/.
+		'makesOffer'  => array(
+			array(
+				'@type'       => 'Offer',
+				'itemOffered' => array(
+					'@type'       => 'Service',
+					'name'        => 'Treasury Management System (TMS) selection',
+					'description' => 'Independent TMS selection using the ERR NOT method: Education, Requirements, RFI, uNique Demo, Obvious Winner, Transformation.',
+					'url'         => 'https://realtreasury.com/errnot/',
+				),
+			),
 		),
 	);
 }
 
-/**
- * The two Principals. Bios are the /team/ page copy verbatim.
- *
- * Personal LinkedIn profiles are linked from /team/ but are NOT in sameAs:
- * linkedin.com/in/ answers every unauthenticated request with 999 (a
- * made-up profile gets the same answer), so they cannot be verified to
- * resolve. Owner: add them back after confirming in a browser —
- * https://www.linkedin.com/in/schultzctp/ and
- * https://www.linkedin.com/in/traceyfergusonknight/ as linked on /team/.
- */
+/** The two Principals: name and title as shown on /team/. Nothing else. */
 function rt_jsonld_person_nodes() {
 	$org_ref = array( '@id' => rt_jsonld_org_id() );
 	return array(
 		array(
-			'@type'        => 'Person',
-			'@id'          => 'https://realtreasury.com/#tim-schultz',
-			'name'         => 'Tim Schultz',
-			'jobTitle'     => 'Co-Founder & Principal Consultant',
-			'description'  => 'Former treasury lead with 15+ years optimizing cash management and risk operations. Tim founded Real Treasury to democratize access to treasury technology insights and help teams make confident, informed decisions without vendor bias.',
-			'image'        => 'https://i0.wp.com/realtreasury.com/wp-content/uploads/2026/06/TS-Headshot.webp',
-			'url'          => 'https://realtreasury.com/team/',
-			'workLocation' => array(
-				'@type'   => 'Place',
-				'address' => array(
-					'@type'           => 'PostalAddress',
-					'addressLocality' => 'Tampa',
-					'addressRegion'   => 'FL',
-					'addressCountry'  => 'US',
-				),
-			),
-			'worksFor'     => $org_ref,
+			'@type'    => 'Person',
+			'@id'      => 'https://realtreasury.com/#tim-schultz',
+			'name'     => 'Tim Schultz',
+			'jobTitle' => 'Co-Founder & Principal Consultant',
+			'url'      => 'https://realtreasury.com/team/',
+			'worksFor' => $org_ref,
 		),
 		array(
-			'@type'        => 'Person',
-			'@id'          => 'https://realtreasury.com/#tracey-knight',
-			'name'         => 'Tracey Knight',
-			'jobTitle'     => 'Co-Founder & Principal Consultant',
-			'description'  => 'With 30 years as a practitioner, vendor, and consultant, Tracey brings rare perspective—guiding treasury and finance teams through unbiased tech selection, hands-on workshops, and smarter decisions that drive adoption, insight, and lasting transformation.',
-			'image'        => 'https://i0.wp.com/realtreasury.com/wp-content/uploads/2025/08/TraceyHeadshot-3.webp',
-			'url'          => 'https://realtreasury.com/team/',
-			'workLocation' => array(
-				'@type'   => 'Place',
-				'address' => array(
-					'@type'           => 'PostalAddress',
-					'addressLocality' => 'Dallas',
-					'addressRegion'   => 'TX',
-					'addressCountry'  => 'US',
-				),
-			),
-			'worksFor'     => $org_ref,
+			'@type'    => 'Person',
+			'@id'      => 'https://realtreasury.com/#tracey-knight',
+			'name'     => 'Tracey Knight',
+			'jobTitle' => 'Co-Founder & Principal Consultant',
+			'url'      => 'https://realtreasury.com/team/',
+			'worksFor' => $org_ref,
 		),
 	);
 }

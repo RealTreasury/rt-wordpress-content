@@ -144,6 +144,11 @@ def manifest() -> dict[str, tuple[int, Path, str, str]]:
     already carries. /errnot/ needs it — `page` would drop the <head> that loads its
     CDN Tailwind, and `native` would replace its full-bleed wrapper with a constrained
     one.
+
+    mode `pattern` is for a synced pattern (`wp_block`) whose content is one Custom HTML
+    block inside wrapper groups the pattern owns -- the site banner, pattern 183. Only
+    that block's inner content is replaced, with the source file minus its document
+    wrapper tags; the groups around it are kept byte for byte.
     """
     if not MANIFEST.exists():
         die(f"{MANIFEST} not found")
@@ -162,9 +167,9 @@ def manifest() -> dict[str, tuple[int, Path, str, str]]:
             die(f"{MANIFEST}:{n}: expected "
                 f"'slug<TAB>post_id<TAB>source[<TAB>mode[<TAB>post_name]]'")
         slug, post_id, src, mode, post_name = parts
-        if mode not in ("page", "raw", "native", "verbatim"):
-            die(f"{MANIFEST}:{n}: mode must be 'page', 'raw', 'native' or 'verbatim', "
-                f"got {mode!r}")
+        if mode not in ("page", "raw", "native", "verbatim", "pattern"):
+            die(f"{MANIFEST}:{n}: mode must be 'page', 'raw', 'native', 'verbatim' or "
+                f"'pattern', got {mode!r}")
         out[slug] = (int(post_id), ROOT / src, mode, post_name)
     return out
 
@@ -236,6 +241,9 @@ def check_identity(env, slug: str, post_id: int, mode: str,
             return kind
         die(f"refusing: post {post_id} on this target is a '{kind}' named '{name}', "
             f"not the wpcode snippet '{slug}' expects.")
+    if mode == "pattern" and kind != "wp_block":
+        die(f"refusing: post {post_id} on this target is a '{kind}' named '{name}', "
+            f"not the synced pattern (wp_block) '{slug}' expects.")
     if name != post_name:
         die(f"refusing: post {post_id} on this target is '{name}' ({kind}), not "
             f"'{post_name}' as row '{slug}' declares. "
@@ -362,6 +370,17 @@ def render_native(text: str, rel: str) -> str:
     ) % (HEADER_REF, NATIVE_NOTE.format(rel=rel), body.rstrip("\n"), FOOTER_REF)
 
 
+def without_metadata(text: str) -> str:
+    """Remove the source head's title, meta tags and canonical link; keep the rest."""
+    def strip(match: re.Match) -> str:
+        head = re.sub(r"<title\b[^>]*>[\s\S]*?</title\s*>", "", match.group(1), flags=re.I)
+        head = re.sub(r"<meta\b[^>]*>", "", head, flags=re.I)
+        head = re.sub(r'''<link\b(?=[^>]*\brel\s*=\s*["']canonical["'])[^>]*>''', "", head, flags=re.I)
+        return "<head>" + head + "</head>"
+
+    return re.sub(r"<head\b[^>]*>([\s\S]*?)</head\s*>", strip, text, count=1, flags=re.I)
+
+
 def render_verbatim(text: str, slug: str) -> str:
     """Keep the page's assets and styles inside its existing group wrapper.
 
@@ -378,13 +397,7 @@ def render_verbatim(text: str, slug: str) -> str:
     Restrict this to the source head: SVG titles and body content must survive.
     Styles, font links and scripts (including Tailwind) remain unchanged.
     """
-    def without_metadata(match: re.Match) -> str:
-        head = re.sub(r"<title\b[^>]*>[\s\S]*?</title\s*>", "", match.group(1), flags=re.I)
-        head = re.sub(r"<meta\b[^>]*>", "", head, flags=re.I)
-        head = re.sub(r'''<link\b(?=[^>]*\brel\s*=\s*["']canonical["'])[^>]*>''', "", head, flags=re.I)
-        return "<head>" + head + "</head>"
-
-    text = re.sub(r"<head\b[^>]*>([\s\S]*?)</head\s*>", without_metadata, text, count=1, flags=re.I)
+    text = without_metadata(text)
     return "\n".join([
         page_to_block.START.format(slug=slug),
         "<!-- wp:html -->",
@@ -392,6 +405,49 @@ def render_verbatim(text: str, slug: str) -> str:
         "<!-- /wp:html -->",
         page_to_block.END,
     ])
+
+
+PATTERN_WRAPPER_TAGS = re.compile(
+    r"<!DOCTYPE[^>]*>\n?|<html[^>]*>\n?|</html>\n?|<head>\n?|</head>\n?|<body[^>]*>\n?|</body>\n?",
+    re.I)
+
+
+def render_pattern(text: str) -> str:
+    """The source document as a synced pattern carries it: no document wrapper tags.
+
+    The block editor stores `&times;` as the literal character, so the source does too
+    here; leaving the entity would show as a one-line diff on every plan. WordPress/Yoast
+    owns document metadata, so the source head's title and meta tags are removed too.
+    """
+    return PATTERN_WRAPPER_TAGS.sub("", without_metadata(text)).replace("&times;", "×").strip("\n")
+
+
+def splice_pattern(current: str, inner: str) -> str:
+    """Replace the inner content of the pattern's ONE wp:html block, nothing else.
+
+    Two blocks means guessing which is the banner, so refuse instead. So does a block
+    that holds a nested document or a <nav> the source does not: that is the older
+    layout where the nav shared the banner's block, and replacing the block would
+    delete the nav without touching any wp:block ref.
+    """
+    blocks = list(re.finditer(r"<!--\s*wp:html\s*-->([\s\S]*?)<!--\s*/wp:html\s*-->", current))
+    if len(blocks) != 1:
+        die(f"pattern mode needs exactly one wp:html block in the pattern; found {len(blocks)}")
+    for tag in (r"<html\b", r"<nav\b"):
+        if re.search(tag, blocks[0].group(1), re.I) and not re.search(tag, inner, re.I):
+            die(f"pattern mode: the live wp:html block has a {tag[:-2]}> the source does not; "
+                f"replacing the block would delete it. Splice by hand (docs/site-banner.md).")
+    a, b = blocks[0].span(1)
+    return current[:a] + "\n" + inner + "\n" + current[b:]
+
+
+def compose(current: str, block: str, page_slug: str, mode: str) -> str:
+    """The post_content a publish would write, given what is live now."""
+    if mode in ("raw", "native"):
+        return block
+    if mode == "pattern":
+        return splice_pattern(current, block)
+    return splice(current, block, page_slug, mode)
 
 
 def rel_to_root(path: Path) -> str:
@@ -417,6 +473,8 @@ def build(slug: str, source: Path, mode: str) -> str:
         return render_native(text, rel_to_root(source))
     if mode == "verbatim":
         return render_verbatim(text, slug)
+    if mode == "pattern":
+        return render_pattern(text)
     return page_to_block.render(text, slug)
 
 
@@ -440,7 +498,7 @@ def cmd_plan(env, slug, post_id, source, mode, post_name=None) -> int:
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
     block = build(page_slug, source, mode)
-    new = block if mode in ("raw", "native") else splice(current, block, page_slug, mode)
+    new = compose(current, block, page_slug, mode)
     print(f"-- post {post_id} ({slug}), post_status {status}")
     if kind == "wpcode":
         # The post is the editable source; the option is what renders. Say so here,
@@ -460,7 +518,7 @@ def cmd_plan(env, slug, post_id, source, mode, post_name=None) -> int:
     print(f"-- would be : {len(new):>7} bytes, {words(new):>5} words, "
           f"h1={'yes' if re.search(r'<h1', new, re.I) else 'NO'}, "
           f"iframe={'yes' if 'github.io' in new else 'no'}")
-    if mode in ("raw", "native"):
+    if mode in ("raw", "native", "pattern"):
         # No word-count or h1 signal to read here, and a whole-content write replaces
         # everything,
         # so show the actual change. Whitespace-only drift between a pasted snippet and
@@ -486,7 +544,7 @@ def cmd_plan(env, slug, post_id, source, mode, post_name=None) -> int:
                 print("   " + line)
             if len(d) > 40:
                 print(f"   ... {len(d) - 40} more diff lines")
-    if mode in ("page", "native", "verbatim"):
+    if mode in ("page", "native", "verbatim", "pattern"):
         preserved = re.findall(r'wp:block\s+\{"ref":(\d+)\}', current)
         kept = re.findall(r'wp:block\s+\{"ref":(\d+)\}', new)
         dropped = [r for r in preserved if r not in kept]
@@ -626,14 +684,14 @@ def cmd_publish(env, slug, post_id, source, mode, post_name=None) -> int:
     current = fetch_content(env, post_id)
     status = fetch_status(env, post_id)
     block = build(page_slug, source, mode)
-    new = block if mode in ("raw", "native") else splice(current, block, page_slug, mode)
+    new = compose(current, block, page_slug, mode)
     if norm(new) == norm(current):
         if new != current:
             print("-- content matches; only line endings differ. Publishing to normalise them.")
         else:
             print("-- already published: nothing to do")
             return 0
-    if mode in ("page", "native", "verbatim"):
+    if mode in ("page", "native", "verbatim", "pattern"):
         # A DROP is the failure that matters: the page silently loses its nav or footer.
         # Gaining a ref is how a native page that was published without them gets repaired,
         # so allow that rather than forcing a hand-edit in WP Admin.

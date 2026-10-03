@@ -106,3 +106,8 @@ cookie-policy	360	cookie-policy/index.html	page	cookie-policy
 #
 # /treasury-tech-market/ (post 1102): hand-pasted full document, verbatim mode. Added September 26, 2026.
 treasury-tech-market	1102	treasury-tech-market/index.html	verbatim
+#
+# The site-wide banner: synced pattern 183 "Header Menu" (wp_block, post_name header-menu-2).
+# Mode `pattern` replaces only the inner content of its one wp:html block. Added October 2, 2026.
+# Not in wp/deploy.tsv: publishing the banner stays a deliberate step.
+site-banner	183	header/main-menu/index.html	pattern	header-menu-2

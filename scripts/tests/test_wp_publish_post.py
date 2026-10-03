@@ -392,7 +392,8 @@ check("11d nothing was written when it refused",
 # the pattern owns. The source is a whole document; the pattern stores it without the
 # document tags and with `&times;` as the literal character.
 pt_src = tmp / "banner.html"
-pt_src.write_text('<!DOCTYPE html>\n<html lang="en">\n<head>\n<style>.b{}</style>\n</head>\n'
+pt_src.write_text('<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n'
+                  '<title>Workshop Banner</title>\n<style>.b{}</style>\n</head>\n'
                   '<body>\n<div id="workshopBanner">new <span>&times;</span></div>\n</body>\n'
                   '</html>\n', encoding="utf-8")
 PT_OPEN = ('<!-- wp:group {"align":"full"} -->\n<div class="wp-block-group alignfull">'
@@ -412,6 +413,8 @@ check("11e pattern strips the document tags",
 check("11e pattern stores the times sign as the character", "×" in after5
       and "&times;" not in after5)
 check("11e pattern keeps head styles", "<style>.b{}</style>" in after5)
+check("11e pattern strips the source head's title and meta tags",
+      "<title" not in after5 and "<meta" not in after5)
 writes5 = r5.writes
 wpp.cmd_publish(env5, "site-banner", 183, pt_src, "pattern", "header-menu-2")
 check("11e a second pattern run is a no-op", r5.writes == writes5 and r5.body[183] == after5)

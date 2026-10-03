@@ -504,6 +504,11 @@ const runtimeCases = {
   },
 
   'the shipped AFP tours lead the Guide from October 2 through November 10, then drop out'() {
+    for (const day of ['2026-10-02', '2026-10-27']) {
+      const keys = runRota(items, day).keys();
+      assert.ok(keys.includes('tours') && keys.indexOf('tours') < keys.indexOf('guide'),
+        'on ' + day + ' the tours should run ahead of the Guide');
+    }
     for (const day of ['2026-10-28', '2026-11-10']) {
       assert.deepStrictEqual(runRota(items, day).keys(), ['tours', 'guide'],
         'on ' + day + ' the shipped lineup should be the tours first, then the Guide');

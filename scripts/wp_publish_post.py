@@ -370,6 +370,17 @@ def render_native(text: str, rel: str) -> str:
     ) % (HEADER_REF, NATIVE_NOTE.format(rel=rel), body.rstrip("\n"), FOOTER_REF)
 
 
+def without_metadata(text: str) -> str:
+    """Remove the source head's title, meta tags and canonical link; keep the rest."""
+    def strip(match: re.Match) -> str:
+        head = re.sub(r"<title\b[^>]*>[\s\S]*?</title\s*>", "", match.group(1), flags=re.I)
+        head = re.sub(r"<meta\b[^>]*>", "", head, flags=re.I)
+        head = re.sub(r'''<link\b(?=[^>]*\brel\s*=\s*["']canonical["'])[^>]*>''', "", head, flags=re.I)
+        return "<head>" + head + "</head>"
+
+    return re.sub(r"<head\b[^>]*>([\s\S]*?)</head\s*>", strip, text, count=1, flags=re.I)
+
+
 def render_verbatim(text: str, slug: str) -> str:
     """Keep the page's assets and styles inside its existing group wrapper.
 
@@ -386,13 +397,7 @@ def render_verbatim(text: str, slug: str) -> str:
     Restrict this to the source head: SVG titles and body content must survive.
     Styles, font links and scripts (including Tailwind) remain unchanged.
     """
-    def without_metadata(match: re.Match) -> str:
-        head = re.sub(r"<title\b[^>]*>[\s\S]*?</title\s*>", "", match.group(1), flags=re.I)
-        head = re.sub(r"<meta\b[^>]*>", "", head, flags=re.I)
-        head = re.sub(r'''<link\b(?=[^>]*\brel\s*=\s*["']canonical["'])[^>]*>''', "", head, flags=re.I)
-        return "<head>" + head + "</head>"
-
-    text = re.sub(r"<head\b[^>]*>([\s\S]*?)</head\s*>", without_metadata, text, count=1, flags=re.I)
+    text = without_metadata(text)
     return "\n".join([
         page_to_block.START.format(slug=slug),
         "<!-- wp:html -->",
@@ -411,9 +416,10 @@ def render_pattern(text: str) -> str:
     """The source document as a synced pattern carries it: no document wrapper tags.
 
     The block editor stores `&times;` as the literal character, so the source does too
-    here; leaving the entity would show as a one-line diff on every plan.
+    here; leaving the entity would show as a one-line diff on every plan. WordPress/Yoast
+    owns document metadata, so the source head's title and meta tags are removed too.
     """
-    return PATTERN_WRAPPER_TAGS.sub("", text).replace("&times;", "×").strip("\n")
+    return PATTERN_WRAPPER_TAGS.sub("", without_metadata(text)).replace("&times;", "×").strip("\n")
 
 
 def splice_pattern(current: str, inner: str) -> str:

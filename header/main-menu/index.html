@@ -650,6 +650,19 @@ const BANNER_ITEMS = [
         url: 'https://realtreasury.com/treasury-tech-selection-guide/',
         label: 'Real Treasury'
     }
+    /* The October 27 rerun of the September 15 "Make AFP Count" briefing (Teams
+       event baf84f78). Listed ahead of the tours so it leads while both are in
+       window; it drops out after October 27. */
+    ,{
+        key: 'webinar',
+        title: 'Make AFP Count',
+        subtitle: 'October 27, 2026, 2:00 PM CDT — a TMS buyer’s pre-conference briefing.',
+        cta: 'Register Now',
+        url: 'https://events.teams.microsoft.com/event/baf84f78-039a-492a-8a9f-18458c012fed@cdc422ca-d271-4ba3-856d-77081c6a7f04',
+        label: 'Real Treasury',
+        start: '2026-10-02',
+        end: '2026-10-27'
+    }
     ,{
         key: 'tours',
         title: 'AFP 2026 Guided Tours',
@@ -660,21 +673,6 @@ const BANNER_ITEMS = [
         start: '2026-10-02',
         end: '2026-11-10'
     }
-    /* The October webinar slot (calendar hold October 27, 2026). Title, pitch and
-       registration URL are not set yet; fill them from the real event and
-       uncomment. Add the URL to DESTINATIONS in
-       scripts/tests/test_banner_destination.js. Do not guess any of them.
-    ,{
-        key: 'october-webinar',
-        title: '[TO CONFIRM]',
-        subtitle: 'October 27 \u2014 [TO CONFIRM] pitch.',
-        cta: 'Register Now',
-        url: '[TO CONFIRM]',
-        label: 'Real Treasury',
-        start: '[TO CONFIRM]',
-        end: '2026-10-27'
-    }
-    */
     /* The Treasury Tech Virtual Forum slot. Fill in the registration URL and
        the dates and uncomment it \u2014 do not guess either; the last banner swap
        shipped an Airmeet link for a retired event.

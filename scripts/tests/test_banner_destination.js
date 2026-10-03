@@ -32,6 +32,7 @@ const html = fs.readFileSync(FILE, 'utf8');
 const DESTINATIONS = [
   'https://realtreasury.com/treasury-tech-selection-guide/',
   'https://realtreasury.com/afp-2026-tms-tour/',
+  'https://events.teams.microsoft.com/event/baf84f78-039a-492a-8a9f-18458c012fed@cdc422ca-d271-4ba3-856d-77081c6a7f04',
 ];
 
 // A title over this wraps at 375px, and a wrapped title grows the bar past the
@@ -495,8 +496,15 @@ const runtimeCases = {
     assert.ok(keys.length > 0, 'nothing in BANNER_ITEMS is eligible today — the bar would hide itself');
   },
 
+  'the October 27 webinar leads the tours and the Guide from October 2 through October 27'() {
+    for (const day of ['2026-10-02', '2026-10-27']) {
+      assert.deepStrictEqual(runRota(items, day).keys(), ['webinar', 'tours', 'guide'],
+        'on ' + day + ' the shipped lineup should be the webinar, the tours, then the Guide');
+    }
+  },
+
   'the shipped AFP tours lead the Guide from October 2 through November 10, then drop out'() {
-    for (const day of ['2026-10-02', '2026-11-10']) {
+    for (const day of ['2026-10-28', '2026-11-10']) {
       assert.deepStrictEqual(runRota(items, day).keys(), ['tours', 'guide'],
         'on ' + day + ' the shipped lineup should be the tours first, then the Guide');
     }

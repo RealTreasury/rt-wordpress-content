@@ -39,13 +39,15 @@
     /* Blank values hide their row. Fill once confirmed. */
     meetingPoint: '',
     guides: 'Tim Schultz and Tracey Knight',
-    /* PENDING CONFIRMATION against the tour schedule spreadsheet. The
-       September 30, 2026 meeting set this format; the registration page
-       still says 12 minutes. */
+    /* The 10-minute stop as the vendor demo script sets it (Visibility Tour
+       Demo Script, November 2026). The script itself is marked confidential:
+       only this timing is public. What each route's script covers travels
+       inside the encrypted lineup, so only tour attendees see it. */
     demo: { minutes: 10, parts: [
-      ['5 min', 'The scripted scenario — the same one at every stop'],
-      ['1–2 min', 'Your questions'],
-      ['3 min', 'Open — the vendor’s choice']
+      [':00\u2013:01', 'Introduction \u2014 where the system fits and the problems it solves'],
+      [':01\u2013:06', 'The script \u2014 the same areas, in the same order, at every stop'],
+      [':06\u2013:07', 'One or two questions from the group'],
+      [':07\u2013:10', 'Open time \u2014 the vendor\u2019s choice']
     ] },
     sessions: {
       s1: { route: 'replacement', when: 'Monday, November 9',   time: '10:15–11:30 AM' },
@@ -67,9 +69,9 @@
         name: 'Visibility Tour',
         blurb: 'For teams running treasury on spreadsheets and bank portals. Seeing the same scenario three times is the quickest way to tell a working capability from a promise.',
         watch: [
-          ['How bank data arrives', 'Direct connections, files, or someone uploading statements? That decides how much of your morning it saves.'],
-          ['One position, many banks', 'Look for entities, banks and currencies in one view, not one bank at a time.'],
-          ['How fresh it is', 'Prior-day balances and intraday are different products. Notice which one you are looking at.']
+          ['One view, every bank', 'Currencies, banks and entities with a USD total in one place \u2014 or clicking through one bank at a time?'],
+          ['Exceptions find you', 'Are low, negative and out-of-policy balances flagged for you, or do you have to go looking?'],
+          ['From transactions to a report', 'How many steps from raw bank transactions to something categorized, searchable and exported?']
         ]
       }
     },
@@ -78,7 +80,8 @@
       { title: 'Why every vendor runs the same script',
         body: [
           'Left to themselves, vendors show the path their product handles best. A script makes each one show the same work, in the same order, in the same time.',
-          'That is what makes three short demos comparable: when something looks different between stops, it is the product, not the presenter.'
+          'That is what makes three short demos comparable: when something looks different between stops, it is the product, not the presenter.',
+          'Every stop runs the same ten minutes:'
         ],
         notice: 'Did they run the scenario live in the system, or reach for slides?' },
       { title: 'Show me, don’t tell me',
@@ -262,6 +265,11 @@
 
 .attrib { margin: 14px 0 0; font-size: 0.78rem; color: var(--muted); }
     ol.show .t { white-space: nowrap; }
+    .area { padding: 12px 0; border-top: 1px solid var(--line); }
+    .area:first-child { border-top: 0; padding-top: 0; }
+    .area strong { display: block; }
+    .area ul { margin: 6px 0 0; padding-left: 1.1em; color: var(--ink-2); }
+    .area li { margin: 3px 0; }
     footer { padding: 6px 0 30px; font-size: 0.8rem; color: var(--muted); }
     footer a { color: var(--accent-ink); }
 
@@ -313,6 +321,12 @@
           <h3>Your three stops</h3>
           <div id="stops-list"></div>
           <p class="attrib" id="stops-attrib" hidden>Vendor descriptions as supplied for the 2026 Treasury Tech Selection Guide.</p>
+        </div>
+
+        <div class="card" id="script-card" hidden>
+          <h3>What every vendor will show</h3>
+          <p class="muted small">The same script at all three stops, in this order.</p>
+          <div id="script-list"></div>
         </div>
 
         <div class="card">
@@ -498,6 +512,7 @@
   /* ---------- Lineup decryption (AES-GCM, PBKDF2-SHA256 from the QR code) ---------- */
   var lineup = null;   /* [{vendor, booth, time, text}] x3 once unlocked */
   var showRows = null; /* [[time, what]] from the tour schedule, once unlocked */
+  var scriptAreas = null; /* [{title, items}] what the route's demo script covers */
   function b64(s) { var bin = atob(s), out = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i); return out; }
   function unlock() {
     var blob = LINEUPS[state.tour];
@@ -551,6 +566,18 @@
       list.appendChild(d);
     }
     $('stops-attrib').hidden = !(lineup && lineup.some(function (x) { return x && x.text; }));
+
+    var sc = $('script-list');
+    sc.textContent = '';
+    $('script-card').hidden = !scriptAreas;
+    (scriptAreas || []).forEach(function (a, n) {
+      var box = el('div', 'area');
+      box.appendChild(el('strong', null, (n + 1) + '. ' + a.title));
+      var ul = el('ul');
+      (a.items || []).forEach(function (t) { ul.appendChild(el('li', null, t)); });
+      box.appendChild(ul);
+      sc.appendChild(box);
+    });
 
     var show = $('show-list');
     show.textContent = '';
@@ -767,6 +794,7 @@
     if (!d) return;
     lineup = d.stops;
     showRows = d.show && d.show.length ? d.show : null;
+    scriptAreas = d.script && d.script.length ? d.script : null;
     show((location.hash || '').replace('#', '') || 'start');
   });
 })();

@@ -20,12 +20,15 @@
     "sessions": {
       "s1": { "code": "",
               "stops": [ { "vendor": "", "booth": "", "time": "", "text": "" }, x3 ],
-              "show":  [ ["10:15 - 10:22", "Opening and intro at the meetup"], ... ] },
+              "show":  [ ["10:15 - 10:22", "Opening and intro at the meetup"], ... ],
+              "script": [ { "title": "", "items": [ "" ] } ] },
       "s2": ..., "s3": ..., "s4": ...
     },
     "directoryText": true,
     "directory": [ { "vendor": "", "booth": "", "text": "" } ]
   }
+  "script" is what the route's demo script covers (paraphrased, never the
+  confidential script text); a tour without one shows no script card.
   "show" is the tour's run of show, copied from the Vendor Tracker and Matrix
   workbook (AFP Tours sheet). "directoryText": false publishes the hall
   directory as names and booths only.
@@ -76,7 +79,11 @@ for (const id of ['s1', 's2', 's3', 's4']) {
   if (!s.code) { s.code = newCode(); wroteCodes = true; }
   const stops = (s.stops || []).slice(0, 3).map(clean);
   const show = (s.show || []).map((r) => [str(r[0]), str(r[1])]);
-  if (stops.some((x) => x.vendor)) lineups[id] = await encrypt(s.code, { stops, show });
+  /* What the route's demo script covers, paraphrased. Kept inside the
+     ciphertext because the script itself is marked confidential. */
+  const script = (s.script || []).map((a) => ({ title: str(a.title), items: (a.items || []).map(str).filter(Boolean) }))
+    .filter((a) => a.title);
+  if (stops.some((x) => x.vendor)) lineups[id] = await encrypt(s.code, { stops, show, script });
   urls.push(`${id}  ${PAGE_URL}?tour=${id}&k=${s.code}${lineups[id] ? '' : '   (no vendors yet)'}`);
 }
 

@@ -1411,3 +1411,149 @@ function rt_rest_permission_check() {
     // Passed rate limiting
     return true;
 }
+
+/**
+ * ===============================================================
+ * JSON-LD structured data: ProfessionalService + the two Principals
+ * ===============================================================
+ *
+ * DRAFT for owner review (rtai-etbi). Scope is deliberately narrow: only facts
+ * stated on realtreasury.com's own public pages (firm name, the two Principals
+ * and their titles, the TMS selection service line, the ERR NOT method). No
+ * client or vendor names, no founding year, no street address, no biography
+ * claims, no personal profile links. The PR description carries the
+ * fact/source table.
+ *
+ * Yoast SEO already emits one schema graph per page with an Organization
+ * node at https://realtreasury.com/#organization. This hooks Yoast's filters
+ * rather than printing a second block:
+ *
+ *   - wpseo_schema_organization: adds legalName, description, founder and one
+ *     Service, and refines @type to Organization + ProfessionalService.
+ *     Yoast's name, url, logo and image are left untouched.
+ *   - wpseo_schema_graph: appends the two Person nodes to the same graph.
+ *
+ * If Yoast is not active, rt_output_jsonld_fallback() prints the same nodes
+ * as a standalone block so the data does not silently disappear.
+ */
+function rt_jsonld_org_id() {
+	return 'https://realtreasury.com/#organization';
+}
+
+/** Properties added to the Organization node. Keys must not collide with Yoast's. */
+function rt_jsonld_org_additions() {
+	return array(
+		// Footer of every page: "Real Treasury, LLC".
+		'legalName'   => 'Real Treasury, LLC',
+		// /team/ meta description, which states the service line as it is (the
+		// homepage meta description says "implement"; the firm does not implement).
+		'description' => 'We help treasury teams choose the right Treasury Management System (TMS) — independent, unbiased, and based on real operational needs.',
+		'founder'     => array(
+			array( '@id' => 'https://realtreasury.com/#tim-schultz' ),
+			array( '@id' => 'https://realtreasury.com/#tracey-knight' ),
+		),
+		// Service line and method as named on https://realtreasury.com/errnot/.
+		'makesOffer'  => array(
+			array(
+				'@type'       => 'Offer',
+				'itemOffered' => array(
+					'@type'       => 'Service',
+					'name'        => 'Treasury Management System (TMS) selection',
+					'description' => 'Independent TMS selection using the ERR NOT method: Education, Requirements, RFI, uNique Demo, Obvious Winner, Transformation.',
+					'url'         => 'https://realtreasury.com/errnot/',
+				),
+			),
+		),
+	);
+}
+
+/** The two Principals: name and title as shown on /team/. Nothing else. */
+function rt_jsonld_person_nodes() {
+	$org_ref = array( '@id' => rt_jsonld_org_id() );
+	return array(
+		array(
+			'@type'    => 'Person',
+			'@id'      => 'https://realtreasury.com/#tim-schultz',
+			'name'     => 'Tim Schultz',
+			'jobTitle' => 'Co-Founder & Principal Consultant',
+			'url'      => 'https://realtreasury.com/team/',
+			'worksFor' => $org_ref,
+		),
+		array(
+			'@type'    => 'Person',
+			'@id'      => 'https://realtreasury.com/#tracey-knight',
+			'name'     => 'Tracey Knight',
+			'jobTitle' => 'Co-Founder & Principal Consultant',
+			'url'      => 'https://realtreasury.com/team/',
+			'worksFor' => $org_ref,
+		),
+	);
+}
+
+/** Refine Yoast's Organization node in place; never overwrite a key Yoast set. */
+add_filter( 'wpseo_schema_organization', 'rt_jsonld_extend_yoast_organization', 10, 1 );
+function rt_jsonld_extend_yoast_organization( $data ) {
+	if ( ! is_array( $data ) || ( isset( $data['@id'] ) && rt_jsonld_org_id() !== $data['@id'] ) ) {
+		return $data;
+	}
+	$types = isset( $data['@type'] ) ? (array) $data['@type'] : array( 'Organization' );
+	if ( ! in_array( 'ProfessionalService', $types, true ) ) {
+		$types[] = 'ProfessionalService';
+	}
+	$data['@type'] = $types;
+	foreach ( rt_jsonld_org_additions() as $key => $value ) {
+		if ( ! array_key_exists( $key, $data ) ) {
+			$data[ $key ] = $value;
+		}
+	}
+	return $data;
+}
+
+/** Append the Person nodes to Yoast's graph, once. */
+add_filter( 'wpseo_schema_graph', 'rt_jsonld_extend_yoast_graph', 10, 1 );
+function rt_jsonld_extend_yoast_graph( $graph ) {
+	if ( ! is_array( $graph ) ) {
+		return $graph;
+	}
+	$present = array();
+	foreach ( $graph as $node ) {
+		if ( is_array( $node ) && isset( $node['@id'] ) ) {
+			$present[ $node['@id'] ] = true;
+		}
+	}
+	foreach ( rt_jsonld_person_nodes() as $person ) {
+		if ( ! isset( $present[ $person['@id'] ] ) ) {
+			$graph[] = $person;
+		}
+	}
+	return $graph;
+}
+
+/** Standalone output only when Yoast is not active. */
+add_action( 'wp_head', 'rt_output_jsonld_fallback', 5 );
+function rt_output_jsonld_fallback() {
+	if ( is_admin() || defined( 'WPSEO_VERSION' ) ) {
+		return;
+	}
+
+	$org = array_merge(
+		array(
+			'@type' => array( 'Organization', 'ProfessionalService' ),
+			'@id'   => rt_jsonld_org_id(),
+			'name'  => 'Real Treasury',
+			'url'   => 'https://realtreasury.com/',
+		),
+		rt_jsonld_org_additions()
+	);
+	$graph = array(
+		'@context' => 'https://schema.org',
+		'@graph'   => array_merge( array( $org ), rt_jsonld_person_nodes() ),
+	);
+
+	// JSON_HEX_TAG escapes < and > as < / >, which is still valid JSON.
+	// Without it, a value that ever contains "</script>" would close this block
+	// early and the rest of the graph would be parsed as markup.
+	echo '<script type="application/ld+json" class="rt-jsonld-graph">'
+		. wp_json_encode( $graph, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG )
+		. '</script>' . "\n";
+}

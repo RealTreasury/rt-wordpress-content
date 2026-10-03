@@ -13,3 +13,6 @@ node_modules/
 dist/
 
 __pycache__/
+
+# AFP tour companion: plaintext lineups and QR codes never go in this repo
+*.private.json

@@ -1,0 +1,803 @@
+<!doctype html>
+<!--
+  Tour Companion — The Real Treasury Guided Vendor Tours, AFP 2026 (Las Vegas).
+
+  Attendees scan a per-tour QR code at the start of their tour. The page is a
+  before / between / after companion, not something to use during a demo:
+    Start      the three vendors, the run of show, what to watch for
+    Stop 1-3   a short lesson on the demo script, read while walking between
+               booths, plus one optional line to remember the stop by
+    Debrief    notes (no scores, by design), then email / PDF / next steps
+    Hall       every treasury tech vendor exhibiting, with booth numbers —
+               open to anyone, no tour code needed
+
+  Deliberately standalone: no calls to RT Gate, the Project Tracker, rt-ai or
+  any other Real Treasury system, no analytics, no web fonts. Notes live in
+  this browser's localStorage only.
+
+  VENDOR LINEUPS ARE ENCRYPTED. Routes are not published vendor by vendor (see
+  the registration page FAQ), so each tour's lineup sits in lineups.js as
+  AES-GCM ciphertext keyed by that tour's QR code. Without the code the page
+  shows "Stop 1 / 2 / 3" and nothing else. Build lineups.js and the QR URLs
+  with build-lineups.mjs (see README.md); the plaintext input never goes in
+  this repo.
+
+  No AFP logos or branding (AFP's instruction to us, September 23, 2026).
+  Session times mirror window.RT_TOUR in ../index.html — keep them in step.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#281345" />
+  <title>Tour Companion — Real Treasury Guided Vendor Tours</title>
+  <meta name="description" content="Companion for the Real Treasury Guided Vendor Tours at AFP 2026 Las Vegas: your three vendor stops, how the demo script works, and your notes to take home." />
+  <link rel="icon" href="https://realtreasury.com/wp-content/uploads/2025/06/cropped-No-Background-Picture.png" />
+  <script>
+  window.RT_COMPANION = {
+    /* Blank values hide their row. Fill once confirmed. */
+    meetingPoint: '',
+    guides: 'Tim Schultz and Tracey Knight',
+    /* The 10-minute stop as the vendor demo script sets it (Visibility Tour
+       Demo Script, November 2026). The script itself is marked confidential:
+       only this timing is public. What each route's script covers travels
+       inside the encrypted lineup, so only tour attendees see it. */
+    demo: { minutes: 10, parts: [
+      [':00\u2013:01', 'Introduction \u2014 where the system fits and the problems it solves'],
+      [':01\u2013:06', 'The script \u2014 the same areas, in the same order, at every stop'],
+      [':06\u2013:07', 'One or two questions from the group'],
+      [':07\u2013:10', 'Open time \u2014 the vendor\u2019s choice']
+    ] },
+    sessions: {
+      s1: { route: 'replacement', when: 'Monday, November 9',   time: '10:15–11:30 AM' },
+      s2: { route: 'visibility',  when: 'Monday, November 9',   time: '1:30–2:45 PM' },
+      s3: { route: 'visibility',  when: 'Tuesday, November 10', time: '1:45–3:00 PM' },
+      s4: { route: 'replacement', when: 'Tuesday, November 10', time: '3:15–4:30 PM' }
+    },
+    routes: {
+      replacement: {
+        name: 'TMS Replacement Tour',
+        blurb: 'For teams already running a treasury system and weighing a change. Every stop runs the same scenario, so what differs between them is the product rather than the pitch.',
+        watch: [
+          ['What carries over', 'Listen for how your history, bank connections and workflows would move across — and who does that work.'],
+          ['Forecast, then variance', 'A forecast is easy to show. Watch whether they get to forecast-versus-actual, which is where the value is.'],
+          ['Configuration or custom', 'When a step looks easy, ask whether it is standard setup or something built for the demo.']
+        ]
+      },
+      visibility: {
+        name: 'Visibility Tour',
+        blurb: 'For teams running treasury on spreadsheets and bank portals. Seeing the same scenario three times is the quickest way to tell a working capability from a promise.',
+        watch: [
+          ['One view, every bank', 'Currencies, banks and entities with a USD total in one place \u2014 or clicking through one bank at a time?'],
+          ['Exceptions find you', 'Are low, negative and out-of-policy balances flagged for you, or do you have to go looking?'],
+          ['From transactions to a report', 'How many steps from raw bank transactions to something categorized, searchable and exported?']
+        ]
+      }
+    },
+    /* One lesson per stop, read while walking to it. */
+    lessons: [
+      { title: 'Why every vendor runs the same script',
+        body: [
+          'Left to themselves, vendors show the path their product handles best. A script makes each one show the same work, in the same order, in the same time.',
+          'That is what makes three short demos comparable: when something looks different between stops, it is the product, not the presenter.',
+          'Every stop runs the same ten minutes:'
+        ],
+        notice: 'Did they run the scenario live in the system, or reach for slides?' },
+      { title: 'Show me, don’t tell me',
+        body: [
+          '“We can configure that” and “that’s on the roadmap” are answers, not demonstrations. In a selection, anything not shown live counts as not shown.',
+          'You just saw one vendor on this script. Now you have a baseline.'
+        ],
+        notice: 'Where did the presenter slow down or work around a step? That is where your team would too.' },
+      { title: 'Compare the same step, not the whole pitch',
+        body: [
+          'Two demos in, the overall impressions start to blur. Pick one step from the scenario and hold all three side by side.',
+          'How many clicks did it take? Where did the data come from? What still needed someone to do it by hand?'
+        ],
+        notice: 'Watch that one step closely here, then compare it at the debrief.' }
+    ],
+    afterLesson: {
+      title: 'This is how a selection should run',
+      body: 'Today was a short version of the uNique demos phase of ERR NOT (Education, Requirements, RFI, uNique demos, Obvious winner, Transformation). In a real selection the script comes from your prioritized requirements and runs against your own entities, banks and data, at full length. The principle is the same: you set the agenda, every vendor follows it, and you compare what you saw.'
+    },
+    /* Every treasury tech vendor exhibiting, with booth numbers. Public AFP
+       information. Generated into directory.js by build-lineups.mjs. */
+    directoryNote: 'Treasury technology vendors on our market map with a booth at AFP 2026, as of October 1, 2026. Check the show\u2019s floor plan for changes.'
+  };
+  </script>
+  <script src="directory.js"></script>
+  <script src="lineups.js"></script>
+  <style>
+    :root {
+      --rt-purple: #7216f4;
+      --rt-purple-dark: #5b0acd;
+      --rt-lavender: #c77dff;
+      --ink: #281345;
+      --ink-2: #393939;
+      --muted: #615c73;
+      --line: rgba(114, 22, 244, 0.14);
+      --ground-a: #faf7ff;
+      --ground-b: #f2edff;
+      --card: #ffffff;
+      --accent: #7216f4;
+      --accent-ink: #5b0acd;
+      --on-accent: #ffffff;
+      --tint: rgba(114, 22, 244, 0.08);
+      --hero: linear-gradient(135deg, rgba(9, 24, 84, 0.94), rgba(114, 22, 244, 0.9));
+      --shadow: 0 14px 34px rgba(114, 22, 244, 0.08);
+      color-scheme: light;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --ink: #f1edf7; --ink-2: #d7d1e2; --muted: #a9a2b8; --line: #3a3149;
+        --ground-a: #17131e; --ground-b: #1b1524; --card: #221c2c;
+        --accent: #a06ef8; --accent-ink: #c4a3fb; --on-accent: #17131e; --tint: #2d2140;
+        --shadow: none; color-scheme: dark;
+      }
+    }
+    :root[data-theme="dark"] {
+      --ink: #f1edf7; --ink-2: #d7d1e2; --muted: #a9a2b8; --line: #3a3149;
+      --ground-a: #17131e; --ground-b: #1b1524; --card: #221c2c;
+      --accent: #a06ef8; --accent-ink: #c4a3fb; --on-accent: #17131e; --tint: #2d2140;
+      --shadow: none; color-scheme: dark;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0; min-height: 100vh;
+      background: linear-gradient(180deg, var(--ground-a) 0%, var(--ground-b) 100%);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px; line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+    .hero {
+      background: var(--hero); color: #fff;
+      border-radius: 0 0 24px 24px;
+      padding: 18px 0 26px;
+      box-shadow: 0 14px 30px rgba(14, 21, 58, 0.18);
+    }
+    .hero .logo { display: block; height: 26px; width: auto; filter: brightness(0) invert(1); opacity: 0.95; }
+    .hero .eyebrow { margin: 22px 0 6px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; color: rgba(255,255,255,0.75); }
+    .hero h1 { margin: 0; font-size: 1.7rem; line-height: 1.18; font-weight: 800; letter-spacing: -0.015em; text-wrap: balance; }
+    .hero .meta { margin: 8px 0 0; font-weight: 600; color: rgba(255,255,255,0.9); }
+    .hero .meta span { color: rgba(255,255,255,0.45); padding: 0 4px; }
+
+    nav.steps {
+      position: sticky; top: 0; z-index: 5;
+      background: color-mix(in srgb, var(--ground-a) 92%, transparent);
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    nav.steps .wrap { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+    nav.steps .wrap::-webkit-scrollbar { display: none; }
+    nav.steps button {
+      flex: 1 0 auto; appearance: none; border: 0; background: none; cursor: pointer;
+      font: inherit; font-size: 0.84rem; font-weight: 600; color: var(--muted);
+      padding: 13px 5px 11px; border-bottom: 3px solid transparent; white-space: nowrap; min-height: 48px;
+    }
+    nav.steps button[aria-selected="true"] { color: var(--accent-ink); border-bottom-color: var(--accent); }
+    nav.steps button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    main { padding: 20px 0 36px; }
+    section.view[hidden] { display: none; }
+
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+      padding: 22px 20px; margin: 0 0 16px; box-shadow: var(--shadow);
+    }
+    .card > :first-child { margin-top: 0; }
+    .card > :last-child { margin-bottom: 0; }
+    h2 { font-size: 1.25rem; line-height: 1.25; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.01em; }
+    h3 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 10px; }
+    p { margin: 0 0 12px; }
+    .muted { color: var(--muted); }
+    .small { font-size: 0.875rem; }
+
+    /* Run of show: a plain timeline */
+    ol.show { list-style: none; margin: 0; padding: 0; }
+    ol.show li { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+    ol.show li:first-child { border-top: 0; padding-top: 0; }
+    ol.show .t { font-weight: 700; color: var(--accent-ink); font-variant-numeric: tabular-nums; font-size: 0.9rem; }
+    ol.show .d strong { display: block; }
+    ol.show .d span { color: var(--muted); font-size: 0.9rem; }
+
+    /* Vendor stops */
+    .stop { padding: 14px 0; border-top: 1px solid var(--line); }
+    .stop:first-of-type { border-top: 0; padding-top: 0; }
+    .stop-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .stop-head .n { font-size: 0.8rem; font-weight: 700; color: var(--muted); }
+    .stop-head .name { font-size: 1.1rem; font-weight: 800; }
+    .booth { flex: none; font-weight: 700; font-size: 0.85rem; color: var(--accent-ink); background: var(--tint); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+    .stop p, ul.dir p { margin: 6px 0 0; color: var(--ink-2); font-size: 0.95rem; }
+    /* Descriptions run 45-130 words; three lines keeps the stops scannable. */
+    .clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .more { appearance: none; border: 0; background: none; padding: 6px 0 0; font: inherit; font-size: 0.85rem; font-weight: 700; color: var(--accent-ink); cursor: pointer; }
+    .more:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    dl.watch { margin: 0; }
+    dl.watch dt { font-weight: 700; margin-top: 12px; }
+    dl.watch dt:first-child { margin-top: 0; }
+    dl.watch dd { margin: 2px 0 0; color: var(--ink-2); }
+
+    .lesson p { font-size: 1.02rem; color: var(--ink-2); }
+    .notice { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font-weight: 600; }
+    .notice .lbl { display: block; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+
+    table.format { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    table.format td { padding: 7px 0; border-top: 1px solid var(--line); vertical-align: top; }
+    table.format tr:first-child td { border-top: 0; }
+    table.format td:first-child { width: 76px; font-weight: 700; color: var(--accent-ink); white-space: nowrap; }
+
+    label.field { display: block; font-weight: 600; font-size: 0.95rem; margin: 16px 0 6px; }
+    label.field:first-of-type { margin-top: 0; }
+    label.field .hint { display: block; font-weight: 400; color: var(--muted); font-size: 0.85rem; }
+    input[type="text"], input[type="search"], textarea {
+      width: 100%; font: inherit; font-size: 16px; color: var(--ink);
+      background: var(--card); border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 12px;
+    }
+    textarea { min-height: 84px; resize: vertical; line-height: 1.45; }
+    input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .btn {
+      appearance: none; font: inherit; font-weight: 700; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 48px; padding: 0 18px; border-radius: 12px;
+      border: 1.5px solid var(--accent); background: var(--accent); color: var(--on-accent);
+    }
+    .btn.ghost { background: transparent; color: var(--accent-ink); }
+    .btn.quiet { background: transparent; border-color: var(--line); color: var(--muted); font-weight: 500; }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .status { font-size: 0.82rem; color: var(--muted); min-height: 1.2em; margin-top: 10px; }
+
+    /* Hall directory */
+    ul.dir { list-style: none; margin: 12px 0 0; padding: 0; }
+    ul.dir li { padding: 12px 0; border-top: 1px solid var(--line); }
+    ul.dir .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    ul.dir .name { font-weight: 700; }
+    ul.dir .mine { font-size: 0.75rem; font-weight: 700; color: var(--accent-ink); margin-left: 6px; }
+
+.attrib { margin: 14px 0 0; font-size: 0.78rem; color: var(--muted); }
+    ol.show .t { white-space: nowrap; }
+    .area { padding: 12px 0; border-top: 1px solid var(--line); }
+    .area:first-child { border-top: 0; padding-top: 0; }
+    .area strong { display: block; }
+    .area ul { margin: 6px 0 0; padding-left: 1.1em; color: var(--ink-2); }
+    .area li { margin: 3px 0; }
+    footer { padding: 6px 0 30px; font-size: 0.8rem; color: var(--muted); }
+    footer a { color: var(--accent-ink); }
+
+    #print-sheet { display: none; }
+    @media print {
+      body { background: #fff; color: #131313; }
+      .hero, nav.steps, main, footer { display: none !important; }
+      #print-sheet { display: block; font-size: 11pt; }
+      #print-sheet h1 { color: #7216f4; font-size: 17pt; margin: 0 0 6pt; }
+      #print-sheet pre { font-family: inherit; white-space: pre-wrap; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <a href="https://realtreasury.com/"><img class="logo" src="https://realtreasury.com/wp-content/uploads/2025/06/cropped-Color-logo-black-text-no-background.png" alt="Real Treasury" /></a>
+    <p class="eyebrow">The Real Treasury Guided Vendor Tours</p>
+    <h1 id="hero-title">Tour Companion</h1>
+    <p class="meta" id="hero-meta">Las Vegas <span>|</span> November 9 &ndash; 10 <span>|</span> Mandalay Bay Convention Center</p>
+  </div>
+</header>
+
+<nav class="steps" aria-label="Tour sections">
+  <div class="wrap" role="tablist">
+    <button role="tab" id="tab-start" data-view="start">Start</button>
+    <button role="tab" id="tab-stop1" data-view="stop1">Stop 1</button>
+    <button role="tab" id="tab-stop2" data-view="stop2">Stop 2</button>
+    <button role="tab" id="tab-stop3" data-view="stop3">Stop 3</button>
+    <button role="tab" id="tab-debrief" data-view="debrief">Debrief</button>
+    <button role="tab" id="tab-hall" data-view="hall">Hall</button>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+
+    <!-- START -->
+    <section class="view" id="view-start" role="tabpanel" aria-labelledby="tab-start">
+      <div class="card" id="no-tour" hidden>
+        <h2>Scan your tour&rsquo;s QR code</h2>
+        <p>Your guide shows it at the start of the tour. It opens this page with your three vendor stops loaded.</p>
+        <p class="muted small">Not on a tour? The <a href="#hall" data-view="hall">Hall</a> tab lists every treasury technology vendor exhibiting, with booth numbers. To join a tour, see <a href="https://realtreasury.com/afp-2026-tms-tour/">the tour page</a>.</p>
+      </div>
+
+      <div id="has-tour" hidden>
+        <div class="card">
+          <h3>Your three stops</h3>
+          <div id="stops-list"></div>
+          <p class="attrib" id="stops-attrib" hidden>Vendor descriptions as supplied for the 2026 Treasury Tech Selection Guide.</p>
+        </div>
+
+        <div class="card" id="script-card" hidden>
+          <h3>What every vendor will show</h3>
+          <p class="muted small">The same script at all three stops, in this order.</p>
+          <div id="script-list"></div>
+        </div>
+
+        <div class="card">
+          <h3>Run of show</h3>
+          <ol class="show" id="show-list"></ol>
+        </div>
+
+        <div class="card">
+          <h3>What to watch for on this route</h3>
+          <p class="muted small" id="route-blurb"></p>
+          <dl class="watch" id="watch-list"></dl>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn" data-go="stop1">Walking to Stop 1</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STOPS 1-3 -->
+    <section class="view" id="view-stop" role="tabpanel" hidden>
+      <div class="card" id="stop-vendor"></div>
+
+      <div class="card lesson">
+        <h3 id="lesson-kicker">While you walk</h3>
+        <h2 id="lesson-title"></h2>
+        <div id="lesson-body"></div>
+        <div id="format-wrap" hidden>
+          <table class="format" id="format"></table>
+        </div>
+        <p class="notice"><span class="lbl">At this stop, notice</span><span id="lesson-notice"></span></p>
+      </div>
+
+      <div class="card">
+        <label class="field" for="f-line">After the demo: one thing to remember
+          <span class="hint">Optional. A few words is plenty &mdash; you&rsquo;ll fill in the rest at the debrief.</span>
+        </label>
+        <input type="text" id="f-line" autocomplete="off" />
+        <div class="status" id="status-stop" aria-live="polite"></div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn" id="stop-next"></button>
+      </div>
+    </section>
+
+    <!-- DEBRIEF -->
+    <section class="view" id="view-debrief" role="tabpanel" aria-labelledby="tab-debrief" hidden>
+      <div class="card">
+        <h2>Debrief</h2>
+        <p class="muted small">No scores. Write down what you&rsquo;d tell a colleague who wasn&rsquo;t there.</p>
+        <div id="debrief-stops"></div>
+        <label class="field" for="f-diff">What was different between the three?
+          <span class="hint">On the same step of the scenario, not the overall pitch.</span>
+        </label>
+        <textarea id="f-diff" data-bind="different"></textarea>
+        <label class="field" for="f-next">What I&rsquo;d want to see next
+          <span class="hint">The scenario you&rsquo;d want a vendor to run with your own data.</span>
+        </label>
+        <textarea id="f-next" data-bind="seeNext"></textarea>
+        <div class="status" id="status-debrief" aria-live="polite"></div>
+      </div>
+
+      <div class="card">
+        <h3>Take your notes home</h3>
+        <p class="small muted">Your notes are saved in this browser on this phone only. Nothing is sent to us or to any vendor. Email or save them before you leave the show.</p>
+        <div class="actions" style="margin-top:4px">
+          <a class="btn" id="btn-email" href="#">Email to myself</a>
+          <button type="button" class="btn ghost" id="btn-print">Save as PDF</button>
+          <button type="button" class="btn ghost" id="btn-copy">Copy</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="after-title"></h3>
+        <p id="after-body"></p>
+        <p>The <a href="https://realtreasury.com/treasury-tech-selection-guide/">2026 Treasury Tech Selection Guide</a> walks through the whole process. If a selection is coming and you want to talk it through, we&rsquo;re glad to. We take no vendor fees for recommendations.</p>
+        <div class="actions" style="margin-top:4px">
+          <a class="btn ghost" href="https://realtreasury.com/treasury-tech-selection-guide/">Get the guide</a>
+          <a class="btn ghost" href="https://realtreasury.com/contact/">Talk to us</a>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn quiet" id="btn-reset">Clear my notes</button>
+      </div>
+    </section>
+
+    <!-- HALL DIRECTORY -->
+    <section class="view" id="view-hall" role="tabpanel" aria-labelledby="tab-hall" hidden>
+      <div class="card">
+        <h2>Treasury tech in the hall</h2>
+        <p class="muted small" id="dir-note"></p>
+        <label class="field" for="dir-q" style="position:absolute;left:-9999px">Find a vendor</label>
+        <input type="search" id="dir-q" placeholder="Find a vendor or booth" autocomplete="off" />
+        <ul class="dir" id="dir-list"></ul>
+        <p class="attrib" id="dir-attrib" hidden>Vendor descriptions as supplied for the 2026 Treasury Tech Selection Guide.</p>
+        <p class="muted small" id="dir-empty" hidden>The booth list is being finalized. Check back closer to the show.</p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><a href="https://realtreasury.com/afp-2026-tms-tour/">About the tours</a> &middot; <a href="https://realtreasury.com/">realtreasury.com</a></p>
+    <p>The Real Treasury Guided Tours are not affiliated with the Association for Financial Professionals.</p>
+  </div>
+</footer>
+
+<div id="print-sheet" aria-hidden="true"></div>
+
+<script>
+(function () {
+  'use strict';
+  var C = window.RT_COMPANION;
+  var LINEUPS = window.RT_LINEUPS || {};
+  var DIRECTORY = window.RT_DIRECTORY || [];
+  var KEY = 'rt-afp26-tour-companion-v2';
+  var STOPS = ['stop1', 'stop2', 'stop3'];
+
+  function $(id) { return document.getElementById(id); }
+  /* A description that collapses to three lines, with a More/Less toggle
+     only when it actually overflows. */
+  function desc(text) {
+    var wrap = el('div'), p = el('p', 'clamp', text), b = el('button', 'more', 'More');
+    b.type = 'button'; b.hidden = true;
+    b.addEventListener('click', function () {
+      var open = p.classList.toggle('clamp') === false;
+      b.textContent = open ? 'Less' : 'More';
+      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    b.setAttribute('aria-expanded', 'false');
+    wrap.appendChild(p); wrap.appendChild(b);
+    requestAnimationFrame(function () { b.hidden = p.scrollHeight <= p.clientHeight + 2; });
+    return wrap;
+  }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  /* ---------- State (localStorage can throw; the page works without it) ---------- */
+  function blank() { return { tour: '', code: '', lines: { stop1: '', stop2: '', stop3: '' }, notes: { stop1: '', stop2: '', stop3: '' }, different: '', seeNext: '' }; }
+  var state = blank();
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (saved) {
+      state = Object.assign(blank(), saved);
+      state.lines = Object.assign(blank().lines, saved.lines || {});
+      state.notes = Object.assign(blank().notes, saved.notes || {});
+    }
+  } catch (e) {}
+  var timer = null;
+  function save(statusEl) {
+    var ok = true;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { ok = false; }
+    if (!statusEl) return;
+    statusEl.textContent = ok ? 'Saved on this phone' : 'Could not save on this phone — email your notes before closing this page';
+    clearTimeout(timer);
+    if (ok) timer = setTimeout(function () { statusEl.textContent = ''; }, 1600);
+  }
+
+  /* ---------- Tour from the QR code: ?tour=s1&k=CODE ---------- */
+  try {
+    var qs = new URLSearchParams(location.search);
+    var t = qs.get('tour'), k = qs.get('k');
+    if (t && C.sessions[t]) {
+      if (t !== state.tour) { var keep = state; state = blank(); if (keep.tour === '') { state.lines = keep.lines; state.notes = keep.notes; } }
+      state.tour = t; state.code = k || state.code;
+      save();
+    }
+    /* Keep the code out of the address bar so a screenshot or a shared link
+       does not carry it. It stays in this phone's storage. */
+    if (k && history.replaceState) {
+      qs.delete('k');
+      var rest = qs.toString();
+      history.replaceState(null, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+    }
+  } catch (e) {}
+
+  function session() { return C.sessions[state.tour] || null; }
+  function route() { var s = session(); return s ? C.routes[s.route] : null; }
+
+  /* ---------- Lineup decryption (AES-GCM, PBKDF2-SHA256 from the QR code) ---------- */
+  var lineup = null;   /* [{vendor, booth, time, text}] x3 once unlocked */
+  var showRows = null; /* [[time, what]] from the tour schedule, once unlocked */
+  var scriptAreas = null; /* [{title, items}] what the route's demo script covers */
+  function b64(s) { var bin = atob(s), out = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i); return out; }
+  function unlock() {
+    var blob = LINEUPS[state.tour];
+    if (!blob || !state.code || !window.crypto || !crypto.subtle) return Promise.resolve(null);
+    var enc = new TextEncoder();
+    return crypto.subtle.importKey('raw', enc.encode(state.code.trim().toUpperCase()), 'PBKDF2', false, ['deriveKey'])
+      .then(function (base) {
+        return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(blob.salt), iterations: blob.iter, hash: 'SHA-256' },
+          base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+      })
+      .then(function (key) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(blob.iv) }, key, b64(blob.ct)); })
+      .then(function (buf) { var d = JSON.parse(new TextDecoder().decode(buf)); return d && Array.isArray(d.stops) ? d : null; })
+      .catch(function () { return null; });
+  }
+
+  function vendorAt(i) { return lineup && lineup[i] ? lineup[i] : null; }
+  function stopName(i) { var v = vendorAt(i); return v && v.vendor ? v.vendor : 'Stop ' + (i + 1); }
+
+  /* ---------- Hero ---------- */
+  function renderHero() {
+    var s = session(), r = route();
+    if (!s) return;
+    $('hero-title').textContent = r.name;
+    var meta = $('hero-meta');
+    meta.textContent = '';
+    meta.appendChild(document.createTextNode(s.when));
+    var sep = el('span', null, '|'); meta.appendChild(sep);
+    meta.appendChild(document.createTextNode(s.time));
+  }
+
+  /* ---------- Start ---------- */
+  function renderStart() {
+    var s = session(), r = route();
+    $('no-tour').hidden = !!s;
+    $('has-tour').hidden = !s;
+    if (!s) return;
+
+    var list = $('stops-list');
+    list.textContent = '';
+    for (var i = 0; i < 3; i++) {
+      var v = vendorAt(i);
+      var d = el('div', 'stop');
+      var head = el('div', 'stop-head');
+      var left = el('div');
+      left.appendChild(el('div', 'n', 'Stop ' + (i + 1) + (v && v.time ? ' · ' + v.time : '')));
+      left.appendChild(el('div', 'name', v ? v.vendor : 'Announced by your guide'));
+      head.appendChild(left);
+      if (v && v.booth) head.appendChild(el('span', 'booth', 'Booth ' + v.booth));
+      d.appendChild(head);
+      if (v && v.text) d.appendChild(desc(v.text));
+      list.appendChild(d);
+    }
+    $('stops-attrib').hidden = !(lineup && lineup.some(function (x) { return x && x.text; }));
+
+    var sc = $('script-list');
+    sc.textContent = '';
+    $('script-card').hidden = !scriptAreas;
+    (scriptAreas || []).forEach(function (a, n) {
+      var box = el('div', 'area');
+      box.appendChild(el('strong', null, (n + 1) + '. ' + a.title));
+      var ul = el('ul');
+      (a.items || []).forEach(function (t) { ul.appendChild(el('li', null, t)); });
+      box.appendChild(ul);
+      sc.appendChild(box);
+    });
+
+    var show = $('show-list');
+    show.textContent = '';
+    var rows = [];
+    if (showRows) {
+      showRows.forEach(function (r) { rows.push([r[0].replace(/\s*-\s*/, '–'), r[1], '']); });
+      if (C.meetingPoint) rows[0][2] = C.meetingPoint;
+    } else {
+    rows.push(['Start', 'Meet your guides', (C.meetingPoint ? C.meetingPoint + '. ' : '') + (C.guides ? C.guides + '.' : '')]);
+    for (var j = 0; j < 3; j++) {
+      rows.push(['Stop ' + (j + 1), stopName(j), (C.demo.minutes ? C.demo.minutes + '-minute demo, then a short walk' : 'Demo, then a short walk') + (vendorAt(j) && vendorAt(j).booth ? ' · Booth ' + vendorAt(j).booth : '')]);
+    }
+    rows.push(['End', 'Debrief', 'Vendor-free, with your guides. What mattered, what didn’t, what was different.']);
+    }
+    rows.forEach(function (row) {
+      var li = el('li');
+      li.appendChild(el('div', 't', row[0]));
+      var dd = el('div', 'd');
+      dd.appendChild(el('strong', null, row[1]));
+      if (row[2]) dd.appendChild(el('span', null, row[2]));
+      li.appendChild(dd);
+      show.appendChild(li);
+    });
+
+    $('route-blurb').textContent = r.blurb;
+    var w = $('watch-list');
+    w.textContent = '';
+    r.watch.forEach(function (pair) { w.appendChild(el('dt', null, pair[0])); w.appendChild(el('dd', null, pair[1])); });
+  }
+
+  /* ---------- Stop (the between-stops lesson) ---------- */
+  var current = 'stop1';
+  function renderStop(k) {
+    current = k;
+    var i = STOPS.indexOf(k), v = vendorAt(i), L = C.lessons[i];
+    $('view-stop').setAttribute('aria-labelledby', 'tab-' + k);
+
+    var vc = $('stop-vendor');
+    vc.textContent = '';
+    var head = el('div', 'stop-head');
+    var left = el('div');
+    left.appendChild(el('div', 'n', 'Stop ' + (i + 1) + ' of 3' + (v && v.time ? ' · ' + v.time : '')));
+    left.appendChild(el('div', 'name', v ? v.vendor : 'Your guide will lead the way'));
+    head.appendChild(left);
+    if (v && v.booth) head.appendChild(el('span', 'booth', 'Booth ' + v.booth));
+    vc.appendChild(head);
+
+    $('lesson-title').textContent = L.title;
+    var body = $('lesson-body');
+    body.textContent = '';
+    L.body.forEach(function (p) { body.appendChild(el('p', null, p)); });
+
+    /* The demo format belongs with the first lesson: it is the script. */
+    var fw = $('format-wrap');
+    fw.hidden = i !== 0 || !C.demo.parts.length;
+    if (i === 0) {
+      var tb = $('format');
+      tb.textContent = '';
+      C.demo.parts.forEach(function (p) { var tr = el('tr'); tr.appendChild(el('td', null, p[0])); tr.appendChild(el('td', null, p[1])); tb.appendChild(tr); });
+    }
+    $('lesson-notice').textContent = L.notice;
+
+    $('f-line').value = state.lines[k] || '';
+    var next = $('stop-next');
+    next.textContent = i < 2 ? 'Walking to Stop ' + (i + 2) : 'Go to the debrief';
+    next.setAttribute('data-go', i < 2 ? STOPS[i + 1] : 'debrief');
+  }
+  $('f-line').addEventListener('input', function (e) { state.lines[current] = e.target.value; save($('status-stop')); });
+
+  /* ---------- Debrief ---------- */
+  function renderDebrief() {
+    var box = $('debrief-stops');
+    box.textContent = '';
+    STOPS.forEach(function (k, i) {
+      var id = 'f-note-' + k;
+      var lab = el('label', 'field');
+      lab.setAttribute('for', id);
+      lab.appendChild(document.createTextNode(stopName(i)));
+      if (state.lines[k]) lab.appendChild(el('span', 'hint', 'You noted: ' + state.lines[k]));
+      var ta = el('textarea');
+      ta.id = id; ta.value = state.notes[k] || '';
+      ta.placeholder = 'What stood out, what worried you';
+      ta.addEventListener('input', function () { state.notes[k] = ta.value; save($('status-debrief')); refreshEmail(); });
+      box.appendChild(lab); box.appendChild(ta);
+    });
+    $('after-title').textContent = C.afterLesson.title;
+    $('after-body').textContent = C.afterLesson.body;
+    refreshEmail();
+  }
+
+  function summaryText() {
+    var s = session(), r = route(), out = [];
+    out.push('My Real Treasury Guided Vendor Tour notes');
+    out.push(s ? r.name + ' — ' + s.when + ', ' + s.time : 'AFP 2026 Las Vegas');
+    STOPS.forEach(function (k, i) {
+      var v = vendorAt(i);
+      out.push('');
+      out.push('STOP ' + (i + 1) + ': ' + stopName(i) + (v && v.booth ? ' (Booth ' + v.booth + ')' : ''));
+      if (state.lines[k].trim()) out.push('  Remember: ' + state.lines[k].trim());
+      if (state.notes[k].trim()) out.push('  ' + state.notes[k].trim().replace(/\n/g, '\n  '));
+    });
+    if (state.different.trim()) { out.push(''); out.push('What was different:'); out.push(state.different.trim()); }
+    if (state.seeNext.trim()) { out.push(''); out.push('What I’d want to see next:'); out.push(state.seeNext.trim()); }
+    out.push('');
+    out.push('2026 Treasury Tech Selection Guide: https://realtreasury.com/treasury-tech-selection-guide/');
+    out.push('Real Treasury: https://realtreasury.com/contact/');
+    return out.join('\n');
+  }
+  function refreshEmail() {
+    $('btn-email').setAttribute('href', 'mailto:?subject=' + encodeURIComponent('My AFP 2026 vendor tour notes') + '&body=' + encodeURIComponent(summaryText()));
+  }
+
+  $('btn-copy').addEventListener('click', function () {
+    var text = summaryText();
+    function done() { $('status-debrief').textContent = 'Copied. Paste it into an email or a note.'; }
+    function fallback() {
+      var ta = el('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} document.body.removeChild(ta); done();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  });
+  $('btn-print').addEventListener('click', function () {
+    var sheet = $('print-sheet'), lines = summaryText().split('\n');
+    sheet.textContent = '';
+    sheet.appendChild(el('h1', null, lines[0]));
+    sheet.appendChild(el('pre', null, lines.slice(1).join('\n')));
+    window.print();
+  });
+  $('btn-reset').addEventListener('click', function () {
+    if (!window.confirm('Clear your notes on this phone? This cannot be undone.')) return;
+    var t = state.tour, c = state.code;
+    state = blank(); state.tour = t; state.code = c;
+    save(); hydrate(); renderDebrief();
+    $('status-debrief').textContent = 'Notes cleared.';
+  });
+
+  function hydrate() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-bind]'), function (x) { x.value = state[x.getAttribute('data-bind')] || ''; });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-bind]'), function (x) {
+    x.addEventListener('input', function () { state[x.getAttribute('data-bind')] = x.value; save($('status-debrief')); refreshEmail(); });
+  });
+
+  /* ---------- Hall directory ---------- */
+  function renderHall() {
+    $('dir-note').textContent = C.directoryNote;
+    var q = ($('dir-q').value || '').trim().toLowerCase();
+    var mine = {};
+    if (lineup) lineup.forEach(function (v, i) { if (v && v.vendor) mine[v.vendor.toLowerCase()] = i + 1; });
+    var list = $('dir-list');
+    list.textContent = '';
+    var rows = DIRECTORY.slice().sort(function (a, b) { return a.vendor.localeCompare(b.vendor); })
+      .filter(function (d) { return !q || d.vendor.toLowerCase().indexOf(q) !== -1 || String(d.booth || '').toLowerCase().indexOf(q) !== -1; });
+    rows.forEach(function (d) {
+      var li = el('li'), row = el('div', 'row'), name = el('span', 'name', d.vendor);
+      if (mine[d.vendor.toLowerCase()]) name.appendChild(el('span', 'mine', 'Your stop ' + mine[d.vendor.toLowerCase()]));
+      row.appendChild(name);
+      row.appendChild(el('span', 'booth', d.booth ? 'Booth ' + d.booth : 'Booth TBC'));
+      li.appendChild(row);
+      if (d.text) li.appendChild(desc(d.text));
+      list.appendChild(li);
+    });
+    $('dir-empty').hidden = DIRECTORY.length > 0;
+    $('dir-attrib').hidden = !DIRECTORY.some(function (d) { return d.text; });
+  }
+  $('dir-q').addEventListener('input', renderHall);
+
+  /* ---------- Navigation ---------- */
+  var VIEWS = ['start', 'stop1', 'stop2', 'stop3', 'debrief', 'hall'];
+  function show(view) {
+    if (VIEWS.indexOf(view) === -1) view = 'start';
+    var isStop = STOPS.indexOf(view) !== -1;
+    $('view-start').hidden = view !== 'start';
+    $('view-stop').hidden = !isStop;
+    $('view-debrief').hidden = view !== 'debrief';
+    $('view-hall').hidden = view !== 'hall';
+    Array.prototype.forEach.call(document.querySelectorAll('nav.steps button'), function (b) {
+      var on = b.getAttribute('data-view') === view;
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;
+      if (on && b.scrollIntoView) b.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+    if (view === 'start') renderStart();
+    if (isStop) renderStop(view);
+    if (view === 'debrief') renderDebrief();
+    if (view === 'hall') renderHall();
+    if (location.hash !== '#' + view && history.replaceState) history.replaceState(null, '', location.pathname + location.search + '#' + view);
+  }
+  function go(view) {
+    show(view);
+    var nav = document.querySelector('nav.steps');
+    var top = nav.getBoundingClientRect().top + window.pageYOffset;
+    if (window.pageYOffset > top) window.scrollTo(0, top);
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-view], [data-go]');
+    if (!t) return;
+    e.preventDefault();
+    go(t.getAttribute('data-view') || t.getAttribute('data-go'));
+  });
+  document.querySelector('nav.steps').addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('nav.steps button'));
+    var i = tabs.indexOf(document.activeElement);
+    if (i === -1) return;
+    var j = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+    tabs[j].focus(); go(tabs[j].getAttribute('data-view'));
+  });
+
+  hydrate();
+  renderHero();
+  show((location.hash || '').replace('#', '') || 'start');
+  unlock().then(function (d) {
+    if (!d) return;
+    lineup = d.stops;
+    showRows = d.show && d.show.length ? d.show : null;
+    scriptAreas = d.script && d.script.length ? d.script : null;
+    show((location.hash || '').replace('#', '') || 'start');
+  });
+})();
+</script>
+</body>
+</html>

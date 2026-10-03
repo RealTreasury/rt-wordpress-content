@@ -387,6 +387,61 @@ except SystemExit:
 check("11d nothing was written when it refused",
       "first" in r4.body[157] and "second" in r4.body[157])
 
+# --- 11e. pattern mode: the banner's one wp:html block, the pattern's own groups kept --------
+# Synced pattern 183 holds the site banner as ONE Custom HTML block inside two wrapper groups
+# the pattern owns. The source is a whole document; the pattern stores it without the
+# document tags and with `&times;` as the literal character.
+pt_src = tmp / "banner.html"
+pt_src.write_text('<!DOCTYPE html>\n<html lang="en">\n<head>\n<style>.b{}</style>\n</head>\n'
+                  '<body>\n<div id="workshopBanner">new <span>&times;</span></div>\n</body>\n'
+                  '</html>\n', encoding="utf-8")
+PT_OPEN = ('<!-- wp:group {"align":"full"} -->\n<div class="wp-block-group alignfull">'
+           '<!-- wp:group -->\n<div class="wp-block-group"><!-- wp:html -->')
+PT_CLOSE = ('<!-- /wp:html --></div>\n<!-- /wp:group --></div>\n<!-- /wp:group -->')
+r5 = Remote(name={183: "header-menu-2"}, kind={183: "wp_block"})
+env5 = env_for(r5)
+r5.status[183] = "publish"
+r5.body[183] = PT_OPEN + "\n<div id=\"workshopBanner\">old</div>\n" + PT_CLOSE
+wpp.cmd_publish(env5, "site-banner", 183, pt_src, "pattern", "header-menu-2")
+after5 = r5.body[183]
+check("11e pattern replaces the banner", "new" in after5 and ">old<" not in after5)
+check("11e pattern keeps the pattern's own wrapper groups",
+      after5.startswith(PT_OPEN) and after5.endswith(PT_CLOSE))
+check("11e pattern strips the document tags",
+      not re.search(r"<!DOCTYPE|<html|</html>|<head>|<body|</body>", after5, re.I))
+check("11e pattern stores the times sign as the character", "×" in after5
+      and "&times;" not in after5)
+check("11e pattern keeps head styles", "<style>.b{}</style>" in after5)
+writes5 = r5.writes
+wpp.cmd_publish(env5, "site-banner", 183, pt_src, "pattern", "header-menu-2")
+check("11e a second pattern run is a no-op", r5.writes == writes5 and r5.body[183] == after5)
+
+# --- 11f. pattern mode refuses a target that is not a synced pattern ---------------------------
+r6 = Remote(name={183: "header-menu-2"}, kind={183: "page"})
+env6 = env_for(r6)
+r6.status[183] = "publish"
+r6.body[183] = PT_OPEN + "\nkeep\n" + PT_CLOSE
+try:
+    wpp.cmd_publish(env6, "site-banner", 183, pt_src, "pattern", "header-menu-2")
+    check("11f pattern refuses a non-wp_block target", False)
+except SystemExit:
+    check("11f pattern refuses a non-wp_block target", True)
+check("11f nothing was written to the wrong post type", "keep" in r6.body[183])
+
+# --- 11g. pattern mode refuses to guess between two wp:html blocks -----------------------------
+r7 = Remote(name={183: "header-menu-2"}, kind={183: "wp_block"})
+env7 = env_for(r7)
+r7.status[183] = "publish"
+r7.body[183] = ('<!-- wp:html -->\nfirst\n<!-- /wp:html -->\n'
+                '<!-- wp:html -->\nsecond\n<!-- /wp:html -->')
+try:
+    wpp.cmd_publish(env7, "site-banner", 183, pt_src, "pattern", "header-menu-2")
+    check("11g pattern refuses two candidate blocks", False)
+except SystemExit:
+    check("11g pattern refuses two candidate blocks", True)
+check("11g nothing was written when it refused",
+      "first" in r7.body[183] and "second" in r7.body[183])
+
 # --- 12. the manifest rejects an unknown mode ---------------------------------------------------------
 bad = tmp / "pages.tsv"
 bad.write_text("slug\t123\tsome/file.html\tsideways\n", encoding="utf-8")

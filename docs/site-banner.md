@@ -101,6 +101,23 @@ whole-bar `expandBanner`, reads it back off the element via `bannerDestination()
 The test fails if `LIVE_EVENT_REGISTRATION_URL` ever comes back, and also if a
 `registerLive` handler is reintroduced on the CTA.
 
+### No `&&` in the banner's script
+
+WordPress stores pattern 183 verbatim but serves it through `wptexturize()`. That
+pass treats any `<` up to the next `>` as an HTML tag, **inside `<script>` too**, and
+escapes every bare `&` in that stretch to `&#038;`. So `a <= b && c` reaches the
+browser as `a <= b &#038;&#038; c`, which is a syntax error that kills the whole
+script block. From October 2 to October 5, 2026 the rota never ran on the live
+site: no rotation, no close button, no auto-minimise. Every visitor saw only the
+markup default, the Guide, while `npm run test:banner` passed against the raw
+source.
+
+Write conditions without `&&` (early `return`, or `!(x || y)`). The test now runs
+the same escape over the file and fails if any inline script changes or stops
+parsing. Its calibration case reproduces the live October 5 breakage exactly.
+Checking the raw source with `node --check` is not enough. Check the copy WordPress
+serves: `curl` the homepage, lift the banner `<script>`, `node --check` it.
+
 ## Deploying it
 
 **The banner is not on the build pipeline and a push does not deploy it.** It is

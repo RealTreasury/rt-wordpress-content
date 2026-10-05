@@ -705,8 +705,14 @@ function bannerToday() {
     }
 }
 
+// No logical AND operator, and no ampersand at all, anywhere in this script.
+// WordPress serves the pattern through wptexturize(), which reads a less-than
+// comparison as the start of an HTML tag and entity-escapes every ampersand up to
+// the next greater-than sign. That is a syntax error that kills the whole block.
+// scripts/tests/test_banner_destination.js runs the same pass and fails on it.
 function isDateWindow(v) {
-    return typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+    if (typeof v !== 'string') return false;
+    return /^\d{4}-\d{2}-\d{2}$/.test(v);
 }
 
 // Everything eligible today: dated entries whose window covers today, plus the
@@ -717,14 +723,15 @@ function isDateWindow(v) {
 function bannerLineup() {
     const today = bannerToday();
     const usable = BANNER_ITEMS.filter(function (item) {
-        return item && typeof item.url === 'string' && item.url.indexOf('https://') === 0;
+        if (!item || typeof item.url !== 'string') return false;
+        return item.url.indexOf('https://') === 0;
     });
     const dated = usable.filter(function (item) {
         if (!isDateWindow(item.start) || !isDateWindow(item.end)) return false;
-        return item.start <= today && today <= item.end;
+        return !(item.start > today || today > item.end);
     });
     const evergreen = usable.filter(function (item) {
-        return !isDateWindow(item.start) && !isDateWindow(item.end);
+        return !(isDateWindow(item.start) || isDateWindow(item.end));
     });
     return dated.concat(evergreen);
 }
@@ -771,7 +778,8 @@ function applyBannerItem(item) {
 function bannerDestination() {
     const cta = document.querySelector('.banner-cta');
     const href = cta ? cta.getAttribute('href') : '';
-    return href && href.indexOf('https://') === 0 ? href : '';
+    if (!href || href.indexOf('https://') !== 0) return '';
+    return href;
 }
 
 // Runs synchronously, before first paint, so no one sees the markup's default

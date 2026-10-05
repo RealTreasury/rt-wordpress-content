@@ -58,6 +58,21 @@ function bannerItems() {
 
 const items = bannerItems();
 
+// The one part of wptexturize() that reaches into <script>: it splits the content
+// on comments and on anything tag-shaped (`<` up to the next `>`), and in every
+// tag-shaped chunk replaces a bare `&` with `&#038;`. Entities already in the
+// chunk are left alone. Mirrors wp-includes/formatting.php.
+function wpTexturizeAmps(src) {
+  return src.split(/(<!--[\s\S]*?(?:-->|$)|<[^>]*>?)/).map((chunk) => {
+    if (chunk[0] !== '<' || chunk.startsWith('<!--')) return chunk;
+    return chunk.replace(/&(?!#(?:\d+|x[a-f0-9]+);|[a-z1-4]{1,8};)/gi, '&#038;');
+  }).join('');
+}
+
+function inlineScripts(src) {
+  return Array.from(src.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g), (m) => m[1]);
+}
+
 const cases = {
   'the banner has at least one promotion to run'() {
     assert.ok(items.length > 0, 'BANNER_ITEMS is empty — the bar would render nothing');
@@ -180,6 +195,41 @@ const cases = {
     ];
     for (const id of retired) {
       assert.ok(!html.includes(id), 'a retired destination is still referenced: ' + id);
+    }
+  },
+
+  'the WordPress render pass reproduces the escape it does on the live site'() {
+    // Calibration for the check below, from the September 3, 2026 probe and the
+    // October 5, 2026 live banner. If this fails the emulation is wrong, not the page.
+    assert.strictEqual(wpTexturizeAmps('var plain = (a && b);'), 'var plain = (a && b);');
+    assert.strictEqual(
+      wpTexturizeAmps("x = '<label><input value=\"' + o + '\"' + (i === 0 && f.required ? r : '') + '>';"),
+      "x = '<label><input value=\"' + o + '\"' + (i === 0 &#038;&#038; f.required ? r : '') + '>';");
+    assert.strictEqual(wpTexturizeAmps('return item.start <= today && today <= item.end;'),
+      'return item.start <= today &#038;&#038; today <= item.end;');
+    assert.strictEqual(wpTexturizeAmps('<a title="&times; &#215; &amp; & x">'),
+      '<a title="&times; &#215; &amp; &#038; x">');
+  },
+
+  'every inline script survives the WordPress render pass and still parses'() {
+    // Pattern 183 is stored verbatim but served through wptexturize(), which treats
+    // any `<` up to the next `>` as a tag — inside <script> too — and escapes each
+    // bare `&` in it to `&#038;`. In JavaScript that is a syntax error that kills the
+    // whole block: from October 2, 2026 the live rota never ran and every visitor got
+    // the markup default only. Keep `&&` (and any bare `&`) out of the banner's scripts.
+    const before = inlineScripts(html);
+    const after = inlineScripts(wpTexturizeAmps(html));
+    assert.ok(before.length > 0, 'no inline <script> found in the banner');
+    assert.strictEqual(after.length, before.length, 'the render pass changed the number of scripts');
+    for (let n = 0; n < before.length; n++) {
+      const a = before[n].split('\n');
+      const b = after[n].split('\n');
+      const line = a.findIndex((l, i) => l !== b[i]);
+      assert.strictEqual(line, -1,
+        'script ' + (n + 1) + ', line ' + (line + 1) + ' is rewritten when WordPress serves it:\n     ' +
+        (b[line] || '').trim() + '\n     Rewrite the condition without `&&`.');
+      assert.doesNotThrow(() => new vm.Script(after[n]),
+        'script ' + (n + 1) + ' does not parse as WordPress serves it');
     }
   },
 };

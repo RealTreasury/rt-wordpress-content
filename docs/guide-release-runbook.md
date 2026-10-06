@@ -455,15 +455,17 @@ for the person and fire a new Teams lead card.
    is expected, not a failure. The `EMAIL` fill-in (see below) is checked after step 6.
 6. **Switch on the follow-up email: the automation change.** This is the JSON under
    **Resend objects** below, applied to "Tech Selection Guide — deliver on signup" in one disable,
-   edit, enable window, with `send_guide.config.from` set to the `guide@` sender. It is an API edit
-   to a live production automation, not a Resend dashboard toggle, so an agent seat does not do it
-   and the owner does not click it together by hand: the owner says go, and it is run from the
-   rt-ai-02 box. Confirm reply-to `contact@realtreasury.com` on both emails first (see **Sender**).
-   Who runs it: the owner, on rt-ai-02, with the key in `/opt/rt-ai/secrets/resend.env` (as for the
-   template PATCH above). With what: nothing yet. This repo has no command or script for the
-   automation edit, and the automation endpoint and its disable/enable fields are not recorded here.
-   Step 6 is blocked until that command is written and reviewed in a PR and added here next to
-   the template PATCH. Do not improvise it against the live automation.
+   edit, enable window, with `send_guide.config.from` set to the `guide@` sender. It edits a live
+   production automation, so an agent seat does not do it; the owner says go and does it.
+   Confirm reply-to `contact@realtreasury.com` on both emails first (see **Sender**).
+   With what: not settled. Whether the Resend dashboard can do the disable, edit, enable sequence
+   (adding both steps and changing the `send_guide` sender) is not recorded here; the only thing
+   recorded is that the API refuses edits to an enabled automation (422). This repo has no command
+   or script for the API route, and the automation endpoint and its disable/enable fields are not
+   recorded either. Step 6 is blocked until one route is written down here: either the owner checks
+   the dashboard and records the clicks, or an API command (run on rt-ai-02 with the key in
+   `/opt/rt-ai/secrets/resend.env`, as for the template PATCH above) is written and reviewed in a PR
+   and added here next to the template PATCH. Do not improvise either against the live automation.
 
 With step 2 done, the page sends to the live form; it was set to refuse ("Feedback is not open yet")
 only while `FORM_GUID` was empty.

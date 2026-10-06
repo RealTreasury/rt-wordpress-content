@@ -456,19 +456,50 @@ for the person and fire a new Teams lead card.
    yourself and check that replying goes to `contact@realtreasury.com`. A dashboard test send has
    no contact, so its star links carry no address in `?email=` and the page asks for an email; that
    is expected, not a failure. The `EMAIL` fill-in (see below) is checked after step 6.
-6. **Switch on the follow-up email: the automation change.** This is the JSON under
-   **Resend objects** below, applied to "Tech Selection Guide — deliver on signup" in one disable,
-   edit, enable window, with `send_guide.config.from` set to the `guide@` sender. It edits a live
-   production automation, so an agent seat does not do it; the owner says go and does it.
-   Confirm reply-to `contact@realtreasury.com` on both emails first (see **Sender**).
-   With what: not settled. Whether the Resend dashboard can do the disable, edit, enable sequence
-   (adding both steps and changing the `send_guide` sender) is not recorded here; the only thing
-   recorded is that the API refuses edits to an enabled automation (422). This repo has no command
-   or script for the API route, and the automation endpoint and its disable/enable fields are not
-   recorded either. Step 6 is blocked until one route is written down here: either the owner checks
-   the dashboard and records the clicks, or an API command (run on rt-ai-02 with the key in
-   `/opt/rt-ai/secrets/resend.env`, as for the template PATCH above) is written and reviewed in a PR
-   and added here next to the template PATCH. Do not improvise either against the live automation.
+6. **Owner: switch on the follow-up email.** Do this only after steps 4 and 5 passed. It edits the live
+   production automation "Tech Selection Guide — deliver on signup"
+   (`01a067af-c041-7579-a1f3-ad0f042f25fe`), so an agent seat does not run it; the owner does.
+   Why the API: Resend's docs say "While an Automation is enabled, its steps cannot be edited"
+   and the update endpoint says the graph of an enabled automation cannot be updated, so the
+   automation has to be disabled first. The Resend dashboard docs describe enabling a new
+   automation with **Start** but do not document stopping or re-editing a live one, so we use the
+   API, which documents all three calls. Run on rt-ai-02; the key stays in
+   `/opt/rt-ai/secrets/resend.env` and is never printed.
+
+   1. Build the new graph from the live automation and read it before sending anything. The GET only
+      reads; `scripts/resend_guide_feedback_graph.py` makes no Resend call and writes
+      `/tmp/auto-new.json`. It keeps the three existing steps, sets `send_guide` to the `guide@`
+      sender with `reply_to`, and adds the 7-day delay and the `send_feedback` step:
+
+          K=$(grep -E '^RESEND_API_KEY=' /opt/rt-ai/secrets/resend.env | cut -d= -f2- | tr -d '"')
+          A=01a067af-c041-7579-a1f3-ad0f042f25fe
+          curl -s -H "Authorization: Bearer $K" https://api.resend.com/automations/$A > /tmp/auto-live.json
+          python3 scripts/resend_guide_feedback_graph.py /tmp/auto-live.json /tmp/auto-new.json
+          cat /tmp/auto-new.json
+
+      Check that `send_guide` still has the `da8cbac1-9fa3-4085-9b3a-d9ed56dd65b2` template and the
+      `is_guide_download` rule is unchanged.
+   2. Disable, edit, enable. Keep the gap short: a signup during it may not get the guide.
+
+          curl -s -X PATCH -H "Authorization: Bearer $K" -H 'Content-Type: application/json' \
+            -d '{"status":"disabled"}' https://api.resend.com/automations/$A
+          curl -s -X PATCH -H "Authorization: Bearer $K" -H 'Content-Type: application/json' \
+            --data @/tmp/auto-new.json https://api.resend.com/automations/$A
+          curl -s -X PATCH -H "Authorization: Bearer $K" -H 'Content-Type: application/json' \
+            -d '{"status":"enabled"}' https://api.resend.com/automations/$A
+
+      Each call returns `{"object":"automation","id":"..."}`. If the second returns an error, do not
+      enable: the automation is still disabled with the old steps, so send the output to us and
+      enable it again with the third command so signups are not lost.
+   3. `Verify:` run
+      `curl -s -H "Authorization: Bearer $K" https://api.resend.com/automations/$A | python3 -m json.tool`.
+      It must show `"status": "enabled"`, five steps (`trigger`, `is_guide_download`, `send_guide`,
+      `wait_7_days`, `send_feedback`), `send_guide.config.from` set to the `guide@` sender, and
+      `reply_to` `contact@realtreasury.com` on both email steps. Then check the `EMAIL` fill-in as
+      described under **Resend objects**.
+
+   Not established: whether the dashboard can stop and re-edit a live automation. Resend's docs do not
+   cover it and we have not tried it, so do not use the dashboard on the live automation instead.
 
 With step 2 done, the page sends to the live form; it was set to refuse ("Feedback is not open yet")
 only while `FORM_GUID` was empty.
@@ -484,6 +515,7 @@ for step 6, added after `send_guide` in automation `01a067af-c041-7579-a1f3-ad0f
     steps:  {"key": "wait_7_days",   "type": "delay",      "config": {"duration": "7 days"}}
             {"key": "send_feedback", "type": "send_email", "config": {
                 "from": "Real Treasury <guide@news.realtreasury.com>",
+                "reply_to": "contact@realtreasury.com",
                 "subject": "Was the guide useful?",
                 "template": {"id": "04bc56bd-6b94-4d3e-9269-837131e30df3"}}}
     connections: send_guide -> wait_7_days (default), wait_7_days -> send_feedback (default)
@@ -498,7 +530,7 @@ still sends the guide from `newsletter@`: Resend refuses edits to an enabled aut
 the same disable, edit, enable window as the feedback steps, also set `send_guide.config.from` to the
 `guide@` sender. Keep that window short; a signup that arrives while it is disabled may not get the guide.
 
-Where that reply-to is set is not recorded here: the `send_feedback` step JSON above has no
-`reply_to`, and the template source in this repo carries none. Before re-enabling, check in Resend
-that the template or the step sets reply-to `contact@realtreasury.com` for both emails, then send a
-test and reply to it. Without it, replies (the only route for survey comments) go to `guide@` and bounce.
+Reply-to is set on the automation's email steps: Resend's step config takes `reply_to`, which overrides the
+template's default, and the step 6 commands set `contact@realtreasury.com` on both `send_guide` and
+`send_feedback`. After step 6, reply to the first feedback email you receive and check it goes to `contact@`.
+Without it, replies (the only route for survey comments) go to `guide@` and bounce.

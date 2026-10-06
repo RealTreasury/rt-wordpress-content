@@ -459,6 +459,11 @@ for the person and fire a new Teams lead card.
    to a live production automation, not a Resend dashboard toggle, so an agent seat does not do it
    and the owner does not click it together by hand: the owner says go, and it is run from the
    rt-ai-02 box. Confirm reply-to `contact@realtreasury.com` on both emails first (see **Sender**).
+   Who runs it: the owner, on rt-ai-02, with the key in `/opt/rt-ai/secrets/resend.env` (as for the
+   template PATCH above). With what: nothing yet. This repo has no command or script for the
+   automation edit, and the automation endpoint and its disable/enable fields are not recorded here.
+   Step 6 is blocked until that command is written and reviewed in a PR and added here next to
+   the template PATCH. Do not improvise it against the live automation.
 
 With step 2 done, the page sends to the live form; it was set to refuse ("Feedback is not open yet")
 only while `FORM_GUID` was empty.

@@ -450,8 +450,9 @@ for the person and fire a new Teams lead card.
    touched by this step. If it shows "Feedback is not open yet" or no row appears, stop and say so.
 5. **Owner: publish the Resend template** (Resend > Templates > `guide-feedback` > Publish). Do it
    before the automation change, and only after step 4 passed. Send a test of the template to
-   yourself and check that the five star links carry your address in `?email=` (the `EMAIL`
-   variable, see below) and that replying goes to `contact@realtreasury.com`.
+   yourself and check that replying goes to `contact@realtreasury.com`. A dashboard test send has
+   no contact, so its star links carry no address in `?email=` and the page asks for an email; that
+   is expected, not a failure. The `EMAIL` fill-in (see below) is checked after step 6.
 6. **Switch on the follow-up email: the automation change.** This is the JSON under
    **Resend objects** below, applied to "Tech Selection Guide — deliver on signup" in one disable,
    edit, enable window, with `send_guide.config.from` set to the `guide@` sender. It is an API edit
@@ -465,7 +466,9 @@ only while `FORM_GUID` was empty.
 **Resend objects (staged October 1, 2026).** Template `guide-feedback`, id
 `04bc56bd-6b94-4d3e-9269-837131e30df3`, status draft. The star links are
 `.../feedback/?email={{{EMAIL}}}&r=N`; `EMAIL` is a Resend reserved contact variable (declaring it is
-rejected with 422), so confirm it fills in on the step-4 test before publishing in step 5. Automation change
+rejected with 422), so it can only be checked on a send to a contact: after step 6, sign up for the guide with an
+address you control and, when the feedback email arrives 7 days later, confirm the star links carry
+that address in `?email=`. Automation change
 for step 6, added after `send_guide` in automation `01a067af-c041-7579-a1f3-ad0f042f25fe`:
 
     steps:  {"key": "wait_7_days",   "type": "delay",      "config": {"duration": "7 days"}}

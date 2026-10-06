@@ -444,10 +444,13 @@ for the person and fire a new Teams lead card.
    publish it in WP Admin.
 4. **Owner: send one test rating.** Once the page from step 3 is published, open
    `https://realtreasury.com/treasury-tech-selection-guide/feedback/?email=<an address you
-   control>&r=5` in a browser. It should show "Thanks, your rating is in." Then in HubSpot >
+   control>&r=5` in a browser. It should show "Thanks, your rating is in." That message appears
+   before the save finishes, so it is not proof the rating saved. Then in HubSpot >
    Marketing > Forms > Website - Guide Feedback > Submissions, confirm a row reading
    `Guide feedback | Usefulness 5/5 | via email click` for that address. Nothing in Resend is
-   touched by this step. If it shows "Feedback is not open yet" or no row appears, stop and say so.
+   touched by this step. If the page shows the star form instead of the thank-you, or switches to
+   "Your rating did not save. Please press Send rating to try again.", or no row appears, stop and
+   say so.
 5. **Owner: publish the Resend template** (Resend > Templates > `guide-feedback` > Publish). Do it
    before the automation change, and only after step 4 passed. Send a test of the template to
    yourself and check that replying goes to `contact@realtreasury.com`. A dashboard test send has

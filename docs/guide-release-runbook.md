@@ -442,11 +442,64 @@ for the person and fire a new Teams lead card.
 3. Create the WordPress page: draft, parent 4202, slug `feedback`, `jetpack_seo_noindex` on. Uncomment
    its row in `wp/pages.tsv` with the id, then `scripts/wp_publish_post.py publish guide-feedback` and
    publish it in WP Admin.
-4. Test one submission end to end from an external address; check it in HubSpot.
-5. Publish the `guide-feedback` Resend template, then, in one disable, edit, enable window on the
-   automation "Tech Selection Guide — deliver on signup": add a wait (7 days) + send step after
-   `send_guide`, set `send_guide.config.from` to the `guide@` sender, and confirm reply-to is
-   `contact@realtreasury.com` on both emails (see **Sender** below).
+4. **Owner: send one test rating.** Once the page from step 3 is published, open
+   `https://realtreasury.com/treasury-tech-selection-guide/feedback/?email=<an address you
+   control>&r=5` in a browser. It should show "Thanks, your rating is in." That message appears
+   before the save finishes, so it is not proof the rating saved. Then in HubSpot >
+   Marketing > Forms > Website - Guide Feedback > Submissions, confirm a row reading
+   `Guide feedback | Usefulness 5/5 | via email click` for that address. Nothing in Resend is
+   touched by this step. If the page shows the star form instead of the thank-you, or switches to
+   "Your rating did not save. Please press Send rating to try again.", or no row appears, stop and
+   say so.
+5. **Owner: publish the Resend template** (Resend > Templates > `guide-feedback` > Publish). Do it
+   before the automation change, and only after step 4 passed. Send a test of the template to
+   yourself and check that replying goes to `contact@realtreasury.com`. A dashboard test send has
+   no contact, so its star links carry no address in `?email=` and the page asks for an email; that
+   is expected, not a failure. The `EMAIL` fill-in (see below) is checked after step 6.
+6. **Owner: switch on the follow-up email.** Do this only after steps 4 and 5 passed. It edits the live
+   production automation "Tech Selection Guide — deliver on signup"
+   (`01a067af-c041-7579-a1f3-ad0f042f25fe`), so an agent seat does not run it; the owner does.
+   Why the API: Resend's docs say "While an Automation is enabled, its steps cannot be edited"
+   and the update endpoint says the graph of an enabled automation cannot be updated, so the
+   automation has to be disabled first. The Resend dashboard docs describe enabling a new
+   automation with **Start** but do not document stopping or re-editing a live one, so we use the
+   API, which documents all three calls. Run on rt-ai-02; the key stays in
+   `/opt/rt-ai/secrets/resend.env` and is never printed.
+
+   1. Build the new graph from the live automation and read it before sending anything. The GET only
+      reads; `scripts/resend_guide_feedback_graph.py` makes no Resend call and writes
+      `/tmp/auto-new.json`. It keeps the three existing steps, sets `send_guide` to the `guide@`
+      sender with `reply_to`, and adds the 7-day delay and the `send_feedback` step:
+
+          K=$(grep -E '^RESEND_API_KEY=' /opt/rt-ai/secrets/resend.env | cut -d= -f2- | tr -d '"')
+          A=01a067af-c041-7579-a1f3-ad0f042f25fe
+          curl -s -H "Authorization: Bearer $K" https://api.resend.com/automations/$A > /tmp/auto-live.json
+          python3 scripts/resend_guide_feedback_graph.py /tmp/auto-live.json /tmp/auto-new.json
+          cat /tmp/auto-new.json
+
+      Check that `send_guide` still has the `da8cbac1-9fa3-4085-9b3a-d9ed56dd65b2` template and the
+      `is_guide_download` rule is unchanged.
+   2. Disable, edit, enable. Keep the gap short: a signup during it may not get the guide.
+
+          curl -s -X PATCH -H "Authorization: Bearer $K" -H 'Content-Type: application/json' \
+            -d '{"status":"disabled"}' https://api.resend.com/automations/$A
+          curl -s -X PATCH -H "Authorization: Bearer $K" -H 'Content-Type: application/json' \
+            --data @/tmp/auto-new.json https://api.resend.com/automations/$A
+          curl -s -X PATCH -H "Authorization: Bearer $K" -H 'Content-Type: application/json' \
+            -d '{"status":"enabled"}' https://api.resend.com/automations/$A
+
+      Each call returns `{"object":"automation","id":"..."}`. If the second returns an error, do not
+      enable: the automation is still disabled with the old steps, so send the output to us and
+      enable it again with the third command so signups are not lost.
+   3. `Verify:` run
+      `curl -s -H "Authorization: Bearer $K" https://api.resend.com/automations/$A | python3 -m json.tool`.
+      It must show `"status": "enabled"`, five steps (`trigger`, `is_guide_download`, `send_guide`,
+      `wait_7_days`, `send_feedback`), `send_guide.config.from` set to the `guide@` sender, and
+      `reply_to` `contact@realtreasury.com` on both email steps. Then check the `EMAIL` fill-in as
+      described under **Resend objects**.
+
+   Not established: whether the dashboard can stop and re-edit a live automation. Resend's docs do not
+   cover it and we have not tried it, so do not use the dashboard on the live automation instead.
 
 With step 2 done, the page sends to the live form; it was set to refuse ("Feedback is not open yet")
 only while `FORM_GUID` was empty.
@@ -454,12 +507,15 @@ only while `FORM_GUID` was empty.
 **Resend objects (staged October 1, 2026).** Template `guide-feedback`, id
 `04bc56bd-6b94-4d3e-9269-837131e30df3`, status draft. The star links are
 `.../feedback/?email={{{EMAIL}}}&r=N`; `EMAIL` is a Resend reserved contact variable (declaring it is
-rejected with 422), so confirm it fills in on the step-4 test before publishing. Automation change
-for step 5, added after `send_guide` in automation `01a067af-c041-7579-a1f3-ad0f042f25fe`:
+rejected with 422), so it can only be checked on a send to a contact: after step 6, sign up for the guide with an
+address you control and, when the feedback email arrives 7 days later, confirm the star links carry
+that address in `?email=`. Automation change
+for step 6, added after `send_guide` in automation `01a067af-c041-7579-a1f3-ad0f042f25fe`:
 
     steps:  {"key": "wait_7_days",   "type": "delay",      "config": {"duration": "7 days"}}
             {"key": "send_feedback", "type": "send_email", "config": {
                 "from": "Real Treasury <guide@news.realtreasury.com>",
+                "reply_to": "contact@realtreasury.com",
                 "subject": "Was the guide useful?",
                 "template": {"id": "04bc56bd-6b94-4d3e-9269-837131e30df3"}}}
     connections: send_guide -> wait_7_days (default), wait_7_days -> send_feedback (default)
@@ -474,7 +530,7 @@ still sends the guide from `newsletter@`: Resend refuses edits to an enabled aut
 the same disable, edit, enable window as the feedback steps, also set `send_guide.config.from` to the
 `guide@` sender. Keep that window short; a signup that arrives while it is disabled may not get the guide.
 
-Where that reply-to is set is not recorded here: the `send_feedback` step JSON above has no
-`reply_to`, and the template source in this repo carries none. Before re-enabling, check in Resend
-that the template or the step sets reply-to `contact@realtreasury.com` for both emails, then send a
-test and reply to it. Without it, replies (the only route for survey comments) go to `guide@` and bounce.
+Reply-to is set on the automation's email steps: Resend's step config takes `reply_to`, which overrides the
+template's default, and the step 6 commands set `contact@realtreasury.com` on both `send_guide` and
+`send_feedback`. After step 6, reply to the first feedback email you receive and check it goes to `contact@`.
+Without it, replies (the only route for survey comments) go to `guide@` and bounce.

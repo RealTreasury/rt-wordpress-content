@@ -22,9 +22,9 @@ USAGE
     Exits 0 if every assertion passes, 1 otherwise. Prints one line per case.
 
 WHAT IT PROVES
-    - the four tour choices render, in order, with the right labels
+    - the six tour choices render, in order, with the right labels
     - a session at capacity shows SOLD OUT, never "0 of N spots open"
-    - a session with spots left still shows its count
+    - a session with room shows no counter (removed October 8, 2026)
     - every choice kind submits, with the right mapping id and stored value
     - "Request a Custom Tour" still submits the legacy "Private tour request"
       value against the private-tour mapping (existing leads must not break)
@@ -157,6 +157,7 @@ def submit_as(p, kind):
 
 
 EXPECTED = ["TMS Replacement Tour", "Visibility Tour",
+            "Visibility Tour", "TMS Replacement Tour",
             "Request a Custom Tour", "None of These Work for Me"]
 
 with sync_playwright() as pw:
@@ -169,7 +170,7 @@ with sync_playwright() as pw:
                                ("embed 360", 360, 800, True)]:
         ctx, p = open_page(b, w, h, embed)
         opts = options(p)
-        check("%s: four choices" % label, len(opts) == 4, [o["label"] for o in opts])
+        check("%s: six choices" % label, len(opts) == len(EXPECTED), [o["label"] for o in opts])
         for i, want in enumerate(EXPECTED):
             check("%s: choice %d is %r" % (label, i + 1, want),
                   i < len(opts) and opts[i]["label"].startswith(want),
@@ -178,8 +179,10 @@ with sync_playwright() as pw:
               any(o["pill"].strip() == "SOLD OUT" for o in opts), [o["pill"] for o in opts])
         check("%s: no zero count anywhere" % label,
               not any("0 of " in o["pill"] for o in opts), [o["pill"] for o in opts])
-        check("%s: session with room still shows its count" % label,
-              any("6 of 10 spots open" == o["pill"].strip() for o in opts), [o["pill"] for o in opts])
+        check("%s: no spots counter on any choice" % label,
+              all(o["pill"].strip() in ("", "SOLD OUT") for o in opts)
+              and not any(w in p.inner_text("#rtTourChoiceGroup") for w in ("spots", "spot left", "Limited to")),
+              [o["pill"] for o in opts])
         check("%s: no horizontal overflow" % label,
               p.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth") <= 0)
         check("%s: no JS errors" % label, not p.errors, p.errors)

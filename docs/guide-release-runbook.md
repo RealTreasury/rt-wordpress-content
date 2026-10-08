@@ -283,19 +283,20 @@ works from the rt-ai-02 box:
 1. Claude reads back both pages: `scripts/wp_publish_post.py plan guide-thank-you
    --target production` (4585) and `scripts/wp_publish_post.py plan
    guide-download --target production` (4202). Each must read back identical to
-   main and report `post_status` `publish`. If 4585 reports `draft`, the owner
+   main and report `post_status` `publish`. If 4585 reports `draft`, Claude
    runs `wp post update 4585 --post_status=publish` (the publish script writes
    content only, never `post_status`), or `generate_lead` never fires.
-2. If either page differs from main, the owner publishes it by hand (the rail is
-   read-only from an agent seat), thank-you first so new 4202 never runs against
-   old 4585: `scripts/wp_publish_post.py publish guide-thank-you --target
+2. If either page differs from main, Claude publishes it by hand (owner
+   approved on the Decisions tab: Claude deploys `functions.php` and publishes
+   4585, then verifies), thank-you first so new 4202 never runs against old 4585: `scripts/wp_publish_post.py publish guide-thank-you --target
    production`, then `scripts/wp_publish_post.py publish guide-download --target
    production`. Claude then repeats step 1's read-back.
 3. Claude deploys the theme's `assets/php/functions.php` (`rt_track_helper`) by
    hand: this repo has no command or rail for theme PHP (`wp_publish_post.py`
    covers post content, `wp_publish_shared_css.sh` Additional CSS). If the agent
-   seat cannot write the theme, the owner runs the deploy and Claude reports this
-   step as not done. It has landed when step 4's `rtTrack` check passes.
+   seat cannot write the theme, Claude stops, reports this step as not done and
+   why, and leaves the deploy for the owner to reassign. It has landed when step
+   4's `rtTrack` check passes.
 4. Claude verifies: an anonymous `curl` of `/treasury-tech-selection-guide/thank-you/`
    returns 200, step 1's read-back passes for both `guide-thank-you` and
    `guide-download`, and `rtTrack` is defined on the form page. Report any step

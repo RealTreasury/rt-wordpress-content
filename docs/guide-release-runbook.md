@@ -272,29 +272,34 @@ the theme's `rt_track_helper` (`assets/php/functions.php`) can land in any order
 | 4202 + 4585 + rt-gate #91 + theme | 4202, `form_name=rtg-form-<id>`; 4585 fires nothing |
 | old 4202 + new 4585 (a run that stopped after 4585) | 4585, fallback event |
 
-Lead-event release steps. The owner merges rt-gate #91 and rt-wordpress-content
-#921 (the merge is the owner's; restarts, sudo and sends also stay with the owner).
-The rest Claude does from the rt-ai-02 box, then verifies:
+Lead-event release steps. The owner's step: merge rt-gate #91 (restarts, sudo,
+sends and any production write also stay with the owner). rt-wordpress-content
+#921 is already on main: both page sources carry the `rt-lead-counted` code. A
+later merge that does not touch those sources does not publish 4585 or 4202, so
+whether they are live depends on whether the deploy-on-merge leg ran when #921
+landed. Steps 1 and 2 below establish that. After the owner's merge, Claude
+works from the rt-ai-02 box:
 
-1. Merge rt-gate #91, then merge rt-wordpress-content #921. Merging deploys 4585
-   and 4202 on its own: `guide-thank-you` and `guide-download` are rows in
-   `wp/deploy.tsv`, so the deploy-on-merge leg runs `wp_publish_post.py publish
-   --target production` for each row whose source changed in the merge (a later
-   merge that does not touch their source publishes neither).
-   `scripts/wp_deploy_on_merge.py --dry-run` shows what it will publish.
-2. Claude deploys the theme's `assets/php/functions.php` (`rt_track_helper`) by
+1. Claude reads back both pages: `scripts/wp_publish_post.py plan guide-thank-you
+   --target production` (4585) and `scripts/wp_publish_post.py plan
+   guide-download --target production` (4202). Each must read back identical to
+   main and report `post_status` `publish`. If 4585 reports `draft`, the owner
+   runs `wp post update 4585 --post_status=publish` (the publish script writes
+   content only, never `post_status`), or `generate_lead` never fires.
+2. If either page differs from main, the owner publishes it by hand (the rail is
+   read-only from an agent seat), thank-you first so new 4202 never runs against
+   old 4585: `scripts/wp_publish_post.py publish guide-thank-you --target
+   production`, then `scripts/wp_publish_post.py publish guide-download --target
+   production`. Claude then repeats step 1's read-back.
+3. Claude deploys the theme's `assets/php/functions.php` (`rt_track_helper`) by
    hand: this repo has no command or rail for theme PHP (`wp_publish_post.py`
    covers post content, `wp_publish_shared_css.sh` Additional CSS). If the agent
    seat cannot write the theme, the owner runs the deploy and Claude reports this
-   step as not done. It has landed when step 3's `rtTrack` check passes. Claude
-   also confirms 4585 is published: `plan guide-thank-you` must report `publish`.
-   The publish script writes content only, never `post_status`; if it reports
-   `draft`, Claude runs `wp post update 4585 --post_status=publish`, or
-   `generate_lead` never fires.
-3. Claude verifies: an anonymous `curl` of `/treasury-tech-selection-guide/thank-you/`
-   returns 200, the live source reads back identical to main, and `rtTrack` is
-   defined on the form page. Report any step that cannot be verified; do not mark
-   it done.
+   step as not done. It has landed when step 4's `rtTrack` check passes.
+4. Claude verifies: an anonymous `curl` of `/treasury-tech-selection-guide/thank-you/`
+   returns 200, step 1's read-back passes for both `guide-thank-you` and
+   `guide-download`, and `rtTrack` is defined on the form page. Report any step
+   that cannot be verified; do not mark it done.
 
 `guide-thank-you` sits above `guide-download` in `wp/deploy.tsv` because the deploy
 leg publishes in manifest order and stops at the first failure, so it can never

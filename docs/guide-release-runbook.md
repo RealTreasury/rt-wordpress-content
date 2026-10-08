@@ -319,15 +319,25 @@ download count, and Resend records it, but only with click tracking on.
 **Click tracking is off** on `news.realtreasury.com` (read from the Resend API,
 September 23, 2026), so today downloads are counted nowhere.
 
-Steps to turn it on, in order (the rail is read-only from an agent seat; a
-person runs the writes):
+Steps to turn it on, in order. The owner merges rt-gate #91, then this PR (the
+merge is the owner's; restarts, sudo and sends also stay with the owner). The rest
+Claude does from the rt-ai-02 box, then verifies:
 
-1. `scripts/wp_publish_post.py publish guide-thank-you --target production`
-   (live 4585 was identical to main on September 22, so this is additive). This
-   writes content only, never `post_status`: confirm `plan guide-thank-you`
-   reports `publish`. If it reports `draft`, run
-   `wp post update 4585 --post_status=publish`, or `generate_lead` never fires.
-2. Turn on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
+1. Merge rt-gate #91, then merge this PR. Merging deploys 4585 and 4202 on its own:
+   `guide-thank-you` and `guide-download` are rows in `wp/deploy.tsv`, so the
+   deploy-on-merge leg runs `wp_publish_post.py publish --target production` for
+   each. `scripts/wp_deploy_on_merge.py --dry-run` shows what it will publish.
+2. Claude deploys the theme's `assets/php/functions.php` (`rt_track_helper`) and
+   confirms 4585 is published: `plan guide-thank-you` must report `publish`. The
+   publish script writes content only, never `post_status`; if it reports `draft`,
+   Claude runs `wp post update 4585 --post_status=publish`, or `generate_lead`
+   never fires.
+3. Claude verifies: an anonymous `curl` of `/treasury-tech-selection-guide/thank-you/`
+   returns 200, the live source reads back identical to main, and `rtTrack` is
+   defined on the form page. Report any step that cannot be verified; do not mark
+   it done.
+
+4. Turn on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
    Domains > the domain > Configuration). **Owner approved: turn on** (Decisions
    tab, "Turn on Resend click tracking for newsletter links?"). The owner flips
    the setting; it is not yet confirmed on. Re-read it from the Resend API after

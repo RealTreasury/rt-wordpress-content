@@ -209,11 +209,10 @@ final redirect, which 404s until 4585 is published. No email arrives until step 
       is the command that does it; the script is on `main` now, no special
       checkout needed. It writes `post_content` only and refuses if `post_status`
       moved, so it cannot publish anything itself.
-      **Still outstanding:** after this branch merges, run
-      `python3 scripts/wp_publish_post.py publish guide-thank-you --target production`.
-      It updates `post_content` while preserving the draft status and verifies
-      the readback. Only then publish 4585 in WP Admin. Until that status change,
-      the form's post-submit redirect 404s for every real visitor.
+      The 4585 publish (thank-you page) is covered by the lead-event release
+      steps under "Counting the funnel" below; follow those, not a separate WP
+      Admin publish. Until 4585 is published, the form's post-submit redirect
+      404s for every real visitor.
 7. **Enable automation and send the broadcast.** *The automation half is DONE* —
    "Tech Selection Guide — deliver on signup"
    (`01a067af-c041-7579-a1f3-ad0f042f25fe`) reads `enabled` from the Resend API
@@ -273,7 +272,7 @@ the theme's `rt_track_helper` (`assets/php/functions.php`) can land in any order
 | old 4202 + new 4585 (a run that stopped after 4585) | 4585, fallback event |
 
 Lead-event release steps. The owner's step: merge rt-gate #91 (restarts, sudo,
-sends and any production write also stay with the owner). rt-wordpress-content
+sends and merges also stay with the owner). rt-wordpress-content
 #921 is already on main: both page sources carry the `rt-lead-counted` code. A
 later merge that does not touch those sources does not publish 4585 or 4202, so
 whether they are live depends on whether the deploy-on-merge leg ran when #921

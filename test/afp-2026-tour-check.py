@@ -73,8 +73,8 @@ FORM = {
     ],
 }
 
-# Session 1 at capacity, session 2 with room. Sessions 3/4 are teased in page
-# config and must stay invisible.
+# Session 1 at capacity, session 2 with room. Sessions 3/4 are open with no
+# registrations yet and must render as choices.
 COUNTS = {
     "afp-2026-tour-session-1": 10,
     "afp-2026-tour-session-2": 4,

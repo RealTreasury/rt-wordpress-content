@@ -272,6 +272,30 @@ the theme's `rt_track_helper` (`assets/php/functions.php`) can land in any order
 | 4202 + 4585 + rt-gate #91 + theme | 4202, `form_name=rtg-form-<id>`; 4585 fires nothing |
 | old 4202 + new 4585 (a run that stopped after 4585) | 4585, fallback event |
 
+Lead-event release steps. The owner merges rt-gate #91 and rt-wordpress-content
+#921 (the merge is the owner's; restarts, sudo and sends also stay with the owner).
+The rest Claude does from the rt-ai-02 box, then verifies:
+
+1. Merge rt-gate #91, then merge rt-wordpress-content #921. Merging deploys 4585
+   and 4202 on its own: `guide-thank-you` and `guide-download` are rows in
+   `wp/deploy.tsv`, so the deploy-on-merge leg runs `wp_publish_post.py publish
+   --target production` for each row whose source changed in the merge (a later
+   merge that does not touch their source publishes neither).
+   `scripts/wp_deploy_on_merge.py --dry-run` shows what it will publish.
+2. Claude deploys the theme's `assets/php/functions.php` (`rt_track_helper`) by
+   hand: this repo has no command or rail for theme PHP (`wp_publish_post.py`
+   covers post content, `wp_publish_shared_css.sh` Additional CSS). If the agent
+   seat cannot write the theme, the owner runs the deploy and Claude reports this
+   step as not done. It has landed when step 3's `rtTrack` check passes. Claude
+   also confirms 4585 is published: `plan guide-thank-you` must report `publish`.
+   The publish script writes content only, never `post_status`; if it reports
+   `draft`, Claude runs `wp post update 4585 --post_status=publish`, or
+   `generate_lead` never fires.
+3. Claude verifies: an anonymous `curl` of `/treasury-tech-selection-guide/thank-you/`
+   returns 200, the live source reads back identical to main, and `rtTrack` is
+   defined on the form page. Report any step that cannot be verified; do not mark
+   it done.
+
 `guide-thank-you` sits above `guide-download` in `wp/deploy.tsv` because the deploy
 leg publishes in manifest order and stops at the first failure, so it can never
 leave new 4202 with the old 4585 (the only combination that would count twice).
@@ -319,25 +343,9 @@ download count, and Resend records it, but only with click tracking on.
 **Click tracking is off** on `news.realtreasury.com` (read from the Resend API,
 September 23, 2026), so today downloads are counted nowhere.
 
-Steps to turn it on, in order. The owner merges rt-gate #91, then this PR (the
-merge is the owner's; restarts, sudo and sends also stay with the owner). The rest
-Claude does from the rt-ai-02 box, then verifies:
+Steps to turn it on (the owner flips the setting; Claude re-reads it after):
 
-1. Merge rt-gate #91, then merge this PR. Merging deploys 4585 and 4202 on its own:
-   `guide-thank-you` and `guide-download` are rows in `wp/deploy.tsv`, so the
-   deploy-on-merge leg runs `wp_publish_post.py publish --target production` for
-   each. `scripts/wp_deploy_on_merge.py --dry-run` shows what it will publish.
-2. Claude deploys the theme's `assets/php/functions.php` (`rt_track_helper`) and
-   confirms 4585 is published: `plan guide-thank-you` must report `publish`. The
-   publish script writes content only, never `post_status`; if it reports `draft`,
-   Claude runs `wp post update 4585 --post_status=publish`, or `generate_lead`
-   never fires.
-3. Claude verifies: an anonymous `curl` of `/treasury-tech-selection-guide/thank-you/`
-   returns 200, the live source reads back identical to main, and `rtTrack` is
-   defined on the form page. Report any step that cannot be verified; do not mark
-   it done.
-
-4. Turn on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
+1. Turn on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
    Domains > the domain > Configuration). **Owner approved: turn on** (Decisions
    tab, "Turn on Resend click tracking for newsletter links?"). The owner flips
    the setting; it is not yet confirmed on. Re-read it from the Resend API after

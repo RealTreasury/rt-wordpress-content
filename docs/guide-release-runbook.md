@@ -209,11 +209,10 @@ final redirect, which 404s until 4585 is published. No email arrives until step 
       is the command that does it; the script is on `main` now, no special
       checkout needed. It writes `post_content` only and refuses if `post_status`
       moved, so it cannot publish anything itself.
-      **Still outstanding:** after this branch merges, run
-      `python3 scripts/wp_publish_post.py publish guide-thank-you --target production`.
-      It updates `post_content` while preserving the draft status and verifies
-      the readback. Only then publish 4585 in WP Admin. Until that status change,
-      the form's post-submit redirect 404s for every real visitor.
+      The 4585 publish (thank-you page) is covered by the lead-event release
+      steps under "Counting the funnel" below; follow those, not a separate WP
+      Admin publish. Until 4585 is published, the form's post-submit redirect
+      404s for every real visitor.
 7. **Enable automation and send the broadcast.** *The automation half is DONE* —
    "Tech Selection Guide — deliver on signup"
    (`01a067af-c041-7579-a1f3-ad0f042f25fe`) reads `enabled` from the Resend API
@@ -272,6 +271,36 @@ the theme's `rt_track_helper` (`assets/php/functions.php`) can land in any order
 | 4202 + 4585 + rt-gate #91 + theme | 4202, `form_name=rtg-form-<id>`; 4585 fires nothing |
 | old 4202 + new 4585 (a run that stopped after 4585) | 4585, fallback event |
 
+Lead-event release steps. The owner's step: merge rt-gate #91 (restarts, sudo,
+sends and merges also stay with the owner). rt-wordpress-content
+#921 is already on main: both page sources carry the `rt-lead-counted` code. A
+later merge that does not touch those sources does not publish 4585 or 4202, so
+whether they are live depends on whether the deploy-on-merge leg ran when #921
+landed. Steps 1 and 2 below establish that. After the owner's merge, Claude
+works from the rt-ai-02 box:
+
+1. Claude reads back both pages: `scripts/wp_publish_post.py plan guide-thank-you
+   --target production` (4585) and `scripts/wp_publish_post.py plan
+   guide-download --target production` (4202). Each must read back identical to
+   main and report `post_status` `publish`. If 4585 reports `draft`, Claude
+   runs `wp post update 4585 --post_status=publish` (the publish script writes
+   content only, never `post_status`), or `generate_lead` never fires.
+2. If either page differs from main, Claude publishes it by hand (owner
+   approved on the Decisions tab: Claude deploys `functions.php` and publishes
+   4585, then verifies), thank-you first so new 4202 never runs against old 4585: `scripts/wp_publish_post.py publish guide-thank-you --target
+   production`, then `scripts/wp_publish_post.py publish guide-download --target
+   production`. Claude then repeats step 1's read-back.
+3. Claude deploys the theme's `assets/php/functions.php` (`rt_track_helper`) by
+   hand: this repo has no command or rail for theme PHP (`wp_publish_post.py`
+   covers post content, `wp_publish_shared_css.sh` Additional CSS). If the agent
+   seat cannot write the theme, Claude stops, reports this step as not done and
+   why, and leaves the deploy for the owner to reassign. It has landed when step
+   4's `rtTrack` check passes.
+4. Claude verifies: an anonymous `curl` of `/treasury-tech-selection-guide/thank-you/`
+   returns 200, step 1's read-back passes for both `guide-thank-you` and
+   `guide-download`, and `rtTrack` is defined on the form page. Report any step
+   that cannot be verified; do not mark it done.
+
 `guide-thank-you` sits above `guide-download` in `wp/deploy.tsv` because the deploy
 leg publishes in manifest order and stops at the first failure, so it can never
 leave new 4202 with the old 4585 (the only combination that would count twice).
@@ -319,15 +348,9 @@ download count, and Resend records it, but only with click tracking on.
 **Click tracking is off** on `news.realtreasury.com` (read from the Resend API,
 September 23, 2026), so today downloads are counted nowhere.
 
-Steps to turn it on, in order (the rail is read-only from an agent seat; a
-person runs the writes):
+Steps to turn it on (the owner flips the setting; Claude re-reads it after):
 
-1. `scripts/wp_publish_post.py publish guide-thank-you --target production`
-   (live 4585 was identical to main on September 22, so this is additive). This
-   writes content only, never `post_status`: confirm `plan guide-thank-you`
-   reports `publish`. If it reports `draft`, run
-   `wp post update 4585 --post_status=publish`, or `generate_lead` never fires.
-2. Turn on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
+1. Turn on Resend click tracking for `news.realtreasury.com` (Resend dashboard >
    Domains > the domain > Configuration). **Owner approved: turn on** (Decisions
    tab, "Turn on Resend click tracking for newsletter links?"). The owner flips
    the setting; it is not yet confirmed on. Re-read it from the Resend API after

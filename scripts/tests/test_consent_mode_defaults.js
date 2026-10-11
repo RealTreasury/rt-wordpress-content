@@ -325,6 +325,17 @@ for (const page of ['cookie-policy/index.html', 'privacy-policy/index.html']) {
   for (const n of HS_COOKIES) {
     assert.ok(cookiePolicy.includes(`<code>${n}</code>`), `cookie policy must list ${n}`);
   }
+  // Section 3's withdrawal paragraph says the HubSpot cookies are deleted when consent is withdrawn.
+  const withdrawal = (cookiePolicy.match(/<h2>3\. Analytics and Marketing Cookies<\/h2>\s*<p>([\s\S]*?)<\/p>/) || [])[1] || '';
+  assert.match(withdrawal.replace(/\s+/g, ' '), /change your mind, we delete the Google Analytics and HubSpot cookies/,
+    'cookie policy withdrawal paragraph must say HubSpot cookies are deleted');
+}
+{ // A "role label described in section N" cross-reference must point at a section that mentions it.
+  const privacy = fs.readFileSync(path.join(root, 'privacy-policy/index.html'), 'utf8');
+  for (const [, n] of privacy.matchAll(/role label described in section (\d+)/g)) {
+    const section = privacy.split(new RegExp(`<h2>${n}\\.`))[1]?.split('<h2>')[0] || '';
+    assert.ok(section.includes('role label'), `privacy policy section ${n} must describe the role label it is cited for`);
+  }
 }
 // No direct embed: HubSpot does not read Consent Mode, so it loads only from GTM.
 assert.ok(!/hs-scripts\.com|hs-analytics\.net|hscollectedforms\.net/i.test(php),

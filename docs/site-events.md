@@ -56,6 +56,11 @@ only. Rejecting or withdrawing analytics removes `rt_src`, and a stored value is
 without consent. The Cookie Policy describes `rt_src` in section 3 (Analytics and Marketing
 Cookies) and the Privacy Policy under "How you reached a gated page"; change them together.
 
+With analytics consent, `rtSource()` also returns `hutk`, HubSpot's visitor ID from the
+`hubspotutk` cookie, when that cookie is exactly 32 lowercase hex characters. It is read on each
+call and never stored in `rt_src`. It lets HubSpot link a form submission to the pages that
+browser viewed; see `docs/hubspot-tracking-2026-10.md`.
+
 ## Campaign tags
 
 Every link we send carries:

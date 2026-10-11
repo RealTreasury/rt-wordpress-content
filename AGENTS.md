@@ -45,7 +45,7 @@ here, treat that as a bug and fix it.
    ```bash
    bash scripts/run_checks.sh
    ```
-   It runs the eight package-free `npm run test:*` checks and stops at the first
+   It runs the eleven package-free `npm run test:*` checks and stops at the first
    failure. `test:build-clean` is left out because it reads `git status` and is
    red on any dirty tree; CI runs it as its own step against a clean checkout.
    `RUN_CHECKS_BUILD_CLEAN=1 bash scripts/run_checks.sh` opts it back in.
@@ -184,6 +184,15 @@ this. If it cannot respect Consent Mode, it does not go on the site. Tags in
 the GTM container (`GTM-W877KNJR`) are outside this repo: the banner's promise
 holds only if each one requires `analytics_storage` in GTM's consent settings
 (see `docs/privacy-audit-2026-09.md`).
+
+HubSpot's tracking code is one of those GTM tags (Custom HTML, requires
+`analytics_storage`, blocked on `_rt_internal`); its exact body and settings are
+in `docs/hubspot-tracking-2026-10.md`. HubSpot does not read Consent Mode, so
+never embed it in the theme or through the HubSpot plugin; a test fails if an
+`hs-scripts.com` URL appears in `functions.php`. On Reject or withdrawal the
+banner deletes the HubSpot cookies and calls `_hsp` `revokeCookieConsent`, and
+`rtSource()` returns the HubSpot visitor ID (`hutk`) only with consent, never
+storing it.
 
 ## Legal pages
 

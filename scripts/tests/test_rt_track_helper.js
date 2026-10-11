@@ -137,6 +137,70 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   assert.ok(/window\.rtSourcePersist\(\)/.test(decideBody), 'decide() must call window.rtSourcePersist()');
 }
 
+// HubSpot visitor ID (docs/hubspot-tracking-2026-10.md): rtSource() adds hutk
+// only with analytics consent and a well-formed 32-hex hubspotutk, reads it
+// fresh on each call, and never writes it to sessionStorage rt_src.
+{
+  const HUTK = '0123456789abcdef0123456789abcdef';
+  const ok = boot({ search: '?utm_source=linkedin', cookie: `rt_consent=analytics; hubspotutk=${HUTK}; x=1` });
+  assert.strictEqual(ok.win.rtSource().hutk, HUTK, 'hutk must be returned with consent');
+  assert.strictEqual(ok.win.rtSource().utm_source, 'linkedin');
+  assert.ok(!('hutk' in JSON.parse(ok.store.get('rt_src'))), 'hutk must never be stored in rt_src');
+  // Last in the jar, too.
+  assert.strictEqual(boot({ cookie: `rt_consent=analytics; hubspotutk=${HUTK}` }).win.rtSource().hutk, HUTK);
+
+  // No consent, a refusal, or a near-miss consent value: no hutk.
+  for (const c of [`hubspotutk=${HUTK}`, `rt_consent=essential; hubspotutk=${HUTK}`,
+    `rt_consent=analyticsX; hubspotutk=${HUTK}`]) {
+    assert.ok(!('hutk' in boot({ cookie: c }).win.rtSource()), `no hutk for ${c}`);
+  }
+  // Malformed values are dropped (HubSpot rejects them with INVALID_HUTK).
+  for (const v of [HUTK.slice(1), HUTK + '0', HUTK.toUpperCase(), 'g'.repeat(32), '', `${HUTK}%20`]) {
+    assert.ok(!('hutk' in boot({ cookie: `rt_consent=analytics; hubspotutk=${v}` }).win.rtSource()),
+      `malformed hubspotutk ${JSON.stringify(v)} must be dropped`);
+  }
+  // A different cookie whose name ends in hubspotutk is not it.
+  assert.ok(!('hutk' in boot({ cookie: `rt_consent=analytics; xhubspotutk=${HUTK}` }).win.rtSource()));
+
+  // Read fresh: HubSpot sets the cookie after Accept on the same page, and a
+  // later withdrawal removes it from the next call.
+  const live = boot({ search: '?utm_source=resend' });
+  assert.ok(!('hutk' in live.win.rtSource()));
+  live.doc.cookie = `rt_consent=analytics; hubspotutk=${HUTK}`;
+  live.win.rtSourcePersist();
+  assert.strictEqual(live.win.rtSource().hutk, HUTK);
+  assert.ok(!('hutk' in JSON.parse(live.store.get('rt_src'))), 'hutk must not reach rt_src after consent');
+  live.doc.cookie = `rt_consent=essential; hubspotutk=${HUTK}`;
+  assert.ok(!('hutk' in live.win.rtSource()), 'hutk must stop as soon as consent is withdrawn');
+
+  // The iframe bridge hands it to RT Gate with the rest of the source.
+  const replies = [];
+  ok.listeners.message.forEach((fn) => fn({ origin: 'https://realtreasury.github.io',
+    data: { source: 'rt', type: 'rt:source?' }, source: { postMessage: (msg) => replies.push(msg) } }));
+  assert.strictEqual(replies[0].data.hutk, HUTK);
+}
+
+// The guide feedback page sends context.hutk to HubSpot only when rtSource()
+// returns a valid one. The page is pasted into WordPress, so no && and no
+// backslash in its script (see the note at the top of the page).
+{
+  const page = fs.readFileSync(path.join(__dirname, '..', '..', 'treasury-tech-selection', 'guidebook',
+    'feedback', 'wordpress-page.html'), 'utf8');
+  const start = page.indexOf('function hubspotVisitorId()');
+  assert.ok(start !== -1, 'feedback page must define hubspotVisitorId()');
+  const fnSrc = page.slice(start, page.indexOf('\n  }\n', start) + 4);
+  assert.ok(!/&&|\\/.test(fnSrc), 'feedback page hutk check must avoid && and backslashes (WordPress texturize)');
+  assert.match(page, /if \(hutk\) \{ context\.hutk = hutk; \}/, 'feedback post must add context.hutk only when present');
+  const visitorId = (rtSource) => vm.runInNewContext(`${fnSrc}; hubspotVisitorId();`, { window: { rtSource } });
+  const HUTK = 'fedcba9876543210fedcba9876543210';
+  assert.strictEqual(visitorId(() => ({ hutk: HUTK })), HUTK);
+  assert.strictEqual(visitorId(() => ({})), undefined);
+  assert.strictEqual(visitorId(() => ({ hutk: 'not-a-hutk' })), undefined);
+  assert.strictEqual(visitorId(() => ({ hutk: 42 })), undefined);
+  assert.strictEqual(visitorId(undefined), undefined, 'a page without the theme helper sends no hutk');
+  assert.strictEqual(visitorId(() => { throw new Error('x'); }), undefined, 'a throwing helper must not break the post');
+}
+
 // Iframe bridge: github.io forwarded with this page's lead_page; others ignored.
 {
   const { listeners, events } = boot();

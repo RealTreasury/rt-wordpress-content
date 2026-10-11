@@ -102,7 +102,7 @@ assert.ok(bm, 'rt-consent-banner script block is missing');
 const bannerJs = bm[1].replace(/<\?php echo wp_json_encode\( RT_CONSENT_COOKIE \); \?>/g, '"rt_consent"');
 assert.ok(!bannerJs.includes('<?php'), 'unexpected PHP inside the banner script');
 
-function runBanner(initialCookies) {
+function runBanner(initialCookies, globals = {}) {
   const jar = new Map(Object.entries(initialCookies));
   const writes = [];
   const byId = new Map();
@@ -141,6 +141,7 @@ function runBanner(initialCookies) {
     document, dataLayer: [], location: { protocol: 'https:', hostname: 'www.realtreasury.com' },
     localStorage: { setItem() {} }, setTimeout: () => {},
   };
+  Object.assign(ctx, globals);
   ctx.window = ctx;
   vm.createContext(ctx);
   vm.runInContext(bannerJs, ctx);
@@ -199,5 +200,70 @@ function runBanner(initialCookies) {
   assert.strictEqual(b.byId.get('rtConsentAnalytics').checked, false, 'undecodable choice must read as not granted');
 }
 
+// ---- HubSpot (docs/hubspot-tracking-2026-10.md) ---------------------------
+// HubSpot loads only from a GTM tag that requires analytics_storage. The banner
+// must delete its cookies and tell a loaded tracker to stop when consent is
+// refused or withdrawn, and the theme must never embed HubSpot directly.
+const HS_COOKIES = ['__hstc', 'hubspotutk', '__hssc', '__hssrc'];
+const hsJar = { __hstc: 'a.b.1', hubspotutk: '0123456789abcdef0123456789abcdef', __hssc: 'a.1.1', __hssrc: '1' };
+{ // Reject clears all four HubSpot cookies and keeps rt_consent; no _hsp loaded must not throw.
+  const b = runBanner({ ...hsJar, other: '1' });
+  assert.strictEqual(b.ctx._hsp, undefined);
+  b.click(b.byId.get('cookieBanner'), { 'data-rt-consent': 'reject' });
+  for (const n of HS_COOKIES) assert.ok(!b.jar.has(n), `${n} must be cleared on reject`);
+  assert.strictEqual(b.jar.get('rt_consent'), 'essential', 'rt_consent must survive the clear');
+  assert.strictEqual(b.jar.get('other'), '1');
+  assert.ok(b.writes.some((w) => /^hubspotutk=; expires=Thu, 01 Jan 1970[^;]*; path=\/; domain=\.realtreasury\.com$/.test(w)),
+    'hubspotutk must also be expired on the registrable domain, where HubSpot sets it');
+}
+{ // Panel withdrawal: cookies cleared, and a loaded tracker is told to stop, in order.
+  const hsp = [];
+  const b = runBanner({ rt_consent: 'analytics', ...hsJar }, { _hsp: hsp });
+  b.docListeners.forEach((fn) => fn({ preventDefault() {},
+    target: { closest: (sel) => (sel === '[data-rt-cookie-preferences]' ? {} : null) } }));
+  b.byId.get('rtConsentAnalytics').checked = false;
+  b.click(b.byId.get('rtConsentPanel'), { 'data-rt-panel': 'save' });
+  for (const n of HS_COOKIES) assert.ok(!b.jar.has(n), `${n} must be cleared on withdrawal`);
+  assert.strictEqual(b.jar.get('rt_consent'), 'essential');
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(hsp)), [
+    ['setHubSpotConsent', { analytics: false, advertisement: false, functionality: true }],
+    ['revokeCookieConsent'],
+  ], '_hsp must get setHubSpotConsent (analytics off) then revokeCookieConsent');
+}
+{ // Accept leaves HubSpot alone: no revoke, cookies kept.
+  const hsp = [];
+  const b = runBanner({ ...hsJar }, { _hsp: hsp });
+  b.click(b.byId.get('cookieBanner'), { 'data-rt-consent': 'accept' });
+  assert.strictEqual(hsp.length, 0, 'accepting must not revoke HubSpot consent');
+  for (const n of HS_COOKIES) assert.ok(b.jar.has(n), `${n} must not be cleared on accept`);
+}
+{ // _hsp.push throwing must not stop the rest of decide().
+  const b = runBanner({ ...hsJar }, { _hsp: { push() { throw new Error('boom'); } } });
+  b.click(b.byId.get('cookieBanner'), { 'data-rt-consent': 'reject' });
+  assert.strictEqual(b.jar.get('rt_consent'), 'essential');
+  assert.deepStrictEqual(b.updates(), ['denied']);
+}
+// The banner and the preference panel both name HubSpot.
+{
+  const bannerText = (bannerJs.match(/'<div class="banner-text">'([\s\S]*?)'<\/div>'/) || [])[1] || '';
+  assert.match(bannerText, /link your visits to the details you gave us/,
+    'banner copy must say form details can be linked to visits');
+  const panelRow = (bannerJs.match(/<strong>Analytics and marketing<\/strong>([\s\S]*?)<\/label>/) || [])[1] || '';
+  assert.match(panelRow, /HubSpot/, 'preference panel must name HubSpot');
+}
+// Both policies disclose HubSpot; the Cookie Policy lists its cookies.
+for (const page of ['cookie-policy/index.html', 'privacy-policy/index.html']) {
+  assert.match(fs.readFileSync(path.join(root, page), 'utf8'), /HubSpot/, `${page} must name HubSpot`);
+}
+{
+  const cookiePolicy = fs.readFileSync(path.join(root, 'cookie-policy/index.html'), 'utf8');
+  for (const n of HS_COOKIES) {
+    assert.ok(cookiePolicy.includes(`<code>${n}</code>`), `cookie policy must list ${n}`);
+  }
+}
+// No direct embed: HubSpot does not read Consent Mode, so it loads only from GTM.
+assert.ok(!/hs-scripts\.com|hs-analytics\.net|hscollectedforms\.net/i.test(php),
+  'functions.php must not load HubSpot directly; it is a consent-gated GTM tag');
+
 console.log(`consent mode defaults: ${cases.length} cookie cases OK; ` +
-  `banner accept/reject/revoke OK; preference triggers present; ${webinarFiles.length} files free of youtube.com/embed`);
+  `banner accept/reject/revoke OK; HubSpot clear/revoke OK; preference triggers present; ${webinarFiles.length} files free of youtube.com/embed`);

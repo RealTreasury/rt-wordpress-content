@@ -290,7 +290,9 @@ function rt_consent_mode_defaults() {
 // The session source (UTM tags, landing page, referrer host) is what RT Gate
 // stores with a lead. It is kept in sessionStorage ONLY after the visitor has
 // accepted analytics (the rt_consent cookie); before that it lives for the
-// current page only. Output is identical for every visitor, so it caches.
+// current page only. With consent, rtSource() also returns HubSpot's visitor ID
+// (hutk) from the hubspotutk cookie; it is read in the browser on each call and
+// never stored. Output is identical for every visitor, so it caches.
 add_action( 'wp_head', 'rt_track_helper', 2 );
 function rt_track_helper() {
     ?>
@@ -340,6 +342,14 @@ function rt_track_helper() {
             persist();
             var o = {};
             for (var k in src) { if (Object.prototype.hasOwnProperty.call(src, k)) { o[k] = src[k]; } }
+            // HubSpot's visitor ID, so a form submission can be linked to the pages
+            // this browser viewed. Only with analytics consent (the HubSpot tag in
+            // GTM never loads without it), only a well-formed 32-hex value, and read
+            // fresh on each call: it is never copied into src, so rt_src never holds it.
+            if (consented()) {
+                var hu = document.cookie.match(/(?:^|;\s*)hubspotutk=([0-9a-f]{32})(?:;|$)/);
+                if (hu) { o.hutk = hu[1]; }
+            }
             return o;
         };
         window.rtTrack = function (name, params) {
@@ -485,6 +495,15 @@ function rt_consent_banner() {
             });
             if (!granted) {
                 clearAnalyticsCookies();
+                // HubSpot's tracker (GTM tag, loaded only after consent) keeps
+                // running on this page until it is told to stop; revoking also
+                // removes its cookies. A no-op when HubSpot never loaded.
+                if (window._hsp) {
+                    try {
+                        window._hsp.push(['setHubSpotConsent', { analytics: false, advertisement: false, functionality: true }]);
+                        window._hsp.push(['revokeCookieConsent']);
+                    } catch (e) {}
+                }
             }
         }
 
@@ -493,7 +512,7 @@ function rt_consent_banner() {
             var scopes = ['', '; domain=' + host, '; domain=.' + host.replace(/^www\./, '')];
             document.cookie.split(';').forEach(function (raw) {
                 var name = raw.split('=')[0].trim();
-                if (!/^_ga|^_gid$|^_gat|^_gcl/.test(name)) { return; }
+                if (!/^_ga|^_gid$|^_gat|^_gcl|^__hstc$|^__hssc$|^__hssrc$|^hubspotutk$/.test(name)) { return; }
                 scopes.forEach(function (scope) {
                     document.cookie = name +
                         '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + scope;
@@ -525,7 +544,7 @@ function rt_consent_banner() {
                 '<div class="banner-content">' +
                     '<div class="banner-text">' +
                         '<strong>We use analytics and marketing cookies</strong> ' +
-                        'They tell us which pages people read and which companies visit, and measure LinkedIn ads. None is set until you choose. ' +
+                        'They tell us which pages people read and which companies visit, measure LinkedIn ads, and, if you fill in one of our forms, link your visits to the details you gave us. None is set until you choose. ' +
                         'See our <a href="/cookie-policy/" style="color:#c77dff">Cookie Policy</a>.' +
                     '</div>' +
                     '<div class="banner-buttons">' +
@@ -572,9 +591,9 @@ function rt_consent_banner() {
                     '<div class="rt-consent-row">' +
                         '<input type="checkbox" id="rtConsentAnalytics">' +
                         '<label for="rtConsentAnalytics"><strong>Analytics and marketing</strong>' +
-                        '<span>Google Analytics 4, LinkedIn Insight Tag and Apollo&rsquo;s website tracker: ' +
-                        'which pages get read, which companies visit, and how LinkedIn ads perform. ' +
-                        'Off unless you turn it on.</span></label>' +
+                        '<span>Google Analytics 4, LinkedIn Insight Tag, Apollo&rsquo;s website tracker and HubSpot: ' +
+                        'which pages get read, which companies visit, how LinkedIn ads perform, and which pages ' +
+                        'people who contact us have read. Off unless you turn it on.</span></label>' +
                     '</div>' +
                     '<div class="rt-consent-panel__actions">' +
                         '<button type="button" class="cookie-btn cookie-btn-accept" data-rt-panel="save">Save choices</button>' +

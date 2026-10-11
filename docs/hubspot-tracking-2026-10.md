@@ -114,11 +114,10 @@ The banner's click handler already opens the preference panel for it; untick and
 
 Open for the owner:
 
-- **Settled (Tim, October 11, 2026):** LinkedIn runs by default in the US too, and we sometimes
-  pass names, companies and roles to vendors or other firms for introductions without being asked.
-  So the opening line is now "We do not sell your personal information, and we do not receive fees
-  from technology vendors." ("or share" removed), section 3 says we sometimes pass those details on
-  (not paid; email privacy@ to stop), and the California section says the same.
+- **Settled (Tim, October 11, 2026):** LinkedIn runs by default in the US too, which California
+  counts as sharing, so the opening line is now "We do not sell your personal information, and we
+  do not receive fees from technology vendors." ("or share" removed). We do not pass contact details
+  to anyone else, so the policy says nothing more about it.
 - `rt_region` is set for every visitor, including EU and UK visitors before they choose. It is
   listed as essential (it decides which cookie rules apply).
 

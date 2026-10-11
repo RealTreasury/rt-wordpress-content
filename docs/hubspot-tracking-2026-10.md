@@ -2,8 +2,9 @@
 
 Owner decision, October 11, 2026: turn on HubSpot's website tracking so a contact's HubSpot record
 shows which of our pages they read before and after they filled in a form. Disclosure goes first.
-Visit history linked to a person is kept three years from our last contact, the same as the
-contact record itself.
+Visit history linked to a person is reviewed and deleted three years after our last contact, the
+same as the contact record itself. Visit data not linked to a person is kept 14 months, the same
+period the Privacy Policy states for Google Analytics (owner decisions, October 11, 2026).
 
 HubSpot's tracking code does not read Google Consent Mode. Loaded directly, it sets `__hstc` and
 `hubspotutk` for a visitor who rejected, which breaks the site rule in `AGENTS.md` ("Consent and
@@ -19,7 +20,7 @@ the LinkedIn (tag 12) and Apollo (tag 5) tags. **No HubSpot script is embedded i
 | `assets/php/functions.php`, `rt_consent_banner()` | `clearAnalyticsCookies()` also expires `__hstc`, `__hssc`, `__hssrc` and `hubspotutk`. On Reject or withdrawal, `applyConsent(false)` tells a loaded HubSpot tracker to stop (`setHubSpotConsent` with analytics off, then `revokeCookieConsent`). Banner and preference-panel copy name HubSpot. |
 | `assets/php/functions.php`, `rt_track_helper()` | `window.rtSource()` adds `hutk` (the `hubspotutk` value) only when `rt_consent=analytics` and the cookie is exactly 32 lowercase hex characters. It is read from the cookie on each call and never copied into `rt_src`. Page output is unchanged for every visitor; PHP never reads the cookie. |
 | `treasury-tech-selection/guidebook/feedback/wordpress-page.html` | The direct HubSpot Forms post adds `context.hutk` only when `rtSource()` returns a valid one **and** the reader typed an address different from the link's `?email=`. The emailed-link path (auto-submit and the failed-save Send button) carries no visitor ID, because a forwarded email would otherwise tie one person's browsing to someone else's contact. HubSpot rejects a malformed `hutk` with `INVALID_HUTK`. |
-| `privacy-policy/index.html` (page 167) | The HubSpot processor row and retention bullet now cover page visits after consent; a section 2 purpose row; the visitor ID recorded with a gated-form submission; the California internet-activity category; a retention bullet for HubSpot visit data not linked to a contact, with an owner placeholder. Visit linking is described as "our gated download forms or the guide feedback page", the only forms that send `hutk` (also in the banner and Cookie Policy). Contact Form 7 and the newsletter do not; re-word all three places if either ever starts sending it. |
+| `privacy-policy/index.html` (page 167) | The HubSpot processor row and retention bullet now cover page visits after consent; a section 2 purpose row; the visitor ID recorded with a gated-form submission; the California internet-activity category; a retention bullet for HubSpot visit data not linked to a contact (14 months, the Google Analytics period). Visit linking is described as "our gated download forms or the guide feedback page", the only forms that send `hutk` (also in the banner and Cookie Policy). Contact Form 7 and the newsletter do not; re-word all three places if either ever starts sending it. |
 | `cookie-policy/index.html` (page 360) | HubSpot named with LinkedIn and Apollo; four HubSpot cookie rows; a HubSpot paragraph with its privacy policy. |
 
 The rest of the chain is outside this repo: RT Gate must keep `source.hutk` (a strict 32-hex check)
@@ -81,12 +82,17 @@ hours is fine, under-disclosure is not.
    changes); follow `docs/guide-release-runbook.md` for the guide pages at the same time. Then curl
    the home page: it returns 200, `id="rt-track"` is present, and the banner script contains
    `HubSpot` and the `hubspotutk` pattern.
-4. **Set up the retention the Privacy Policy promises.** Set up or schedule the three-year
-   deletion of HubSpot contacts (with their linked visit history), and decide how long HubSpot
-   visit data not linked to a contact is kept. Replace the `[OWNER TO SET: ...]` placeholder in
-   section 5 of `privacy-policy/index.html` with that period, or with what is true if there is no
-   deletion mechanism (for example, kept until HubSpot's own retention schedule removes it). Do not
-   publish the retention wording until this is in place.
+4. **Retention the Privacy Policy promises.**
+   - Done (owner decision, October 11, 2026): the section 5 placeholder is replaced. HubSpot visit
+     data not linked to a contact is kept 14 months, the same as Google Analytics.
+   - Three-year deletion of HubSpot contacts, with their linked visit history: an rt-ai monthly
+     review job lists contacts past three years since our last contact for the owner to approve,
+     and a guarded script deletes the approved ones. Both are built separately in rt-ai, not in
+     this repo. The policy says "we review and delete them three years after our last contact
+     with you", which matches that job; have it running before the policy publishes.
+   - Open: how the 14-month limit on unlinked visit data is enforced in HubSpot was not checked.
+     Confirm a HubSpot setting or a step in the rt-ai review job covers it before the policy
+     publishes.
 5. **Publish the two policy pages and the guide feedback page by hand.** For each of
    `privacy-policy`, `cookie-policy` and `guide-feedback`: run
    `scripts/wp_publish_post.py plan <slug> --target production`, read the diff (the policy pages

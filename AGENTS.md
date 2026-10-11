@@ -178,12 +178,23 @@ Analytics consent is Google Consent Mode v2, implemented in
 - Anything that should open the preference panel gets a
   `data-rt-cookie-preferences` attribute, or calls
   `window.rtOpenCookiePreferences()`.
+- **Region rule (October 11, 2026).** US visitors are tracked by default; everyone
+  else opts in. `window.rtConsent` (defined in the priority-1 block) is the only
+  place that decides: `rtConsent.analytics()` is true for `rt_consent=analytics`,
+  or for `rt_region=US` with no stored choice and no Global Privacy Control. Any
+  new code that asks "may we track?" calls `rtConsent.analytics()`; never read
+  `rt_consent`, `rt_region` or `navigator.globalPrivacyControl` yourself, and
+  never write `rt_consent` on a visitor's behalf. `ad_storage`, `ad_user_data`
+  and `ad_personalization` stay denied everywhere. Details and how to test the
+  non-US path by hand: `docs/hubspot-tracking-2026-10.md`, "US default".
 
 Do not add a tag, pixel or embed that sets cookies without routing it through
 this. If it cannot respect Consent Mode, it does not go on the site. Tags in
 the GTM container (`GTM-W877KNJR`) are outside this repo: the banner's promise
 holds only if each one requires `analytics_storage` in GTM's consent settings
-(see `docs/privacy-audit-2026-09.md`).
+(see `docs/privacy-audit-2026-09.md`). Such a tag then follows the region rule
+with no GTM change: it fires by default for US visitors and only after Accept
+elsewhere, so the policies must disclose it before it is published.
 
 HubSpot's tracking code is one of those GTM tags (Custom HTML, requires
 `analytics_storage`, blocked on `_rt_internal`); its exact body and settings are

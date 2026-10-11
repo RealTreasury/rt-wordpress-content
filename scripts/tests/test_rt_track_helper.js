@@ -42,22 +42,38 @@ const fnStart = php.indexOf('function rt_track_helper()');
 const body = php.slice(fnStart, php.indexOf('\n}\n', fnStart));
 const m = body.match(/<script id="rt-track">([\s\S]*?)<\/script>/);
 assert.ok(m, 'rt-track script block is missing');
-const js = m[1].replace(/<\?php echo esc_js\( RT_CONSENT_COOKIE \); \?>/, 'rt_consent');
+const js = m[1];
 assert.ok(!/<\?php/.test(js), 'unexpected PHP inside the rt-track block');
+// The consent rule is window.rtConsent's, never re-implemented here.
+assert.ok(!/rt_consent|RT_CONSENT_COOKIE|globalPrivacyControl|rt_region/.test(js),
+  'rt-track must ask window.rtConsent, not read the consent or region cookies itself');
 
-function boot({ search = '', referrer = '', cookie = '', stored = null } = {}) {
+// The page runs the consent defaults block (window.rtConsent) first, in the same window.
+const dStart = php.indexOf('function rt_consent_mode_defaults()');
+const dm = php.slice(dStart, php.indexOf('\n}\n', dStart)).match(/<script id="rt-consent-defaults">([\s\S]*?)<\/script>/);
+assert.ok(dm, 'rt-consent-defaults script block is missing');
+const defaultsJs = dm[1].replace(/<\?php echo wp_json_encode\( RT_CONSENT_COOKIE \); \?>/g, '"rt_consent"');
+assert.ok(!/<\?php/.test(defaultsJs), 'unexpected PHP inside the defaults block');
+
+function boot({ search = '', referrer = '', cookie = '', stored = null, gpc, fetch, defaults = true } = {}) {
   const store = new Map(stored ? [['rt_src', JSON.stringify(stored)]] : []);
   const listeners = { message: [], click: [] };
   const events = [];
+  const doc = { cookie, referrer, addEventListener: (t, fn) => listeners[t].push(fn) };
   const win = {
-    location: { search, pathname: '/treasury-tech-selection-guide/', hostname: 'realtreasury.com' },
+    location: { search, pathname: '/treasury-tech-selection-guide/', hostname: 'realtreasury.com', protocol: 'https:' },
     sessionStorage: { getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, v),
       removeItem: (k) => store.delete(k) },
     addEventListener: (t, fn) => listeners[t].push(fn),
-    gtag: (...a) => events.push(a),
+    navigator: gpc === undefined ? {} : { globalPrivacyControl: gpc },
+    document: doc, URLSearchParams, URL, JSON, String, Object,
   };
-  const doc = { cookie, referrer, addEventListener: (t, fn) => listeners[t].push(fn) };
-  vm.runInNewContext(js, { window: win, document: doc, URLSearchParams, URL, JSON, String, Object });
+  if (fetch) win.fetch = fetch;
+  win.window = win;
+  vm.createContext(win);
+  if (defaults) vm.runInContext(defaultsJs, win);
+  win.gtag = (...a) => events.push(a);
+  vm.runInContext(js, win);
   return { win, doc, store, events, listeners };
 }
 
@@ -260,4 +276,54 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   ]);
 }
 
-console.log('rt-track helper: all checks passed');
+// US default (docs/hubspot-tracking-2026-10.md, "US default"): rt_src and hutk
+// follow window.rtConsent.analytics(), so a US visitor with no choice and no GPC
+// is treated as consented, and GPC or a stored refusal is not.
+{
+  const HUTK = '0123456789abcdef0123456789abcdef';
+  const consentedSource = (cookie, opts = {}) => {
+    const b = boot({ search: '?utm_source=linkedin', cookie: `${cookie}; hubspotutk=${HUTK}`, ...opts });
+    return { stored: b.store.has('rt_src'), hutk: b.win.rtSource().hutk };
+  };
+  eq(consentedSource('rt_region=US'), { stored: true, hutk: HUTK }, 'US default: rt_src kept and hutk returned');
+  eq(consentedSource('rt_region=US', { gpc: false }), { stored: true, hutk: HUTK });
+  eq(consentedSource('rt_region=US', { gpc: true }), { stored: false }, 'US + GPC: no rt_src, no hutk');
+  eq(consentedSource('rt_region=US; rt_consent=essential'), { stored: false }, 'US + Reject: no rt_src, no hutk');
+  eq(consentedSource('rt_region=US; rt_consent=analytics', { gpc: true }), { stored: true, hutk: HUTK },
+    'an explicit Accept beats GPC');
+  eq(consentedSource('rt_region=DE'), { stored: false }, 'non-US: opt-in');
+  eq(consentedSource('rt_region=XX'), { stored: false }, 'unknown region: opt-in');
+  eq(consentedSource(''), { stored: false }, 'no region yet: opt-in');
+  eq(consentedSource('rt_region=US', { defaults: false }), { stored: false },
+    'without window.rtConsent nothing counts as consent');
+  eq(consentedSource('rt_consent=analytics', { defaults: false }), { stored: false },
+    'without window.rtConsent nothing counts as consent, even a stored Accept');
+
+  // A refusal later in the tab ends it at once.
+  const b = boot({ search: '?utm_source=linkedin', cookie: `rt_region=US; hubspotutk=${HUTK}` });
+  b.doc.cookie = `rt_region=US; rt_consent=essential; hubspotutk=${HUTK}`;
+  b.win.rtSourcePersist();
+  assert.ok(!b.store.has('rt_src'), 'opting out removes rt_src');
+  assert.ok(!('hutk' in b.win.rtSource()));
+}
+
+(async () => {
+  // First US page: the trace answers after rt-track loaded; the landing page's
+  // source is kept at once (rtSourcePersist) and one consent update is pushed.
+  const b = boot({ search: '?utm_source=resend&utm_campaign=2026-10-guide',
+    fetch: () => Promise.resolve({ ok: true, text: () => Promise.resolve('ip=203.0.113.9\nloc=US\n') }) });
+  assert.ok(!b.store.has('rt_src'), 'nothing kept before the region is known');
+  await new Promise((r) => setImmediate(r));
+  eq(JSON.parse(b.store.get('rt_src')), { utm_source: 'resend', utm_campaign: '2026-10-guide',
+    landing_page: '/treasury-tech-selection-guide/' }, 'the first US page keeps its UTM tags');
+  eq(b.events.filter((e) => e[0] === 'consent'), [['consent', 'update', { analytics_storage: 'granted' }]]);
+
+  // First page outside the US: nothing kept, no update.
+  const de = boot({ search: '?utm_source=resend',
+    fetch: () => Promise.resolve({ ok: true, text: () => Promise.resolve('loc=DE\n') }) });
+  await new Promise((r) => setImmediate(r));
+  assert.ok(!de.store.has('rt_src'));
+  assert.strictEqual(de.events.filter((e) => e[0] === 'consent').length, 0);
+
+  console.log('rt-track helper: all checks passed');
+})().catch((e) => { console.error(e); process.exit(1); });

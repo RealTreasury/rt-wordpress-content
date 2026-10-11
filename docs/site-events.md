@@ -49,10 +49,12 @@ utm_term, landing_page, referrer_host}`. RT Gate sends it with every submission 
 where it came from. Iframes ask for it with `{source:'rt', type:'rt:source?'}` and receive
 `{source:'rt', type:'rt:source', data}`.
 
-It is written to `sessionStorage` (key `rt_src`, cleared when the tab closes) only after the
-visitor accepts analytics, including an acceptance on the landing page itself (the consent banner
-calls `window.rtSourcePersist()` on every choice); before that it is held for the current page
-only. Rejecting or withdrawing analytics removes `rt_src`, and a stored value is never read
+It is written to `sessionStorage` (key `rt_src`, cleared when the tab closes) only with analytics
+consent as `window.rtConsent.analytics()` defines it: an Accept, or the US default (see
+`docs/hubspot-tracking-2026-10.md`, "US default"). That includes consent arriving on the landing
+page itself: the consent banner calls `window.rtSourcePersist()` on every choice, and `rtConsent`
+calls it when the first page's region lookup grants the US default. Before that it is held for the
+current page only. Rejecting or withdrawing analytics removes `rt_src`, and a stored value is never read
 without consent. The Cookie Policy describes `rt_src` in section 3 (Analytics and Marketing
 Cookies) and the Privacy Policy under "How you reached a gated page"; change them together.
 

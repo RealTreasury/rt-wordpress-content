@@ -244,12 +244,13 @@
 
             <p>We use two kinds of cookie. Essential ones keep the site working and are
             always on. Analytics and marketing ones tell us which pages get read, which
-            companies visit, and how LinkedIn ads perform. They stay off until you switch
-            them on.</p>
+            companies visit, and how LinkedIn ads perform. In the US they are on unless you
+            turn them off in <a href="#" data-rt-cookie-preferences>cookie settings</a> or your
+            browser sends a Global Privacy Control signal; elsewhere we ask first.</p>
 
-            <p>We do not sell what these cookies collect. If you accept, LinkedIn, Apollo and
-            HubSpot receive data about your visit, as described in section 3. If you reject, or
-            never answer, no analytics or marketing cookie is set and the LinkedIn, Apollo and
+            <p>We do not sell what these cookies collect. When they are on, LinkedIn, Apollo and
+            HubSpot receive data about your visit, as described in section 3. When they are
+            off, no analytics or marketing cookie is set and the LinkedIn, Apollo and
             HubSpot tags do not load. Google Analytics still sends Google a cookieless signal for each page
             you view, which includes the page, your IP address and your browser type.</p>
 
@@ -277,7 +278,13 @@
                         <td><code>rt_consent</code></td>
                         <td>Real Treasury</td>
                         <td>Remembers whether you accepted or rejected analytics cookies</td>
-                        <td>180 days</td>
+                        <td>12 months</td>
+                    </tr>
+                    <tr>
+                        <td><code>rt_region</code></td>
+                        <td>Real Treasury</td>
+                        <td>Stores your country so we know which cookie rules apply</td>
+                        <td>30 days</td>
                     </tr>
                     <tr>
                         <td><code>__cf_bm</code></td>
@@ -324,13 +331,13 @@
 
             <h2>3. Analytics and Marketing Cookies</h2>
 
-            <p>These are set only after you accept them. Until then Google Analytics loads
+            <p>Outside the US, these are set only after you accept them. Until then Google Analytics loads
             in a mode that stores nothing on your device, and the LinkedIn, Apollo and HubSpot
             tags do not load at all. In that mode Google Analytics still sends Google a cookieless
             signal for each page you view (the page, your IP address and your browser type),
             with no identifier that links one visit to another. If you reject, or never
-            answer, it stays in that mode and the other three tags never load; if you
-            accept and later change your mind, we delete the Google Analytics and HubSpot
+            answer, it stays in that mode and the other three tags never load; if they are
+            on and you turn them off, we delete the Google Analytics and HubSpot
             cookies below, and the LinkedIn and Apollo tags stop loading from the next page
             you open. Cookies those two tags have already set stay in your browser until they
             expire or you clear them.</p>
@@ -406,11 +413,11 @@
             <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google's
             opt-out add-on</a>.</p>
 
-            <p>If you accept analytics cookies, we store <code>rt_src</code> in your browser's
+            <p>When analytics cookies are on, we store <code>rt_src</code> in your browser's
             session storage. It records how you reached the site (the campaign tags on the
             link you followed, the first page you landed on, and the referring site's domain)
             so that a form you submit records where it came from. It is cleared when you close
-            the tab. If you do not accept analytics, it is not stored.</p>
+            the tab. When they are off, it is not stored.</p>
 
             <h2>4. Embedded Content</h2>
 
@@ -424,7 +431,7 @@
             <h2>5. Changing Your Mind</h2>
 
             <p>Use the <a href="#" data-rt-cookie-preferences>cookie preferences</a> control
-            on this page or on our Privacy Policy. Your choice is remembered for 180 days, after which we
+            on this page or on our Privacy Policy. Your choice is remembered for 12 months, after which we
             will ask again.</p>
 
             <p>You can also manage cookies in your browser directly &mdash; every major

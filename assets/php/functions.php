@@ -264,8 +264,10 @@ function rt_consent_mode_defaults() {
     });
     gtag('set', 'ads_data_redaction', true);
     // The guide feedback email's star links carry the reader's address in the
-    // query (?email=...&r=...). Send GA4 that page without its query so the
-    // address never reaches Google, before or after consent.
+    // query (?email=...&r=...). Send gtag-configured GA4 that page without its
+    // query. This does not cover GTM container tags (the container is outside
+    // this repo): a tag reading the Page URL before the page's replaceState
+    // still sees the query.
     var rtLoc = window.location;
     if (rtLoc && rtLoc.pathname.indexOf('/treasury-tech-selection-guide/feedback') === 0) {
         gtag('set', 'page_location', rtLoc.origin + rtLoc.pathname);

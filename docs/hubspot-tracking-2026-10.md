@@ -114,15 +114,11 @@ The banner's click handler already opens the preference panel for it; untick and
 
 Open for the owner:
 
-- **Blocking, before the Privacy Policy publishes:** its opening line, "We do not sell or share
-  your personal information", is now contradicted by section 3 and the California section, which
-  say LinkedIn Insight Tag data counts as sharing under California law, and that sharing is on by
-  default for US visitors without GPC. It is Tim's September 22 wording, so we left it as written.
-  Options: (a) "We do not sell your personal information, and we do not receive fees from
-  technology vendors." (drop "or share"; section 3 and the California section already describe the
-  sharing); (b) keep "or share" with a qualifier, e.g. "...beyond the LinkedIn advertising tag
-  described in section 3."; (c) stop LinkedIn firing by default in the US, which reverses the
-  decision. We recommend (a), the smallest change that is true as written.
+- **Settled (Tim, October 11, 2026):** LinkedIn runs by default in the US too, and we sometimes
+  pass names, companies and roles to vendors or other firms for introductions without being asked.
+  So the opening line is now "We do not sell your personal information, and we do not receive fees
+  from technology vendors." ("or share" removed), section 3 says we sometimes pass those details on
+  (not paid; email privacy@ to stop), and the California section says the same.
 - `rt_region` is set for every visitor, including EU and UK visitors before they choose. It is
   listed as essential (it decides which cookie rules apply).
 
@@ -180,9 +176,7 @@ hours is fine, under-disclosure is not.
    linked visit history: the rt-ai monthly review job (rt-ai #1068) lists contacts past three years
    since our last contact for the owner to approve, and a guarded script deletes the approved
    ones. Have it running before the policy publishes.
-4. **Settle the Privacy Policy opening line first** ("We do not sell or share...", see "Open for
-   the owner"; we recommend option (a)). It is false for US visitors once the theme ships, so it
-   blocks this step.
+4. **Privacy Policy opening line:** settled (see "Open for the owner"); nothing to do.
 
    **Publish the two policy pages and the guide feedback page by hand, before the theme.** The
    theme deploy in step 5 turns on the LinkedIn and Apollo tags (already live in GTM) by default

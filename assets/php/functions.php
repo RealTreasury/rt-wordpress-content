@@ -546,7 +546,7 @@ function rt_consent_banner() {
                 '<div class="banner-content">' +
                     '<div class="banner-text">' +
                         '<strong>We use analytics and marketing cookies</strong> ' +
-                        'They tell us which pages people read and which companies visit, measure LinkedIn ads, and show us which pages people who contact us have read. None is set until you choose. ' +
+                        'They tell us which pages people read and which companies visit, and measure LinkedIn ads. None is set until you choose. ' +
                         'See our <a href="/cookie-policy/" style="color:#c77dff">Cookie Policy</a>.' +
                     '</div>' +
                     '<div class="banner-buttons">' +
@@ -594,8 +594,8 @@ function rt_consent_banner() {
                         '<input type="checkbox" id="rtConsentAnalytics">' +
                         '<label for="rtConsentAnalytics"><strong>Analytics and marketing</strong>' +
                         '<span>Google Analytics 4, LinkedIn Insight Tag, Apollo&rsquo;s website tracker and HubSpot: ' +
-                        'which pages get read, which companies visit, how LinkedIn ads perform, and which pages ' +
-                        'people who contact us have read. Off unless you turn it on.</span></label>' +
+                        'which pages get read, which companies visit, and how LinkedIn ads perform. ' +
+                        'Off unless you turn it on.</span></label>' +
                     '</div>' +
                     '<div class="rt-consent-panel__actions">' +
                         '<button type="button" class="cookie-btn cookie-btn-accept" data-rt-panel="save">Save choices</button>' +

@@ -3,9 +3,9 @@
 Owner decision, October 11, 2026: turn on HubSpot's website tracking so a contact's HubSpot record
 shows which of our pages they read before and after they filled in a form. Disclosure goes first.
 Visit history linked to a person follows the contact record: deleted three years after our last
-contact. The policy wording is kept short on purpose (Tim, October 11, 2026: "can't it be
-simpler?"): one clause in the Privacy Policy, HubSpot's cookies and a short paragraph in the
-Cookie Policy, and "HubSpot" in the banner.
+contact. The policy wording is kept to what other sites typically say, on purpose (Tim, October
+11, 2026): HubSpot named in the Privacy Policy's provider table, HubSpot's cookies and one line in
+the Cookie Policy, and HubSpot in the cookie preference panel's list of tools.
 
 HubSpot's tracking code does not read Google Consent Mode. Loaded directly, it sets `__hstc` and
 `hubspotutk` for a visitor who rejected, which breaks the site rule in `AGENTS.md` ("Consent and
@@ -21,8 +21,8 @@ the LinkedIn (tag 12) and Apollo (tag 5) tags. **No HubSpot script is embedded i
 | `assets/php/functions.php`, `rt_consent_banner()` | `clearAnalyticsCookies()` also expires `__hstc`, `__hssc`, `__hssrc` and `hubspotutk`. On Reject or withdrawal, `applyConsent(false)` tells a loaded HubSpot tracker to stop (`setHubSpotConsent` with analytics off, then `revokeCookieConsent`). Banner and preference-panel copy name HubSpot. |
 | `assets/php/functions.php`, `rt_track_helper()` | `window.rtSource()` adds `hutk` (the `hubspotutk` value) only when `rt_consent=analytics` and the cookie is exactly 32 lowercase hex characters. It is read from the cookie on each call and never copied into `rt_src`. Page output is unchanged for every visitor; PHP never reads the cookie. |
 | `treasury-tech-selection/guidebook/feedback/wordpress-page.html` | The direct HubSpot Forms post adds `context.hutk` only when `rtSource()` returns a valid one **and** the reader typed an address different from the link's `?email=`. The emailed-link path (auto-submit and the failed-save Send button) carries no visitor ID, because a forwarded email would otherwise tie one person's browsing to someone else's contact. HubSpot rejects a malformed `hutk` with `INVALID_HUTK`. |
-| `privacy-policy/index.html` (page 167) | Three small edits: the analytics bullet says HubSpot links page visits to your contact record if you have filled in one of our forms (only with consent); the HubSpot processor row says it records which pages you visit, with your consent; the retention bullet covers page visits linked to a contact record. |
-| `cookie-policy/index.html` (page 360) | HubSpot named with LinkedIn and Apollo; four HubSpot cookie rows; a short HubSpot paragraph with its privacy policy. |
+| `privacy-policy/index.html` (page 167) | The HubSpot provider row is one plain line: our contact database; it sees what you give us through our forms and newsletter signup and, with your consent, the pages you visit. |
+| `cookie-policy/index.html` (page 360) | HubSpot named with LinkedIn and Apollo; four HubSpot cookie rows; one line on HubSpot with its privacy policy. The banner text is unchanged; the preference panel lists HubSpot. |
 
 The rest of the chain is outside this repo: RT Gate must keep `source.hutk` (a strict 32-hex check)
 and `hubspot_web_sync.py` must pass it to HubSpot as `context.hutk`. Until both ship, `hutk` from a
@@ -96,8 +96,7 @@ hours is fine, under-disclosure is not.
    not a measurement; check them in a clean browser on production after Accept (verification
    step c) and fix any name or lifetime that differs.
 6. **Ship the RT Gate and `hubspot_web_sync.py` changes** that carry `hutk` (rt-gate #92, rt-ai
-   #1067). The policies say visits are linked "if you fill in one of our forms"; until these ship,
-   only the guide feedback page actually links them, which the wording still covers.
+   #1067). Until these ship, only the guide feedback page links visits to a contact.
 7. **Publish the GTM tag last**, as container version 13.
 
 ## Live verification (after the GTM publish)

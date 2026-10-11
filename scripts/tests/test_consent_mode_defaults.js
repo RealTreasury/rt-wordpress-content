@@ -313,9 +313,6 @@ const hsJar = { __hstc: 'a.b.1', hubspotutk: '0123456789abcdef0123456789abcdef',
 }
 // The banner and the preference panel both name HubSpot.
 {
-  const bannerText = (bannerJs.match(/'<div class="banner-text">'([\s\S]*?)'<\/div>'/) || [])[1] || '';
-  assert.match(bannerText, /which pages people who contact us have read/,
-    'banner copy must say visits by people who contact us are seen');
   const panelRow = (bannerJs.match(/<strong>Analytics and marketing<\/strong>([\s\S]*?)<\/label>/) || [])[1] || '';
   assert.match(panelRow, /HubSpot/, 'preference panel must name HubSpot');
 }

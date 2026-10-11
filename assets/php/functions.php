@@ -263,6 +263,13 @@ function rt_consent_mode_defaults() {
         'wait_for_update':         500
     });
     gtag('set', 'ads_data_redaction', true);
+    // The guide feedback email's star links carry the reader's address in the
+    // query (?email=...&r=...). Send GA4 that page without its query so the
+    // address never reaches Google, before or after consent.
+    var rtLoc = window.location;
+    if (rtLoc && rtLoc.pathname.indexOf('/treasury-tech-selection-guide/feedback') === 0) {
+        gtag('set', 'page_location', rtLoc.origin + rtLoc.pathname);
+    }
     </script>
     <?php
 }

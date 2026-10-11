@@ -236,7 +236,9 @@ require_once ASTRA_THEME_DIR . 'inc/core/deprecated/deprecated-functions.php';
 // The visitor's country comes from Cloudflare's /cdn-cgi/trace, fetched in the
 // browser once and kept in the first-party rt_region cookie (30 days), so the
 // page HTML stays identical for every visitor and later pages know the region
-// at priority 1 without a fetch. No answer means opt-in (strict).
+// at priority 1 without a fetch; the cookie is re-checked once per browser
+// session, so a visitor who has left the US loses the US default. No answer
+// means opt-in (strict).
 //
 // Consent is stored in a first-party cookie (rt_consent) rather than
 // localStorage only, so the head defaults block can read it before any tag
@@ -261,56 +263,101 @@ function rt_consent_mode_defaults() {
     // window.rtConsent is the ONE place that answers "do we have analytics
     // consent?". rtTrack, rtSource (rt_src, hutk) and the banner all ask it, so
     // the region rule cannot drift between them. Analytics consent means:
-    //   - rt_consent=analytics (an explicit Accept, OK or panel save), or
+    //   - rt_consent=analytics (an explicit Accept, OK or panel save), except in
+    //     the US when the browser sends Global Privacy Control and the choice was
+    //     recorded without it (no rt_consent_gpc=1): GPC overrides an OK, or an
+    //     Accept made before GPC was turned on; a choice made under GPC wins; or
     //   - US default: rt_region=US, no rt_consent stored at all, and the browser
     //     does not send Global Privacy Control.
     // Any other stored rt_consent value (essential) is a refusal everywhere.
     // The US default is never written to rt_consent: it is not a recorded choice.
     window.rtConsent = (function () {
         var COOKIE = <?php echo wp_json_encode( RT_CONSENT_COOKIE ); ?>;
+        var GPC_COOKIE = COOKIE + '_gpc';
         var REGION = 'rt_region';
+        var CHECKED = 'rt_region_checked'; // sessionStorage: region re-checked this session
         var REGION_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
         var known = false;
         var settled = false;
-        var grantedAtLoad = false;
+        var current = false; // analytics_storage as this block last pushed it
+        // The region THIS page runs under: the cookie at load, the first-page trace
+        // if it answers before the page settles, or the once-per-session re-check.
+        // A trace that answers after the timeout only updates the cookie, for the
+        // next page, so this page never answers differently from its banner.
+        var pageRegion = null;
         var waiting = [];
+        var listeners = [];
         function read(name) {
-            var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)'));
+            var m;
+            try { m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)')); } catch (e) { return null; }
             if (!m) { return null; }
             // A malformed escape (a hand-edited cookie) reads as nothing stored.
             try { return decodeURIComponent(m[1]); } catch (e) { return null; }
         }
         function stored() { return read(COOKIE); }
-        function region() {
+        function gpcChoice() { return read(GPC_COOKIE) === '1'; }
+        function readRegion() {
             var r = read(REGION);
             return (r && /^[A-Z][A-Z0-9]$/.test(r)) ? r : null;
         }
+        function region() { return pageRegion; }
+        function inUS() { return pageRegion === 'US'; }
         function gpc() {
             try { return !!(window.navigator && window.navigator.globalPrivacyControl === true); } catch (e) { return false; }
         }
-        function usDefault() { return region() === 'US' && stored() === null && !gpc(); }
-        function analytics() { return stored() === 'analytics' || usDefault(); }
+        function usDefault() { return inUS() && stored() === null && !gpc(); }
+        // A stored Accept recorded without GPC, while GPC is on, in the US (or
+        // while the region is unknown: strict). Outside the US GPC changes nothing.
+        function gpcOverride() {
+            return stored() === 'analytics' && gpc() && !gpcChoice() && (pageRegion === null || inUS());
+        }
+        function analytics() { return stored() === 'analytics' ? !gpcOverride() : usDefault(); }
+        // The banner asks for a choice when none is stored, or when GPC overrides the stored one.
+        function needsChoice() { return stored() === null || gpcOverride(); }
         function writeRegion(code) {
             var secure = (window.location && window.location.protocol === 'https:') ? '; Secure' : '';
-            document.cookie = REGION + '=' + code + '; path=/; max-age=' + REGION_MAX_AGE + '; SameSite=Lax' + secure;
+            try { document.cookie = REGION + '=' + code + '; path=/; max-age=' + REGION_MAX_AGE + '; SameSite=Lax' + secure; } catch (e) {}
         }
+        function checked() { try { return window.sessionStorage.getItem(CHECKED) === '1'; } catch (e) { return false; } }
+        function markChecked() { try { window.sessionStorage.setItem(CHECKED, '1'); } catch (e) {} }
         function whenRegion(fn) {
             if (known) { try { fn(); } catch (e) {} } else { waiting.push(fn); }
         }
-        // First page of a visit, or the region cookie expired: ask Cloudflare.
-        // Settles once (answer, failure or timeout). Unknown means opt-in for this
-        // page; a late answer is still stored for the next page.
+        function onChange(fn) { listeners.push(fn); }
+        // Bring analytics_storage and rt_src in line with analytics() when the
+        // region becomes known, or changes, after the default went out.
+        function sync() {
+            var a = analytics();
+            if (a === current) { return; }
+            current = a;
+            gtag('consent', 'update', { 'analytics_storage': a ? 'granted' : 'denied' });
+            if (typeof window.rtSourcePersist === 'function') {
+                try { window.rtSourcePersist(); } catch (e) {}
+            }
+        }
+        // Ask Cloudflare for the country. A trace with no country stores XX (strict).
+        function trace(done, failed) {
+            try {
+                window.fetch('/cdn-cgi/trace', { credentials: 'omit', cache: 'no-store' })
+                    .then(function (r) { if (!r.ok) { throw new Error('trace ' + r.status); } return r.text(); })
+                    .then(function (t) {
+                        var m = /(?:^|\n)loc=([A-Za-z][A-Za-z0-9])\s*(?:\n|$)/.exec(String(t));
+                        var code = m ? m[1].toUpperCase() : 'XX';
+                        writeRegion(code);
+                        markChecked();
+                        done(code);
+                    })
+                    .catch(function () { failed(); });
+            } catch (e) { failed(); }
+        }
+        // First page of a visit, or the region cookie expired. Settles once
+        // (answer, failure or timeout); unknown means opt-in for this page.
         function settle() {
             if (settled) { return; }
             settled = true;
             // A US visitor with no choice and no GPC: grant now, so GTM's
             // consent-gated tags fire on this first page as they do after Accept.
-            if (!grantedAtLoad && analytics()) {
-                gtag('consent', 'update', { 'analytics_storage': 'granted' });
-                if (typeof window.rtSourcePersist === 'function') {
-                    try { window.rtSourcePersist(); } catch (e) {}
-                }
-            }
+            sync();
             known = true;
             var w = waiting;
             waiting = [];
@@ -319,33 +366,44 @@ function rt_consent_mode_defaults() {
         function detect() {
             if (typeof window.fetch !== 'function') { settle(); return; }
             if (typeof window.setTimeout === 'function') { window.setTimeout(settle, 2000); }
-            try {
-                window.fetch('/cdn-cgi/trace', { credentials: 'omit', cache: 'no-store' })
-                    .then(function (r) { if (!r.ok) { throw new Error('trace ' + r.status); } return r.text(); })
-                    .then(function (t) {
-                        var m = /(?:^|\n)loc=([A-Za-z][A-Za-z0-9])\s*(?:\n|$)/.exec(String(t));
-                        writeRegion(m ? m[1].toUpperCase() : 'XX');
-                        settle();
-                    })
-                    .catch(function () { settle(); });
-            } catch (e) { settle(); }
+            trace(function (code) { if (!settled) { pageRegion = code; } settle(); }, settle);
         }
-        // The default goes in before detection starts, so a consent update can
+        // The cookie lasts 30 days, so it is re-checked once per browser session.
+        // A visitor whose cookie says US but who is now elsewhere loses the US
+        // default on this page, and the banner swaps the notice for the opt-in
+        // banner (onChange). A failed re-check keeps the cookie; the next page retries.
+        function recheck() {
+            if (typeof window.fetch !== 'function') { return; }
+            trace(function (code) {
+                if (code === pageRegion) { return; }
+                pageRegion = code;
+                sync();
+                for (var i = 0; i < listeners.length; i++) { try { listeners[i](); } catch (e) {} }
+            }, function () {});
+        }
+        // The default goes in before any lookup starts, so a consent update can
         // never reach dataLayer ahead of it.
-        grantedAtLoad = analytics();
+        pageRegion = readRegion();
+        current = analytics();
         gtag('consent', 'default', {
             'ad_storage':              'denied',
             'ad_user_data':            'denied',
             'ad_personalization':      'denied',
             'personalization_storage': 'denied',
-            'analytics_storage':       grantedAtLoad ? 'granted' : 'denied',
+            'analytics_storage':       current ? 'granted' : 'denied',
             'functionality_storage':   'granted',
             'security_storage':        'granted',
             'wait_for_update':         500
         });
-        if (region() !== null) { known = true; settled = true; } else { detect(); }
-        return { stored: stored, region: region, gpc: gpc, usDefault: usDefault, analytics: analytics,
-            whenRegion: whenRegion };
+        if (pageRegion !== null) {
+            known = true;
+            settled = true;
+            if (!checked()) { recheck(); }
+        } else {
+            detect();
+        }
+        return { stored: stored, region: region, gpc: gpc, gpcChoice: gpcChoice, usDefault: usDefault,
+            analytics: analytics, needsChoice: needsChoice, whenRegion: whenRegion, onChange: onChange };
     })();
     gtag('set', 'ads_data_redaction', true);
     // The guide feedback email's star links carry the reader's address in the
@@ -565,13 +623,38 @@ function rt_consent_banner() {
         var MAX_AGE = 60 * 60 * 24 * 365; // 12 months
         // Who has consent, and which region rules apply, is decided in one place:
         // window.rtConsent (rt-consent-defaults, wp_head priority 1).
-        var C = window.rtConsent;
-        if (!C) { return; }
+        var C = window.rtConsent || strictFallback();
+
+        // Without the head block (window.rtConsent missing) the banner still runs,
+        // strictly: no US default, no region, the opt-in banner when nothing is
+        // stored, and the preference trigger stays wired.
+        function strictFallback() {
+            function stored() {
+                try {
+                    var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + COOKIE + '=([^;]*)'));
+                    return m ? decodeURIComponent(m[1]) : null;
+                } catch (e) { return null; }
+            }
+            function no() { return false; }
+            return { stored: stored, region: function () { return null; }, gpc: no, gpcChoice: no, usDefault: no,
+                analytics: function () { return stored() === 'analytics'; },
+                needsChoice: function () { return stored() === null; },
+                whenRegion: function (fn) { fn(); } };
+        }
+
+        function setCookie(name, value, maxAge) {
+            var secure = (location.protocol === 'https:') ? '; Secure' : '';
+            document.cookie = name + '=' + value + '; path=/; max-age=' + maxAge + '; SameSite=Lax' + secure;
+        }
 
         function writeConsent(value) {
-            var secure = (location.protocol === 'https:') ? '; Secure' : '';
-            document.cookie = COOKIE + '=' + encodeURIComponent(value) +
-                '; path=/; max-age=' + MAX_AGE + '; SameSite=Lax' + secure;
+            setCookie(COOKIE, encodeURIComponent(value), MAX_AGE);
+            // An Accept or panel save made while the browser sends Global Privacy
+            // Control is the explicit choice that wins over GPC; any other choice
+            // (an OK, or an Accept made before GPC was on) does not. rt_consent
+            // itself is unchanged, so nothing else that reads it breaks.
+            if (value === 'analytics' && C.gpc()) { setCookie(COOKIE + '_gpc', '1', MAX_AGE); }
+            else { setCookie(COOKIE + '_gpc', '', 0); }
             // Our own record of when consent was given, for audit purposes.
             try {
                 localStorage.setItem('rt_consent_at', new Date().toISOString());
@@ -586,17 +669,19 @@ function rt_consent_banner() {
             window.gtag('consent', 'update', {
                 'analytics_storage': granted ? 'granted' : 'denied'
             });
-            if (!granted) {
-                clearAnalyticsCookies();
-                // HubSpot's tracker (GTM tag, loaded only after consent) keeps
-                // running on this page until it is told to stop; revoking also
-                // removes its cookies. A no-op when HubSpot never loaded.
-                if (window._hsp) {
-                    try {
-                        window._hsp.push(['setHubSpotConsent', { analytics: false, advertisement: false, functionality: true }]);
-                        window._hsp.push(['revokeCookieConsent']);
-                    } catch (e) {}
-                }
+            if (!granted) { stopTracking(); }
+        }
+
+        function stopTracking() {
+            clearAnalyticsCookies();
+            // HubSpot's tracker (GTM tag, loaded only with consent) keeps running
+            // on this page until it is told to stop; revoking also removes its
+            // cookies. A no-op when HubSpot never loaded.
+            if (window._hsp) {
+                try {
+                    window._hsp.push(['setHubSpotConsent', { analytics: false, advertisement: false, functionality: true }]);
+                    window._hsp.push(['revokeCookieConsent']);
+                } catch (e) {}
             }
         }
 
@@ -627,9 +712,10 @@ function rt_consent_banner() {
 
         // ---- banner (opt-in) and US notice --------------------------------
         // Everyone outside the US, US visitors whose browser sends Global Privacy
-        // Control, and anyone whose region is unknown get the opt-in banner: nothing
-        // is set until they choose. US visitors with no stored choice get a small
-        // notice instead; analytics is already on for them (window.rtConsent).
+        // Control, and anyone whose region is unknown get the opt-in banner:
+        // analytics and marketing cookies stay off until they choose. US visitors
+        // with no stored choice get a small notice instead; analytics is already
+        // on for them (window.rtConsent).
         // "Do not sell or share" records essential-only in one click; "OK" records
         // analytics. Both ids stay cookieBanner so hideBanner() covers both.
         function showBanner(mode) {
@@ -654,7 +740,7 @@ function rt_consent_banner() {
                     '<div class="banner-content">' +
                         '<div class="banner-text">' +
                             '<strong>Analytics and marketing cookies</strong> help us improve the guides and research we publish. ' +
-                            'Nothing is set until you choose. ' +
+                            'They stay off until you choose. ' +
                             '<a href="/cookie-policy/" style="color:#fff;text-decoration:underline">Cookie Policy</a>' +
                         '</div>' +
                         '<div class="banner-buttons">' +
@@ -704,7 +790,8 @@ function rt_consent_banner() {
                         '<label for="rtConsentAnalytics"><strong>Analytics and marketing</strong>' +
                         '<span>Google Analytics 4, LinkedIn Insight Tag, Apollo&rsquo;s website tracker and HubSpot: ' +
                         'which pages get read, which companies visit, and how LinkedIn ads perform. ' +
-                        'Outside the US, off unless you turn it on.</span></label>' +
+                        'In the US, on unless you turn it off or your browser sends a Global Privacy Control signal; ' +
+                        'elsewhere, off unless you turn it on.</span></label>' +
                     '</div>' +
                     '<div class="rt-consent-panel__actions">' +
                         '<button type="button" class="cookie-btn cookie-btn-accept" data-rt-panel="save">Save choices</button>' +
@@ -750,11 +837,24 @@ function rt_consent_banner() {
                 }
             });
             // Wait for the region on a visit's first page (window.rtConsent asks
-            // Cloudflare once); an unknown region gets the opt-in banner.
-            C.whenRegion(function () {
-                if (C.stored() !== null) { return; }
-                showBanner(C.usDefault() ? 'notice' : 'opt-in');
-            });
+            // Cloudflare once); an unknown region gets the opt-in banner. Run again
+            // if the once-per-session region re-check changes the answer.
+            C.whenRegion(refresh);
+            if (typeof C.onChange === 'function') { C.onChange(refresh); }
+        }
+
+        function refresh() {
+            // Analytics off without a click (GPC on, or rt_region now outside the
+            // US): remove what was set under the US default. Only once the region
+            // is known, so a US visitor whose rt_region expired is not cleared
+            // while the trace is pending.
+            if (C.region() !== null && !C.analytics()) { stopTracking(); }
+            var want = C.needsChoice() ? (C.usDefault() ? 'notice' : 'opt-in') : null;
+            var shown = document.getElementById('cookieBanner');
+            if (shown && shown.getAttribute('data-rt-mode') !== want && shown.parentNode) {
+                shown.parentNode.removeChild(shown);
+            }
+            if (want) { showBanner(want); }
         }
 
         if (document.readyState === 'loading') {

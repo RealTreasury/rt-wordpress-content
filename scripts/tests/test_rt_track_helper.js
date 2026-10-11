@@ -55,7 +55,7 @@ assert.ok(dm, 'rt-consent-defaults script block is missing');
 const defaultsJs = dm[1].replace(/<\?php echo wp_json_encode\( RT_CONSENT_COOKIE \); \?>/g, '"rt_consent"');
 assert.ok(!/<\?php/.test(defaultsJs), 'unexpected PHP inside the defaults block');
 
-function boot({ search = '', referrer = '', cookie = '', stored = null, gpc, fetch, defaults = true } = {}) {
+function boot({ search = '', referrer = '', cookie = '', stored = null, gpc, fetch, timers, defaults = true } = {}) {
   const store = new Map(stored ? [['rt_src', JSON.stringify(stored)]] : []);
   const listeners = { message: [], click: [] };
   const events = [];
@@ -69,6 +69,7 @@ function boot({ search = '', referrer = '', cookie = '', stored = null, gpc, fet
     document: doc, URLSearchParams, URL, JSON, String, Object,
   };
   if (fetch) win.fetch = fetch;
+  if (timers) win.setTimeout = (fn, ms) => timers.push([fn, ms]);
   win.window = win;
   vm.createContext(win);
   if (defaults) vm.runInContext(defaultsJs, win);
@@ -289,8 +290,12 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   eq(consentedSource('rt_region=US', { gpc: false }), { stored: true, hutk: HUTK });
   eq(consentedSource('rt_region=US', { gpc: true }), { stored: false }, 'US + GPC: no rt_src, no hutk');
   eq(consentedSource('rt_region=US; rt_consent=essential'), { stored: false }, 'US + Reject: no rt_src, no hutk');
-  eq(consentedSource('rt_region=US; rt_consent=analytics', { gpc: true }), { stored: true, hutk: HUTK },
-    'an explicit Accept beats GPC');
+  eq(consentedSource('rt_region=US; rt_consent=analytics', { gpc: true }), { stored: false },
+    'GPC overrides a choice recorded without it (an OK, or an Accept before GPC was on)');
+  eq(consentedSource('rt_region=US; rt_consent=analytics; rt_consent_gpc=1', { gpc: true }), { stored: true, hutk: HUTK },
+    'an Accept made under GPC beats GPC');
+  eq(consentedSource('rt_region=DE; rt_consent=analytics', { gpc: true }), { stored: true, hutk: HUTK },
+    'outside the US GPC changes nothing');
   eq(consentedSource('rt_region=DE'), { stored: false }, 'non-US: opt-in');
   eq(consentedSource('rt_region=XX'), { stored: false }, 'unknown region: opt-in');
   eq(consentedSource(''), { stored: false }, 'no region yet: opt-in');
@@ -324,6 +329,27 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   await new Promise((r) => setImmediate(r));
   assert.ok(!de.store.has('rt_src'));
   assert.strictEqual(de.events.filter((e) => e[0] === 'consent').length, 0);
+
+  // Stored US region, visitor now in Germany: the session re-check removes rt_src and hutk.
+  const HUTK = '0123456789abcdef0123456789abcdef';
+  const moved = boot({ search: '?utm_source=resend', cookie: `rt_region=US; hubspotutk=${HUTK}`,
+    fetch: () => Promise.resolve({ ok: true, text: () => Promise.resolve('loc=DE\n') }) });
+  assert.ok(moved.store.has('rt_src'), 'kept under the US default at load');
+  assert.strictEqual(moved.win.rtSource().hutk, HUTK);
+  await new Promise((r) => setImmediate(r));
+  assert.ok(!moved.store.has('rt_src'), 'removed once the re-check says DE');
+  assert.ok(!('hutk' in moved.win.rtSource()));
+
+  // Slow first-page trace: after the timeout, a late US answer does not make this page consented.
+  const timers = [];
+  let answer;
+  const slow = boot({ search: '?utm_source=resend', cookie: `hubspotutk=${HUTK}`,
+    fetch: () => new Promise((r) => { answer = r; }), timers });
+  timers[0][0]();
+  answer({ ok: true, text: () => Promise.resolve('loc=US\n') });
+  await new Promise((r) => setImmediate(r));
+  assert.ok(!slow.store.has('rt_src'), 'no rt_src after a late answer');
+  assert.ok(!('hutk' in slow.win.rtSource()), 'no hutk after a late answer');
 
   console.log('rt-track helper: all checks passed');
 })().catch((e) => { console.error(e); process.exit(1); });

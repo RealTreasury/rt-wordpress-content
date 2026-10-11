@@ -181,10 +181,14 @@ Analytics consent is Google Consent Mode v2, implemented in
 - **Region rule (October 11, 2026).** US visitors are tracked by default; everyone
   else opts in. `window.rtConsent` (defined in the priority-1 block) is the only
   place that decides: `rtConsent.analytics()` is true for `rt_consent=analytics`,
-  or for `rt_region=US` with no stored choice and no Global Privacy Control. Any
-  new code that asks "may we track?" calls `rtConsent.analytics()`; never read
-  `rt_consent`, `rt_region` or `navigator.globalPrivacyControl` yourself, and
-  never write `rt_consent` on a visitor's behalf. `ad_storage`, `ad_user_data`
+  or for `rt_region=US` with no stored choice and no Global Privacy Control. In
+  the US, GPC overrides a choice recorded without it (an OK on the notice, or an
+  Accept before GPC was on); only a choice made under GPC (`rt_consent_gpc=1`)
+  beats it. The region is the page's own (`rtConsent.region()`), re-checked once
+  per session. Any new code that asks "may we track?" calls
+  `rtConsent.analytics()`; never read `rt_consent`, `rt_consent_gpc`, `rt_region`
+  or `navigator.globalPrivacyControl` yourself, and never write `rt_consent` on a
+  visitor's behalf. `ad_storage`, `ad_user_data`
   and `ad_personalization` stay denied everywhere. Details and how to test the
   non-US path by hand: `docs/hubspot-tracking-2026-10.md`, "US default".
 

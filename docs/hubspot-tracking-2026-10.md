@@ -45,13 +45,39 @@ does not send Global Privacy Control (`navigator.globalPrivacyControl === true`)
 `rt_consent` other than `analytics` is a refusal. The US default is never written to `rt_consent`.
 `ad_storage`, `ad_user_data` and `ad_personalization` stay denied for everyone.
 
+**GPC against a stored choice.** In the US, GPC overrides a choice recorded without it: an OK on
+the notice, or an Accept made before GPC was turned on. Only an Accept or panel save made while
+the browser sends GPC wins; the banner then also writes `rt_consent_gpc=1` (12 months), and any
+other choice clears it. An overridden `rt_consent=analytics` is left in place but counts as no
+consent everywhere (head default, `rt_src`, `hutk`), and the opt-in banner shows again so the
+visitor can choose under GPC. Outside the US, GPC changes nothing. Existing `analytics` cookies
+have no `rt_consent_gpc`, so GPC overrides them (fails safe).
+
 **Region.** Pages are cached and identical for every visitor, so the country is found in the
 browser: `rtConsent` fetches `/cdn-cgi/trace` (same origin, Cloudflare; a `loc=US` line) once and
 stores the two-letter code in `rt_region` (30 days, `path=/`, `SameSite=Lax`, `Secure`). Later
 pages read the cookie at priority 1 with no fetch. A trace with no country stores `XX`. A failed
 fetch, a non-200, or no answer within 2 seconds means opt-in for that page and stores nothing, so
-the next page asks again; a late answer is still stored for the next page. Off Cloudflare
-(staging) the trace 404s, so staging is always opt-in.
+the next page asks again. A late answer is stored for the next page only: the page that timed out
+stays opt-in throughout, so `rtConsent` never disagrees with the banner it is showing. Off
+Cloudflare (staging) the trace 404s, so staging is always opt-in.
+
+**Re-check once per session.** The cookie lasts 30 days, so the first page of each browser
+session (no `rt_region_checked` in `sessionStorage`) still uses the cookie for the head default,
+then fetches the trace again. If the country changed, `rt_region` is rewritten and the page
+follows: a cookie that said US for a visitor now in Germany gets one consent update to `denied`,
+`rt_src` removed, Google Analytics and HubSpot cookies deleted, HubSpot told to stop, and the
+notice replaced by the opt-in banner. A failed re-check keeps the cookie and the next page tries
+again. Limitation: a visitor who changes country mid-session is covered only at the next session,
+and on the first page of that session the tags may already have loaded from the old cookie before
+the re-check answers.
+
+**Analytics off without a click.** When the region is known and analytics is off (GPC turned on,
+the re-check moved the visitor out of the US, or a stored refusal), the banner deletes the Google
+Analytics and HubSpot cookies on page load, as Reject does. It never writes `rt_consent`.
+
+**Without the head block.** If `window.rtConsent` is missing, the banner runs strictly: no US
+default, the opt-in banner when nothing is stored, and the preference trigger still works.
 
 **First US page.** The default goes out denied (the region is not known yet). When the trace says
 US, `rtConsent` pushes one `gtag('consent','update',{analytics_storage:'granted'})` and calls
@@ -64,9 +90,9 @@ the default itself is `granted`.
 | Visitor | Analytics by default | Shown |
 |---|---|---|
 | US, no choice, no GPC | granted | Notice: "We use cookies to understand how our site is used." Cookie settings (opens the panel), Do not sell or share my personal information, OK |
-| US with GPC, no choice | denied | The opt-in banner (an explicit Accept there or in the panel wins over GPC) |
+| US with GPC, no choice, or a choice recorded without GPC | denied | The opt-in banner (an Accept there or in the panel, made under GPC, wins over GPC) |
 | Outside the US, or region unknown | denied | The opt-in banner: Accept and Reject the same size and style, Settings as a text link |
-| Anyone with a stored choice | their choice | Nothing |
+| Anyone else with a stored choice | their choice | Nothing |
 
 "OK" records `rt_consent=analytics`. "Do not sell or share my personal information" records
 `rt_consent=essential` in one click and hides the notice, the same as Reject: consent update to
@@ -74,18 +100,29 @@ denied, Google Analytics and HubSpot cookies deleted, HubSpot told to stop. We c
 over opening the panel because the opt-out should take no further step; Cookie settings is right
 beside it for anyone who wants the detail. A choice is now remembered for 12 months (was 180 days).
 
-Tests: `scripts/tests/test_consent_mode_defaults.js` (region cases, first-page trace, notice vs
-banner, equal buttons, 12 months) and `scripts/tests/test_rt_track_helper.js` (`rt_src` and `hutk`
-under the US default, GPC and a refusal).
+Tests: `scripts/tests/test_consent_mode_defaults.js` (region cases, first-page trace, slow trace,
+session re-check, GPC against a stored choice, cookie clearing, strict fallback, notice vs banner,
+equal buttons, 12 months) and `scripts/tests/test_rt_track_helper.js` (`rt_src` and `hutk` under
+the US default, GPC, a refusal, a re-check and a late trace).
+
+**Footer opt-out link (required before the theme deploy).** The notice disappears once answered,
+and GPC visitors see the opt-in banner instead, so the site may not qualify for the CCPA exemption
+from posting a "Do Not Sell or Share" link. `footer/index.html` now carries
+`<a href="#" data-rt-cookie-preferences>Do Not Sell or Share My Personal Information</a>` in the
+legal row; the live footer is WordPress pattern 398, which must get the same link (owner step 4b).
+The banner's click handler already opens the preference panel for it; untick and save opts out.
 
 Open for the owner:
 
-- The notice disappears once answered. A standing "Do not sell or share my personal information"
-  link in the site footer (pattern 398, outside this repo) with `data-rt-cookie-preferences` would
-  keep the opt-out one click away on every page.
-- The Privacy Policy's opening line, "We do not sell or share your personal information", sits
-  beside section 3's statement that LinkedIn data can count as sharing under California law, which
-  now happens by default in the US. Left as written; your call.
+- **Blocking, before the Privacy Policy publishes:** its opening line, "We do not sell or share
+  your personal information", is now contradicted by section 3 and the California section, which
+  say LinkedIn Insight Tag data counts as sharing under California law, and that sharing is on by
+  default for US visitors without GPC. It is Tim's September 22 wording, so we left it as written.
+  Options: (a) "We do not sell your personal information, and we do not receive fees from
+  technology vendors." (drop "or share"; section 3 and the California section already describe the
+  sharing); (b) keep "or share" with a qualifier, e.g. "...beyond the LinkedIn advertising tag
+  described in section 3."; (c) stop LinkedIn firing by default in the US, which reverses the
+  decision. We recommend (a), the smallest change that is true as written.
 - `rt_region` is set for every visitor, including EU and UK visitors before they choose. It is
   listed as essential (it decides which cookie rules apply).
 
@@ -143,7 +180,11 @@ hours is fine, under-disclosure is not.
    linked visit history: the rt-ai monthly review job (rt-ai #1068) lists contacts past three years
    since our last contact for the owner to approve, and a guarded script deletes the approved
    ones. Have it running before the policy publishes.
-4. **Publish the two policy pages and the guide feedback page by hand, before the theme.** The
+4. **Settle the Privacy Policy opening line first** ("We do not sell or share...", see "Open for
+   the owner"; we recommend option (a)). It is false for US visitors once the theme ships, so it
+   blocks this step.
+
+   **Publish the two policy pages and the guide feedback page by hand, before the theme.** The
    theme deploy in step 5 turns on the LinkedIn and Apollo tags (already live in GTM) by default
    for US visitors, so the policies must say so first; until step 5 they over-disclose (the US
    default, `rt_region`, 12 months), which is the safe direction. For each of `privacy-policy`,
@@ -154,6 +195,11 @@ hours is fine, under-disclosure is not.
    the Cookie Policy come from HubSpot's documentation, not a measurement; check them in a clean
    browser on production after the tag is live (verification step c) and fix any name or lifetime
    that differs.
+
+   **4b. Footer opt-out link (required before step 5).** Add
+   `<a href="#" data-rt-cookie-preferences>Do Not Sell or Share My Personal Information</a>` to the
+   legal row of WordPress footer pattern 398, matching `footer/index.html`. Back up its
+   `post_content` first (as in `docs/GO-LIVE-SEPT-2026.md`, step 5) and read the live footer back.
 5. **Hand-deploy the theme `functions.php`** (all of main) over the WordPress.com SSH rail
    (`/opt/rt-ai/secrets/wpcom-ssh.env`, host key pinned in `scripts/wpcom_known_hosts`). Back up the
    live `wp-content/themes/astra/functions.php` first and run `php -l` on the new file. This also
@@ -171,12 +217,13 @@ hours is fine, under-disclosure is not.
 ## Live verification (after the GTM publish)
 
 We cannot change our own IP, and from here the site sees us as US. Test the other paths by setting
-`rt_region` by hand: the trace runs only when the cookie is missing, so a cookie you set wins for
-30 days. To set it before any tag fires, open `https://realtreasury.com/cdn-cgi/trace` (a
-Cloudflare text page, no tags), and in the DevTools console there run
-`document.cookie = 'rt_region=DE; path=/; max-age=2592000; SameSite=Lax; Secure'`, then open the
-home page. Use `XX` for an unknown country and `US` for the US. Delete the cookie to make the next
-page ask Cloudflare again.
+`rt_region` by hand. The cookie is re-checked once per session, so also mark the session as
+checked, or the first page will put `US` back. To set both before any tag fires, open
+`https://realtreasury.com/cdn-cgi/trace` (a Cloudflare text page, no tags), and in the DevTools
+console there run
+`document.cookie = 'rt_region=DE; path=/; max-age=2592000; SameSite=Lax; Secure'; sessionStorage.setItem('rt_region_checked', '1')`,
+then open the home page **in the same tab** (`sessionStorage` is per tab). Use `XX` for an unknown
+country and `US` for the US. Delete the cookie to make the next page ask Cloudflare again.
 
 Clean browser profile for each path, production, DevTools open on Network and Application >
 Cookies. In the console, `dataLayer.filter(a => a[0] === 'consent')` shows the default and any update.
@@ -194,7 +241,17 @@ US path (no cookie set by hand):
   12-month expiry. Notice > Cookie settings opens the panel with the box ticked.
 - [ ] (u4) Global Privacy Control on (Brave, or Firefox with GPC enabled), clean profile: the
   opt-in banner shows, not the notice; the default stays `denied` with no update; no HubSpot,
-  LinkedIn or Apollo requests. Accept in that banner: they load.
+  LinkedIn or Apollo requests. Accept in that banner: they load, and `rt_consent_gpc=1` is set.
+- [ ] (u5) GPC against an earlier OK: in a profile where you clicked OK on the notice, turn GPC
+  on and reload: the opt-in banner shows, the default is `denied`, and `_ga*` and the HubSpot
+  cookies are gone; `rt_consent=analytics` is still there.
+- [ ] (u6) Session re-check: set `rt_region=DE` on the trace page as below but do **not** set
+  `rt_region_checked`, then open the home page: the opt-in banner shows first, one request to
+  `/cdn-cgi/trace` follows, `rt_region` becomes `US`, `dataLayer` gets one update to `granted`,
+  and the notice replaces the banner. (We cannot test the US-to-elsewhere direction from here; the
+  node test covers it.)
+- [ ] (u7) Footer: "Do Not Sell or Share My Personal Information" is in the footer legal row on
+  every page and opens the preference panel.
 
 Outside the US (`rt_region=DE` set by hand as above), then repeat with `rt_region=XX`:
 
@@ -221,7 +278,7 @@ Either path:
   carries `context.hutk`, the submission is accepted (no `INVALID_HUTK`), and the contact shows
   page views.
 - [ ] (h) `curl` both policy pages and find `HubSpot`, `Global Privacy Control` and (Cookie
-  Policy) `rt_region` in each.
+  Policy) `rt_region` and `rt_consent_gpc` in each.
 
 To switch tracking off: pause the tag in GTM and publish the container. Nothing in the theme
 loads HubSpot, so no deploy is needed; the policies then over-disclose until they are edited.

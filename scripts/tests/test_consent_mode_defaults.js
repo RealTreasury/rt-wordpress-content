@@ -315,7 +315,7 @@ const hsJar = { __hstc: 'a.b.1', hubspotutk: '0123456789abcdef0123456789abcdef',
   assert.strictEqual(b.jar.get('rt_consent'), 'essential');
   assert.deepStrictEqual(b.updates(), ['denied']);
 }
-// The banner and the preference panel both name HubSpot.
+// The preference panel names HubSpot. (The opt-in banner's short copy names no tool; see the banner test.)
 {
   const panelRow = (bannerJs.match(/<strong>Analytics and marketing<\/strong>([\s\S]*?)<\/label>/) || [])[1] || '';
   assert.match(panelRow, /HubSpot/, 'preference panel must name HubSpot');

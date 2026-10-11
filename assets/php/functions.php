@@ -544,7 +544,7 @@ function rt_consent_banner() {
                 '<div class="banner-content">' +
                     '<div class="banner-text">' +
                         '<strong>We use analytics and marketing cookies</strong> ' +
-                        'They tell us which pages people read and which companies visit, measure LinkedIn ads, and, if you fill in one of our forms, link your visits to the details you gave us. None is set until you choose. ' +
+                        'They tell us which pages people read and which companies visit, measure LinkedIn ads, and, if you fill in one of our gated download forms or the guide feedback page, link your visits to the details you gave us. None is set until you choose. ' +
                         'See our <a href="/cookie-policy/" style="color:#c77dff">Cookie Policy</a>.' +
                     '</div>' +
                     '<div class="banner-buttons">' +

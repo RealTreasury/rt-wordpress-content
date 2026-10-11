@@ -181,7 +181,7 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
 }
 
 // The guide feedback page sends context.hutk to HubSpot only when rtSource()
-// returns a valid one. The page is pasted into WordPress, so no && and no
+// returns a valid one and the reader typed the address (not the link's ?email=). The page is pasted into WordPress, so no && and no
 // backslash in its script (see the note at the top of the page).
 {
   const page = fs.readFileSync(path.join(__dirname, '..', '..', 'treasury-tech-selection', 'guidebook',
@@ -190,7 +190,29 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   assert.ok(start !== -1, 'feedback page must define hubspotVisitorId()');
   const fnSrc = page.slice(start, page.indexOf('\n  }\n', start) + 4);
   assert.ok(!/&&|\\/.test(fnSrc), 'feedback page hutk check must avoid && and backslashes (WordPress texturize)');
-  assert.match(page, /if \(hutk\) \{ context\.hutk = hutk; \}/, 'feedback post must add context.hutk only when present');
+  assert.match(page, /if \(hutk\) \{ if \(email !== pre\) \{ context\.hutk = hutk; \} \}/,
+    'feedback post must add context.hutk only when present and the address was typed, not from the link');
+  // post() itself: an address from the link (?email=) never carries the visitor ID,
+  // since a forwarded email would tie this browser's visits to someone else's contact.
+  const postStart = page.indexOf('function post(email, message)');
+  assert.ok(postStart !== -1, 'feedback page must define post(email, message)');
+  const postSrc = page.slice(postStart, page.indexOf('\n  }\n', postStart) + 4);
+  assert.ok(!/&&|\\/.test(postSrc), 'feedback post() must avoid && and backslashes (WordPress texturize)');
+  const sentContext = (pre, email) => {
+    const sent = [];
+    vm.runInNewContext(`${postSrc}; post(email, 'm');`, {
+      pre, email, ENDPOINT: 'https://example.invalid', JSON,
+      hubspotVisitorId: () => 'fedcba9876543210fedcba9876543210',
+      window: { location: { origin: 'https://realtreasury.com', pathname: '/guide-feedback/' } },
+      fetch: (url, opts) => { sent.push(JSON.parse(opts.body)); return { then: () => {} }; },
+    });
+    return sent[0].context;
+  };
+  assert.ok(!('hutk' in sentContext('jo@corp.example', 'jo@corp.example')), 'link address must not carry hutk');
+  assert.strictEqual(sentContext('jo@corp.example', 'me@corp.example').hutk, 'fedcba9876543210fedcba9876543210',
+    'a typed address that differs from the link carries hutk');
+  assert.strictEqual(sentContext('', 'me@corp.example').hutk, 'fedcba9876543210fedcba9876543210',
+    'a typed address with no link address carries hutk');
   const visitorId = (rtSource) => vm.runInNewContext(`${fnSrc}; hubspotVisitorId();`, { window: { rtSource } });
   const HUTK = 'fedcba9876543210fedcba9876543210';
   assert.strictEqual(visitorId(() => ({ hutk: HUTK })), HUTK);

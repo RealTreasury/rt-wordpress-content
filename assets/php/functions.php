@@ -264,8 +264,10 @@ function rt_consent_mode_defaults() {
     });
     gtag('set', 'ads_data_redaction', true);
     // The guide feedback email's star links carry the reader's address in the
-    // query (?email=...&r=...). Send GA4 that page without its query so the
-    // address never reaches Google, before or after consent.
+    // query (?email=...&r=...). Send gtag-configured GA4 that page without its
+    // query. This does not cover GTM container tags (the container is outside
+    // this repo): a tag reading the Page URL before the page's replaceState
+    // still sees the query.
     var rtLoc = window.location;
     if (rtLoc && rtLoc.pathname.indexOf('/treasury-tech-selection-guide/feedback') === 0) {
         gtag('set', 'page_location', rtLoc.origin + rtLoc.pathname);
@@ -544,7 +546,7 @@ function rt_consent_banner() {
                 '<div class="banner-content">' +
                     '<div class="banner-text">' +
                         '<strong>We use analytics and marketing cookies</strong> ' +
-                        'They tell us which pages people read and which companies visit, measure LinkedIn ads, and, if you fill in one of our gated download forms or the guide feedback page, link your visits to the details you gave us. None is set until you choose. ' +
+                        'They tell us which pages people read and which companies visit, measure LinkedIn ads, and show us which pages people who contact us have read. None is set until you choose. ' +
                         'See our <a href="/cookie-policy/" style="color:#c77dff">Cookie Policy</a>.' +
                     '</div>' +
                     '<div class="banner-buttons">' +

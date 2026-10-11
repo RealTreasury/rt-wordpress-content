@@ -124,6 +124,14 @@ erasure notice added in rt-gate PR #90 still names Salesforce, which is correct
 for as long as data remains there. Both can be cleaned up once the migration
 lands.
 
+**Blocker: HubSpot three-year deletion must be running first.** Section 5 says
+HubSpot contact records (gated-content and enquiry records, newsletter signups
+and guide feedback) are deleted three years after our last contact. Nothing in
+this repo does that deletion; the monthly rt-ai review job, built in a separate
+rt-ai PR, is meant to. Before publishing page 167, confirm that job is merged
+and installed on rt-ai-02 and has completed a run. Until it has, the policy
+promises a deletion that is not happening.
+
 **Blocker: two more trackers ride in the GTM container.** The published
 `GTM-W877KNJR` container (fetched from `googletagmanager.com/gtm.js` on
 September 22, 2026) carries a LinkedIn Insight Tag (partner id `8608172`,

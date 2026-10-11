@@ -65,6 +65,74 @@ for (const [cookie, want] of cases) {
   assert.strictEqual(analyticsDefault(cookie), want, `cookie ${JSON.stringify(cookie)}`);
 }
 
+// The guide feedback email's star links carry ?email=...; GA4 must be given that
+// page without its query. Other pages keep their full location.
+function pageLocationSet(href) {
+  const u = new URL(href);
+  const ctx = { document: { cookie: '' },
+    location: { href: u.href, origin: u.origin, pathname: u.pathname, search: u.search, hash: u.hash } };
+  ctx.window = ctx;
+  vm.createContext(ctx);
+  vm.runInContext(js, ctx);
+  const sets = Array.from(ctx.dataLayer).filter((a) => a[0] === 'set' && a[1] === 'page_location');
+  assert.ok(sets.length <= 1, 'page_location set more than once');
+  return sets.length ? sets[0][2] : null;
+}
+for (const p of ['/treasury-tech-selection-guide/feedback/', '/treasury-tech-selection-guide/feedback']) {
+  const got = pageLocationSet('https://realtreasury.com' + p + '?email=jo%2Bguide%40corp.example&r=4#x');
+  assert.strictEqual(got, 'https://realtreasury.com' + p, `feedback page_location must drop the query: ${got}`);
+  assert.ok(!/email|@|%40/.test(got), 'page_location must not carry the address');
+}
+for (const p of ['/', '/treasury-tech-selection-guide/', '/contact/?email=a%40b.example', '/blog/feedback/?email=x']) {
+  assert.strictEqual(pageLocationSet('https://realtreasury.com' + p), null,
+    `page_location must not be overridden on ${p}`);
+}
+
+// The feedback page reads email/r once, then strips the query from the address bar.
+{
+  const html = fs.readFileSync(path.join(__dirname, '..', '..',
+    'treasury-tech-selection', 'guidebook', 'feedback', 'wordpress-page.html'), 'utf8');
+  const fm = html.match(/<script>\s*(\(function \(\) \{[\s\S]*?\}\)\(\);)\s*<\/script>/);
+  assert.ok(fm, 'feedback page script is missing');
+  function runFeedback(search) {
+    const replaced = [];
+    const posts = [];
+    function el() {
+      return { hidden: false, value: '', disabled: false, textContent: '', className: '',
+        classList: { add() {}, remove() {}, toggle() {} }, addEventListener() {}, appendChild() {},
+        setAttribute() {}, querySelector() { return el(); }, focus() {} };
+    }
+    const byId = new Map();
+    const form = el();
+    const group = el();
+    group.getAttribute = () => 'useful';
+    form.querySelectorAll = () => [group];
+    byId.set('rtGbfbForm', form);
+    const document = {
+      visibilityState: 'visible',
+      getElementById: (id) => { if (!byId.has(id)) byId.set(id, el()); return byId.get(id); },
+      createElement: el,
+      addEventListener() {}, removeEventListener() {},
+    };
+    const location = { origin: 'https://realtreasury.com', pathname: '/treasury-tech-selection-guide/feedback/',
+      search, hash: '#top' };
+    const ctx = {
+      document, location, URLSearchParams, JSON, Number, Math,
+      history: { replaceState: (s, t, url) => replaced.push(url) },
+      fetch: (u, o) => { posts.push(JSON.parse(o.body)); return Promise.resolve({ ok: true }); },
+    };
+    ctx.window = ctx;
+    vm.createContext(ctx);
+    vm.runInContext(fm[1], ctx);
+    return { replaced, emailValue: byId.get('rtGbfbEmail').value, posts };
+  }
+  const withEmail = runFeedback('?email=jo+guide%40corp.example&r=4');
+  assert.deepStrictEqual(withEmail.replaced, ['/treasury-tech-selection-guide/feedback/#top'],
+    'feedback page must replace the URL with path + hash only');
+  assert.strictEqual(withEmail.emailValue, 'jo+guide@corp.example', 'address must still be read before stripping');
+  assert.strictEqual(runFeedback('').replaced.length, 0, 'no replaceState without an email param');
+}
+
 // The Cookie Policy and Privacy Policy both promise a preference control on
 // their own page, and the banner script is what makes that control work.
 assert.match(php, /closest\('\[data-rt-cookie-preferences\]'\)/,

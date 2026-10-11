@@ -334,6 +334,12 @@ for (const page of ['cookie-policy/index.html', 'privacy-policy/index.html']) {
   assert.match(withdrawal.replace(/\s+/g, ' '), /we delete the Google Analytics and HubSpot cookies/,
     'cookie policy withdrawal paragraph must say HubSpot cookies are deleted');
 }
+{ // Section 5 gives HubSpot visit history linked to a contact the contact record's retention.
+  const privacy = fs.readFileSync(path.join(root, 'privacy-policy/index.html'), 'utf8');
+  const keep = (privacy.split('<h2>5. How Long We Keep It</h2>')[1] || '').split('<h2>')[0].replace(/\s+/g, ' ');
+  assert.match(keep, /contact records in HubSpot<\/strong>[^<]*pages you visited[^<]*three years/,
+    'privacy policy section 5 must give linked HubSpot visit history a retention period');
+}
 { // A "role label described in section N" cross-reference must point at a section that mentions it.
   const privacy = fs.readFileSync(path.join(root, 'privacy-policy/index.html'), 'utf8');
   for (const [, n] of privacy.matchAll(/role label described in section (\d+)/g)) {

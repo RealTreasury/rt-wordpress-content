@@ -206,13 +206,31 @@
   // Never ask for an address the link already brought.
   if (!looksLikeEmail(pre)) { emailRow.hidden = false; }
 
+  // HubSpot's visitor ID links this rating to the pages the reader viewed (typed
+  // addresses only; see post()). The
+  // theme's rtSource() returns it only after analytics consent; HubSpot rejects a
+  // malformed one (INVALID_HUTK), so anything that is not 32 hex characters is left out.
+  function hubspotVisitorId() {
+    try {
+      var h = typeof window.rtSource === 'function' ? window.rtSource().hutk : undefined;
+      if (typeof h !== 'string') { return undefined; }
+      return /^[0-9a-f]{32}$/.test(h) ? h : undefined;
+    } catch (e) { return undefined; }
+  }
+
   function post(email, message) {
+    var context = { pageUri: window.location.origin + window.location.pathname, pageName: 'Guide feedback' };
+    var hutk = hubspotVisitorId();
+    // An address that came from the link (?email=) may belong to someone else: a
+    // forwarded email would tie this browser's visits to their contact. Send the
+    // visitor ID only when the reader typed a different address themselves.
+    if (hutk) { if (email !== pre) { context.hutk = hutk; } }
     var payload = {
       fields: [
         { objectTypeId: '0-1', name: 'email', value: email },
         { objectTypeId: '0-1', name: 'message', value: message }
       ],
-      context: { pageUri: window.location.origin + window.location.pathname, pageName: 'Guide feedback' }
+      context: context
     };
     return fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       .then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } });

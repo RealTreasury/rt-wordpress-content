@@ -45,7 +45,7 @@ here, treat that as a bug and fix it.
    ```bash
    bash scripts/run_checks.sh
    ```
-   It runs the eight package-free `npm run test:*` checks and stops at the first
+   It runs the eleven package-free `npm run test:*` checks and stops at the first
    failure. `test:build-clean` is left out because it reads `git status` and is
    red on any dirty tree; CI runs it as its own step against a clean checkout.
    `RUN_CHECKS_BUILD_CLEAN=1 bash scripts/run_checks.sh` opts it back in.
@@ -178,12 +178,36 @@ Analytics consent is Google Consent Mode v2, implemented in
 - Anything that should open the preference panel gets a
   `data-rt-cookie-preferences` attribute, or calls
   `window.rtOpenCookiePreferences()`.
+- **Region rule (October 11, 2026).** US visitors are tracked by default; everyone
+  else opts in. `window.rtConsent` (defined in the priority-1 block) is the only
+  place that decides: `rtConsent.analytics()` is true for `rt_consent=analytics`,
+  or for `rt_region=US` with no stored choice and no Global Privacy Control. In
+  the US, GPC overrides a choice recorded without it (an OK on the notice, or an
+  Accept before GPC was on); only a choice made under GPC (`rt_consent_gpc=1`)
+  beats it. The region is the page's own (`rtConsent.region()`), re-checked once
+  per session. Any new code that asks "may we track?" calls
+  `rtConsent.analytics()`; never read `rt_consent`, `rt_consent_gpc`, `rt_region`
+  or `navigator.globalPrivacyControl` yourself, and never write `rt_consent` on a
+  visitor's behalf. `ad_storage`, `ad_user_data`
+  and `ad_personalization` stay denied everywhere. Details and how to test the
+  non-US path by hand: `docs/hubspot-tracking-2026-10.md`, "US default".
 
 Do not add a tag, pixel or embed that sets cookies without routing it through
 this. If it cannot respect Consent Mode, it does not go on the site. Tags in
 the GTM container (`GTM-W877KNJR`) are outside this repo: the banner's promise
 holds only if each one requires `analytics_storage` in GTM's consent settings
-(see `docs/privacy-audit-2026-09.md`).
+(see `docs/privacy-audit-2026-09.md`). Such a tag then follows the region rule
+with no GTM change: it fires by default for US visitors and only after Accept
+elsewhere, so the policies must disclose it before it is published.
+
+HubSpot's tracking code is one of those GTM tags (Custom HTML, requires
+`analytics_storage`, blocked on `_rt_internal`); its exact body and settings are
+in `docs/hubspot-tracking-2026-10.md`. HubSpot does not read Consent Mode, so
+never embed it in the theme or through the HubSpot plugin; a test fails if an
+`hs-scripts.com` URL appears in `functions.php`. On Reject or withdrawal the
+banner deletes the HubSpot cookies and calls `_hsp` `revokeCookieConsent`, and
+`rtSource()` returns the HubSpot visitor ID (`hutk`) only with consent, never
+storing it.
 
 ## Legal pages
 

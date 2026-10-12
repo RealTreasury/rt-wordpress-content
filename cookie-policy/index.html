@@ -232,7 +232,7 @@
 
             <div class="effective-date">
                 <strong>Effective Date:</strong> September 22, 2026<br>
-                <strong>Last Updated:</strong> September 22, 2026
+                <strong>Last Updated:</strong> October 11, 2026
             </div>
 
             <p>This page lists the cookies realtreasury.com sets, what each is for, and how
@@ -244,13 +244,14 @@
 
             <p>We use two kinds of cookie. Essential ones keep the site working and are
             always on. Analytics and marketing ones tell us which pages get read, which
-            companies visit, and how LinkedIn ads perform. They stay off until you switch
-            them on.</p>
+            companies visit, and how LinkedIn ads perform. In the US they are on unless you
+            turn them off in <a href="#" data-rt-cookie-preferences>cookie settings</a> or your
+            browser sends a Global Privacy Control signal; elsewhere we ask first.</p>
 
-            <p>We do not sell what these cookies collect. If you accept, LinkedIn and Apollo
-            receive data about your visit, as described in section 3. If you reject, or never
-            answer, no analytics or marketing cookie is set and the LinkedIn and Apollo tags
-            do not load. Google Analytics still sends Google a cookieless signal for each page
+            <p>We do not sell what these cookies collect. When they are on, LinkedIn, Apollo and
+            HubSpot receive data about your visit, as described in section 3. When they are
+            off, no analytics or marketing cookie is set and the LinkedIn, Apollo and
+            HubSpot tags do not load. Google Analytics still sends Google a cookieless signal for each page
             you view, which includes the page, your IP address and your browser type.</p>
 
             <p>
@@ -264,7 +265,8 @@
             <h2>2. Essential Cookies</h2>
 
             <p>These are set because the site cannot run without them: they keep it secure,
-            stop bots submitting our forms, and remember the cookie choice you made. We do
+            stop bots submitting our forms, remember the cookie choice you made, and record
+            which country's cookie rules apply. We do
             not ask consent for these, and turning them off in your browser will break parts
             of the site.</p>
 
@@ -277,7 +279,19 @@
                         <td><code>rt_consent</code></td>
                         <td>Real Treasury</td>
                         <td>Remembers whether you accepted or rejected analytics cookies</td>
-                        <td>180 days</td>
+                        <td>12 months</td>
+                    </tr>
+                    <tr>
+                        <td><code>rt_consent_gpc</code></td>
+                        <td>Real Treasury</td>
+                        <td>Records that you allowed analytics cookies while your browser sent a Global Privacy Control signal</td>
+                        <td>12 months</td>
+                    </tr>
+                    <tr>
+                        <td><code>rt_region</code></td>
+                        <td>Real Treasury</td>
+                        <td>Stores your country so we know which cookie rules apply</td>
+                        <td>30 days</td>
                     </tr>
                     <tr>
                         <td><code>__cf_bm</code></td>
@@ -324,16 +338,16 @@
 
             <h2>3. Analytics and Marketing Cookies</h2>
 
-            <p>These are set only after you accept them. Until then Google Analytics loads
-            in a mode that stores nothing on your device, and the LinkedIn and Apollo tags
-            do not load at all. In that mode Google Analytics still sends Google a cookieless
+            <p>Outside the US, these are set only after you accept them. Until then Google Analytics loads
+            in a mode that stores nothing on your device, and the LinkedIn, Apollo and HubSpot
+            tags do not load at all. In that mode Google Analytics still sends Google a cookieless
             signal for each page you view (the page, your IP address and your browser type),
             with no identifier that links one visit to another. If you reject, or never
-            answer, it stays in that mode and the other two tags never load; if you
-            accept and later change your mind, we delete the Google Analytics cookies below,
-            and the other two tags stop loading from the next page you open. Cookies those
-            two tags have already set stay in your browser until they expire or you clear
-            them.</p>
+            answer, it stays in that mode and the other three tags never load; if they are
+            on and you turn them off, we delete the Google Analytics and HubSpot
+            cookies below, and the LinkedIn and Apollo tags stop loading from the next page
+            you open. Cookies those two tags have already set stay in your browser until they
+            expire or you clear them.</p>
 
             <table class="privacy-table">
                 <thead>
@@ -353,6 +367,31 @@
                         <td>Keeps the state of your current visit</td>
                         <td>2 years</td>
                     </tr>
+                    <tr>
+                        <td><code>__hstc</code></td>
+                        <td>HubSpot</td>
+                        <td>Recognizes a returning browser and records your first, last and
+                        current visit times</td>
+                        <td>6 months</td>
+                    </tr>
+                    <tr>
+                        <td><code>hubspotutk</code></td>
+                        <td>HubSpot</td>
+                        <td>Visitor ID</td>
+                        <td>6 months</td>
+                    </tr>
+                    <tr>
+                        <td><code>__hssc</code></td>
+                        <td>HubSpot</td>
+                        <td>Counts pages viewed in the current visit</td>
+                        <td>30 minutes</td>
+                    </tr>
+                    <tr>
+                        <td><code>__hssrc</code></td>
+                        <td>HubSpot</td>
+                        <td>Tells HubSpot whether you have restarted your browser</td>
+                        <td>End of session</td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -370,17 +409,22 @@
             <a href="https://www.apollo.io/privacy-policy" target="_blank" rel="noopener">privacy
             policy</a>.</p>
 
+            <p><strong>HubSpot.</strong> We use HubSpot to manage our contacts and understand how
+            visitors use our site. HubSpot acts as our processor under its
+            <a href="https://legal.hubspot.com/privacy-policy" target="_blank" rel="noopener">privacy
+            policy</a>.</p>
+
             <p>Google acts as our processor for this data. It is governed by
             <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's
             privacy policy</a>, and you can also opt out at the browser level with
             <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google's
             opt-out add-on</a>.</p>
 
-            <p>If you accept analytics cookies, we store <code>rt_src</code> in your browser's
+            <p>When analytics cookies are on, we store <code>rt_src</code> in your browser's
             session storage. It records how you reached the site (the campaign tags on the
             link you followed, the first page you landed on, and the referring site's domain)
             so that a form you submit records where it came from. It is cleared when you close
-            the tab. If you do not accept analytics, it is not stored.</p>
+            the tab. When they are off, it is not stored.</p>
 
             <h2>4. Embedded Content</h2>
 
@@ -394,7 +438,7 @@
             <h2>5. Changing Your Mind</h2>
 
             <p>Use the <a href="#" data-rt-cookie-preferences>cookie preferences</a> control
-            on this page or on our Privacy Policy. Your choice is remembered for 180 days, after which we
+            on this page or on our Privacy Policy. Your choice is remembered for 12 months, after which we
             will ask again.</p>
 
             <p>You can also manage cookies in your browser directly &mdash; every major

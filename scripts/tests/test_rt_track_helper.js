@@ -42,22 +42,39 @@ const fnStart = php.indexOf('function rt_track_helper()');
 const body = php.slice(fnStart, php.indexOf('\n}\n', fnStart));
 const m = body.match(/<script id="rt-track">([\s\S]*?)<\/script>/);
 assert.ok(m, 'rt-track script block is missing');
-const js = m[1].replace(/<\?php echo esc_js\( RT_CONSENT_COOKIE \); \?>/, 'rt_consent');
+const js = m[1];
 assert.ok(!/<\?php/.test(js), 'unexpected PHP inside the rt-track block');
+// The consent rule is window.rtConsent's, never re-implemented here.
+assert.ok(!/rt_consent|RT_CONSENT_COOKIE|globalPrivacyControl|rt_region/.test(js),
+  'rt-track must ask window.rtConsent, not read the consent or region cookies itself');
 
-function boot({ search = '', referrer = '', cookie = '', stored = null } = {}) {
+// The page runs the consent defaults block (window.rtConsent) first, in the same window.
+const dStart = php.indexOf('function rt_consent_mode_defaults()');
+const dm = php.slice(dStart, php.indexOf('\n}\n', dStart)).match(/<script id="rt-consent-defaults">([\s\S]*?)<\/script>/);
+assert.ok(dm, 'rt-consent-defaults script block is missing');
+const defaultsJs = dm[1].replace(/<\?php echo wp_json_encode\( RT_CONSENT_COOKIE \); \?>/g, '"rt_consent"');
+assert.ok(!/<\?php/.test(defaultsJs), 'unexpected PHP inside the defaults block');
+
+function boot({ search = '', referrer = '', cookie = '', stored = null, gpc, fetch, timers, defaults = true } = {}) {
   const store = new Map(stored ? [['rt_src', JSON.stringify(stored)]] : []);
   const listeners = { message: [], click: [] };
   const events = [];
+  const doc = { cookie, referrer, addEventListener: (t, fn) => listeners[t].push(fn) };
   const win = {
-    location: { search, pathname: '/treasury-tech-selection-guide/', hostname: 'realtreasury.com' },
+    location: { search, pathname: '/treasury-tech-selection-guide/', hostname: 'realtreasury.com', protocol: 'https:' },
     sessionStorage: { getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, v),
       removeItem: (k) => store.delete(k) },
     addEventListener: (t, fn) => listeners[t].push(fn),
-    gtag: (...a) => events.push(a),
+    navigator: gpc === undefined ? {} : { globalPrivacyControl: gpc },
+    document: doc, URLSearchParams, URL, JSON, String, Object,
   };
-  const doc = { cookie, referrer, addEventListener: (t, fn) => listeners[t].push(fn) };
-  vm.runInNewContext(js, { window: win, document: doc, URLSearchParams, URL, JSON, String, Object });
+  if (fetch) win.fetch = fetch;
+  if (timers) win.setTimeout = (fn, ms) => timers.push([fn, ms]);
+  win.window = win;
+  vm.createContext(win);
+  if (defaults) vm.runInContext(defaultsJs, win);
+  win.gtag = (...a) => events.push(a);
+  vm.runInContext(js, win);
   return { win, doc, store, events, listeners };
 }
 
@@ -137,6 +154,92 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   assert.ok(/window\.rtSourcePersist\(\)/.test(decideBody), 'decide() must call window.rtSourcePersist()');
 }
 
+// HubSpot visitor ID (docs/hubspot-tracking-2026-10.md): rtSource() adds hutk
+// only with analytics consent and a well-formed 32-hex hubspotutk, reads it
+// fresh on each call, and never writes it to sessionStorage rt_src.
+{
+  const HUTK = '0123456789abcdef0123456789abcdef';
+  const ok = boot({ search: '?utm_source=linkedin', cookie: `rt_consent=analytics; hubspotutk=${HUTK}; x=1` });
+  assert.strictEqual(ok.win.rtSource().hutk, HUTK, 'hutk must be returned with consent');
+  assert.strictEqual(ok.win.rtSource().utm_source, 'linkedin');
+  assert.ok(!('hutk' in JSON.parse(ok.store.get('rt_src'))), 'hutk must never be stored in rt_src');
+  // Last in the jar, too.
+  assert.strictEqual(boot({ cookie: `rt_consent=analytics; hubspotutk=${HUTK}` }).win.rtSource().hutk, HUTK);
+
+  // No consent, a refusal, or a near-miss consent value: no hutk.
+  for (const c of [`hubspotutk=${HUTK}`, `rt_consent=essential; hubspotutk=${HUTK}`,
+    `rt_consent=analyticsX; hubspotutk=${HUTK}`]) {
+    assert.ok(!('hutk' in boot({ cookie: c }).win.rtSource()), `no hutk for ${c}`);
+  }
+  // Malformed values are dropped (HubSpot rejects them with INVALID_HUTK).
+  for (const v of [HUTK.slice(1), HUTK + '0', HUTK.toUpperCase(), 'g'.repeat(32), '', `${HUTK}%20`]) {
+    assert.ok(!('hutk' in boot({ cookie: `rt_consent=analytics; hubspotutk=${v}` }).win.rtSource()),
+      `malformed hubspotutk ${JSON.stringify(v)} must be dropped`);
+  }
+  // A different cookie whose name ends in hubspotutk is not it.
+  assert.ok(!('hutk' in boot({ cookie: `rt_consent=analytics; xhubspotutk=${HUTK}` }).win.rtSource()));
+
+  // Read fresh: HubSpot sets the cookie after Accept on the same page, and a
+  // later withdrawal removes it from the next call.
+  const live = boot({ search: '?utm_source=resend' });
+  assert.ok(!('hutk' in live.win.rtSource()));
+  live.doc.cookie = `rt_consent=analytics; hubspotutk=${HUTK}`;
+  live.win.rtSourcePersist();
+  assert.strictEqual(live.win.rtSource().hutk, HUTK);
+  assert.ok(!('hutk' in JSON.parse(live.store.get('rt_src'))), 'hutk must not reach rt_src after consent');
+  live.doc.cookie = `rt_consent=essential; hubspotutk=${HUTK}`;
+  assert.ok(!('hutk' in live.win.rtSource()), 'hutk must stop as soon as consent is withdrawn');
+
+  // The iframe bridge hands it to RT Gate with the rest of the source.
+  const replies = [];
+  ok.listeners.message.forEach((fn) => fn({ origin: 'https://realtreasury.github.io',
+    data: { source: 'rt', type: 'rt:source?' }, source: { postMessage: (msg) => replies.push(msg) } }));
+  assert.strictEqual(replies[0].data.hutk, HUTK);
+}
+
+// The guide feedback page sends context.hutk to HubSpot only when rtSource()
+// returns a valid one and the reader typed the address (not the link's ?email=). The page is pasted into WordPress, so no && and no
+// backslash in its script (see the note at the top of the page).
+{
+  const page = fs.readFileSync(path.join(__dirname, '..', '..', 'treasury-tech-selection', 'guidebook',
+    'feedback', 'wordpress-page.html'), 'utf8');
+  const start = page.indexOf('function hubspotVisitorId()');
+  assert.ok(start !== -1, 'feedback page must define hubspotVisitorId()');
+  const fnSrc = page.slice(start, page.indexOf('\n  }\n', start) + 4);
+  assert.ok(!/&&|\\/.test(fnSrc), 'feedback page hutk check must avoid && and backslashes (WordPress texturize)');
+  assert.match(page, /if \(hutk\) \{ if \(email !== pre\) \{ context\.hutk = hutk; \} \}/,
+    'feedback post must add context.hutk only when present and the address was typed, not from the link');
+  // post() itself: an address from the link (?email=) never carries the visitor ID,
+  // since a forwarded email would tie this browser's visits to someone else's contact.
+  const postStart = page.indexOf('function post(email, message)');
+  assert.ok(postStart !== -1, 'feedback page must define post(email, message)');
+  const postSrc = page.slice(postStart, page.indexOf('\n  }\n', postStart) + 4);
+  assert.ok(!/&&|\\/.test(postSrc), 'feedback post() must avoid && and backslashes (WordPress texturize)');
+  const sentContext = (pre, email) => {
+    const sent = [];
+    vm.runInNewContext(`${postSrc}; post(email, 'm');`, {
+      pre, email, ENDPOINT: 'https://example.invalid', JSON,
+      hubspotVisitorId: () => 'fedcba9876543210fedcba9876543210',
+      window: { location: { origin: 'https://realtreasury.com', pathname: '/guide-feedback/' } },
+      fetch: (url, opts) => { sent.push(JSON.parse(opts.body)); return { then: () => {} }; },
+    });
+    return sent[0].context;
+  };
+  assert.ok(!('hutk' in sentContext('jo@corp.example', 'jo@corp.example')), 'link address must not carry hutk');
+  assert.strictEqual(sentContext('jo@corp.example', 'me@corp.example').hutk, 'fedcba9876543210fedcba9876543210',
+    'a typed address that differs from the link carries hutk');
+  assert.strictEqual(sentContext('', 'me@corp.example').hutk, 'fedcba9876543210fedcba9876543210',
+    'a typed address with no link address carries hutk');
+  const visitorId = (rtSource) => vm.runInNewContext(`${fnSrc}; hubspotVisitorId();`, { window: { rtSource } });
+  const HUTK = 'fedcba9876543210fedcba9876543210';
+  assert.strictEqual(visitorId(() => ({ hutk: HUTK })), HUTK);
+  assert.strictEqual(visitorId(() => ({})), undefined);
+  assert.strictEqual(visitorId(() => ({ hutk: 'not-a-hutk' })), undefined);
+  assert.strictEqual(visitorId(() => ({ hutk: 42 })), undefined);
+  assert.strictEqual(visitorId(undefined), undefined, 'a page without the theme helper sends no hutk');
+  assert.strictEqual(visitorId(() => { throw new Error('x'); }), undefined, 'a throwing helper must not break the post');
+}
+
 // Iframe bridge: github.io forwarded with this page's lead_page; others ignored.
 {
   const { listeners, events } = boot();
@@ -174,4 +277,79 @@ assert.ok(!boot({ search: '?utm_source=a', cookie: 'rt_consent=analyticsX' }).st
   ]);
 }
 
-console.log('rt-track helper: all checks passed');
+// US default (docs/hubspot-tracking-2026-10.md, "US default"): rt_src and hutk
+// follow window.rtConsent.analytics(), so a US visitor with no choice and no GPC
+// is treated as consented, and GPC or a stored refusal is not.
+{
+  const HUTK = '0123456789abcdef0123456789abcdef';
+  const consentedSource = (cookie, opts = {}) => {
+    const b = boot({ search: '?utm_source=linkedin', cookie: `${cookie}; hubspotutk=${HUTK}`, ...opts });
+    return { stored: b.store.has('rt_src'), hutk: b.win.rtSource().hutk };
+  };
+  eq(consentedSource('rt_region=US'), { stored: true, hutk: HUTK }, 'US default: rt_src kept and hutk returned');
+  eq(consentedSource('rt_region=US', { gpc: false }), { stored: true, hutk: HUTK });
+  eq(consentedSource('rt_region=US', { gpc: true }), { stored: false }, 'US + GPC: no rt_src, no hutk');
+  eq(consentedSource('rt_region=US; rt_consent=essential'), { stored: false }, 'US + Reject: no rt_src, no hutk');
+  eq(consentedSource('rt_region=US; rt_consent=analytics', { gpc: true }), { stored: false },
+    'GPC overrides a choice recorded without it (an OK, or an Accept before GPC was on)');
+  eq(consentedSource('rt_region=US; rt_consent=analytics; rt_consent_gpc=1', { gpc: true }), { stored: true, hutk: HUTK },
+    'an Accept made under GPC beats GPC');
+  eq(consentedSource('rt_region=DE; rt_consent=analytics', { gpc: true }), { stored: true, hutk: HUTK },
+    'outside the US GPC changes nothing');
+  eq(consentedSource('rt_region=DE'), { stored: false }, 'non-US: opt-in');
+  eq(consentedSource('rt_region=XX'), { stored: false }, 'unknown region: opt-in');
+  eq(consentedSource(''), { stored: false }, 'no region yet: opt-in');
+  eq(consentedSource('rt_region=US', { defaults: false }), { stored: false },
+    'without window.rtConsent nothing counts as consent');
+  eq(consentedSource('rt_consent=analytics', { defaults: false }), { stored: false },
+    'without window.rtConsent nothing counts as consent, even a stored Accept');
+
+  // A refusal later in the tab ends it at once.
+  const b = boot({ search: '?utm_source=linkedin', cookie: `rt_region=US; hubspotutk=${HUTK}` });
+  b.doc.cookie = `rt_region=US; rt_consent=essential; hubspotutk=${HUTK}`;
+  b.win.rtSourcePersist();
+  assert.ok(!b.store.has('rt_src'), 'opting out removes rt_src');
+  assert.ok(!('hutk' in b.win.rtSource()));
+}
+
+(async () => {
+  // First US page: the trace answers after rt-track loaded; the landing page's
+  // source is kept at once (rtSourcePersist) and one consent update is pushed.
+  const b = boot({ search: '?utm_source=resend&utm_campaign=2026-10-guide',
+    fetch: () => Promise.resolve({ ok: true, text: () => Promise.resolve('ip=203.0.113.9\nloc=US\n') }) });
+  assert.ok(!b.store.has('rt_src'), 'nothing kept before the region is known');
+  await new Promise((r) => setImmediate(r));
+  eq(JSON.parse(b.store.get('rt_src')), { utm_source: 'resend', utm_campaign: '2026-10-guide',
+    landing_page: '/treasury-tech-selection-guide/' }, 'the first US page keeps its UTM tags');
+  eq(b.events.filter((e) => e[0] === 'consent'), [['consent', 'update', { analytics_storage: 'granted' }]]);
+
+  // First page outside the US: nothing kept, no update.
+  const de = boot({ search: '?utm_source=resend',
+    fetch: () => Promise.resolve({ ok: true, text: () => Promise.resolve('loc=DE\n') }) });
+  await new Promise((r) => setImmediate(r));
+  assert.ok(!de.store.has('rt_src'));
+  assert.strictEqual(de.events.filter((e) => e[0] === 'consent').length, 0);
+
+  // Stored US region, visitor now in Germany: the session re-check removes rt_src and hutk.
+  const HUTK = '0123456789abcdef0123456789abcdef';
+  const moved = boot({ search: '?utm_source=resend', cookie: `rt_region=US; hubspotutk=${HUTK}`,
+    fetch: () => Promise.resolve({ ok: true, text: () => Promise.resolve('loc=DE\n') }) });
+  assert.ok(moved.store.has('rt_src'), 'kept under the US default at load');
+  assert.strictEqual(moved.win.rtSource().hutk, HUTK);
+  await new Promise((r) => setImmediate(r));
+  assert.ok(!moved.store.has('rt_src'), 'removed once the re-check says DE');
+  assert.ok(!('hutk' in moved.win.rtSource()));
+
+  // Slow first-page trace: after the timeout, a late US answer does not make this page consented.
+  const timers = [];
+  let answer;
+  const slow = boot({ search: '?utm_source=resend', cookie: `hubspotutk=${HUTK}`,
+    fetch: () => new Promise((r) => { answer = r; }), timers });
+  timers[0][0]();
+  answer({ ok: true, text: () => Promise.resolve('loc=US\n') });
+  await new Promise((r) => setImmediate(r));
+  assert.ok(!slow.store.has('rt_src'), 'no rt_src after a late answer');
+  assert.ok(!('hutk' in slow.win.rtSource()), 'no hutk after a late answer');
+
+  console.log('rt-track helper: all checks passed');
+})().catch((e) => { console.error(e); process.exit(1); });

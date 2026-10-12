@@ -3,7 +3,7 @@
 Owner decision, October 11, 2026: turn on HubSpot's website tracking so a contact's HubSpot record
 shows which of our pages they read before and after they filled in a form. Disclosure goes first.
 Visit history linked to a person follows the contact record: deleted three years after our last
-contact. The policy wording is kept to what other sites typically say, on purpose (Tim, October
+contact. Visit data not linked to a contact is kept 14 months, then deleted. The policy wording is kept to what other sites typically say, on purpose (Tim, October
 11, 2026): HubSpot named in the Privacy Policy's provider table, HubSpot's cookies and one line in
 the Cookie Policy, and HubSpot in the cookie preference panel's list of tools.
 
@@ -174,7 +174,9 @@ hours is fine, under-disclosure is not.
 3. **Retention the Privacy Policy promises.** Three-year deletion of HubSpot contacts, with their
    linked visit history: the rt-ai monthly review job (rt-ai #1068) lists contacts past three years
    since our last contact for the owner to approve, and a guarded script deletes the approved
-   ones. Have it running before the policy publishes.
+   ones. Fourteen-month deletion of visit data not linked to a contact: no job does this yet, and
+   HubSpot has no setting for it that we have confirmed; decide how it is enforced and have it in
+   place too. Have both running before the policy publishes.
 4. **Privacy Policy opening line:** settled (see "Open for the owner"); nothing to do.
 
    **Publish the two policy pages and the guide feedback page by hand, before the theme.** The

@@ -186,7 +186,7 @@ hours is fine, under-disclosure is not.
    `cookie-policy` and `guide-feedback`: run `scripts/wp_publish_post.py plan <slug> --target
    production`, read the diff (the policy pages also carry earlier changes on main that are not
    live yet), publish, and read the live page back. Both policy pages say "Last Updated: October
-   11, 2026"; change it to the publish date if they go out later. The four HubSpot cookie rows in
+   13, 2026"; change it to the publish date if they go out later. The four HubSpot cookie rows in
    the Cookie Policy come from HubSpot's documentation, not a measurement; check them in a clean
    browser on production after the tag is live (verification step c) and fix any name or lifetime
    that differs.

@@ -222,6 +222,8 @@ They describe what the site actually does, so a change to forms, embeds,
 analytics or any third-party service means a matching change here. Both are
 outward-facing, so a draft goes through the publish-check skill before anyone
 ships it. Background and the publish steps: `docs/privacy-audit-2026-09.md`.
+That document also records the #939 hand-publish blocker and the proposed
+replacement decision; publication and the decision-card revision remain pending.
 
 ## Webinar publishing
 

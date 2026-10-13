@@ -69,6 +69,44 @@ is ever moved to shared.css it needs a second publish via
 
 ## Left for a person
 
+### PR #939 hand-publish blocker (task rtai-d3xcm, October 13, 2026)
+
+The owner authorized handling `post_merge:rt-wordpress-content-939`: after
+merge, review the production diff, publish page 167, and read it back. The
+review must include the earlier October 1 Resend and attribution changes on
+main described in the owner step. **Publication remains unverified.** No live
+plan, publish, or read-back was run in this task: its rules prohibit network
+access and reading credentials outside this checkout. The local manifest
+identifies `privacy-policy` as production page 167 in `page` mode; it is not in
+`wp/deploy.tsv`, so a merge alone is not evidence that it is live.
+
+The requested fallback cannot be applied here either:
+`config/decision-cards.json` is absent from this checkout. Its other cards,
+current card revision, and decision-entry revisions are unavailable. Do not
+create a replacement file or invent revisions. A PR containing the actual
+card update must be prepared in the repository that owns that file. Preserve
+the other cards, set this card's `rev` above both its current revision and all
+its entry revisions, and set `rev_until` to a future date when preparing it.
+
+The concrete replacement decision is: **"Confirm that the privacy-policy
+publication prerequisites below are satisfied, the full production diff
+(including October 1 Resend and attribution text) was reviewed after #939
+merged, and page 167 was published and read back successfully. Attach the
+publish/read-back evidence, or leave this step pending."** It must not ask
+for another "Handle this" delegation.
+
+The existing `scripts/wp_publish_post.py` publisher verifies stored content
+against the sent content and checks that post status did not change. Retain
+its successful `read-back OK` output and the source commit as evidence, along
+with the live-page check required by the owner step. No verifier for the
+human-only prerequisite approvals is available in this checkout; require
+explicit owner confirmation for those on the revised card. Do not mark the
+original step complete or run completion actions without that evidence.
+
+The required `python3 -m pytest -x -q tests` command also cannot pass in this
+environment: Python reports `No module named pytest`, and this repository has
+no `tests/` directory. Installing packages is prohibited by the task.
+
 **Order matters. The GTM consent settings in section 2 come first**, before
 `assets/php/functions.php` is deployed and before any of the three pages
 publish. The banner and panel that `functions.php` ships tell visitors the

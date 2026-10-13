@@ -69,6 +69,42 @@ is ever moved to shared.css it needs a second publish via
 
 ## Left for a person
 
+### #939 owner-step attempt — October 13, 2026 (rtai-d3xcm)
+
+**Blocked; publication is not verified.** The local history contains the merge
+of #939 (`3edc7cd`), but this attempt is restricted to this working tree with
+no network access. It cannot read the production diff, publish page 167, read
+the live page back, or open a PR. The current source also includes later
+changes from #940 and #942; review the full diff, including the earlier
+October 1 Resend and attribution text, rather than only #939's change.
+The retention prerequisites in `docs/hubspot-tracking-2026-10.md`, owner
+step 3, still require evidence before publishing this source.
+
+The requested `config/decision-cards.json` is absent from this checkout.
+The current card and entry revisions cannot be read here, so no replacement
+file or revision was invented. In the repository containing that file, revise
+only `post_merge:rt-wordpress-content-939`, setting `rev` above both its current
+and entry revisions and `rev_until` to a future date. The concrete remaining
+decision is: **“Confirm that HubSpot's three-year contact and linked-visit
+deletion and fourteen-month unlinked-visit deletion are enforced. Attach the
+completed retention-run evidence, or explicitly confirm both are in place
+before the Privacy Policy is published.”** This checkout has no verifier for
+those external retention operations; explicit owner confirmation is required
+if run evidence is unavailable.
+
+After those gates are satisfied, the authorized publisher runs
+`scripts/wp_publish_post.py plan privacy-policy --target production`, reviews
+the diff, then runs `scripts/wp_publish_post.py publish privacy-policy --target
+production`. The publisher already verifies content read-back and unchanged
+post status. Retain that output and read the rendered live page; do not mark
+the card complete without this evidence. No completion actions were run.
+
+The required retry command `python3 -m pytest -x -q tests` exits with
+`No module named pytest`; this checkout also has no `tests/` directory.
+Package installation is prohibited for this attempt. The previous feedback's
+refusal-path errors and loopback curl failures are not themselves proof of a
+failed assertion: its displayed unittest result is `Ran 30 tests` / `OK`.
+
 **Order matters. The GTM consent settings in section 2 come first**, before
 `assets/php/functions.php` is deployed and before any of the three pages
 publish. The banner and panel that `functions.php` ships tell visitors the

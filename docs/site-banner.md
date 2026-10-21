@@ -43,17 +43,16 @@ which is why dated-first ordering matters.
 
 ## Current lineup
 
-As of October 2, 2026 the bar rotates three promotions, in this order:
+As of October 21, 2026 the bar rotates two promotions, in this order:
 
 | key | window | destination |
 |---|---|---|
-| `webinar` | October 2 – October 27, 2026 | Teams event `baf84f78` (Make AFP Count, October 27, 2:00 PM CDT) |
 | `tours` | October 2 – November 10, 2026 | `/afp-2026-tms-tour/` |
 | `guide` | evergreen | `/treasury-tech-selection-guide/` |
 
-The webinar drops out after October 27, the tours after November 10, and then the
-Guide runs alone again. The Treasury Tech Virtual Forum slot is still commented out
-with no confirmed URL.
+The October 27 webinar was cancelled and removed on October 21, 2026. The tours drop
+out after November 10, and then the Guide runs alone again. The Treasury Tech Virtual
+Forum slot is still commented out with no confirmed URL.
 
 ## Adding or retiring a promotion
 

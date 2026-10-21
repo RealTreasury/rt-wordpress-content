@@ -32,7 +32,6 @@ const html = fs.readFileSync(FILE, 'utf8');
 const DESTINATIONS = [
   'https://realtreasury.com/treasury-tech-selection-guide/',
   'https://realtreasury.com/afp-2026-tms-tour/',
-  'https://events.teams.microsoft.com/event/baf84f78-039a-492a-8a9f-18458c012fed@cdc422ca-d271-4ba3-856d-77081c6a7f04',
 ];
 
 // A title over this wraps at 375px, and a wrapped title grows the bar past the
@@ -192,6 +191,7 @@ const cases = {
     // A swap that misses an edit point usually leaves the old id behind.
     const retired = [
       '52ec549d-0107-4908-a71d-21a4844f4afe',   // Sept 15 2026 "Make AFP Count" Teams event
+      'baf84f78-039a-492a-8a9f-18458c012fed',   // Oct 27 2026 "Make AFP Count" rerun, cancelled
     ];
     for (const id of retired) {
       assert.ok(!html.includes(id), 'a retired destination is still referenced: ' + id);
@@ -546,20 +546,8 @@ const runtimeCases = {
     assert.ok(keys.length > 0, 'nothing in BANNER_ITEMS is eligible today — the bar would hide itself');
   },
 
-  'the October 27 webinar leads the tours and the Guide from October 2 through October 27'() {
-    for (const day of ['2026-10-02', '2026-10-27']) {
-      assert.deepStrictEqual(runRota(items, day).keys(), ['webinar', 'tours', 'guide'],
-        'on ' + day + ' the shipped lineup should be the webinar, the tours, then the Guide');
-    }
-  },
-
   'the shipped AFP tours lead the Guide from October 2 through November 10, then drop out'() {
-    for (const day of ['2026-10-02', '2026-10-27']) {
-      const keys = runRota(items, day).keys();
-      assert.ok(keys.includes('tours') && keys.indexOf('tours') < keys.indexOf('guide'),
-        'on ' + day + ' the tours should run ahead of the Guide');
-    }
-    for (const day of ['2026-10-28', '2026-11-10']) {
+    for (const day of ['2026-10-02', '2026-11-10']) {
       assert.deepStrictEqual(runRota(items, day).keys(), ['tours', 'guide'],
         'on ' + day + ' the shipped lineup should be the tours first, then the Guide');
     }

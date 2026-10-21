@@ -191,6 +191,7 @@ const cases = {
     // A swap that misses an edit point usually leaves the old id behind.
     const retired = [
       '52ec549d-0107-4908-a71d-21a4844f4afe',   // Sept 15 2026 "Make AFP Count" Teams event
+      'baf84f78-039a-492a-8a9f-18458c012fed',   // Oct 27 2026 "Make AFP Count" rerun, cancelled
     ];
     for (const id of retired) {
       assert.ok(!html.includes(id), 'a retired destination is still referenced: ' + id);

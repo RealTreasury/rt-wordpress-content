@@ -36,3 +36,8 @@ errnot
 how-to-select-a-tms-prod
 tms-selection-mistakes-prod
 treasury-tech-market
+# site-banner (pattern 183, mode `pattern`) is the bar on every page. Added October 21,
+# 2026 at the owner's request so a merged BANNER_ITEMS change ships without a hand
+# publish; npm run test:banner gates the content, and the publish script backs 183 up
+# and reads it back.
+site-banner

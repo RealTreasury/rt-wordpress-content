@@ -119,10 +119,12 @@ serves: `curl` the homepage, lift the banner `<script>`, `node --check` it.
 
 ## Deploying it
 
-**The banner is not on the build pipeline and a push does not deploy it.** It is
-synced pattern **183** ("Header Menu", post type `wp_block`) on production, row
-`site-banner` in `wp/pages.tsv` (mode `pattern`, deliberately not in
-`wp/deploy.tsv`). Publish it with the script:
+**A merge to `main` publishes the banner to production.** It is synced pattern
+**183** ("Header Menu", post type `wp_block`) on production, row `site-banner` in
+`wp/pages.tsv` (mode `pattern`), listed in `wp/deploy.tsv` since October 21, 2026, so
+the deploy leg (`docs/deploy-on-merge.md`) publishes any merged change to
+`header/main-menu/index.html` within about 10 minutes. The merge is the release:
+run `plan` before merging, not after. To publish by hand, use the script:
 
 ```
 scripts/wp_publish_post.py plan site-banner      # read-only: diff and pattern refs

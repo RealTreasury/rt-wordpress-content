@@ -146,5 +146,8 @@ innermost enclosing document (`rfind('<html')` before, `find('</html>')` after),
 because pairing each `<html>` with the next `</html>` matches the outer document
 and looks correct.
 
-Before any write, diff the live pattern against `main:header/main-menu/index.html`
-— it is the only way to catch a wp-admin edit that never came back to git.
+The deploy leg does not check for drift: in pattern mode the script backs up and
+reads back the pattern, but it does not refuse when the live pattern differs from
+git, so a wp-admin edit that never came back to git is overwritten silently at the
+next banner merge. Running `plan site-banner` before merging is the only guard —
+its diff is how you catch that edit. Do the same before any hand publish.

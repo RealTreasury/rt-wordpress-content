@@ -119,10 +119,12 @@ serves: `curl` the homepage, lift the banner `<script>`, `node --check` it.
 
 ## Deploying it
 
-**The banner is not on the build pipeline and a push does not deploy it.** It is
-synced pattern **183** ("Header Menu", post type `wp_block`) on production, row
-`site-banner` in `wp/pages.tsv` (mode `pattern`, deliberately not in
-`wp/deploy.tsv`). Publish it with the script:
+**A merge to `main` publishes the banner to production.** It is synced pattern
+**183** ("Header Menu", post type `wp_block`) on production, row `site-banner` in
+`wp/pages.tsv` (mode `pattern`), listed in `wp/deploy.tsv` since October 21, 2026, so
+the deploy leg (`docs/deploy-on-merge.md`) publishes any merged change to
+`header/main-menu/index.html` within about 10 minutes. The merge is the release:
+run `plan` before merging, not after. To publish by hand, use the script:
 
 ```
 scripts/wp_publish_post.py plan site-banner      # read-only: diff and pattern refs
@@ -144,5 +146,8 @@ innermost enclosing document (`rfind('<html')` before, `find('</html>')` after),
 because pairing each `<html>` with the next `</html>` matches the outer document
 and looks correct.
 
-Before any write, diff the live pattern against `main:header/main-menu/index.html`
-— it is the only way to catch a wp-admin edit that never came back to git.
+The deploy leg does not check for drift: in pattern mode the script backs up and
+reads back the pattern, but it does not refuse when the live pattern differs from
+git, so a wp-admin edit that never came back to git is overwritten silently at the
+next banner merge. Running `plan site-banner` before merging is the only guard —
+its diff is how you catch that edit. Do the same before any hand publish.

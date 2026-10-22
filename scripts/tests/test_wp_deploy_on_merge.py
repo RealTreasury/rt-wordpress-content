@@ -101,6 +101,18 @@ class LiveManifest(unittest.TestCase):
                          "header/main-menu/custom-header.php")
         self.assertNotIn("site-header-snippet", deploy)
 
+    def test_site_banner_publishes_alone_in_pattern_mode(self):
+        """Pattern 183 deploys on merge; its source must not drag a coupled row."""
+        pages, deploy = self.live()
+        self.assertIn("site-banner", deploy)
+        self.assertEqual(pages["site-banner"], "header/main-menu/index.html")
+        rows = (HERE.parents[1] / "wp/pages.tsv").read_text(encoding="utf-8")
+        modes = {c[0]: c[3] for c in (r.split("\t") for r in rows.splitlines())
+                 if len(c) > 3 and not c[0].startswith("#")}
+        self.assertEqual(modes["site-banner"], "pattern")
+        self.assertEqual(leg.affected_slugs(["header/main-menu/index.html"],
+                                            deploy, pages), ["site-banner"])
+
 
 class EndToEnd(unittest.TestCase):
     def setUp(self):

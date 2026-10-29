@@ -64,7 +64,7 @@ this way on purpose.
    handling should pass those.
 2. Weekly drift check: `~/rt-ai-seo/seo_check.py` exists on the box but was never added to
    the crontab (September 23 audit). If wanted, the line is
-   `20 7 * * 1 /home/tschultz/rt-ai-seo/seo_check.sh >> /srv/ai-data/imports/firebase/seo-check.log 2>&1`.
+   `20 7 * * 1 /usr/bin/python3 /home/tschultz/rt-ai-seo/seo_check.py >> /srv/ai-data/imports/firebase/seo-check.log 2>&1`.
 
 ## llms.txt maintenance
 

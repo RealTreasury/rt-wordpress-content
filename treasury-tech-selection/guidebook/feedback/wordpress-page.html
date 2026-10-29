@@ -197,8 +197,13 @@
     clicked = Number(qs.get('r')) || 0;
     // Read once, then take the address out of the address bar, so tags that read
     // the URL later, a reload, a bookmark or a shared link do not carry it.
-    if (qs.has('email') && window.history && window.history.replaceState) {
-      window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+    // Nested ifs on purpose: this page's own no-double-ampersand rule, see the header comment.
+    if (qs.has('email')) {
+      if (window.history) {
+        if (window.history.replaceState) {
+          window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+        }
+      }
     }
   } catch (e) { /* older browsers: the visitor types it */ }
   if (clicked < 1 || clicked > 5 || Math.floor(clicked) !== clicked) { clicked = 0; }

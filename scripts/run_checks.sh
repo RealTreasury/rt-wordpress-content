@@ -42,6 +42,7 @@ CHECKS=(
   test:publish-post
   test:publish-css
   test:guide-ga
+  test:guide-feedback
   test:consent-mode
   test:rt-track
   test:lead-events

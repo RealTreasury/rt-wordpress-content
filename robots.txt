@@ -1,0 +1,38 @@
+# robots.txt for https://realtreasury.com
+# Real Treasury publishes vendor-neutral treasury technology research and education.
+# The on-site search endpoints and the REST API are excluded; everything else is open
+# to search engines and to AI answer engines.
+
+User-agent: *
+Disallow: /?s=
+Disallow: /page/*/?s=
+Disallow: /search/
+Disallow: /wp-json/
+Disallow: /?rest_route=
+
+# AI crawlers and answer engines. Explicitly allowed, on the same terms as everyone
+# else, so the policy is stated rather than inferred.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: meta-externalagent
+Allow: /
+Disallow: /?s=
+Disallow: /page/*/?s=
+Disallow: /search/
+Disallow: /wp-json/
+Disallow: /?rest_route=
+
+User-agent: AdsBot
+Disallow: /
+
+Sitemap: https://realtreasury.com/sitemap_index.xml
+
+# Curated index for LLMs: https://realtreasury.com/llms.txt

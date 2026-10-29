@@ -1,28 +1,54 @@
 # Real Treasury
 
-> Independent treasury technology consulting and technology-selection guidance for finance teams.
+> Real Treasury is an independent advisory firm for corporate treasury teams. We help
+> companies select a treasury management system (TMS) without vendor pressure — no vendor
+> pays us for a recommendation — and we publish vendor-neutral research and education on
+> treasury technology. Built by former practitioners with vendor-side experience.
 
-Real Treasury helps finance leaders evaluate and select treasury technology with an independent,
-vendor-neutral approach. The public site includes the following primary resources; the XML sitemap
-contains the complete public URL index.
+Our selection method is ERR NOT: Education, Requirements, RFI, uNique demo script,
+Obvious winner, Transformation. Real Treasury does not resell, implement or take fees
+from technology vendors.
 
-## Core resources
+Site index: https://realtreasury.com/sitemap_index.xml
 
-- [Home](https://realtreasury.com/): Overview of Real Treasury's treasury technology consulting and selection support.
-- [About Real Treasury](https://realtreasury.com/about/): The firm's mission, independent approach, and background.
-- [Meet the Founders](https://realtreasury.com/team/): Public biographies for co-founders Tim Schultz and Tracey Knight.
-- [Treasury Tech Portal](https://realtreasury.com/treasury-tech-portal/): Interactive treasury technology portal with product and vendor information.
-- [Treasury Tech Market](https://realtreasury.com/treasury-tech-market/): Treasury technology market segments, vendor landscapes, requirements, and common add-ons.
-- [ERR NOT Method](https://realtreasury.com/errnot/): Real Treasury's treasury technology selection method.
-- [Contact](https://realtreasury.com/contact/): Contact and consultation information.
+## Start here
 
-## Guides and learning
+- [How to Select a Treasury Management System](https://realtreasury.com/how-to-select-a-tms/): A practitioner walkthrough of TMS selection: the three market segments, the ERR NOT method, and the five mistakes that produce the wrong system.
+- [The 5 Most Common Selection Failures and How to Avoid Them](https://realtreasury.com/tms-selection-mistakes/): No written requirements, falling for the demo, buying the salesperson, the easy button, buying on price. The five mistakes and how to avoid each one.
+- [ERR NOT: the six-step selection method](https://realtreasury.com/errnot/): Education, Requirements, RFI, uNique Demo Script, Obvious Winner, Transformation. Real Treasury's six-step method for selecting treasury technology.
+- [Treasury Tech Selection Guide](https://realtreasury.com/treasury-tech-selection-guide/): Every TMS vendor selling into North America, sorted into three segments, with a functionality matrix for each. Free, and no vendor pays for inclusion.
 
-- [2026 Treasury Tech Selection Guide waitlist](https://realtreasury.com/2026-treasury-tech-guide-waitlist/): Waitlist for the 2026 Real Treasury Tech Selection Guide.
-- [On-Demand Workshop](https://realtreasury.com/on-demand-workshop/): On-demand treasury technology selection workshop.
-- [Insights](https://realtreasury.com/posts/): Articles, research, and expert perspectives from Real Treasury.
-- [Webinars](https://realtreasury.com/webinars/): Treasury technology webinar and recording library.
+## Treasury technology explained
 
-## Site index
+- [Data Flows of a TMS](https://realtreasury.com/data-flows-of-a-tms/): How a TMS moves data between banks, your ERP and market feeds, and which of those integrations decide whether a selection succeeds.
+- [Payment Networks Explained](https://realtreasury.com/payment-networks-explained/): How ACH, wire, RTP and SWIFT differ on speed, cost, cut-off times and reversibility, and which one belongs in which treasury workflow.
+- [Cash Tools Explained](https://realtreasury.com/cash-tools-explained/): A plain comparison of the tools treasury teams use to see and move cash, what each is genuinely good at, and where the overlaps cause wasted spend.
+- [Real Treasury Explained](https://realtreasury.com/real-treasury-explained/): Why treasury technology selection stalls, how the ERR NOT method compresses it, and how Real Treasury is paid — we do not resell software or take commissions.
 
-- [XML sitemap](https://realtreasury.com/sitemap_index.xml): Complete public URL index.
+## Tools
+
+- [Treasury Tech Portal](https://realtreasury.com/treasury-tech-portal/): Interactive treasury software selection tool. Filter TMS and treasury technology platforms by segment, features and fit, and build a shortlist.
+- [Treasury Tech Market Map](https://realtreasury.com/treasury-tech-market/): An independent market map of the treasury technology landscape, used to compare categories of tool before comparing products.
+- [Treasury Business Case Builder](https://realtreasury.com/rtbcb/): Build the internal business case for treasury technology spend, with the cost and benefit categories treasury teams are actually asked about.
+
+## Method and workshops
+
+- [How to Build a Demo Script: The ERR NOT Framework](https://realtreasury.com/err-not-demo-script/): How to build a vendor-agnostic demo script from your own prioritized requirements, using the ERR NOT method. Watch the session and take the worksheet.
+- [The TMS RFP Trap](https://realtreasury.com/tms-rfp-trap/): A feature-checklist RFP rewards the vendor with the longest list, not the best fit. What to send instead, and how to score demos against your own requirements.
+- [TMS Market Overview — North America](https://realtreasury.com/on-demand-workshop/): A recorded walkthrough of the North American TMS market: the segments, who fits which, and the questions to ask before you shortlist. No vendor pitch.
+- [TMS Market Overview — EMEA](https://realtreasury.com/on-demand-workshop-emea/): A recorded walkthrough of the EMEA TMS market: the segments, who fits which, and the questions to ask before you shortlist. No vendor pitch.
+- [Tech Selection Workshop](https://realtreasury.com/tech-selection-workshop/): A working session that helps treasury teams compare technology, avoid the common traps, and make an informed vendor decision.
+
+## About
+
+- [About Real Treasury](https://realtreasury.com/about/): Built by former practitioners with vendor-side experience, guiding treasury teams to the right technology — independent and unbiased.
+- [Team](https://realtreasury.com/team/): The people behind Real Treasury.
+- [Contact](https://realtreasury.com/contact/): Talk to us about a TMS selection.
+
+## Optional
+
+- [Treasury Technology Insights](https://realtreasury.com/posts/): All articles.
+- [Events and Conferences](https://realtreasury.com/events/): Where to find Real Treasury in person.
+- [Guided TMS Tours at AFP 2026](https://realtreasury.com/afp-2026-tms-tour/): Free small-group guided tours of the treasury technology vendors in the AFP 2026 exhibit hall, Las Vegas, November 9–10, 2026.
+- [Privacy Policy](https://realtreasury.com/privacy-policy/)
+- [Terms of Service](https://realtreasury.com/terms-of-service/)

@@ -66,6 +66,12 @@ here, treat that as a bug and fix it.
 - `scripts/wp_deploy_on_merge.py --dry-run` says what the next run would publish.
 - Test: `npm run test:deploy-on-merge` (offline; also in CI).
 
+## robots.txt, llms.txt, JSON-LD (ChatGPT Search)
+
+`robots.txt` and `llms.txt` at the repo root are reviewable copies of the physical files
+live at the site root; merging does not publish them. Rules, live state, the GPTBot
+decision and the zero-cost measurement baseline are in `docs/seo-chatgpt-search.md`.
+
 ## Site-wide banner
 
 The source of record, promotion rota, date-window contract, test command and

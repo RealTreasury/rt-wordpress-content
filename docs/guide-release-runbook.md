@@ -524,6 +524,15 @@ for the person and fire a new Teams lead card.
    Not established: whether the dashboard can stop and re-edit a live automation. Resend's docs do not
    cover it and we have not tried it, so do not use the dashboard on the live automation instead.
 
+**Offline check of the page's submit behaviour:** `npm run test:guide-feedback` runs the
+page's script in a node vm against a stub DOM and a recording `fetch`. It proves the page makes
+exactly one request type, a POST to the HubSpot Forms API for the Website - Guide Feedback form;
+that an email-link click records one `via email click` row, only once the page is visible, and
+takes the address out of the address bar; that the typed form refuses a missing rating or
+address and drops honeypot posts; and that a visitor ID goes out only for a typed address and
+only when it is 32 hex characters. It sends nothing. It does not replace step 4: only a real
+click proves the live HubSpot row.
+
 With step 2 done, the page sends to the live form; it was set to refuse ("Feedback is not open yet")
 only while `FORM_GUID` was empty.
 

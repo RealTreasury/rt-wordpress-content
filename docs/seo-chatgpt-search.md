@@ -30,7 +30,7 @@ live files on the server; or copy the prior version of the repo file from git hi
 | GPTBot | **Allowed**, in the same group. The July 29 task text assumed GPTBot stays disallowed. It does not; the September 19 file allows it. See "Open decision" below. |
 | `GET /llms.txt` | 200, 25 unique URLs (24 pages plus the sitemap index). Every one returned 200 with no redirect. No 2024 CRE entries. |
 | JSON-LD on `/`, `/about/`, `/contact/`, `/team/` | Yoast's graph only: WebPage, ImageObject, BreadcrumbList, WebSite, Organization. No ProfessionalService, no Person nodes. |
-| PR #875 (JSON-LD) | Merged October 3, but it only changed `assets/php/functions.php`, which reaches the site only with the theme deploy (`wp_theme_deploy.py`). Not live. |
+| PR #875 (JSON-LD) | Merged October 3, but it only changed `assets/php/functions.php`, which reaches the site only with the theme deploy (`wp_theme_deploy.py`, which is not in this repo and is not one of the publish commands in AGENTS.md; this doc does not record where it lives). Not live. |
 | Sitemap | `sitemap_index.xml` 200, lists post, page, category and tag sitemaps. |
 | Page robots meta | Homepage: `index, follow`. |
 | Request with the OAI-SearchBot user-agent string from our box | 403 from Cloudflare (a plain `curl` gets 200). Most likely Cloudflare refusing a spoofed verified-bot name from a non-OpenAI IP, as noted July 29, so it does not prove OpenAI's crawler is blocked. It is not proof it is allowed either. See "Open checks". |

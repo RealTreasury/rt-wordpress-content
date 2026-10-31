@@ -158,6 +158,26 @@ cannot fire on staging. Test with GTM Preview (Tag Assistant) on production.
 Each step needs the ones before it. Disclosure ships before the tag: over-disclosure for a few
 hours is fine, under-disclosure is not.
 
+**Step 1 status, October 31, 2026 (rtai-mx83h; #940).** Blocked, not completed.
+The owner's "handle it" authorizes the work but does not confirm the four settings. This
+offline checkout cannot inspect or change live HubSpot settings. No live verification was
+performed; all four settings remain unverified. No step was marked complete and no follow-on
+action was run.
+
+The requested decision-card update is also blocked: `config/decision-cards.json` is absent
+from this checkout, so neither the card's current revision nor its entry revisions can be
+checked. In the checkout that owns that file, revise only step 1 of
+`post_merge:rt-wordpress-content-940:v2`, preserve the other cards, raise its `rev` above both
+its current and entry revisions, and set a future `rev_until` (proposed: November 30, 2026;
+extend if that date has passed). No verifier for these account settings is available here;
+the revised card must request explicit owner confirmation:
+
+> After checking the live HubSpot account, can you confirm all four: website form data
+> collection is off; no active consent banner policy applies to realtreasury.com;
+> realtreasury.com is listed in tracking settings and the embed is
+> js-na2.hs-scripts.com/247523747.js; and tracking-data sharing with HubSpot's own datasets
+> is off? Confirm only if all four are verified; otherwise leave this unanswered.
+
 1. **HubSpot settings (before anything ships).**
    - Marketing > Forms > Non-HubSpot forms: turn "Collect data from website forms" **off**. The
      loader always brings in collected forms, which would capture RT Gate and Contact Form 7

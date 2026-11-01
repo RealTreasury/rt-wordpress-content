@@ -215,6 +215,10 @@ banner deletes the HubSpot cookies and calls `_hsp` `revokeCookieConsent`, and
 `rtSource()` returns the HubSpot visitor ID (`hutk`) only with consent, never
 storing it.
 
+The #939 theme deploy requires a human terminal on rt-ai-02; an owner delegation
+does not bypass that gate. The command, rtai-g1bac blocker and remaining decision-card
+confirmation are in `docs/hubspot-tracking-2026-10.md`, "Theme deploy owner gate (#939)".
+
 ## Legal pages
 
 `privacy-policy/`, `cookie-policy/` and `terms-of-service/` are `page`-mode

@@ -209,6 +209,38 @@ hours is fine, under-disclosure is not.
 7. **Publish the GTM tag last**, as container version 13. No GTM change is needed for the US
    default: tags 5, 12 and HubSpot keep requiring `analytics_storage`, and the theme grants it.
 
+## Theme deploy owner gate (#939)
+
+Task rtai-g1bac, November 1, 2026: **blocked; deployment not verified**. The owner's
+"Claude, handle it" answer to `post_merge:rt-wordpress-content-939:v2.2` does not
+remove the human-terminal requirement. The supplied owner step requires a terminal on
+rt-ai-02 and explicitly refuses agents. After the preceding HubSpot settings,
+feedback-page and footer-link steps, a human must run this read-only plan:
+
+```bash
+python3 /opt/rt-ai/scripts/wp_theme_deploy.py --ref main --expect 'id="rt-track"' --expect 'window.rtConsent' --expect HubSpot --expect hubspotutk
+```
+
+Read the diff, then run the exact `--apply` line it prints, retaining the expected
+markers. The helper backs up the live file, checks the home page and rolls back on
+failure. If the Astra version guard refuses, refresh the repository copy through a
+reviewed PR before trying again; do not bypass the guard.
+
+This working tree contains neither that helper nor `config/decision-cards.json`.
+The task also prohibits network access and reads outside this directory, so no live
+check, deployment, decision-card revision or PR creation was performed here.
+Do not mark the step complete or run completion actions on this evidence.
+
+The remaining decision-card change belongs in the repository containing the
+existing `rt-wordpress-content#939` entry. Preserve all other cards, raise only the
+affected card's `rev` above both its current and entry revisions, and set a future
+`rev_until` when preparing that PR. Ask: **"Did the reviewed theme apply finish
+successfully from a human terminal on rt-ai-02?"** Keep the card unanswered until
+it does. Retain the existing home-page `id="rt-track"` verifier; before closing,
+independently read the live home page and record its HTTP status and all four
+expected markers in the closing comment. If the verifier cannot be used, require
+explicit owner confirmation on the revised card; this local note is not confirmation.
+
 ## Live verification (after the GTM publish)
 
 We cannot change our own IP, and from here the site sees us as US. Test the other paths by setting

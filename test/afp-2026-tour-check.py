@@ -137,7 +137,6 @@ def submit_as(p, kind):
     p.eval_on_selector_all("#rtTourChoiceGroup input", "(els, i) => els[i].click()", idx)
     for sel, val in [('[name="full_name"]', "Test Person"),
                      ('[name="email"]', "test@examplecorp.com"),
-                     ('[name="phone"]', "5555555555"),
                      ('[name="company"]', "Example Corp"),
                      ('[name="current_system"]', "none")]:
         if p.query_selector(sel):
@@ -209,6 +208,7 @@ with sync_playwright() as pw:
         check("%s: stores %r" % (kind, value), f.get("tour_preference") == value,
               f.get("tour_preference"))
         check("%s: acknowledgement captured" % kind, bool(f.get("eligibility_confirm")))
+        check("%s: blank phone accepted" % kind, not f.get("phone"))
         ctx.close()
 
     print("\n[3] RT Gate outage never says registration has not opened")

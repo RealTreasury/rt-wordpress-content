@@ -750,7 +750,7 @@ window.RT_TOUR = {
     fields: [
       { type: 'text',     label: 'Full name',  key: 'full_name', required: true,  placeholder: 'Jane Smith' },
       { type: 'email',    label: 'Work email', key: 'email',     required: true,  placeholder: 'you@company.com' },
-      { type: 'tel',      label: 'Phone',      key: 'phone',     required: true,  placeholder: '(555) 555-5555' },
+      { type: 'tel',      label: 'Phone',      key: 'phone',     required: false,  placeholder: '(555) 555-5555' },
       { type: 'company',  label: 'Company',    key: 'company',   required: true },
       { type: 'text',     label: 'Title',      key: 'title',     required: false },
       { type: 'text',     label: 'Treasury system you use today', key: 'current_system', required: true, placeholder: 'System name, or "none"' },
@@ -782,12 +782,12 @@ window.RT_TOUR = {
   /* Fields the page guarantees, whatever WP Admin form 3 currently holds.
      `tour_preference` renders the session picker from page config, `utm` is
      filled from the ad link, and phone / current system / the eligibility
-     acknowledgement are registration conditions that must not wait on a
+     acknowledgement are page fields that must not wait on a
      hand-pasted form schema. Server-side handle_submit stores whatever keys
      arrive, so a page-owned field is captured exactly like an authored one.
      If WP Admin later authors any of these keys, its definition wins. */
   var PAGE_FIELDS = [
-    { type: 'tel',  label: 'Phone', key: 'phone', required: true, placeholder: '(555) 555-5555' },
+    { type: 'tel',  label: 'Phone', key: 'phone', required: false, placeholder: '(555) 555-5555' },
     { type: 'text', label: 'Treasury system you use today', key: 'current_system', required: true, placeholder: 'System name, or "none"' },
     { type: 'text', label: 'Which tour?', key: TOUR_FIELD_KEY, required: true },
     { type: 'acknowledge', label: ACK_TEXT, key: ACK_FIELD_KEY, required: true },

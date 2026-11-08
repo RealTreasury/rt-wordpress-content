@@ -1,7 +1,7 @@
 [
   { "key": "full_name",       "label": "Full name",                             "type": "text",     "required": true,  "autocomplete": true, "placeholder": "Jane Smith" },
   { "key": "email",           "label": "Work email",                            "type": "email",    "required": true,  "autocomplete": true, "placeholder": "you@company.com" },
-  { "key": "phone",           "label": "Phone",                                 "type": "tel",      "required": true,  "autocomplete": true, "placeholder": "(555) 555-5555" },
+  { "key": "phone",           "label": "Phone",                                 "type": "tel",      "required": false,  "autocomplete": true, "placeholder": "(555) 555-5555" },
   { "key": "company",         "label": "Company",                               "type": "company",  "required": true,  "autocomplete": true },
   { "key": "title",           "label": "Title",                                 "type": "text",     "required": false, "autocomplete": true },
   { "key": "current_system",  "label": "Treasury system you use today",         "type": "text",     "required": true,  "autocomplete": true, "placeholder": "System name, or \"none\"" },

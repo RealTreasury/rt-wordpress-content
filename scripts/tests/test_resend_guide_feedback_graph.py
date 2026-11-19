@@ -82,6 +82,68 @@ class GuideFeedbackGraphTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(after_path.read_text(encoding='utf-8'), after_json)
 
+    def test_verify_accepts_extra_readback_settings_but_not_changed_ones(self):
+        extra = deepcopy(self.after)
+        extra['steps'][2]['config']['template']['version'] = 3
+        extra['steps'][3]['config']['timezone'] = 'UTC'
+        graph.verify(self.before, extra)
+        changed = deepcopy(self.after)
+        changed['steps'][3]['config']['duration'] = '1 day'
+        with self.assertRaisesRegex(ValueError, 'step types or settings'):
+            graph.verify(self.before, changed)
+        missing = deepcopy(self.after)
+        del missing['steps'][2]['config']['reply_to']
+        with self.assertRaisesRegex(ValueError, 'step types or settings'):
+            graph.verify(self.before, missing)
+
+    def run_cli(self, *args):
+        return subprocess.run(
+            [sys.executable, str(SCRIPTS / 'resend_guide_feedback_graph.py'), *map(str, args)],
+            capture_output=True, text=True,
+        )
+
+    def test_build_cli_writes_a_patch_body_that_verifies(self):
+        with tempfile.TemporaryDirectory() as temp:
+            before_path = Path(temp) / 'before.json'
+            patch_path = Path(temp) / 'patch.json'
+            before_path.write_text(json.dumps(self.before), encoding='utf-8')
+            result = self.run_cli(before_path, patch_path)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            patch = json.loads(patch_path.read_text(encoding='utf-8'))
+            self.assertEqual(patch, graph.build(self.before))
+            graph.verify(self.before, {**patch, 'id': graph.GUIDE_AUTOMATION, 'status': 'enabled'})
+
+    def test_template_readback_requires_verify(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / 'x.json'
+            path.write_text('{}', encoding='utf-8')
+            result = self.run_cli('--template-readback', path, path, path)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn('--template-readback requires --verify', result.stderr)
+
+    def test_verify_cli_checks_the_template_readback(self):
+        feedback = SCRIPTS.parent / 'treasury-tech-selection' / 'guidebook' / 'feedback'
+        template = {
+            'id': graph.FEEDBACK_TEMPLATE, 'status': 'published',
+            'published_at': '2026-11-19T00:00:00Z',
+            'html': (feedback / 'resend-guide-feedback.html').read_text(encoding='utf-8'),
+            'text': (feedback / 'resend-guide-feedback.txt').read_text(encoding='utf-8'),
+        }
+        with tempfile.TemporaryDirectory() as temp:
+            before_path = Path(temp) / 'before.json'
+            after_path = Path(temp) / 'after.json'
+            template_path = Path(temp) / 'template.json'
+            before_path.write_text(json.dumps(self.before), encoding='utf-8')
+            after_path.write_text(json.dumps(self.after), encoding='utf-8')
+            template_path.write_text(json.dumps(template), encoding='utf-8')
+            ok = self.run_cli('--verify', '--template-readback', template_path, before_path, after_path)
+            self.assertEqual(ok.returncode, 0, ok.stderr)
+            self.assertIn('five star links', ok.stdout)
+            template_path.write_text(json.dumps({**template, 'status': 'draft'}), encoding='utf-8')
+            bad = self.run_cli('--verify', '--template-readback', template_path, before_path, after_path)
+            self.assertEqual(bad.returncode, 1)
+            self.assertIn('not published', bad.stderr)
+
     def test_template_needs_publication_and_links_in_both_parts(self):
         feedback = SCRIPTS.parent / 'treasury-tech-selection' / 'guidebook' / 'feedback'
         template = {

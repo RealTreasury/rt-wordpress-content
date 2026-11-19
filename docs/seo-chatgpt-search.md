@@ -70,8 +70,8 @@ this way on purpose.
 
 - List only pages that exist. Before each edit, `curl -s -o /dev/null -w '%{http_code}'`
   every URL; all must be 200 with no redirect.
-- The AFP 2026 tour entry (under Optional) describes an event on November 9 to 10, 2026.
-  Remove it, or repoint it, once the event is over.
+- Remove expired event listings from `llms.txt` after the event, or point the
+  entry to a current event page when one is available.
 - No client or vendor names, no vendor counts, nothing that says or implies Real Treasury
   implements systems. Run the publish-check rules on any new description.
 

@@ -514,12 +514,17 @@ for the person and fire a new Teams lead card.
       Each call returns `{"object":"automation","id":"..."}`. If the second returns an error, do not
       enable: the automation is still disabled with the old steps, so send the output to us and
       enable it again with the third command so signups are not lost.
-   3. `Verify:` run
-      `curl -s -H "Authorization: Bearer $K" https://api.resend.com/automations/$A | python3 -m json.tool`.
-      It must show `"status": "enabled"`, five steps (`trigger`, `is_guide_download`, `send_guide`,
-      `wait_7_days`, `send_feedback`), `send_guide.config.from` set to the `guide@` sender, and
-      `reply_to` `contact@realtreasury.com` on both email steps. Then check the `EMAIL` fill-in as
-      described under **Resend objects**.
+   3. Save fresh automation and template GET responses. The offline check compares the automation
+      to its before-change snapshot from step 1 and checks that the published template has all five
+      star links. The automation must be enabled and match the planned filter, templates, delay,
+      sender and reply-to settings, and connections.
+
+          curl -fsS -H "Authorization: Bearer $K" https://api.resend.com/automations/$A > /tmp/auto-readback.json
+          curl -fsS -H "Authorization: Bearer $K" https://api.resend.com/templates/04bc56bd-6b94-4d3e-9269-837131e30df3 > /tmp/guide-template-readback.json
+          python3 scripts/resend_guide_feedback_graph.py --verify /tmp/auto-live.json /tmp/auto-readback.json \
+            --template-readback /tmp/guide-template-readback.json
+
+      Check the `EMAIL` fill-in as described under **Resend objects** before treating delivery as verified.
 
    Not established: whether the dashboard can stop and re-edit a live automation. Resend's docs do not
    cover it and we have not tried it, so do not use the dashboard on the live automation instead.

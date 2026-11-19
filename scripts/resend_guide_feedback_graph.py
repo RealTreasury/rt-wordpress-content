@@ -40,6 +40,18 @@ def build(live):
     return {'steps': steps, 'connections': connections}
 
 
+def contains(live, planned):
+    """True when every planned setting is in the live read-back.
+
+    Resend may add defaults when it returns a step, so extra live keys are
+    accepted; any planned value that is missing or different still fails.
+    """
+    if isinstance(planned, dict):
+        return isinstance(live, dict) and all(
+            key in live and contains(live[key], value) for key, value in planned.items())
+    return live == planned
+
+
 def verify(before, after):
     if before['id'] != GUIDE_AUTOMATION or after['id'] != GUIDE_AUTOMATION:
         raise ValueError('expected both snapshots to be for the Guide delivery automation')
@@ -48,10 +60,12 @@ def verify(before, after):
     expected = build(before)
     actual_steps = after['steps']
     planned_steps = expected['steps']
-    step_settings = {step['key']: (step['type'], step['config']) for step in actual_steps}
-    if len(actual_steps) != len(planned_steps) or step_settings != {
-        step['key']: (step['type'], step['config']) for step in planned_steps
-    }:
+    actual = {step['key']: step for step in actual_steps}
+    if len(actual_steps) != len(planned_steps) or set(actual) != {s['key'] for s in planned_steps} or any(
+        actual[step['key']]['type'] != step['type']
+        or not contains(actual[step['key']]['config'], step['config'])
+        for step in planned_steps
+    ):
         raise ValueError('live step types or settings differ from the planned Guide graph')
 
     def edges(graph):

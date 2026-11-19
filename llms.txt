@@ -49,6 +49,5 @@ Site index: https://realtreasury.com/sitemap_index.xml
 
 - [Treasury Technology Insights](https://realtreasury.com/posts/): All articles.
 - [Events and Conferences](https://realtreasury.com/events/): Where to find Real Treasury in person.
-- [Guided TMS Tours at AFP 2026](https://realtreasury.com/afp-2026-tms-tour/): Free small-group guided tours of the treasury technology vendors in the AFP 2026 exhibit hall, Las Vegas, November 9–10, 2026.
 - [Privacy Policy](https://realtreasury.com/privacy-policy/)
 - [Terms of Service](https://realtreasury.com/terms-of-service/)

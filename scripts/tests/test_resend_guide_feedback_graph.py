@@ -91,6 +91,19 @@ class GuideFeedbackGraphTests(unittest.TestCase):
         changed['steps'][3]['config']['duration'] = '1 day'
         with self.assertRaisesRegex(ValueError, 'step types or settings'):
             graph.verify(self.before, changed)
+        for step, key, value in ((2, 'bcc', ['x@example.com']), (3, 'cc', 'x@example.com'),
+                                 (3, 'variables', {'name': 'x'})):
+            risky = deepcopy(self.after)
+            risky['steps'][step]['config'][key] = value
+            with self.assertRaisesRegex(ValueError, 'step types or settings'):
+                graph.verify(self.before, risky)
+        risky = deepcopy(self.after)
+        risky['steps'][4]['config']['template']['variables'] = {'name': 'x'}
+        with self.assertRaisesRegex(ValueError, 'step types or settings'):
+            graph.verify(self.before, risky)
+        empty = deepcopy(self.after)
+        empty['steps'][3]['config']['bcc'] = []
+        graph.verify(self.before, empty)
         missing = deepcopy(self.after)
         del missing['steps'][2]['config']['reply_to']
         with self.assertRaisesRegex(ValueError, 'step types or settings'):

@@ -40,15 +40,22 @@ def build(live):
     return {'steps': steps, 'connections': connections}
 
 
+# Settings that change who receives a step's email or what it says. A live step
+# that gained one with a real value is a different automation, not a default.
+BEHAVIOR_KEYS = frozenset({'bcc', 'cc', 'to', 'variables', 'attachments', 'headers', 'scheduled_at'})
+
+
 def contains(live, planned):
     """True when every planned setting is in the live read-back.
 
     Resend may add defaults when it returns a step, so extra live keys are
-    accepted; any planned value that is missing or different still fails.
+    accepted; any planned value that is missing or different still fails, and so
+    does an extra BEHAVIOR_KEYS setting that carries a value (an empty one is a default).
     """
     if isinstance(planned, dict):
         return isinstance(live, dict) and all(
-            key in live and contains(live[key], value) for key, value in planned.items())
+            key in live and contains(live[key], value) for key, value in planned.items()
+        ) and not any(key in BEHAVIOR_KEYS and live[key] and key not in planned for key in live)
     return live == planned
 
 
